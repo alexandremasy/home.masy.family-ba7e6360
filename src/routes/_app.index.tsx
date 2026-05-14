@@ -216,5 +216,3 @@ function Mini({ icon, label, value, unit, trend }: { icon: React.ReactNode; labe
   );
 }
 
-// FunFooter is also rendered by the layout, but we keep nothing here — it's elsewhere.
-function FunFooter() { return null; }
