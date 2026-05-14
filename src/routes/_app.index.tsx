@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Tile } from "@/components/Card";
 import { rooms, tesla, reseau, energie, calendrier } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Wind, Wifi, Car, Zap, Trash2, Plug, ArrowRight, Gauge } from "lucide-react";
+import { Lightbulb, Thermometer, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Gauge } from "lucide-react";
 
 export const Route = createFileRoute("/_app/")({
   component: Dashboard,
