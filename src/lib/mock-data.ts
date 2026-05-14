@@ -59,9 +59,38 @@ export const reseau = {
   ],
 };
 
+export type EnergyStatus = "normal" | "alert";
+export type Trend = "up" | "down" | "stable";
+
 export const energie = {
   monthlyDue: false,
   lastReadingDate: "2026-05-01",
+  electricity: {
+    status: "normal" as EnergyStatus,
+    dailyKWh: 9.3,
+    avg90dKWh: 10.4,
+    trendPct: -10.6, // vs 90d avg
+    trend: "down" as Trend,
+    monthKWh: 280,
+    dayTotal: 148,
+    nightTotal: 132,
+  },
+  water: {
+    status: "normal" as EnergyStatus,
+    dailyM3: 0.32,
+    dailyL: 320,
+    trend: "stable" as Trend,
+    trendPct: 1.4,
+  },
+  oil: {
+    status: "alert" as EnergyStatus, // running low
+    tankPct: 22,
+    tankLiters: 660,
+    tankCapacity: 3000,
+    last30dLiters: 410,
+    autonomyDays: 48,
+  },
+  // legacy (still used by /energie page + saisie)
   current: { eau: 9.8, jour: 148, nuit: 132, mazout: 1180 },
   trend: { eau: -0.2, jour: -14, nuit: -8, mazout: -100 },
   history: [
