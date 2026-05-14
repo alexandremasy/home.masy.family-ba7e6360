@@ -1,4 +1,4 @@
-import type { ReactNode, HTMLAttributes } from "react";
+import { useRef, type ReactNode, type HTMLAttributes, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 
 interface BaseProps {
@@ -33,8 +33,18 @@ export function Tile({
   to,
   ...rest
 }: BaseProps & { to?: string } & Omit<HTMLAttributes<HTMLDivElement>, "children">) {
+  const ref = useRef<HTMLElement | null>(null);
+
+  const handleMove = (e: MouseEvent<HTMLElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+    el.style.setProperty("--my", `${e.clientY - rect.top}px`);
+  };
+
   const cls =
-    "group relative overflow-hidden rounded-2xl border border-border/50 p-5 shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 hover:border-border " +
+    "tile-spotlight group relative overflow-hidden rounded-2xl border border-border/50 p-5 shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 hover:border-border " +
     toneClasses[tone] +
     " " +
     spanClasses[span] +
@@ -42,16 +52,34 @@ export function Tile({
     " " +
     className;
 
+  const inner = (
+    <>
+      <span aria-hidden className="tile-spotlight__glow" />
+      <span className="relative z-[1] block">{children}</span>
+    </>
+  );
+
   if (to) {
     return (
-      <Link to={to} className={cls} {...(rest as object)}>
-        {children}
+      <Link
+        to={to}
+        ref={ref as React.Ref<HTMLAnchorElement>}
+        onMouseMove={handleMove}
+        className={cls}
+        {...(rest as object)}
+      >
+        {inner}
       </Link>
     );
   }
   return (
-    <div className={cls} {...rest}>
-      {children}
+    <div
+      ref={ref as React.Ref<HTMLDivElement>}
+      onMouseMove={handleMove}
+      className={cls}
+      {...rest}
+    >
+      {inner}
     </div>
   );
 }
