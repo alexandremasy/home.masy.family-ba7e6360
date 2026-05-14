@@ -337,51 +337,50 @@ function WeatherIcon({ cond, className }: { cond: WeatherCond; className?: strin
 function WeatherTile() {
   const m = meteo.today;
   return (
-    <Tile span={6} tone="primary">
-      <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] sm:gap-6">
-        {/* Today */}
-        <div className="min-w-0">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.18em] opacity-70">Aujourd'hui · {m.location}</p>
-              <p className="mt-1 font-serif text-xl">{m.label}</p>
-            </div>
-            <WeatherIcon cond={m.cond} className="h-8 w-8 opacity-90 anim-float" />
-          </div>
-          <div className="mt-4 flex items-end gap-5">
-            <div className="flex items-baseline gap-1">
-              <span className="font-serif text-5xl tracking-tight">{m.tempC}</span>
-              <span className="text-lg opacity-70">°C</span>
-            </div>
-            <div className="flex-1 pb-1 text-xs opacity-80">
-              <p>Ressenti {m.feelsC}° · {m.minC}° / {m.maxC}°</p>
-              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-                <span className="inline-flex items-center gap-1"><Droplet className="h-3 w-3" />{m.rainMm} mm · {m.rainProb}%</span>
-                <span className="inline-flex items-center gap-1"><Wind className="h-3 w-3" />{m.windKmh} km/h</span>
-                <span className="inline-flex items-center gap-1"><Sunrise className="h-3 w-3" />{m.sunrise}</span>
-                <span className="inline-flex items-center gap-1"><Sunset className="h-3 w-3" />{m.sunset}</span>
-              </div>
-            </div>
+    <Tile span={4} tone="primary">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs uppercase tracking-[0.18em] opacity-70">Aujourd'hui · {m.location}</p>
+          <p className="mt-1 font-serif text-xl">{m.label}</p>
+        </div>
+        <WeatherIcon cond={m.cond} className="h-8 w-8 opacity-90 anim-float" />
+      </div>
+      <div className="mt-4 flex items-end gap-5">
+        <div className="flex items-baseline gap-1">
+          <span className="font-serif text-5xl tracking-tight">{m.tempC}</span>
+          <span className="text-lg opacity-70">°C</span>
+        </div>
+        <div className="flex-1 pb-1 text-xs opacity-80">
+          <p>Ressenti {m.feelsC}° · {m.minC}° / {m.maxC}°</p>
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span className="inline-flex items-center gap-1"><Droplet className="h-3 w-3" />{m.rainMm} mm · {m.rainProb}%</span>
+            <span className="inline-flex items-center gap-1"><Wind className="h-3 w-3" />{m.windKmh} km/h</span>
+            <span className="inline-flex items-center gap-1"><Sunrise className="h-3 w-3" />{m.sunrise}</span>
+            <span className="inline-flex items-center gap-1"><Sunset className="h-3 w-3" />{m.sunset}</span>
           </div>
         </div>
+      </div>
+    </Tile>
+  );
+}
 
-        {/* 5-day forecast */}
-        <div className="min-w-0 sm:border-l sm:border-primary-foreground/15 sm:pl-6">
-          <p className="text-xs uppercase tracking-[0.18em] opacity-70">5 prochains jours</p>
-          <div className="mt-3 grid grid-cols-5 gap-1.5 sm:gap-2">
-            {meteo.forecast.map((d) => (
-              <div key={d.day} className="flex flex-col items-center rounded-xl bg-primary-foreground/10 p-2 text-center">
-                <span className="text-[10px] uppercase tracking-[0.14em] opacity-70">{d.day}</span>
-                <WeatherIcon cond={d.cond} className="my-1.5 h-5 w-5 sm:h-6 sm:w-6" />
-                <span className="font-serif text-sm leading-tight sm:text-base">{d.maxC}°</span>
-                <span className="text-[10px] tabular-nums opacity-70">{d.minC}°</span>
-                <span className="mt-1 inline-flex items-center gap-0.5 text-[9px] opacity-70 sm:text-[10px]">
-                  <Droplet className="h-2.5 w-2.5" />{d.rainProb}%
-                </span>
-              </div>
-            ))}
+function WeatherForecastTile() {
+  const days = meteo.forecast.slice(0, 3);
+  return (
+    <Tile>
+      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">3 prochains jours</p>
+      <div className="mt-3 grid grid-cols-3 gap-1.5">
+        {days.map((d) => (
+          <div key={d.day} className="flex flex-col items-center rounded-xl bg-secondary/60 p-2 text-center">
+            <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{d.day}</span>
+            <WeatherIcon cond={d.cond} className="my-1.5 h-5 w-5" />
+            <span className="font-serif text-sm leading-tight">{d.maxC}°</span>
+            <span className="text-[10px] tabular-nums text-muted-foreground">{d.minC}°</span>
+            <span className="mt-1 inline-flex items-center gap-0.5 text-[9px] text-muted-foreground">
+              <Droplet className="h-2.5 w-2.5" />{d.rainProb}%
+            </span>
           </div>
-        </div>
+        ))}
       </div>
     </Tile>
   );
