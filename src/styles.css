@@ -45,7 +45,7 @@
 }
 
 :root {
-  --radius: 1.25rem;
+  --radius: 0.75rem;
 
   /* Warm cream background inspired by alexandremasy.com */
   --background: oklch(0.985 0.008 95);
@@ -147,4 +147,65 @@
   @media (min-width: 1024px) {
     .grid-bento { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.25rem; }
   }
+
+  /* ---- Micro animations ---- */
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.06); opacity: 0.85; }
+  }
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 currentColor; opacity: 0.6; }
+    70% { box-shadow: 0 0 0 8px transparent; opacity: 0; }
+    100% { box-shadow: 0 0 0 0 transparent; opacity: 0; }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes blink-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-6deg); }
+    75% { transform: rotate(6deg); }
+  }
+  @keyframes equalizer {
+    0%, 100% { transform: scaleY(0.4); }
+    50% { transform: scaleY(1); }
+  }
+
+  .anim-breathe { animation: breathe 2.4s ease-in-out infinite; }
+  .anim-blink { animation: blink-soft 2s ease-in-out infinite; }
+  .anim-shimmer {
+    background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2.4s linear infinite;
+    opacity: 0.15;
+  }
+  .anim-slide-up { animation: slide-up 0.5s cubic-bezier(0.2,0.7,0.2,1) both; }
+  .anim-wiggle:hover { animation: wiggle 0.4s ease-in-out; }
+  .anim-pulse-ring::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit;
+    animation: pulse-ring 1.8s ease-out infinite;
+  }
+
+  .eq-bar { transform-origin: bottom; animation: equalizer 0.9s ease-in-out infinite; }
+
+  /* Stagger helpers */
+  .stagger > * { animation: slide-up 0.5s cubic-bezier(0.2,0.7,0.2,1) both; }
+  .stagger > *:nth-child(1) { animation-delay: 0.02s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.06s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.10s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.14s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.18s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.22s; }
+  .stagger > *:nth-child(7) { animation-delay: 0.26s; }
+  .stagger > *:nth-child(8) { animation-delay: 0.30s; }
+  .stagger > *:nth-child(9) { animation-delay: 0.34s; }
 }

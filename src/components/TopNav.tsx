@@ -2,12 +2,11 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { ThemeToggle } from "./ThemeToggle";
 
 const rooms = [
-  { to: "/room/buanderie", label: "Buanderie" },
-  { to: "/room/cuisine", label: "Cuisine" },
   { to: "/room/salon", label: "Salon" },
-  { to: "/room/escalier", label: "Escalier" },
   { to: "/room/bureau", label: "Bureau" },
+  { to: "/room/cuisine", label: "Cuisine" },
   { to: "/room/chambre", label: "Chambre" },
+  { to: "/room/escalier", label: "Escalier" },
 ] as const;
 
 const domains = [
