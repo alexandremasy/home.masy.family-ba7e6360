@@ -22,17 +22,17 @@ function Dashboard() {
 
   return (
     <div className="space-y-8">
-      <div className="px-1 anim-slide-up">
-        <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">{dateStr}</p>
-        <h1 className="mt-2 font-serif text-4xl tracking-tight text-foreground sm:text-5xl">
-          {greeting}.
-        </h1>
+      <div className="px-1 anim-slide-up flex items-end justify-between gap-4">
+        <div>
+          <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">{dateStr}</p>
+          <h1 className="mt-2 font-serif text-4xl tracking-tight text-foreground sm:text-5xl">
+            {greeting}.
+          </h1>
+        </div>
+        <WeatherInline />
       </div>
 
       <div className="grid-bento stagger">
-        {/* PRIORITY 0 — Météo */}
-        <WeatherTile />
-        <WeatherForecastTile />
 
         {/* PRIORITY 1 — Events */}
         {energie.monthlyDue ? (
@@ -334,55 +334,21 @@ function WeatherIcon({ cond, className }: { cond: WeatherCond; className?: strin
   return <Icon className={className} />;
 }
 
-function WeatherTile() {
+function WeatherInline() {
   const m = meteo.today;
   return (
-    <Tile span={4} tone="primary">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-[0.18em] opacity-70">Aujourd'hui · {m.location}</p>
-          <p className="mt-1 font-serif text-xl">{m.label}</p>
-        </div>
-        <WeatherIcon cond={m.cond} className="h-8 w-8 opacity-90 anim-float" />
+    <div className="flex items-center gap-3 text-right">
+      <div className="text-xs text-muted-foreground">
+        <p className="font-medium text-foreground">{m.label}</p>
+        <p className="mt-0.5">{m.location} · {m.minC}°/{m.maxC}°</p>
       </div>
-      <div className="mt-4 flex items-end gap-5">
-        <div className="flex items-baseline gap-1">
-          <span className="font-serif text-5xl tracking-tight">{m.tempC}</span>
-          <span className="text-lg opacity-70">°C</span>
-        </div>
-        <div className="flex-1 pb-1 text-xs opacity-80">
-          <p>Ressenti {m.feelsC}° · {m.minC}° / {m.maxC}°</p>
-          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="inline-flex items-center gap-1"><Droplet className="h-3 w-3" />{m.rainMm} mm · {m.rainProb}%</span>
-            <span className="inline-flex items-center gap-1"><Wind className="h-3 w-3" />{m.windKmh} km/h</span>
-            <span className="inline-flex items-center gap-1"><Sunrise className="h-3 w-3" />{m.sunrise}</span>
-            <span className="inline-flex items-center gap-1"><Sunset className="h-3 w-3" />{m.sunset}</span>
-          </div>
-        </div>
+      <div className="flex items-center gap-2">
+        <WeatherIcon cond={m.cond} className="h-7 w-7 text-foreground/80 anim-float" />
+        <span className="font-serif text-3xl leading-none tracking-tight text-foreground">
+          {m.tempC}<span className="text-base text-muted-foreground">°</span>
+        </span>
       </div>
-    </Tile>
-  );
-}
-
-function WeatherForecastTile() {
-  const days = meteo.forecast.slice(0, 3);
-  return (
-    <Tile>
-      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">3 prochains jours</p>
-      <div className="mt-3 grid grid-cols-3 gap-1.5">
-        {days.map((d) => (
-          <div key={d.day} className="flex flex-col items-center rounded-xl bg-secondary/60 p-2 text-center">
-            <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{d.day}</span>
-            <WeatherIcon cond={d.cond} className="my-1.5 h-5 w-5" />
-            <span className="font-serif text-sm leading-tight">{d.maxC}°</span>
-            <span className="text-[10px] tabular-nums text-muted-foreground">{d.minC}°</span>
-            <span className="mt-1 inline-flex items-center gap-0.5 text-[9px] text-muted-foreground">
-              <Droplet className="h-2.5 w-2.5" />{d.rainProb}%
-            </span>
-          </div>
-        ))}
-      </div>
-    </Tile>
+    </div>
   );
 }
 
