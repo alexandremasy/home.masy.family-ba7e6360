@@ -78,7 +78,7 @@ function Dashboard() {
               <p className="mt-1 font-serif text-xl">Poubelles {calendrier.poubelleToday.type}</p>
               <p className="text-sm opacity-80">À sortir avant {calendrier.poubelleToday.time}</p>
             </div>
-            <Trash2 className="h-6 w-6 opacity-70 anim-wiggle" />
+            <Trash2 className="h-6 w-6 opacity-70 anim-float anim-wiggle" />
           </div>
         </Tile>
 
@@ -126,7 +126,7 @@ function Dashboard() {
                 <MapPin className="h-3 w-3" />{tesla.location}
               </p>
             </div>
-            <Car className="h-5 w-5 opacity-60" />
+            <Car className="h-5 w-5 opacity-60 icon-hover anim-drift" />
           </div>
 
           <div className="mt-4 flex items-end gap-6">
