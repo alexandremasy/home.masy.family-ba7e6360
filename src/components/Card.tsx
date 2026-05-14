@@ -34,7 +34,7 @@ export function Tile({
   ...rest
 }: BaseProps & { to?: string } & Omit<HTMLAttributes<HTMLDivElement>, "children">) {
   const cls =
-    "group relative overflow-hidden rounded-3xl border border-border/50 p-5 shadow-soft transition-all hover:shadow-lift hover:-translate-y-0.5 " +
+    "group relative overflow-hidden rounded-2xl border border-border/50 p-5 shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 hover:border-border " +
     toneClasses[tone] +
     " " +
     spanClasses[span] +
@@ -58,7 +58,7 @@ export function Tile({
 
 export function Section({ title, children, action }: { title: string; children: ReactNode; action?: ReactNode }) {
   return (
-    <section className="rounded-3xl border border-border/60 bg-card p-6 shadow-soft sm:p-8">
+    <section className="rounded-2xl border border-border/60 bg-card p-6 shadow-soft sm:p-8 anim-slide-up">
       <header className="mb-5 flex items-end justify-between gap-4">
         <h2 className="font-serif text-2xl tracking-tight text-foreground">{title}</h2>
         {action}
