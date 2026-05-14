@@ -73,7 +73,7 @@ function Dashboard() {
                 );
               })()}
             </div>
-            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
               <ElecBlock />
               <WaterBlock />
               <OilBlock />
