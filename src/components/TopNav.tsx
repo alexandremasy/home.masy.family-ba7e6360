@@ -31,7 +31,7 @@ export function TopNav() {
 
         <nav className="hidden items-center gap-1 md:flex">
           {[...rooms, ...domains].map((item) => {
-            const active = pathname === item.to || (item.to !== "/" && pathname.startsWith(item.to));
+            const active = pathname.startsWith(item.to);
             return (
               <Link
                 key={item.to}
@@ -56,7 +56,7 @@ export function TopNav() {
       <div className="md:hidden">
         <nav className="flex gap-1 overflow-x-auto px-4 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {[...rooms, ...domains].map((item) => {
-            const active = pathname === item.to || (item.to !== "/" && pathname.startsWith(item.to));
+            const active = pathname.startsWith(item.to);
             return (
               <Link
                 key={item.to}
