@@ -330,9 +330,20 @@ const weatherIconMap: Record<WeatherCond, typeof Sun> = {
   fog: CloudFog,
 };
 
-function WeatherIcon({ cond, className }: { cond: WeatherCond; className?: string }) {
+const weatherAnimMap: Record<WeatherCond, string> = {
+  sun: "anim-sun",
+  cloud: "anim-drift",
+  partly: "anim-float",
+  rain: "anim-rain",
+  storm: "anim-storm",
+  snow: "anim-snow",
+  fog: "anim-fog",
+};
+
+function WeatherIcon({ cond, className, animated = true }: { cond: WeatherCond; className?: string; animated?: boolean }) {
   const Icon = weatherIconMap[cond];
-  return <Icon className={className} />;
+  const anim = animated ? " " + weatherAnimMap[cond] : "";
+  return <Icon className={(className ?? "") + anim} />;
 }
 
 function WeatherInline() {
