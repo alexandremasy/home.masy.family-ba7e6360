@@ -361,7 +361,7 @@ function WeatherInline() {
             <p className="mt-0.5">{m.location} · {m.minC}°/{m.maxC}°</p>
           </div>
           <div className="flex items-center gap-2">
-            <WeatherIcon cond={m.cond} className="h-7 w-7 text-foreground/80 anim-float" />
+            <WeatherIcon cond={m.cond} className="h-7 w-7 text-foreground/80" />
             <span className="font-serif text-3xl leading-none tracking-tight text-foreground">
               {m.tempC}<span className="text-base text-muted-foreground">°</span>
             </span>
