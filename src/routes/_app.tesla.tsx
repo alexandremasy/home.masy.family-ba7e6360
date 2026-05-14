@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Section } from "@/components/Card";
 import { tesla } from "@/lib/mock-data";
-import { Plug, Thermometer, Gauge, MapPin, TrendingDown, TrendingUp, Zap } from "lucide-react";
+import { Plug, Thermometer, MapPin, TrendingDown, TrendingUp, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/_app/tesla")({
   component: TeslaPage,
