@@ -24,7 +24,8 @@ export const Route = createFileRoute("/_app/room/$roomKey")({
 });
 
 function RoomPage() {
-  const { room } = Route.useLoaderData();
+  const data = Route.useLoaderData() as { room: typeof rooms[number] };
+  const room = data.room;
   const detail = roomDetails[room.key];
   const [zones, setZones] = useState(detail.lights?.zones ?? []);
   const [scene, setScene] = useState(detail.lights?.scene ?? "Off");
