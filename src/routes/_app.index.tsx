@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Tile } from "@/components/Card";
+import { CountUp } from "@/components/CountUp";
 import { RoomIcon } from "@/components/RoomIcon";
 import { rooms, tesla, reseau, energie, calendrier, meteo, type WeatherCond } from "@/lib/mock-data";
 import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer } from "lucide-react";
@@ -23,14 +24,17 @@ function Dashboard() {
 
   return (
     <div className="space-y-8">
-      <div className="px-1 anim-slide-up flex items-end justify-between gap-4">
-        <div>
-          <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">{dateStr}</p>
-          <h1 className="mt-2 font-serif text-4xl tracking-tight text-foreground sm:text-5xl">
-            {greeting}.
-          </h1>
+      <div className="relative overflow-hidden rounded-3xl px-5 py-6 anim-slide-up">
+        <span aria-hidden className="bg-mesh-anim pointer-events-none absolute inset-0 -z-10 opacity-60" />
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">{dateStr}</p>
+            <h1 className="mt-2 font-serif text-4xl tracking-tight text-foreground sm:text-5xl">
+              {greeting}.
+            </h1>
+          </div>
+          <WeatherInline />
         </div>
-        <WeatherInline />
       </div>
 
       <div className="grid-bento stagger">
@@ -114,7 +118,7 @@ function Dashboard() {
 
             {typeof room.temperature === "number" && (
               <p className="mt-6 font-serif text-4xl tracking-tight">
-                {room.temperature.toFixed(1)}<span className="text-base text-muted-foreground">°C</span>
+                <CountUp to={room.temperature} decimals={1} /><span className="text-base text-muted-foreground">°C</span>
               </p>
             )}
 
@@ -151,7 +155,7 @@ function Dashboard() {
           <div className="mt-4 flex items-end gap-6">
             <div>
               <div className="flex items-baseline gap-1">
-                <span className="font-serif text-5xl tracking-tight">{tesla.charge}</span>
+                <span className="font-serif text-5xl tracking-tight"><CountUp to={tesla.charge} /></span>
                 <span className="text-lg opacity-60">%</span>
               </div>
               <p className="text-xs opacity-60">{tesla.rangeKm} km · limite {tesla.chargeLimit}%</p>
