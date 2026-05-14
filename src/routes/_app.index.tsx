@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Tile } from "@/components/Card";
-import { rooms, tesla, reseau, energie, calendrier, footerLines } from "@/lib/mock-data";
+import { rooms, tesla, reseau, energie, calendrier } from "@/lib/mock-data";
 import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Sun, Moon, Flame, MapPin, Sparkles, Check } from "lucide-react";
 
 export const Route = createFileRoute("/_app/")({
@@ -173,7 +173,6 @@ function Dashboard() {
         </Tile>
       </div>
 
-      <FunFooter />
     </div>
   );
 }
