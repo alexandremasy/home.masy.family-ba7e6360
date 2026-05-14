@@ -106,6 +106,33 @@ export const calendrier = {
   poubelleToday: { type: "PMC", icon: "♻️", time: "07:00" },
 };
 
+export type WeatherCond = "sun" | "cloud" | "partly" | "rain" | "storm" | "snow" | "fog";
+
+export const meteo = {
+  today: {
+    cond: "partly" as WeatherCond,
+    label: "Éclaircies",
+    tempC: 17,
+    feelsC: 16,
+    minC: 11,
+    maxC: 19,
+    rainMm: 1.2,
+    rainProb: 35,
+    windKmh: 14,
+    humidity: 62,
+    sunrise: "05:48",
+    sunset: "21:24",
+    location: "Bruxelles",
+  },
+  forecast: [
+    { day: "Ven", cond: "sun" as WeatherCond, minC: 12, maxC: 21, rainProb: 5 },
+    { day: "Sam", cond: "partly" as WeatherCond, minC: 13, maxC: 22, rainProb: 20 },
+    { day: "Dim", cond: "rain" as WeatherCond, minC: 11, maxC: 17, rainProb: 80 },
+    { day: "Lun", cond: "cloud" as WeatherCond, minC: 10, maxC: 16, rainProb: 40 },
+    { day: "Mar", cond: "partly" as WeatherCond, minC: 11, maxC: 19, rainProb: 25 },
+  ],
+};
+
 // Room detail mocks
 export const roomDetails: Record<RoomKey, {
   lights?: { zones: { name: string; on: boolean }[]; scene: string; scenes: string[]; brightness: number };
