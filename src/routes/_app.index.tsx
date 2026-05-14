@@ -32,6 +32,7 @@ function Dashboard() {
       <div className="grid-bento stagger">
         {/* PRIORITY 0 — Météo */}
         <WeatherTile />
+        <WeatherForecastTile />
 
         {/* PRIORITY 1 — Events */}
         {energie.monthlyDue ? (
