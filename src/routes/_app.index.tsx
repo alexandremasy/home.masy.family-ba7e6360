@@ -332,8 +332,8 @@ const weatherIconMap: Record<WeatherCond, typeof Sun> = {
 
 const weatherAnimMap: Record<WeatherCond, string> = {
   sun: "anim-sun",
-  cloud: "anim-drift",
-  partly: "anim-float",
+  cloud: "anim-cloud",
+  partly: "anim-partly",
   rain: "anim-rain",
   storm: "anim-storm",
   snow: "anim-snow",
