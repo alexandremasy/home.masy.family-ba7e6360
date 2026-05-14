@@ -233,12 +233,28 @@
   .eq-bar { transform-origin: bottom; animation: equalizer 0.9s ease-in-out infinite; }
 
   /* Page transition: applied to <main> keyed by route */
-  /* Page transition — Stripe-like: quick fade with a soft 8px upward glide.
-     No blur (felt heavy); ease-out + small scale gives the same calm reveal. */
+  /* Page transition (initial mount only). */
   .page-enter { animation: page-in 0.5s cubic-bezier(0.16,0.84,0.24,1) both; }
   @keyframes page-in {
     from { opacity: 0; transform: translateY(8px) scale(0.995); }
     to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ---- Stripe-like slide-up overlay ----
+     Backdrop fades, panel glides up + scales in. */
+  @keyframes overlay-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes overlay-panel-in {
+    from { opacity: 0; transform: translateY(28px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .overlay-enter .overlay-backdrop {
+    animation: overlay-fade-in 0.35s ease-out both;
+  }
+  .overlay-enter .overlay-panel {
+    animation: overlay-panel-in 0.5s cubic-bezier(0.16, 0.84, 0.24, 1) both;
   }
 
   /* Stagger helpers */

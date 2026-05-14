@@ -7,7 +7,9 @@ import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Fla
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/_app/")({
-  component: Dashboard,
+  // Dashboard is rendered by the parent _app layout (so it stays visible
+  // behind child-route modals). The index route itself renders nothing.
+  component: () => null,
   head: () => ({
     meta: [
       { title: "Maison — Cockpit" },
@@ -16,7 +18,7 @@ export const Route = createFileRoute("/_app/")({
   }),
 });
 
-function Dashboard() {
+export function Dashboard() {
   const visibleRooms = rooms.filter((r) => r.hasSensors);
   const now = new Date();
   const greeting = now.getHours() < 12 ? "Bonjour" : now.getHours() < 18 ? "Bon après-midi" : "Bonsoir";
