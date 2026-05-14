@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Tile } from "@/components/Card";
 import { RoomIcon } from "@/components/RoomIcon";
 import { rooms, tesla, reseau, energie, calendrier, meteo, type WeatherCond } from "@/lib/mock-data";
-import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset } from "lucide-react";
+import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/_app/")({
   component: Dashboard,
@@ -337,18 +338,76 @@ function WeatherIcon({ cond, className }: { cond: WeatherCond; className?: strin
 function WeatherInline() {
   const m = meteo.today;
   return (
-    <div className="flex items-center gap-3 text-right">
-      <div className="text-xs text-muted-foreground">
-        <p className="font-medium text-foreground">{m.label}</p>
-        <p className="mt-0.5">{m.location} · {m.minC}°/{m.maxC}°</p>
-      </div>
-      <div className="flex items-center gap-2">
-        <WeatherIcon cond={m.cond} className="h-7 w-7 text-foreground/80 anim-float" />
-        <span className="font-serif text-3xl leading-none tracking-tight text-foreground">
-          {m.tempC}<span className="text-base text-muted-foreground">°</span>
-        </span>
-      </div>
-    </div>
+    <Dialog>
+      <DialogTrigger asChild>
+        <button
+          type="button"
+          className="flex items-center gap-3 rounded-xl px-2 py-1 text-right transition-colors hover:bg-secondary/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label="Voir la météo détaillée"
+        >
+          <div className="text-xs text-muted-foreground">
+            <p className="font-medium text-foreground">{m.label}</p>
+            <p className="mt-0.5">{m.location} · {m.minC}°/{m.maxC}°</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <WeatherIcon cond={m.cond} className="h-7 w-7 text-foreground/80 anim-float" />
+            <span className="font-serif text-3xl leading-none tracking-tight text-foreground">
+              {m.tempC}<span className="text-base text-muted-foreground">°</span>
+            </span>
+          </div>
+        </button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle className="font-serif text-2xl">Météo · {m.location}</DialogTitle>
+        </DialogHeader>
+
+        {/* Today */}
+        <div className="rounded-2xl border border-border/60 bg-secondary/40 p-4">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Aujourd'hui</p>
+              <p className="mt-1 font-serif text-xl">{m.label}</p>
+            </div>
+            <WeatherIcon cond={m.cond} className="h-10 w-10 text-foreground/80" />
+          </div>
+          <div className="mt-3 flex items-end gap-5">
+            <div className="flex items-baseline gap-1">
+              <span className="font-serif text-5xl tracking-tight">{m.tempC}</span>
+              <span className="text-lg text-muted-foreground">°C</span>
+            </div>
+            <p className="pb-1 text-xs text-muted-foreground">
+              Ressenti {m.feelsC}° · {m.minC}° / {m.maxC}°
+            </p>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-muted-foreground sm:grid-cols-4">
+            <span className="inline-flex items-center gap-1.5"><Droplet className="h-3.5 w-3.5" />{m.rainMm} mm · {m.rainProb}%</span>
+            <span className="inline-flex items-center gap-1.5"><Wind className="h-3.5 w-3.5" />{m.windKmh} km/h</span>
+            <span className="inline-flex items-center gap-1.5"><Sunrise className="h-3.5 w-3.5" />{m.sunrise}</span>
+            <span className="inline-flex items-center gap-1.5"><Sunset className="h-3.5 w-3.5" />{m.sunset}</span>
+            <span className="inline-flex items-center gap-1.5"><Thermometer className="h-3.5 w-3.5" />Humidité {m.humidity}%</span>
+          </div>
+        </div>
+
+        {/* Forecast */}
+        <div>
+          <p className="mb-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">Prochains jours</p>
+          <div className="grid grid-cols-5 gap-1.5">
+            {meteo.forecast.map((d) => (
+              <div key={d.day} className="flex flex-col items-center rounded-xl bg-secondary/60 p-2 text-center">
+                <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{d.day}</span>
+                <WeatherIcon cond={d.cond} className="my-1.5 h-5 w-5" />
+                <span className="font-serif text-sm leading-tight">{d.maxC}°</span>
+                <span className="text-[10px] tabular-nums text-muted-foreground">{d.minC}°</span>
+                <span className="mt-1 inline-flex items-center gap-0.5 text-[9px] text-muted-foreground">
+                  <Droplet className="h-2.5 w-2.5" />{d.rainProb}%
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
