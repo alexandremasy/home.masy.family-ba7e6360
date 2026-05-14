@@ -27,9 +27,6 @@ function Dashboard() {
         <h1 className="mt-2 font-serif text-4xl tracking-tight text-foreground sm:text-5xl">
           {greeting}.
         </h1>
-        <p className="mt-2 max-w-md text-muted-foreground">
-          Voici l'état de la maison — événements et pièces en priorité.
-        </p>
       </div>
 
       <div className="grid-bento stagger">
