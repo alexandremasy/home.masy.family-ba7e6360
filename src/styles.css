@@ -179,9 +179,37 @@
     0%, 100% { transform: scaleY(0.4); }
     50% { transform: scaleY(1); }
   }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+  }
+  @keyframes swing {
+    0%, 100% { transform: rotate(0); }
+    20% { transform: rotate(-8deg); }
+    60% { transform: rotate(6deg); }
+    80% { transform: rotate(-3deg); }
+  }
+  @keyframes drift {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(2px); }
+  }
+  @keyframes pop-in {
+    0% { opacity: 0; transform: scale(0.92) translateY(6px); }
+    60% { transform: scale(1.02) translateY(0); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes glow {
+    0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+    50% { filter: drop-shadow(0 0 8px color-mix(in oklab, var(--primary) 40%, transparent)); }
+  }
+  @keyframes spin-slow { to { transform: rotate(360deg); } }
 
   .anim-breathe { animation: breathe 2.4s ease-in-out infinite; }
   .anim-blink { animation: blink-soft 2s ease-in-out infinite; }
+  .anim-float { animation: float 3.2s ease-in-out infinite; }
+  .anim-drift { animation: drift 4s ease-in-out infinite; }
+  .anim-glow { animation: glow 2.8s ease-in-out infinite; }
+  .anim-spin-slow { animation: spin-slow 14s linear infinite; }
   .anim-shimmer {
     background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
     background-size: 200% 100%;
@@ -189,13 +217,27 @@
     opacity: 0.15;
   }
   .anim-slide-up { animation: slide-up 0.5s cubic-bezier(0.2,0.7,0.2,1) both; }
+  .anim-pop-in { animation: pop-in 0.5s cubic-bezier(0.2,0.7,0.2,1) both; }
   .anim-wiggle:hover { animation: wiggle 0.4s ease-in-out; }
+  .anim-swing-hover:hover { animation: swing 0.6s ease-in-out; }
   .anim-pulse-ring::after {
     content: ""; position: absolute; inset: 0; border-radius: inherit;
     animation: pulse-ring 1.8s ease-out infinite;
   }
 
+  /* Generic icon hover lift — scoped via .icon-hover */
+  .icon-hover { transition: transform 0.25s cubic-bezier(0.2,0.7,0.2,1); }
+  .group:hover .icon-hover { transform: translateY(-1px) scale(1.08); }
+  .group:hover .icon-hover-x { transform: translateX(2px); }
+
   .eq-bar { transform-origin: bottom; animation: equalizer 0.9s ease-in-out infinite; }
+
+  /* Page transition: applied to <main> keyed by route */
+  .page-enter { animation: page-in 0.45s cubic-bezier(0.2,0.7,0.2,1) both; }
+  @keyframes page-in {
+    from { opacity: 0; transform: translateY(6px); filter: blur(4px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
 
   /* Stagger helpers */
   .stagger > * { animation: slide-up 0.5s cubic-bezier(0.2,0.7,0.2,1) both; }

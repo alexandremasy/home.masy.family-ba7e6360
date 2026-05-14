@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Tile } from "@/components/Card";
 import { rooms, tesla, reseau, energie, calendrier } from "@/lib/mock-data";
-import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Sun, Moon, Flame, MapPin, Sparkles, Check } from "lucide-react";
+import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, Check } from "lucide-react";
 
 export const Route = createFileRoute("/_app/")({
   component: Dashboard,
@@ -63,11 +63,10 @@ function Dashboard() {
                 <Check className="h-3.5 w-3.5" />
               </span>
             </div>
-            <div className="mt-5 grid grid-cols-4 gap-3">
-              <Mini icon={<Droplet className="h-3.5 w-3.5" />} label="Eau" value={energie.current.eau} unit="m³" trend={energie.trend.eau} />
-              <Mini icon={<Sun className="h-3.5 w-3.5" />} label="Jour" value={energie.current.jour} unit="kWh" trend={energie.trend.jour} />
-              <Mini icon={<Moon className="h-3.5 w-3.5" />} label="Nuit" value={energie.current.nuit} unit="kWh" trend={energie.trend.nuit} />
-              <Mini icon={<Flame className="h-3.5 w-3.5" />} label="Mazout" value={energie.current.mazout} unit="L" trend={energie.trend.mazout} />
+            <div className="mt-5 grid grid-cols-3 gap-3">
+              <Mini icon={<Droplet className="h-3.5 w-3.5 anim-float" />} label="Eau" value={energie.current.eau} unit="m³" trend={energie.trend.eau} />
+              <Mini icon={<Zap className="h-3.5 w-3.5 anim-glow" />} label="Électricité" value={energie.current.jour + energie.current.nuit} unit="kWh" trend={energie.trend.jour + energie.trend.nuit} />
+              <Mini icon={<Flame className="h-3.5 w-3.5 anim-breathe" />} label="Mazout" value={energie.current.mazout} unit="L" trend={energie.trend.mazout} />
             </div>
           </Tile>
         )}
@@ -79,7 +78,7 @@ function Dashboard() {
               <p className="mt-1 font-serif text-xl">Poubelles {calendrier.poubelleToday.type}</p>
               <p className="text-sm opacity-80">À sortir avant {calendrier.poubelleToday.time}</p>
             </div>
-            <Trash2 className="h-6 w-6 opacity-70 anim-wiggle" />
+            <Trash2 className="h-6 w-6 opacity-70 anim-float anim-wiggle" />
           </div>
         </Tile>
 
@@ -127,7 +126,7 @@ function Dashboard() {
                 <MapPin className="h-3 w-3" />{tesla.location}
               </p>
             </div>
-            <Car className="h-5 w-5 opacity-60" />
+            <Car className="h-5 w-5 opacity-60 icon-hover anim-drift" />
           </div>
 
           <div className="mt-4 flex items-end gap-6">

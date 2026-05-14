@@ -21,8 +21,8 @@ export function TopNav() {
   return (
     <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2 text-foreground">
-          <span className="grid h-8 w-8 place-items-center rounded-full bg-primary/15 text-primary">
+        <Link to="/" className="group flex items-center gap-2 text-foreground">
+          <span className="grid h-8 w-8 place-items-center rounded-full bg-primary/15 text-primary transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110">
             <span className="font-serif text-lg leading-none">m</span>
           </span>
           <span className="font-serif text-lg tracking-tight">Maison</span>

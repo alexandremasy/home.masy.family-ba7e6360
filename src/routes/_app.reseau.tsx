@@ -17,7 +17,7 @@ function ReseauPage() {
         <p className="mt-1 text-muted-foreground">Connectivité, homelab et services</p>
       </div>
 
-      <Section title="Connectivité" action={<span className="inline-flex items-center gap-1.5 text-sm text-success"><Wifi className="h-4 w-4" />Tout en ligne</span>}>
+      <Section title="Connectivité" action={<span className="inline-flex items-center gap-1.5 text-sm text-success"><Wifi className="h-4 w-4 anim-glow" />Tout en ligne</span>}>
         <div className="grid gap-3 sm:grid-cols-2">
           <WifiCard ssid={reseau.wifi1.ssid} clients={reseau.wifi1.clients} on={reseau.wifi1.on} />
           <WifiCard ssid={reseau.wifi2.ssid} clients={reseau.wifi2.clients} on={reseau.wifi2.on} />
@@ -30,9 +30,9 @@ function ReseauPage() {
 
       <Section title="Homelab" action={<span className="text-xs text-muted-foreground">Uptime {reseau.homelab.uptimeDays} j</span>}>
         <div className="grid gap-3 sm:grid-cols-3">
-          <Meter icon={<Cpu className="h-4 w-4" />} label="CPU" value={reseau.homelab.cpu} />
-          <Meter icon={<MemoryStick className="h-4 w-4" />} label="Mémoire" value={reseau.homelab.memory} />
-          <Meter icon={<HardDrive className="h-4 w-4" />} label="Disque" value={reseau.homelab.disk} />
+          <Meter icon={<Cpu className="h-4 w-4 anim-drift" />} label="CPU" value={reseau.homelab.cpu} />
+          <Meter icon={<MemoryStick className="h-4 w-4 anim-float" />} label="Mémoire" value={reseau.homelab.memory} />
+          <Meter icon={<HardDrive className="h-4 w-4 anim-breathe" />} label="Disque" value={reseau.homelab.disk} />
         </div>
         <div className="mt-4 flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 text-sm">
           <span className="flex items-center gap-2"><Shield className="h-4 w-4 text-success" /> Twingate</span>
