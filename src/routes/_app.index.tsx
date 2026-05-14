@@ -368,7 +368,7 @@ function WeatherInline() {
           </div>
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg duration-300 data-[state=open]:slide-in-from-top-4 data-[state=closed]:slide-out-to-top-2 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95">
         <DialogHeader>
           <DialogTitle className="font-serif text-2xl">Météo · {m.location}</DialogTitle>
         </DialogHeader>
