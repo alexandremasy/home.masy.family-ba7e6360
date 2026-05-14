@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Tile } from "@/components/Card";
 import { RoomIcon } from "@/components/RoomIcon";
 import { rooms, tesla, reseau, energie, calendrier } from "@/lib/mock-data";
-import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, Check } from "lucide-react";
+import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus } from "lucide-react";
 
 export const Route = createFileRoute("/_app/")({
   component: Dashboard,
@@ -58,16 +58,25 @@ function Dashboard() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Énergie · ce mois</p>
-                <p className="mt-1 font-serif text-xl">À jour</p>
+                <p className="mt-1 font-serif text-xl">Vue d'ensemble</p>
               </div>
-              <span className="grid h-7 w-7 place-items-center rounded-full bg-success/15 text-success">
-                <Check className="h-3.5 w-3.5" />
-              </span>
+              {(() => {
+                const anyAlert = energie.electricity.status === "alert" || energie.water.status === "alert" || energie.oil.status === "alert";
+                return anyAlert ? (
+                  <span className="grid h-7 w-7 place-items-center rounded-full bg-warm/15 text-warm anim-pulse-ring relative">
+                    <AlertTriangle className="h-3.5 w-3.5" />
+                  </span>
+                ) : (
+                  <span className="grid h-7 w-7 place-items-center rounded-full bg-success/15 text-success">
+                    <Sparkles className="h-3.5 w-3.5" />
+                  </span>
+                );
+              })()}
             </div>
-            <div className="mt-5 grid grid-cols-3 gap-3">
-              <Mini icon={<Droplet className="h-3.5 w-3.5 anim-float" />} label="Eau" value={energie.current.eau} unit="m³" trend={energie.trend.eau} />
-              <Mini icon={<Zap className="h-3.5 w-3.5 anim-glow" />} label="Électricité" value={energie.current.jour + energie.current.nuit} unit="kWh" trend={energie.trend.jour + energie.trend.nuit} />
-              <Mini icon={<Flame className="h-3.5 w-3.5 anim-breathe" />} label="Mazout" value={energie.current.mazout} unit="L" trend={energie.trend.mazout} />
+            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <ElecBlock />
+              <WaterBlock />
+              <OilBlock />
             </div>
           </Tile>
         )}
