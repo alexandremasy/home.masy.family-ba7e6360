@@ -219,16 +219,100 @@ function NetRow({ label, on }: { label: string; on: boolean }) {
   );
 }
 
-function Mini({ icon, label, value, unit, trend }: { icon: React.ReactNode; label: string; value: number; unit: string; trend: number }) {
-  const better = trend < 0;
+function StatusDot({ status }: { status: "normal" | "alert" }) {
+  if (status === "alert") {
+    return (
+      <span className="relative inline-flex h-2 w-2">
+        <span className="absolute inline-flex h-full w-full rounded-full bg-warm/50 animate-ping" />
+        <span className="relative inline-flex h-2 w-2 rounded-full bg-warm" />
+      </span>
+    );
+  }
+  return <span className="h-2 w-2 rounded-full bg-success/70" />;
+}
+
+function BlockShell({
+  status, icon, label, children,
+}: { status: "normal" | "alert"; icon: React.ReactNode; label: string; children: React.ReactNode }) {
+  const alert = status === "alert";
   return (
-    <div className="rounded-xl bg-secondary/60 p-3">
-      <div className="flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{icon}{label}</div>
-      <p className="mt-1.5 font-serif text-lg leading-none">{value}<span className="ml-0.5 text-[10px] text-muted-foreground">{unit}</span></p>
-      <p className={"mt-1 text-[10px] " + (better ? "text-success" : "text-warm")}>
-        {better ? "↓" : "↑"} {Math.abs(trend)}
-      </p>
+    <div className={"rounded-xl p-3 transition-colors " + (alert ? "bg-warm/10 ring-1 ring-warm/30" : "bg-secondary/60")}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{icon}{label}</div>
+        <StatusDot status={status} />
+      </div>
+      {children}
     </div>
+  );
+}
+
+function TrendBadge({ trend, pct }: { trend: "up" | "down" | "stable"; pct?: number }) {
+  const Icon = trend === "down" ? TrendingDown : trend === "up" ? TrendingUp : Minus;
+  const tone = trend === "down" ? "text-success" : trend === "up" ? "text-warm" : "text-muted-foreground";
+  return (
+    <span className={"inline-flex items-center gap-0.5 text-[10px] " + tone}>
+      <Icon className="h-3 w-3" />
+      {pct !== undefined ? `${pct > 0 ? "+" : ""}${pct.toFixed(1)}%` : "stable"}
+    </span>
+  );
+}
+
+function ElecBlock() {
+  const e = energie.electricity;
+  return (
+    <BlockShell status={e.status} icon={<Zap className="h-3.5 w-3.5 anim-glow" />} label="Électricité">
+      <div className="mt-1.5 flex items-baseline gap-1">
+        <p className="font-serif text-lg leading-none">{e.dailyKWh}</p>
+        <span className="text-[10px] text-muted-foreground">kWh/j</span>
+      </div>
+      <div className="mt-1 flex items-center gap-1.5">
+        <TrendBadge trend={e.trend} pct={e.trendPct} />
+        <span className="text-[10px] text-muted-foreground">vs 90j</span>
+      </div>
+      <div className="mt-2 flex items-center justify-between gap-2 text-[10px] text-muted-foreground">
+        <span className="inline-flex items-center gap-1" title="Tarif jour">☀️ <span className="tabular-nums text-foreground/80">{e.dayTotal}</span></span>
+        <span className="inline-flex items-center gap-1" title="Tarif nuit">✨ <span className="tabular-nums text-foreground/80">{e.nightTotal}</span></span>
+        <span className="tabular-nums">{e.monthKWh} kWh</span>
+      </div>
+    </BlockShell>
+  );
+}
+
+function WaterBlock() {
+  const w = energie.water;
+  const label = w.trend === "stable" ? "stable" : w.trend === "down" ? "en baisse" : "en hausse";
+  return (
+    <BlockShell status={w.status} icon={<Droplet className="h-3.5 w-3.5 anim-float" />} label="Eau">
+      <div className="mt-1.5 flex items-baseline gap-1">
+        <p className="font-serif text-lg leading-none">{w.dailyM3}</p>
+        <span className="text-[10px] text-muted-foreground">m³/j</span>
+      </div>
+      <p className="mt-0.5 text-[10px] tabular-nums text-muted-foreground">{w.dailyL} L/jour</p>
+      <div className="mt-2 flex items-center gap-1">
+        <TrendBadge trend={w.trend} pct={w.trend === "stable" ? undefined : w.trendPct} />
+        <span className="text-[10px] text-muted-foreground">· {label}</span>
+      </div>
+    </BlockShell>
+  );
+}
+
+function OilBlock() {
+  const o = energie.oil;
+  const low = o.tankPct < 25;
+  return (
+    <BlockShell status={o.status} icon={<Flame className={"h-3.5 w-3.5 " + (low ? "anim-wiggle text-warm" : "anim-breathe")} />} label="Mazout">
+      <div className="mt-1.5 flex items-baseline gap-1">
+        <p className="font-serif text-lg leading-none">{o.tankPct}%</p>
+        <span className="text-[10px] tabular-nums text-muted-foreground">· {o.tankLiters} L</span>
+      </div>
+      <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-muted">
+        <div className={"h-full rounded-full transition-all duration-700 " + (low ? "bg-warm" : "bg-primary")} style={{ width: `${o.tankPct}%` }} />
+      </div>
+      <div className="mt-2 flex items-center justify-between text-[10px] text-muted-foreground">
+        <span className="tabular-nums">{o.last30dLiters} L / 30j</span>
+        <span className={"tabular-nums " + (low ? "font-medium text-warm" : "")}>~{o.autonomyDays} j</span>
+      </div>
+    </BlockShell>
   );
 }
 
