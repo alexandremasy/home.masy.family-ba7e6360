@@ -156,7 +156,3 @@ function Pill({ label, on }: { label: string; on: boolean }) {
     </div>
   );
 }
-
-import { Zap as _Z } from "lucide-react";
-void Zap;
-void _Z;
