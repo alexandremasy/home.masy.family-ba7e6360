@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Section } from "@/components/Card";
 import { rooms, roomDetails, type RoomKey } from "@/lib/mock-data";
 import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Film, Music, Battery, Droplet, Sparkles, Pause } from "lucide-react";
+import { RoomIcon } from "@/components/RoomIcon";
 
 export const Route = createFileRoute("/_app/room/$roomKey")({
   component: RoomPage,
@@ -38,15 +39,18 @@ function RoomPage() {
     <div className="space-y-6">
       <div className="px-1 anim-slide-up">
         <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">← Cockpit</Link>
-        <div className="mt-3 flex items-center gap-3">
-          <h1 className="font-serif text-4xl tracking-tight sm:text-5xl">{room.name}</h1>
-          {room.occupied && (
-            <span className="relative inline-flex h-3 w-3">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-success/40 animate-ping" />
-              <span className="relative inline-flex h-3 w-3 rounded-full bg-success" />
+          <div className="mt-3 flex items-center gap-3">
+            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/12 text-primary">
+              <RoomIcon icon={room.icon} className="h-6 w-6 anim-float" />
             </span>
-          )}
-        </div>
+            <h1 className="font-serif text-4xl tracking-tight sm:text-5xl">{room.name}</h1>
+            {room.occupied && (
+              <span className="relative inline-flex h-3 w-3">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-success/40 animate-ping" />
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-success" />
+              </span>
+            )}
+          </div>
         {typeof room.temperature === "number" && (
           <p className="mt-1 text-muted-foreground">Actuellement {room.temperature.toFixed(1)}°C</p>
         )}
