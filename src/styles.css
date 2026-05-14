@@ -250,4 +250,29 @@
   .stagger > *:nth-child(7) { animation-delay: 0.26s; }
   .stagger > *:nth-child(8) { animation-delay: 0.30s; }
   .stagger > *:nth-child(9) { animation-delay: 0.34s; }
+
+  /* Weather icon animations */
+  @keyframes sun-spin { to { transform: rotate(360deg); } }
+  @keyframes rain-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(2px); }
+  }
+  @keyframes storm-flicker {
+    0%, 60%, 100% { opacity: 1; filter: drop-shadow(0 0 0 transparent); }
+    65%, 75% { opacity: 0.55; filter: drop-shadow(0 0 6px color-mix(in oklab, var(--warm) 70%, transparent)); }
+    70% { opacity: 1; }
+  }
+  @keyframes snow-fall {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(2px) rotate(8deg); }
+  }
+  @keyframes fog-drift {
+    0%, 100% { transform: translateX(-1px); opacity: 0.85; }
+    50% { transform: translateX(1px); opacity: 1; }
+  }
+  .anim-sun { animation: sun-spin 18s linear infinite; transform-origin: center; }
+  .anim-rain { animation: rain-bob 1.6s ease-in-out infinite; }
+  .anim-storm { animation: storm-flicker 2.6s ease-in-out infinite; }
+  .anim-snow { animation: snow-fall 2.8s ease-in-out infinite; }
+  .anim-fog { animation: fog-drift 3.6s ease-in-out infinite; }
 }

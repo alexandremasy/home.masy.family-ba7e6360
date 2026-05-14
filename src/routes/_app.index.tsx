@@ -330,9 +330,20 @@ const weatherIconMap: Record<WeatherCond, typeof Sun> = {
   fog: CloudFog,
 };
 
-function WeatherIcon({ cond, className }: { cond: WeatherCond; className?: string }) {
+const weatherAnimMap: Record<WeatherCond, string> = {
+  sun: "anim-sun",
+  cloud: "anim-drift",
+  partly: "anim-float",
+  rain: "anim-rain",
+  storm: "anim-storm",
+  snow: "anim-snow",
+  fog: "anim-fog",
+};
+
+function WeatherIcon({ cond, className, animated = true }: { cond: WeatherCond; className?: string; animated?: boolean }) {
   const Icon = weatherIconMap[cond];
-  return <Icon className={className} />;
+  const anim = animated ? " " + weatherAnimMap[cond] : "";
+  return <Icon className={(className ?? "") + anim} />;
 }
 
 function WeatherInline() {
@@ -350,14 +361,14 @@ function WeatherInline() {
             <p className="mt-0.5">{m.location} · {m.minC}°/{m.maxC}°</p>
           </div>
           <div className="flex items-center gap-2">
-            <WeatherIcon cond={m.cond} className="h-7 w-7 text-foreground/80 anim-float" />
+            <WeatherIcon cond={m.cond} className="h-7 w-7 text-foreground/80" />
             <span className="font-serif text-3xl leading-none tracking-tight text-foreground">
               {m.tempC}<span className="text-base text-muted-foreground">°</span>
             </span>
           </div>
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg duration-300 data-[state=open]:slide-in-from-top-4 data-[state=closed]:slide-out-to-top-2 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95">
         <DialogHeader>
           <DialogTitle className="font-serif text-2xl">Météo · {m.location}</DialogTitle>
         </DialogHeader>
