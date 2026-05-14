@@ -118,7 +118,7 @@ function Dashboard() {
 
             {typeof room.temperature === "number" && (
               <p className="mt-6 font-serif text-4xl tracking-tight">
-                {room.temperature.toFixed(1)}<span className="text-base text-muted-foreground">°C</span>
+                <CountUp to={room.temperature} decimals={1} /><span className="text-base text-muted-foreground">°C</span>
               </p>
             )}
 
@@ -155,7 +155,7 @@ function Dashboard() {
           <div className="mt-4 flex items-end gap-6">
             <div>
               <div className="flex items-baseline gap-1">
-                <span className="font-serif text-5xl tracking-tight">{tesla.charge}</span>
+                <span className="font-serif text-5xl tracking-tight"><CountUp to={tesla.charge} /></span>
                 <span className="text-lg opacity-60">%</span>
               </div>
               <p className="text-xs opacity-60">{tesla.rangeKm} km · limite {tesla.chargeLimit}%</p>
