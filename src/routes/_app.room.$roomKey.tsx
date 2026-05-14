@@ -6,7 +6,7 @@ import { Lightbulb, Power, Thermometer, Volume2, VolumeX, Play, Film, Music, Bat
 
 export const Route = createFileRoute("/_app/room/$roomKey")({
   component: RoomPage,
-  loader: ({ params }) => {
+  loader: ({ params }: { params: { roomKey: string } }) => {
     const room = rooms.find((r) => r.key === params.roomKey as RoomKey);
     if (!room) throw notFound();
     return { room };
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_app/room/$roomKey")({
       <Link to="/" className="mt-4 inline-block text-primary underline">Retour</Link>
     </div>
   ),
-  head: ({ params }) => {
+  head: ({ params }: { params: { roomKey: string } }) => {
     const room = rooms.find((r) => r.key === params.roomKey as RoomKey);
     return { meta: [{ title: room ? `${room.name} — Maison` : "Pièce" }] };
   },
@@ -171,7 +171,7 @@ function RoomPage() {
   );
 }
 
-function MediaSection({ media }: { media: NonNullable<ReturnType<typeof roomDetails["salon"]["media"]>> }) {
+function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"]["media"]> }) {
   const [vol, setVol] = useState(media.volume);
   return (
     <Section title="Média" action={<span className="text-sm text-muted-foreground">{media.source}</span>}>

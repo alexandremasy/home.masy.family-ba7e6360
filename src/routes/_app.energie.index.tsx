@@ -37,10 +37,10 @@ function EnergiePage() {
             const heightPct = (total / max) * 100;
             const jourPct = (h.jour / total) * 100;
             return (
-              <div key={h.month} className="flex flex-1 flex-col items-center gap-2">
-                <div className="relative w-full max-w-[60px] flex-1 overflow-hidden rounded-t-xl bg-secondary" style={{ height: `${heightPct}%` }}>
-                  <div className="absolute bottom-0 w-full bg-warm" style={{ height: `${100 - jourPct}%` }} />
-                  <div className="absolute bottom-0 w-full bg-accent" style={{ height: `${100 - jourPct}%`, transform: `translateY(-100%)`, height: `${jourPct}%` }} />
+              <div key={h.month} className="flex h-full flex-1 flex-col items-center justify-end gap-2">
+                <div className="flex w-full max-w-[60px] flex-col overflow-hidden rounded-t-xl" style={{ height: `${heightPct}%` }}>
+                  <div className="w-full bg-accent" style={{ height: `${jourPct}%` }} />
+                  <div className="w-full bg-warm" style={{ height: `${100 - jourPct}%` }} />
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-muted-foreground">{h.month}</p>
