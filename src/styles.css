@@ -233,10 +233,12 @@
   .eq-bar { transform-origin: bottom; animation: equalizer 0.9s ease-in-out infinite; }
 
   /* Page transition: applied to <main> keyed by route */
-  .page-enter { animation: page-in 0.45s cubic-bezier(0.2,0.7,0.2,1) both; }
+  /* Page transition — Stripe-like: quick fade with a soft 8px upward glide.
+     No blur (felt heavy); ease-out + small scale gives the same calm reveal. */
+  .page-enter { animation: page-in 0.5s cubic-bezier(0.16,0.84,0.24,1) both; }
   @keyframes page-in {
-    from { opacity: 0; transform: translateY(6px); filter: blur(4px); }
-    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    from { opacity: 0; transform: translateY(8px) scale(0.995); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
   }
 
   /* Stagger helpers */
@@ -299,12 +301,13 @@
     opacity: 0;
     transition: opacity 0.35s ease;
     background: radial-gradient(
-      260px circle at var(--mx) var(--my),
-      color-mix(in oklab, var(--primary) 14%, transparent) 0%,
-      transparent 60%
+      280px circle at var(--mx) var(--my),
+      color-mix(in oklab, var(--primary) 22%, transparent) 0%,
+      transparent 65%
     );
-    mix-blend-mode: plus-lighter;
   }
+  /* In dark mode, lighten via screen blend so the glow reads on dark surfaces */
+  .dark .tile-spotlight__glow { mix-blend-mode: screen; }
   .tile-spotlight:hover .tile-spotlight__glow { opacity: 1; }
 
   /* ---- Animated mesh gradient ---- */
