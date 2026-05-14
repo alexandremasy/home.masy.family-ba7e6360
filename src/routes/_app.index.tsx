@@ -124,15 +124,17 @@ function Dashboard() {
 
         {/* PRIORITY 3 — Tesla (compact) */}
         <Tile span={3} to="/tesla" tone="dark">
-          <div className="flex items-start justify-between">
-            <div>
+          <div className="flex items-start gap-3">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-background/10 text-background">
+              <Car className="h-4.5 w-4.5 icon-hover anim-drift" />
+            </span>
+            <div className="flex-1">
               <p className="text-xs uppercase tracking-[0.18em] opacity-60">Tesla</p>
               <p className="mt-1 font-serif text-xl">{tesla.inGarage ? "Au garage" : "En déplacement"}</p>
               <p className="mt-0.5 inline-flex items-center gap-1 text-xs opacity-60">
                 <MapPin className="h-3 w-3" />{tesla.location}
               </p>
             </div>
-            <Car className="h-5 w-5 opacity-60 icon-hover anim-drift" />
           </div>
 
           <div className="mt-4 flex items-end gap-6">
@@ -161,15 +163,15 @@ function Dashboard() {
 
         {/* PRIORITY 3 — Réseau (compact) */}
         <Tile span={3} to="/reseau">
-          <div className="flex items-start justify-between">
-            <div>
+          <div className="flex items-start gap-3">
+            <span className="relative grid h-9 w-9 shrink-0 place-items-center rounded-full bg-success/15 text-success">
+              <Wifi className="h-4.5 w-4.5 icon-hover anim-glow" />
+              <span className="absolute inset-0 rounded-full ring-2 ring-success/30 anim-blink" />
+            </span>
+            <div className="flex-1">
               <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Réseau</p>
               <p className="mt-1 font-serif text-xl">Tout est en ligne</p>
             </div>
-            <span className="relative grid h-7 w-7 place-items-center rounded-full bg-success/15 text-success">
-              <Wifi className="h-3.5 w-3.5" />
-              <span className="absolute inset-0 rounded-full ring-2 ring-success/30 anim-blink" />
-            </span>
           </div>
           <div className="mt-4 space-y-1.5 text-sm">
             <NetRow label={reseau.wifi1.ssid} on={reseau.wifi1.on} />
