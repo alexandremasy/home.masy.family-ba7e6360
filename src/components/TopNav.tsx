@@ -1,19 +1,27 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { ThemeToggle } from "./ThemeToggle";
+import { RoomIcon } from "./RoomIcon";
+import { Car, Wifi, Zap } from "lucide-react";
+import type { ReactNode } from "react";
+import type { Room } from "@/lib/mock-data";
 
-const rooms = [
-  { to: "/room/salon", label: "Salon" },
-  { to: "/room/bureau", label: "Bureau" },
-  { to: "/room/cuisine", label: "Cuisine" },
-  { to: "/room/chambre", label: "Chambre" },
-  { to: "/room/escalier", label: "Escalier" },
-] as const;
+type NavItem = { to: string; label: string; icon: ReactNode };
 
-const domains = [
-  { to: "/tesla", label: "Tesla" },
-  { to: "/reseau", label: "Réseau" },
-  { to: "/energie", label: "Énergie" },
-] as const;
+const rooms: NavItem[] = [
+  { to: "/room/salon", label: "Salon", icon: <RoomIcon icon={"sofa" as Room["icon"]} className="h-3.5 w-3.5" /> },
+  { to: "/room/bureau", label: "Bureau", icon: <RoomIcon icon={"briefcase" as Room["icon"]} className="h-3.5 w-3.5" /> },
+  { to: "/room/cuisine", label: "Cuisine", icon: <RoomIcon icon={"utensils" as Room["icon"]} className="h-3.5 w-3.5" /> },
+  { to: "/room/chambre", label: "Chambre", icon: <RoomIcon icon={"bed" as Room["icon"]} className="h-3.5 w-3.5" /> },
+  { to: "/room/escalier", label: "Escalier", icon: <RoomIcon icon={"footprints" as Room["icon"]} className="h-3.5 w-3.5" /> },
+];
+
+const domains: NavItem[] = [
+  { to: "/tesla", label: "Tesla", icon: <Car className="h-3.5 w-3.5" /> },
+  { to: "/reseau", label: "Réseau", icon: <Wifi className="h-3.5 w-3.5" /> },
+  { to: "/energie", label: "Énergie", icon: <Zap className="h-3.5 w-3.5" /> },
+];
+
+const all = [...rooms, ...domains];
 
 export function TopNav() {
   const { pathname } = useLocation();
@@ -29,19 +37,20 @@ export function TopNav() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          {[...rooms, ...domains].map((item) => {
+          {all.map((item) => {
             const active = pathname.startsWith(item.to);
             return (
               <Link
                 key={item.to}
                 to={item.to}
                 className={
-                  "rounded-full px-3 py-1.5 text-sm transition-colors " +
+                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors " +
                   (active
                     ? "bg-foreground text-background"
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground")
                 }
               >
+                {item.icon}
                 {item.label}
               </Link>
             );
@@ -51,20 +60,20 @@ export function TopNav() {
         <ThemeToggle />
       </div>
 
-      {/* Mobile horizontal scroller */}
       <div className="md:hidden">
         <nav className="flex gap-1 overflow-x-auto px-4 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {[...rooms, ...domains].map((item) => {
+          {all.map((item) => {
             const active = pathname.startsWith(item.to);
             return (
               <Link
                 key={item.to}
                 to={item.to}
                 className={
-                  "shrink-0 rounded-full px-3 py-1.5 text-xs transition-colors " +
+                  "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition-colors " +
                   (active ? "bg-foreground text-background" : "bg-secondary text-muted-foreground")
                 }
               >
+                {item.icon}
                 {item.label}
               </Link>
             );

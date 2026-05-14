@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Tile } from "@/components/Card";
+import { RoomIcon } from "@/components/RoomIcon";
 import { rooms, tesla, reseau, energie, calendrier } from "@/lib/mock-data";
 import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, Check } from "lucide-react";
 
@@ -86,11 +87,16 @@ function Dashboard() {
         {visibleRooms.map((room) => (
           <Tile key={room.key} to={`/room/${room.key}`}>
             <div className="flex items-start justify-between">
-              <div>
-                <p className="font-serif text-xl">{room.name}</p>
-                {room.scene && room.scene !== "Off" && (
-                  <p className="mt-0.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">Scène · {room.scene}</p>
-                )}
+              <div className="flex items-start gap-3">
+                <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-accent/20 text-accent-foreground" : "bg-secondary text-muted-foreground")}>
+                  <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
+                </span>
+                <div>
+                  <p className="font-serif text-xl">{room.name}</p>
+                  {room.scene && room.scene !== "Off" && (
+                    <p className="mt-0.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">Scène · {room.scene}</p>
+                  )}
+                </div>
               </div>
               <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />
             </div>
