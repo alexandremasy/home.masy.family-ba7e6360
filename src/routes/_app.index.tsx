@@ -22,17 +22,17 @@ function Dashboard() {
 
   return (
     <div className="space-y-8">
-      <div className="px-1 anim-slide-up">
-        <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">{dateStr}</p>
-        <h1 className="mt-2 font-serif text-4xl tracking-tight text-foreground sm:text-5xl">
-          {greeting}.
-        </h1>
+      <div className="px-1 anim-slide-up flex items-end justify-between gap-4">
+        <div>
+          <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">{dateStr}</p>
+          <h1 className="mt-2 font-serif text-4xl tracking-tight text-foreground sm:text-5xl">
+            {greeting}.
+          </h1>
+        </div>
+        <WeatherInline />
       </div>
 
       <div className="grid-bento stagger">
-        {/* PRIORITY 0 — Météo */}
-        <WeatherTile />
-        <WeatherForecastTile />
 
         {/* PRIORITY 1 — Events */}
         {energie.monthlyDue ? (
