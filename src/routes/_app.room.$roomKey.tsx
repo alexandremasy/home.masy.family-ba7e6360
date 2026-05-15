@@ -25,9 +25,9 @@ function applianceIcon(name: string): LucideIcon {
 
 function sceneIcon(name: string): LucideIcon {
   const n = name.toLowerCase();
-  if (n.includes("medit")) return Moon;
+  if (n.includes("medit")) return Flower2;
   if (n.includes("cosy") || n.includes("cozy")) return Flame;
-  if (n.includes("moyen")) return SunMedium;
+  if (n.includes("moyen")) return SunDim;
   if (n.includes("lumineux")) return Sun;
   if (n.includes("nuit")) return Moon;
   if (n.includes("réveil") || n.includes("reveil")) return Sunrise;
