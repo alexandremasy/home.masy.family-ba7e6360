@@ -122,8 +122,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CursorFollower />
-      <Outlet />
+      <TooltipProvider delayDuration={150}>
+        <CursorFollower />
+        <Outlet />
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }
