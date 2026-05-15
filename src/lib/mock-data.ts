@@ -13,7 +13,7 @@ export interface Room {
 }
 
 export const rooms: Room[] = [
-  { key: "salon", name: "Salon", icon: "sofa", hasSensors: true, lightsOn: true, temperature: 21.4, climate: { on: true, setpoint: 21 }, scene: "Film", occupied: true },
+  { key: "salon", name: "Salon", icon: "sofa", hasSensors: true, lightsOn: true, scene: "Film", occupied: true },
   { key: "bureau", name: "Bureau", icon: "briefcase", hasSensors: true, lightsOn: true, temperature: 20.8, climate: { on: true, setpoint: 21 }, scene: "Travail", occupied: true },
   { key: "cuisine", name: "Cuisine", icon: "utensils", hasSensors: true, lightsOn: false, temperature: 22.1, climate: { on: false }, scene: "Off" },
   { key: "chambre", name: "Chambre", icon: "bed", hasSensors: true, lightsOn: false, temperature: 19.6, climate: { on: false }, scene: "Off" },
@@ -142,7 +142,6 @@ export const roomDetails: Record<RoomKey, {
 }> = {
   salon: {
     lights: { zones: [{ name: "Plafond", on: false }, { name: "Lampes", on: true }, { name: "TV bias", on: true }], scene: "Film", scenes: ["Film", "Lecture", "Soirée", "Off"], brightness: 35 },
-    climate: { mode: 21, current: 21.4 },
     media: { nowPlaying: "Linked", artist: "Bonobo", source: "Spotify", volume: 28 },
     devices: { batteries: [{ name: "Capteur canapé", level: 84 }, { name: "Télécommande", level: 62 }] },
   },
