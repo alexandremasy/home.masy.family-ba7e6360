@@ -176,7 +176,7 @@ function TeslaPage() {
         </div>
 
         {/* Quick actions */}
-        <div className="grid grid-cols-5 gap-1.5 stagger sm:gap-2">
+        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 stagger [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-5 sm:overflow-visible sm:px-0 sm:pb-0 [&::-webkit-scrollbar]:hidden">
           <ActionBtn icon={tesla.locked ? <Lock className="h-5 w-5" /> : <LockOpen className="h-5 w-5" />} label={tesla.locked ? "Verrouillée" : "Déverrouiller"} active={tesla.locked} />
           <ActionBtn icon={<Flame className="h-5 w-5" />} label="Préchauffage" />
           <ActionBtn icon={<Plug className="h-5 w-5" />} label="Port de charge" active={tesla.pluggedIn} />
@@ -402,14 +402,14 @@ function ActionBtn({ icon, label, active }: { icon: React.ReactNode; label: stri
     <button
       type="button"
       className={
-        "group flex flex-col items-center gap-1.5 rounded-xl border px-1.5 py-3 text-center transition-all duration-300 sm:px-3 sm:py-4 " +
+        "group flex min-h-20 min-w-20 shrink-0 flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-3 text-center transition-all duration-300 sm:min-w-0 sm:px-3 sm:py-4 " +
         (active
           ? "border-foreground bg-foreground text-background shadow-lift -translate-y-0.5"
           : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
       }
     >
       <span className={active ? "anim-breathe" : "opacity-60"}>{icon}</span>
-      <span className="text-[9px] uppercase tracking-[0.08em] leading-tight sm:text-[10px] sm:tracking-[0.14em]">{label}</span>
+      <span className="max-w-full break-words text-[8px] uppercase leading-tight tracking-[0.04em] sm:text-[10px] sm:tracking-[0.14em]">{label}</span>
     </button>
   );
 }
