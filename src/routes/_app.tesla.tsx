@@ -164,16 +164,14 @@ function TeslaPage() {
           <div className="absolute top-0 h-full w-px bg-foreground/40" style={{ left: `${tesla.chargeLimit}%` }} />
         </div>
 
-        {/* Quick actions — kept inside a card */}
-        <div className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft">
-          <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-            <ActionBtn icon={tesla.locked ? <Lock className="h-4 w-4" /> : <LockOpen className="h-4 w-4" />} label={tesla.locked ? "Verrouillée" : "Ouverte"} active={tesla.locked} />
-            <ActionBtn icon={<Flame className="h-4 w-4" />} label="Préchauffer" />
-            <ActionBtn icon={<Wind className="h-4 w-4" />} label="Climatiser" />
-            <ActionBtn icon={<Car className="h-4 w-4" />} label="Coffre" />
-            <ActionBtn icon={<Lightbulb className="h-4 w-4" />} label="Phares" />
-            <ActionBtn icon={<Volume2 className="h-4 w-4" />} label="Klaxon" />
-          </div>
+        {/* Quick actions */}
+        <div className="grid grid-cols-3 gap-2 stagger sm:grid-cols-6">
+          <ActionBtn icon={tesla.locked ? <Lock className="h-5 w-5" /> : <LockOpen className="h-5 w-5" />} label={tesla.locked ? "Verrouillée" : "Ouverte"} active={tesla.locked} />
+          <ActionBtn icon={<Flame className="h-5 w-5" />} label="Préchauffer" />
+          <ActionBtn icon={<Wind className="h-5 w-5" />} label="Climatiser" />
+          <ActionBtn icon={<Car className="h-5 w-5" />} label="Coffre" />
+          <ActionBtn icon={<Lightbulb className="h-5 w-5" />} label="Phares" />
+          <ActionBtn icon={<Volume2 className="h-5 w-5" />} label="Klaxon" />
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
@@ -345,16 +343,14 @@ function ActionBtn({ icon, label, active }: { icon: React.ReactNode; label: stri
     <button
       type="button"
       className={
-        "group flex flex-col items-center gap-1 rounded-xl border px-2 py-2.5 text-[10px] uppercase tracking-[0.12em] transition " +
+        "group flex flex-col items-center gap-1.5 rounded-xl border px-3 py-4 transition-all duration-300 " +
         (active
-          ? "border-primary/40 bg-primary/10 text-primary"
-          : "border-border/60 bg-card text-muted-foreground hover:border-foreground/30 hover:text-foreground")
+          ? "border-foreground bg-foreground text-background shadow-lift -translate-y-0.5"
+          : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
       }
     >
-      <span className={"inline-flex h-8 w-8 items-center justify-center rounded-lg " + (active ? "bg-primary/15" : "bg-secondary group-hover:bg-secondary/70")}>
-        {icon}
-      </span>
-      {label}
+      <span className={active ? "anim-breathe" : "opacity-60"}>{icon}</span>
+      <span className="text-[10px] uppercase tracking-[0.14em] leading-none">{label}</span>
     </button>
   );
 }
