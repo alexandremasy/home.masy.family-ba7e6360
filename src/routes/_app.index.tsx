@@ -249,7 +249,6 @@ export function Dashboard() {
 type SalonVariant = "spotify" | "netflix" | "idle";
 
 function SalonTile({ room, variant, label }: { room: typeof rooms[number]; variant: SalonVariant; label: string }) {
-  const playing = variant !== "idle";
   return (
     <Tile to={`/room/${room.key}`} className="relative">
       <span className="absolute right-3 top-3 rounded-full bg-foreground/5 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">{label}</span>
