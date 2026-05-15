@@ -74,10 +74,7 @@ function RoomPage() {
 
       {detail.lights && (
         <Section title="Luminosité" action={<span className="text-sm text-muted-foreground">Active · {scene}</span>}>
-          <div
-            className="grid gap-2 stagger"
-            style={{ gridTemplateColumns: `repeat(${detail.lights.scenes.length}, minmax(0, 1fr))` }}
-          >
+          <div className="grid grid-cols-2 gap-2 stagger sm:grid-cols-4">
             {detail.lights.scenes.map((s) => {
               const active = scene === s;
               return (
@@ -113,18 +110,15 @@ function RoomPage() {
 
           <div className="mt-6">
             <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Zones</p>
-            <div className="grid gap-2 sm:grid-cols-2">
+            <div className="flex flex-wrap gap-1.5">
               {zones.map((z, i) => (
                 <button
                   key={z.name}
                   onClick={() => setZones(zones.map((zz, idx) => idx === i ? { ...zz, on: !zz.on } : zz))}
-                  className={"flex items-center justify-between rounded-xl border px-3 py-3 text-sm transition-all " + (z.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card hover:border-border")}
+                  className={"inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all " + (z.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card text-muted-foreground hover:border-border hover:text-foreground")}
                 >
-                  <span className="flex items-center gap-2">
-                    <Lightbulb className={"h-3.5 w-3.5 " + (z.on ? "anim-breathe" : "opacity-50")} />
-                    {z.name}
-                  </span>
-                  <span className={"text-[10px] uppercase tracking-wider " + (z.on ? "opacity-70" : "text-muted-foreground")}>{z.on ? "On" : "Off"}</span>
+                  <Lightbulb className={"h-3 w-3 " + (z.on ? "anim-breathe" : "opacity-50")} />
+                  {z.name}
                 </button>
               ))}
             </div>
@@ -328,7 +322,7 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
 function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
   const [state, setState] = useState(items);
   return (
-    <div className="grid gap-2 sm:grid-cols-3">
+    <div className="grid gap-2 sm:grid-cols-2">
       {state.map((a, i) => (
         <button
           key={a.name}
