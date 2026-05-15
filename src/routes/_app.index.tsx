@@ -266,14 +266,22 @@ function RoomStatus({ on, occupied }: { on: boolean; occupied: boolean }) {
   );
 }
 
-function NetRow({ label, on }: { label: string; on: boolean }) {
+function NetBlock({
+  icon, label, value, sub, foot, ok = true,
+}: { icon: React.ReactNode; label: string; value: React.ReactNode; sub: string; foot: string; ok?: boolean }) {
   return (
-    <div className="flex items-center justify-between">
-      <span className="font-mono text-xs text-muted-foreground">{label}</span>
-      <span className={"flex items-center gap-1.5 text-xs " + (on ? "text-success" : "text-muted-foreground")}>
-        <span className={"h-1.5 w-1.5 rounded-full " + (on ? "bg-success" : "bg-muted-foreground/40")} />
-        {on ? "OK" : "Off"}
+    <div className="rounded-xl bg-secondary/60 p-2.5 sm:p-3 transition-colors min-w-0">
+      <div className="flex items-center justify-between gap-1">
+        <div className="flex min-w-0 items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] text-muted-foreground sm:text-xs">
+          {icon}<span className="truncate">{label}</span>
+        </div>
+        <span className={"h-2 w-2 rounded-full " + (ok ? "bg-success/70" : "bg-muted-foreground/40")} />
+      </div>
+      <span className="mt-2 flex items-baseline gap-1 font-serif text-lg leading-none sm:text-xl tabular-nums">
+        {value}
       </span>
+      <p className="mt-1.5 truncate text-[11px] text-muted-foreground">{sub}</p>
+      <p className="mt-1 truncate text-[10px] uppercase tracking-[0.12em] text-muted-foreground/80">{foot}</p>
     </div>
   );
 }
