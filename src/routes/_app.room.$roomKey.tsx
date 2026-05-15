@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
 import { rooms, roomDetails, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Film, Music, Battery, Droplet, Sparkles, Pause, Power, Radio, Tv, MusicIcon } from "lucide-react";
+import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon } from "lucide-react";
 import { RoomIcon } from "@/components/RoomIcon";
 
 export const Route = createFileRoute("/_app/room/$roomKey")({
