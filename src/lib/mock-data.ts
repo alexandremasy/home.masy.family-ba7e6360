@@ -47,7 +47,7 @@ export const tesla = {
 export const reseau = {
   wifi1: { ssid: "private.masy.family", on: true, clients: 14 },
   wifi2: { ssid: "masy.family", on: true, clients: 6 },
-  internet: { on: true, speedMbps: 450, latencyMs: 12 },
+  internet: { on: true, speedMbps: 450, latencyMs: 12, lastSpeedtest: { downMbps: 472, upMbps: 38, pingMs: 11, when: "il y a 2h" } },
   homelab: { cpu: 28, memory: 61, disk: 42, uptimeDays: 47 },
   twingate: true,
   services: [
