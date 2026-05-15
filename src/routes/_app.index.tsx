@@ -112,9 +112,9 @@ export function Dashboard() {
         {visibleRooms.flatMap((room) => {
           if (room.key === "salon") {
             return [
-              <SalonTile key="salon-v1" room={room} variant="spotify" label="V1 — minimal" />,
-              <SalonTile key="salon-v2" room={room} variant="netflix" label="V2 — cover" />,
-              <SalonTile key="salon-v3" room={room} variant="idle" label="V3 — vide" />,
+              <SalonTile key="salon-v1" room={room} variant="spotify" />,
+              <SalonTile key="salon-v2" room={room} variant="netflix" />,
+              <SalonTile key="salon-v3" room={room} variant="idle" />,
             ];
           }
           return [
@@ -247,10 +247,9 @@ export function Dashboard() {
 
 type SalonVariant = "spotify" | "netflix" | "idle";
 
-function SalonTile({ room, variant, label }: { room: typeof rooms[number]; variant: SalonVariant; label: string }) {
+function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: SalonVariant }) {
   return (
     <Tile to={`/room/${room.key}`} className="relative">
-      <span className="absolute right-3 top-3 rounded-full bg-foreground/5 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">{label}</span>
 
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">
