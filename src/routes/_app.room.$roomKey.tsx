@@ -322,7 +322,7 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
 function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
   const [state, setState] = useState(items);
   return (
-    <div className="grid gap-2 sm:grid-cols-3">
+    <div className="grid gap-2 sm:grid-cols-2">
       {state.map((a, i) => (
         <button
           key={a.name}
