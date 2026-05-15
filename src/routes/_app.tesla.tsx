@@ -98,66 +98,65 @@ function TeslaPage() {
       <section className="space-y-3">
         <h2 className="text-xs uppercase tracking-[0.18em] text-muted-foreground">État de la voiture</h2>
 
-        {/* Battery hero */}
-        <div className="relative overflow-hidden rounded-2xl bg-foreground p-6 text-background shadow-soft">
-          {/* decorative gradient */}
-          <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-primary/30 blur-3xl" />
-          <div className="relative flex items-start justify-between gap-4">
+        {/* Hero: car visual with surrounding stats */}
+        <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card p-5 shadow-soft">
+          {/* model + status header */}
+          <div className="mb-2 flex items-start justify-between gap-3">
             <div>
-              <p className="text-xs uppercase tracking-[0.18em] opacity-60">{tesla.model}</p>
-              <p className="mt-2 font-serif text-6xl tracking-tight leading-none">
-                {tesla.charge}
-                <span className="text-2xl opacity-60">%</span>
+              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{tesla.model}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                <MapPin className="mr-1 inline h-3 w-3" />
+                {tesla.location}
               </p>
-              <p className="mt-1 text-sm opacity-70">{tesla.rangeKm} km estimés</p>
             </div>
-            <div className="flex flex-col items-end gap-2 text-right">
-              <span className={"inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs " + (tesla.charging ? "bg-primary text-primary-foreground" : tesla.pluggedIn ? "bg-background/15" : "bg-background/10 opacity-70")}>
-                {tesla.charging ? <BatteryCharging className="h-3.5 w-3.5 anim-breathe" /> : <Plug className="h-3.5 w-3.5" />}
-                {tesla.charging ? "En charge" : tesla.pluggedIn ? "Branchée" : "Débranchée"}
-              </span>
-              <span className="text-[11px] opacity-60">Limite {tesla.chargeLimit}%</span>
-            </div>
+            <span className={"inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] " + (tesla.charging ? "bg-primary text-primary-foreground" : tesla.pluggedIn ? "bg-secondary text-foreground" : "bg-secondary/60 text-muted-foreground")}>
+              {tesla.charging ? <BatteryCharging className="h-3.5 w-3.5 anim-breathe" /> : <Plug className="h-3.5 w-3.5" />}
+              {tesla.charging ? "En charge" : tesla.pluggedIn ? "Branchée" : "Débranchée"}
+            </span>
           </div>
-          <div className="relative mt-5 h-2 w-full overflow-hidden rounded-full bg-background/15">
-            <div className="absolute left-0 top-0 h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${tesla.charge}%` }} />
-            <div className="absolute top-0 h-full w-px bg-background/40" style={{ left: `${tesla.chargeLimit}%` }} />
-          </div>
-        </div>
 
-        {/* Detailed state grid — more graphic */}
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6 stagger">
-          <GraphicTile
-            icon={<MapPin className="h-4 w-4" />}
-            label="Position"
-            value={tesla.inGarage ? "Garage" : "En route"}
-            sub={tesla.location}
-            tone={tesla.inGarage ? "neutral" : "accent"}
-          />
-          <TempTile interior={tesla.interior} exterior={tesla.exterior} />
-          <GraphicTile
-            icon={<Lock className="h-4 w-4" />}
-            label="Verrouillage"
-            value={tesla.locked ? "Verrouillée" : "Ouverte"}
-            sub={tesla.locked ? "Sécurisée" : "À vérifier"}
-            tone={tesla.locked ? "success" : "warm"}
-          />
-          <OdoTile km={tesla.odometerKm} />
-          <GraphicTile
-            icon={<Cpu className="h-4 w-4" />}
-            label="Logiciel"
-            value={tesla.software}
-            sub="à jour"
-            tone="neutral"
-          />
-          <GraphicTile
-            icon={<Wifi className="h-4 w-4" />}
-            label="Sync"
-            value={tesla.lastSeen}
-            sub="connectée"
-            tone="success"
-            pulse
-          />
+          {/* Car visual with floating stats */}
+          <div className="relative mx-auto grid grid-cols-[1fr_auto_1fr] items-center gap-4 py-2">
+            {/* Left stats */}
+            <div className="flex flex-col items-end gap-3 text-right">
+              <FloatStat label="Charge" value={`${tesla.charge}%`} accent />
+              <FloatStat label="Autonomie" value={`${tesla.rangeKm} km`} />
+              <FloatStat label="Intérieur" value={`${tesla.interior}°`} icon={<Flame className="h-3 w-3" />} />
+            </div>
+
+            {/* Tesla SVG */}
+            <TeslaCar charging={tesla.charging} locked={tesla.locked} />
+
+            {/* Right stats */}
+            <div className="flex flex-col items-start gap-3">
+              <FloatStat label="Limite" value={`${tesla.chargeLimit}%`} />
+              <FloatStat label="Odomètre" value={`${(tesla.odometerKm / 1000).toFixed(1)}k km`} icon={<Gauge className="h-3 w-3" />} />
+              <FloatStat label="Extérieur" value={`${tesla.exterior}°`} icon={<Snowflake className="h-3 w-3" />} />
+            </div>
+          </div>
+
+          {/* Charge bar */}
+          <div className="relative mx-auto mt-2 h-1.5 w-full max-w-md overflow-hidden rounded-full bg-secondary">
+            <div className="absolute left-0 top-0 h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${tesla.charge}%` }} />
+            <div className="absolute top-0 h-full w-px bg-foreground/40" style={{ left: `${tesla.chargeLimit}%` }} />
+          </div>
+
+          {/* Quick actions */}
+          <div className="mt-5 grid grid-cols-3 gap-2 sm:grid-cols-6">
+            <ActionBtn icon={tesla.locked ? <Lock className="h-4 w-4" /> : <LockOpen className="h-4 w-4" />} label={tesla.locked ? "Verrouillée" : "Ouverte"} active={tesla.locked} />
+            <ActionBtn icon={<Flame className="h-4 w-4" />} label="Préchauffer" />
+            <ActionBtn icon={<Wind className="h-4 w-4" />} label="Climatiser" />
+            <ActionBtn icon={<Car className="h-4 w-4" />} label="Coffre" />
+            <ActionBtn icon={<Lightbulb className="h-4 w-4" />} label="Phares" />
+            <ActionBtn icon={<Volume2 className="h-4 w-4" />} label="Klaxon" />
+          </div>
+
+          {/* Footer meta */}
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-border/60 pt-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5"><Wifi className="h-3 w-3" /> Sync {tesla.lastSeen}</span>
+            <span>Logiciel {tesla.software}</span>
+            <span>{tesla.inGarage ? "Au garage" : "Hors garage"}</span>
+          </div>
         </div>
       </section>
 
