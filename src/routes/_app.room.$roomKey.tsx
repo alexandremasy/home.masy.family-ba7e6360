@@ -235,7 +235,24 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
   const active = sources.find((s) => s.key === source)!;
 
   return (
-    <Section title="Média" action={<span className="text-sm text-muted-foreground">{active.label}</span>}>
+    <Section
+      title="Média"
+      action={
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <span>{active.label}</span>
+          {source !== "off" && (
+            <button
+              onClick={() => { setSource("off"); setPlaying(false); }}
+              className="grid h-7 w-7 place-items-center rounded-full border border-border/60 bg-card text-muted-foreground transition-colors hover:text-foreground hover:border-border"
+              aria-label="Couper le média"
+              title="Couper"
+            >
+              <Power className="h-3 w-3" />
+            </button>
+          )}
+        </div>
+      }
+    >
       <div
         className="relative overflow-hidden rounded-2xl border border-border/60 p-5"
         style={{
