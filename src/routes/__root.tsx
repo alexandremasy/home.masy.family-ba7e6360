@@ -7,6 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 import appCss from "../styles.css?url";
 import { CursorFollower } from "@/components/CursorFollower";
@@ -121,8 +122,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CursorFollower />
-      <Outlet />
+      <TooltipProvider delayDuration={150}>
+        <CursorFollower />
+        <Outlet />
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }

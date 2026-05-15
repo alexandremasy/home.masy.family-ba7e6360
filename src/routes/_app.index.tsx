@@ -5,6 +5,7 @@ import { RoomIcon } from "@/components/RoomIcon";
 import { rooms, tesla, reseau, energie, calendrier, meteo, type WeatherCond } from "@/lib/mock-data";
 import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const Route = createFileRoute("/_app/")({
   // Dashboard is rendered by the parent _app layout (so it stays visible
@@ -239,13 +240,13 @@ function StatusDot({ status }: { status: "normal" | "alert" }) {
 }
 
 function BlockShell({
-  status, icon, label, children,
-}: { status: "normal" | "alert"; icon: React.ReactNode; label: string; children: React.ReactNode }) {
+  status, icon, label, children, tooltip,
+}: { status: "normal" | "alert"; icon: React.ReactNode; label: string; children: React.ReactNode; tooltip: string }) {
   const alert = status === "alert";
-  return (
-    <div className={"rounded-xl p-2 sm:p-3 transition-colors min-w-0 " + (alert ? "bg-warm/10 ring-1 ring-warm/30" : "bg-secondary/60")}>
+  const inner = (
+    <div className={"rounded-xl p-2.5 sm:p-3 transition-colors min-w-0 cursor-help " + (alert ? "bg-warm/10 ring-1 ring-warm/30" : "bg-secondary/60")}>
       <div className="flex items-center justify-between gap-1">
-        <div className="flex min-w-0 items-center gap-1 text-[9px] uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px] sm:tracking-[0.14em]">
+        <div className="flex min-w-0 items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] text-muted-foreground sm:text-xs">
           {icon}<span className="truncate">{label}</span>
         </div>
         <StatusDot status={status} />
@@ -253,14 +254,20 @@ function BlockShell({
       {children}
     </div>
   );
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{inner}</TooltipTrigger>
+      <TooltipContent side="top" className="max-w-[220px] text-xs leading-snug">{tooltip}</TooltipContent>
+    </Tooltip>
+  );
 }
 
 function TrendBadge({ trend, pct, hidePct }: { trend: "up" | "down" | "stable"; pct?: number; hidePct?: boolean }) {
   const Icon = trend === "down" ? TrendingDown : trend === "up" ? TrendingUp : Minus;
   const tone = trend === "down" ? "text-success" : trend === "up" ? "text-warm" : "text-muted-foreground";
   return (
-    <span className={"inline-flex items-center gap-0.5 text-[10px] " + tone}>
-      <Icon className="h-3 w-3" />
+    <span className={"inline-flex items-center gap-0.5 text-xs " + tone}>
+      <Icon className="h-3.5 w-3.5" />
       {!hidePct && (pct !== undefined ? `${pct > 0 ? "+" : ""}${pct.toFixed(1)}%` : "stable")}
     </span>
   );
@@ -269,18 +276,23 @@ function TrendBadge({ trend, pct, hidePct }: { trend: "up" | "down" | "stable"; 
 function ElecBlock() {
   const e = energie.electricity;
   return (
-    <BlockShell status={e.status} icon={<Zap className="h-3 w-3 anim-glow sm:h-3.5 sm:w-3.5" />} label="Élec.">
-      <div className="mt-1.5 flex items-baseline gap-1">
-        <p className="font-serif text-base leading-none sm:text-lg">{e.dailyKWh}</p>
-        <span className="text-[9px] text-muted-foreground sm:text-[10px]">kWh/j</span>
+    <BlockShell
+      status={e.status}
+      icon={<Zap className="h-3.5 w-3.5 anim-glow sm:h-4 sm:w-4" />}
+      label="Élec."
+      tooltip={`Consommation électrique du jour. Variation comparée à la moyenne des 90 derniers jours. Détail jour/nuit et total mensuel : ${e.dayTotal} jour, ${e.nightTotal} nuit, ${e.monthKWh} kWh sur le mois.`}
+    >
+      <div className="mt-2 flex items-baseline gap-1">
+        <p className="font-serif text-lg leading-none sm:text-xl">{e.dailyKWh}</p>
+        <span className="text-xs text-muted-foreground">kWh/j</span>
       </div>
-      <div className="mt-1 flex items-center gap-1">
+      <div className="mt-1.5 flex items-center gap-1.5">
         <TrendBadge trend={e.trend} pct={e.trendPct} />
-        <span className="hidden text-[10px] text-muted-foreground sm:inline">vs 90j</span>
+        <span className="hidden text-xs text-muted-foreground sm:inline">vs 90j</span>
       </div>
-      <div className="mt-2 flex flex-col gap-0.5 text-[10px] text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:gap-2">
-        <span className="inline-flex items-center gap-1" title="Tarif jour">☀️<span className="tabular-nums text-foreground/80">{e.dayTotal}</span></span>
-        <span className="inline-flex items-center gap-1" title="Tarif nuit">✨<span className="tabular-nums text-foreground/80">{e.nightTotal}</span></span>
+      <div className="mt-2 flex flex-col gap-1 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:gap-2">
+        <span className="inline-flex items-center gap-1">☀️<span className="tabular-nums text-foreground/80">{e.dayTotal}</span></span>
+        <span className="inline-flex items-center gap-1">✨<span className="tabular-nums text-foreground/80">{e.nightTotal}</span></span>
         <span className="hidden tabular-nums sm:inline">{e.monthKWh} kWh</span>
       </div>
     </BlockShell>
@@ -291,15 +303,20 @@ function WaterBlock() {
   const w = energie.water;
   const label = w.trend === "stable" ? "stable" : w.trend === "down" ? "baisse" : "hausse";
   return (
-    <BlockShell status={w.status} icon={<Droplet className="h-3 w-3 anim-float sm:h-3.5 sm:w-3.5" />} label="Eau">
-      <div className="mt-1.5 flex items-baseline gap-1">
-        <p className="font-serif text-base leading-none sm:text-lg">{w.dailyM3}</p>
-        <span className="text-[9px] text-muted-foreground sm:text-[10px]">m³/j</span>
+    <BlockShell
+      status={w.status}
+      icon={<Droplet className="h-3.5 w-3.5 anim-float sm:h-4 sm:w-4" />}
+      label="Eau"
+      tooltip={`Consommation d'eau du jour : ${w.dailyM3} m³ (${w.dailyL} L). Tendance ${label} comparée à la période précédente.`}
+    >
+      <div className="mt-2 flex items-baseline gap-1">
+        <p className="font-serif text-lg leading-none sm:text-xl">{w.dailyM3}</p>
+        <span className="text-xs text-muted-foreground">m³/j</span>
       </div>
-      <p className="mt-0.5 text-[10px] tabular-nums text-muted-foreground">{w.dailyL} L</p>
-      <div className="mt-2 flex items-center gap-1">
+      <p className="mt-1 text-xs tabular-nums text-muted-foreground">{w.dailyL} L</p>
+      <div className="mt-2 flex items-center gap-1.5">
         <TrendBadge trend={w.trend} pct={w.trend === "stable" ? undefined : w.trendPct} hidePct />
-        <span className="text-[10px] text-muted-foreground">{label}</span>
+        <span className="text-xs text-muted-foreground">{label}</span>
       </div>
     </BlockShell>
   );
@@ -309,15 +326,20 @@ function OilBlock() {
   const o = energie.oil;
   const low = o.tankPct < 25;
   return (
-    <BlockShell status={o.status} icon={<Flame className={"h-3 w-3 sm:h-3.5 sm:w-3.5 " + (low ? "anim-wiggle text-warm" : "anim-breathe")} />} label="Mazout">
-      <div className="mt-1.5 flex items-baseline gap-1">
-        <p className="font-serif text-base leading-none sm:text-lg">{o.tankPct}<span className="text-[10px] text-muted-foreground">%</span></p>
-        <span className="hidden text-[10px] tabular-nums text-muted-foreground sm:inline">· {o.tankLiters} L</span>
+    <BlockShell
+      status={o.status}
+      icon={<Flame className={"h-3.5 w-3.5 sm:h-4 sm:w-4 " + (low ? "anim-wiggle text-warm" : "anim-breathe")} />}
+      label="Mazout"
+      tooltip={`Niveau de la cuve à mazout : ${o.tankPct}% (${o.tankLiters} L). Consommation des 30 derniers jours : ${o.last30dLiters} L. Autonomie estimée à ce rythme : environ ${o.autonomyDays} jours.`}
+    >
+      <div className="mt-2 flex items-baseline gap-1">
+        <p className="font-serif text-lg leading-none sm:text-xl">{o.tankPct}<span className="text-xs text-muted-foreground">%</span></p>
+        <span className="hidden text-xs tabular-nums text-muted-foreground sm:inline">· {o.tankLiters} L</span>
       </div>
-      <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-muted">
+      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
         <div className={"h-full rounded-full transition-all duration-700 " + (low ? "bg-warm" : "bg-primary")} style={{ width: `${o.tankPct}%` }} />
       </div>
-      <div className="mt-2 flex flex-col gap-0.5 text-[10px] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-2 flex flex-col gap-1 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
         <span className="tabular-nums">{o.last30dLiters} L/30j</span>
         <span className={"tabular-nums " + (low ? "font-medium text-warm" : "")}>~{o.autonomyDays} j</span>
       </div>
