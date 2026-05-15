@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Section } from "@/components/Card";
+import { PageHeader } from "@/components/PageHeader";
 import { energie } from "@/lib/mock-data";
 import { ArrowRight, Droplet, Zap, Flame } from "lucide-react";
 
