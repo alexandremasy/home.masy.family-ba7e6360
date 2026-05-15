@@ -12,11 +12,7 @@ export const Route = createFileRoute("/_app/reseau")({
 function ReseauPage() {
   return (
     <div className="space-y-6">
-      <div className="px-1 anim-slide-up">
-        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">← Cockpit</Link>
-        <h1 className="mt-3 font-serif text-4xl tracking-tight sm:text-5xl">Réseau</h1>
-        <p className="mt-1 text-muted-foreground">Connectivité, homelab et services</p>
-      </div>
+      <PageHeader title="Réseau" subtitle="Connectivité, homelab et services" />
 
       <Section title="Connectivité" action={<span className="inline-flex items-center gap-1.5 text-sm text-success"><Wifi className="h-4 w-4 anim-glow" />Tout en ligne</span>}>
         <div className="grid gap-3 sm:grid-cols-2">
