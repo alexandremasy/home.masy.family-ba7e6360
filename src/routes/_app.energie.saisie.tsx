@@ -25,7 +25,7 @@ const schema = z
     eau: numField("Eau", 100000),
     jour: numField("Électricité jour", 1000000),
     nuit: numField("Électricité nuit", 1000000),
-    mazout: numField("Mazout", 10000),
+    mazout: numField("Mazout", 100),
     date: z
       .string()
       .nonempty({ message: "La date est requise" })
