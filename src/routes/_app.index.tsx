@@ -100,7 +100,7 @@ export function Dashboard() {
         )}
 
         <Tile span={3} tone="accent" className="relative overflow-hidden">
-          <PMCBag className="pointer-events-none absolute -right-3 -top-2 h-[140%] w-auto opacity-95" />
+          <PMCBag className="pointer-events-none absolute -right-2 -top-3 h-[125%] w-auto" />
           <div className="relative max-w-[60%]">
             <p className="text-xs uppercase tracking-[0.18em] opacity-70">Aujourd'hui</p>
             <p className="mt-1 font-serif text-xl">Poubelles {calendrier.poubelleToday.type}</p>
