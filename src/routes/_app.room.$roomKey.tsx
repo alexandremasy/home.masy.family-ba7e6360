@@ -217,77 +217,122 @@ function RoomPage() {
 }
 
 function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"]["media"]> }) {
-  const [vol, setVol] = useState(media.volume);
-  const [playing, setPlaying] = useState(true);
+  const [source, setSource] = useState(media.source);
+  const [playing, setPlaying] = useState(source !== "off");
+
+  const sources = [
+    { key: "spotify" as const, label: "Spotify", Icon: MusicIcon, tint: "oklch(0.72 0.17 150)" },
+    { key: "netflix" as const, label: "Netflix", Icon: Tv, tint: "oklch(0.58 0.22 25)" },
+    { key: "off" as const, label: "Éteint", Icon: Power, tint: "oklch(0.55 0 0)" },
+  ];
+  const active = sources.find((s) => s.key === source)!;
 
   return (
-    <Section title="Média" action={<span className="text-sm text-muted-foreground">{media.source}</span>}>
-      <div className="relative overflow-hidden rounded-2xl bg-foreground p-6 text-background">
-        <div className="absolute inset-0 opacity-20" style={{
-          background: "radial-gradient(circle at 20% 20%, var(--color-primary) 0%, transparent 40%), radial-gradient(circle at 80% 80%, var(--color-warm) 0%, transparent 40%)",
-        }} />
-        <div className="relative flex items-center gap-5">
-          {/* Album art-ish disc */}
-          <div className={"grid h-20 w-20 shrink-0 place-items-center rounded-full bg-gradient-to-br from-primary to-warm shadow-lift " + (playing ? "animate-spin [animation-duration:8s]" : "")}>
-            <span className="grid h-3 w-3 place-items-center rounded-full bg-background" />
+    <Section title="Média" action={<span className="text-sm text-muted-foreground">{active.label}</span>}>
+      <div
+        className="relative overflow-hidden rounded-2xl border border-border/60 p-5"
+        style={{
+          background: source === "off"
+            ? "linear-gradient(135deg, color-mix(in oklab, var(--card) 92%, transparent), var(--card))"
+            : `linear-gradient(135deg, color-mix(in oklab, ${active.tint} 22%, var(--card)), var(--card) 70%)`,
+        }}
+      >
+        {source === "spotify" && (
+          <div className="flex items-center gap-4">
+            <div className={"grid h-16 w-16 shrink-0 place-items-center rounded-2xl shadow-lift " + (playing ? "animate-spin [animation-duration:10s]" : "")}
+                 style={{ background: `radial-gradient(circle at 30% 30%, ${active.tint}, oklch(0.25 0.04 160))` }}>
+              <span className="h-2.5 w-2.5 rounded-full bg-background" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Spotify · en lecture</p>
+              <p className="mt-0.5 truncate font-serif text-xl">{media.nowPlaying ?? "—"}</p>
+              {media.artist && <p className="truncate text-sm text-muted-foreground">{media.artist}</p>}
+              <div className="mt-2 flex h-3 items-end gap-0.5">
+                {[0.6, 0.9, 0.4, 1, 0.7, 0.5, 0.85].map((h, i) => (
+                  <span key={i} className={"w-1 rounded-sm bg-foreground/70 " + (playing ? "eq-bar" : "")}
+                        style={{ height: `${h * 100}%`, animationDelay: `${i * 0.1}s` }} />
+                ))}
+              </div>
+            </div>
+            <button onClick={() => setPlaying(!playing)}
+                    className="grid h-11 w-11 place-items-center rounded-full bg-foreground text-background transition-transform hover:scale-105 active:scale-95"
+                    aria-label={playing ? "Pause" : "Lecture"}>
+              {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            </button>
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-xs uppercase tracking-[0.18em] opacity-60">En lecture</p>
-            <p className="mt-0.5 truncate font-serif text-xl">{media.nowPlaying}</p>
-            {media.artist && <p className="text-sm opacity-70">{media.artist}</p>}
-
-            {/* Equalizer */}
-            <div className="mt-3 flex h-3 items-end gap-0.5">
-              {[0.6, 0.9, 0.4, 1, 0.7, 0.5, 0.85].map((h, i) => (
-                <span
-                  key={i}
-                  className={"w-1 rounded-sm bg-primary " + (playing ? "eq-bar" : "")}
-                  style={{ height: `${h * 100}%`, animationDelay: `${i * 0.1}s` }}
-                />
-              ))}
+        )}
+        {source === "netflix" && (
+          <div className="flex items-center gap-4">
+            <div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl shadow-lift"
+                 style={{ background: `linear-gradient(135deg, ${active.tint}, oklch(0.25 0.08 25))` }}>
+              <Tv className="h-6 w-6 text-background" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Netflix</p>
+              <p className="mt-0.5 truncate font-serif text-xl">Téléviseur allumé</p>
+              <p className="truncate text-sm text-muted-foreground">Source HDMI · Apple TV</p>
+            </div>
+            <button onClick={() => setPlaying(!playing)}
+                    className="grid h-11 w-11 place-items-center rounded-full bg-foreground text-background transition-transform hover:scale-105 active:scale-95"
+                    aria-label={playing ? "Pause" : "Lecture"}>
+              {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            </button>
+          </div>
+        )}
+        {source === "off" && (
+          <div className="flex items-center gap-4 py-2">
+            <div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-muted">
+              <Power className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Aucun média</p>
+              <p className="mt-0.5 font-serif text-xl">Tout est silencieux</p>
+              <p className="text-sm text-muted-foreground">Choisis une source pour démarrer.</p>
             </div>
           </div>
-          <button
-            onClick={() => setPlaying(!playing)}
-            className="grid h-12 w-12 place-items-center rounded-full bg-background text-foreground transition-transform hover:scale-105 active:scale-95"
-            aria-label={playing ? "Pause" : "Lecture"}
-          >
-            {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-          </button>
-        </div>
+        )}
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-2">
-        <ActionButton icon={<Music className="h-4 w-4" />} label="Musique" />
-        <ActionButton icon={<Play className="h-4 w-4" />} label="Netflix" />
-        <ActionButton icon={<Film className="h-4 w-4" />} label="Cinéma" />
-      </div>
-
-      <div className="mt-5">
-        <div className="mb-2 flex justify-between text-xs uppercase tracking-[0.18em] text-muted-foreground">
-          <span>Volume</span><span>{vol}</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <button onClick={() => setVol(Math.max(0, vol - 5))} className="grid h-9 w-9 place-items-center rounded-full bg-secondary transition-transform active:scale-90"><VolumeX className="h-4 w-4" /></button>
-          <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
-            <div className="h-full rounded-full bg-primary transition-all duration-300" style={{ width: `${vol}%` }} />
-          </div>
-          <button onClick={() => setVol(Math.min(100, vol + 5))} className="grid h-9 w-9 place-items-center rounded-full bg-secondary transition-transform active:scale-90"><Volume2 className="h-4 w-4" /></button>
-        </div>
+      <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <ActionButton icon={<Radio className="h-4 w-4" />} label="Musiq3" onClick={() => { setSource("spotify"); setPlaying(true); }} />
+        <ActionButton icon={<Tv className="h-4 w-4" />} label="Netflix" onClick={() => { setSource("netflix"); setPlaying(true); }} />
+        <ActionButton icon={<VolumeX className="h-4 w-4" />} label="Volume −" />
+        <ActionButton icon={<Volume2 className="h-4 w-4" />} label="Volume +" />
       </div>
     </Section>
   );
 }
 
-function ActionButton({ icon, label }: { icon: React.ReactNode; label: string }) {
+function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
+  const [state, setState] = useState(items);
+  return (
+    <div className="grid gap-2 sm:grid-cols-3">
+      {state.map((a, i) => (
+        <button
+          key={a.name}
+          onClick={() => setState(state.map((s, idx) => idx === i ? { ...s, on: !s.on } : s))}
+          className={"flex items-center justify-between rounded-xl border px-3 py-3 text-sm transition-all " + (a.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card hover:border-border")}
+        >
+          <span className="flex items-center gap-2">
+            <Power className={"h-3.5 w-3.5 " + (a.on ? "anim-breathe" : "opacity-50")} />
+            {a.name}
+          </span>
+          <span className={"text-[10px] uppercase tracking-wider " + (a.on ? "opacity-70" : "text-muted-foreground")}>{a.on ? "On" : "Off"}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ActionButton({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick?: () => void }) {
   const [triggered, setTriggered] = useState(false);
   return (
     <button
-      onClick={() => { setTriggered(true); setTimeout(() => setTriggered(false), 1200); }}
+      onClick={() => { onClick?.(); setTriggered(true); setTimeout(() => setTriggered(false), 800); }}
       className={"flex flex-col items-center gap-1.5 rounded-xl border border-border/60 p-3 text-sm transition-all duration-300 " + (triggered ? "bg-primary text-primary-foreground -translate-y-0.5" : "bg-card hover:-translate-y-0.5 hover:border-border")}
     >
       {icon}
-      <span>{triggered ? "Lancé" : label}</span>
+      <span>{label}</span>
     </button>
   );
 }
