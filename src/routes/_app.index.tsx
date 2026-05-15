@@ -69,14 +69,23 @@ export function Dashboard() {
                 <p className="mt-1 font-serif text-xl">Vue d'ensemble</p>
               </div>
               {(() => {
-                const anyAlert = energie.electricity.status === "alert" || energie.water.status === "alert" || energie.oil.status === "alert";
+                const alerts = [
+                  energie.electricity.status === "alert" && "élec.",
+                  energie.water.status === "alert" && "eau",
+                  energie.oil.status === "alert" && "mazout",
+                ].filter(Boolean) as string[];
+                const anyAlert = alerts.length > 0;
                 return anyAlert ? (
-                  <span className="grid h-7 w-7 place-items-center rounded-full bg-warm/15 text-warm anim-pulse-ring relative">
-                    <AlertTriangle className="h-3.5 w-3.5" />
+                  <span className="inline-flex items-center gap-2 rounded-full bg-warm/15 px-2.5 py-1 text-warm">
+                    <span className="relative grid h-5 w-5 place-items-center anim-pulse-ring">
+                      <AlertTriangle className="h-3.5 w-3.5" />
+                    </span>
+                    <span className="text-xs font-medium tracking-tight">Attention · {alerts.join(", ")}</span>
                   </span>
                 ) : (
-                  <span className="grid h-7 w-7 place-items-center rounded-full bg-success/15 text-success">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-success/15 px-2.5 py-1 text-success">
                     <Sparkles className="h-3.5 w-3.5" />
+                    <span className="text-xs font-medium tracking-tight">Tout va bien</span>
                   </span>
                 );
               })()}
