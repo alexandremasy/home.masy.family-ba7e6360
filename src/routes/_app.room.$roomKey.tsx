@@ -36,6 +36,14 @@ function sceneIcon(name: string): LucideIcon {
   if (n.includes("dîner") || n.includes("diner")) return UtensilsCrossed;
   if (n.includes("cuisine")) return ChefHat;
   if (n === "off") return Power;
+  const pct = parseInt(n, 10);
+  if (!Number.isNaN(pct)) {
+    if (pct <= 10) return Moon;
+    if (pct <= 25) return Flame;
+    if (pct <= 50) return SunDim;
+    if (pct <= 75) return SunMedium;
+    return Sun;
+  }
   return Sparkles;
 }
 
@@ -123,7 +131,10 @@ function RoomPage() {
 
       {detail.lights && (
         <Section title="Luminosité" action={<span className="text-sm text-muted-foreground">Active · {scene}</span>}>
-          <div className="grid grid-cols-2 gap-2 stagger sm:grid-cols-4">
+          <div
+            className="grid gap-2 stagger"
+            style={{ gridTemplateColumns: `repeat(${detail.lights.scenes.length}, minmax(0, 1fr))` }}
+          >
             {detail.lights.scenes.map((s) => {
               const active = scene === s;
               const Icon = sceneIcon(s);
