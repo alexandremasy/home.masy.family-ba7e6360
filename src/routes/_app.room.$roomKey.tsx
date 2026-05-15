@@ -54,6 +54,17 @@ function RoomPage() {
                 <span className="relative inline-flex h-3 w-3 rounded-full bg-success" />
               </span>
             )}
+            <button
+              onClick={() => setRoomOn(!roomOn)}
+              aria-pressed={roomOn}
+              aria-label={roomOn ? "Tout éteindre" : "Tout allumer"}
+              className={"ml-auto inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs uppercase tracking-[0.18em] transition-all " + (roomOn
+                ? "border-foreground bg-foreground text-background shadow-lift"
+                : "border-border/60 bg-card text-muted-foreground hover:border-border")}
+            >
+              <Power className={"h-3.5 w-3.5 " + (roomOn ? "anim-breathe" : "")} />
+              {roomOn ? "On" : "Off"}
+            </button>
           </div>
           {typeof room.temperature === "number" && (
             <p className="mt-1 text-sm text-muted-foreground">Actuellement {room.temperature.toFixed(1)}°C</p>
