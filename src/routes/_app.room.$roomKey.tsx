@@ -202,7 +202,7 @@ function RoomPage() {
               <AppliancesGrid items={detail.devices.appliances} />
             </div>
           )}
-          <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Capteurs · batterie</p>
+          <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Batteries</p>
           <div className="grid gap-2 sm:grid-cols-2">
             {detail.devices.batteries.map((b) => (
               <div key={b.name} className="flex items-center justify-between rounded-lg border border-border/60 bg-card p-3 text-sm">
