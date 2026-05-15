@@ -221,12 +221,12 @@ function TeslaPage() {
         <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
           <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-secondary" />trimestres clos</span>
           <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-primary" />trimestre en cours</span>
+          <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-primary/30 ring-1 ring-primary/50" />projection (N-1)</span>
           <span className="inline-flex items-center gap-1.5"><span className="h-px w-4 border-t border-dashed border-foreground/40" />médiane {medianMonth} kWh/mois</span>
         </div>
 
         {/* Chart */}
         <div className="relative">
-          {/* median dashed line — sits behind bars */}
           <div className="relative h-40">
             <div
               className="absolute left-0 right-0 border-t border-dashed border-foreground/30"
@@ -240,29 +240,29 @@ function TeslaPage() {
             <div className="flex h-full items-end gap-5 sm:gap-6">
               {visibleQuarters.map((q) => {
                 const isCurrent = q.key === currentQKey;
-                const missing = 3 - q.monthsCounted;
                 return (
                   <div key={q.key} className="flex h-full flex-1 items-end gap-1.5">
-                    {q.months.map((m) => (
-                      <div key={`${m.year}-${m.month}`} className="group relative flex h-full flex-1 flex-col justify-end">
-                        <div
-                          className={
-                            "w-full rounded-t-md transition-all duration-700 " +
-                            (isCurrent ? "bg-primary" : "bg-secondary group-hover:bg-secondary/70")
-                          }
-                          style={{ height: `${(m.kWh / maxMonth) * 100}%` }}
-                        />
-                        <div className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-[10px] text-background opacity-0 transition-opacity group-hover:opacity-100">
-                          {m.kWh} kWh
+                    {q.months.map((m) => {
+                      const projected = !!m.projected;
+                      return (
+                        <div key={`${m.year}-${m.month}`} className="group relative flex h-full flex-1 flex-col justify-end">
+                          <div
+                            className={
+                              "w-full rounded-t-md transition-all duration-700 " +
+                              (projected
+                                ? "bg-primary/25 ring-1 ring-primary/50 ring-inset"
+                                : isCurrent
+                                  ? "bg-primary"
+                                  : "bg-secondary group-hover:bg-secondary/70")
+                            }
+                            style={{ height: `${(m.kWh / maxMonth) * 100}%` }}
+                          />
+                          <div className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-[10px] text-background opacity-0 transition-opacity group-hover:opacity-100">
+                            {m.kWh} kWh{projected ? " · projection" : ""}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                    {/* invisible placeholders so partial quarter aligns with its labels */}
-                    {Array.from({ length: missing }).map((_, i) => (
-                      <div key={`bph-${i}`} className="flex h-full flex-1 items-end">
-                        <div className="w-full rounded-t-md border border-dashed border-border/60" style={{ height: "8%" }} />
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 );
               })}
@@ -273,31 +273,27 @@ function TeslaPage() {
           <div className="mt-2 flex gap-5 sm:gap-6">
             {visibleQuarters.map((q) => {
               const isCurrent = q.key === currentQKey;
-              const partial = q.monthsCounted < 3;
               return (
                 <div key={q.key} className="flex flex-1 flex-col items-stretch gap-1.5">
-                  {/* month labels */}
                   <div className="flex gap-1.5">
                     {q.months.map((m) => (
-                      <div key={`${m.year}-${m.month}-l`} className="flex-1 text-center text-[11px] text-muted-foreground">
+                      <div
+                        key={`${m.year}-${m.month}-l`}
+                        className={"flex-1 text-center text-[11px] " + (m.projected ? "text-muted-foreground/60 italic" : "text-muted-foreground")}
+                      >
                         {m.month.slice(0, 3)}
                       </div>
                     ))}
-                    {Array.from({ length: 3 - q.monthsCounted }).map((_, i) => (
-                      <div key={`ph-${i}`} className="flex-1 text-center text-[11px] text-muted-foreground/40">—</div>
-                    ))}
                   </div>
-                  {/* bracket */}
                   <div className="relative h-2">
                     <div className={"absolute inset-x-1 top-0 h-px " + (isCurrent ? "bg-primary" : "bg-border")} />
                     <div className={"absolute left-1 top-0 h-2 w-px " + (isCurrent ? "bg-primary" : "bg-border")} />
                     <div className={"absolute right-1 top-0 h-2 w-px " + (isCurrent ? "bg-primary" : "bg-border")} />
                   </div>
-                  {/* quarter total */}
                   <div className="flex flex-col items-center gap-0.5">
                     <span className={"text-[11px] uppercase tracking-[0.14em] " + (isCurrent ? "text-primary font-medium" : "text-muted-foreground")}>
-                      Q{q.q} '{String(q.year).slice(2)}
-                      {partial && <span className="ml-1 normal-case tracking-normal opacity-70">(en cours)</span>}
+                      {qLabel(q.year, q.q)}
+                      {isCurrent && <span className="ml-1 normal-case tracking-normal opacity-70">(est.)</span>}
                     </span>
                     <span className={"font-serif text-xl leading-none " + (isCurrent ? "text-primary" : "text-foreground")}>
                       {q.kWh}
@@ -312,7 +308,7 @@ function TeslaPage() {
         </div>
 
         <p className="mt-4 text-[11px] text-muted-foreground">
-          Médiane <span className="text-foreground">mensuelle</span> ({medianMonth} kWh) calculée sur {previousFull.length} trimestres clos · moyenne trimestrielle {avgPrevKWh} kWh ({fmtEur(cost(avgPrevKWh))}).
+          Médiane <span className="text-foreground">mensuelle</span> ({medianMonth} kWh) sur {previousFull.length} trimestres clos · moyenne trimestrielle {avgPrevKWh} kWh ({fmtEur(cost(avgPrevKWh))}). Les mois manquants du trimestre en cours sont projetés sur base de l'année précédente.
         </p>
       </Section>
     </div>
