@@ -203,7 +203,7 @@ function RoomPage() {
           <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Batteries</p>
           <div className="grid gap-2 sm:grid-cols-2">
             {detail.devices.batteries.map((b) => (
-              <div key={b.name} className="flex items-center justify-between rounded-lg border border-border/60 bg-card p-3 text-sm">
+              <div key={b.name} className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 text-sm">
                 <span className="flex items-center gap-2"><Battery className="h-4 w-4 text-muted-foreground" />{b.name}</span>
                 <span className={"font-medium " + (b.level < 20 ? "text-destructive" : "")}>{b.level}%</span>
               </div>
@@ -252,7 +252,7 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
       }
     >
       <div
-        className="relative overflow-hidden rounded-2xl border border-border/60 p-5"
+        className="relative overflow-hidden rounded-xl border border-border/60 p-5"
         style={{
           background: source === "off"
             ? "linear-gradient(135deg, color-mix(in oklab, var(--card) 92%, transparent), var(--card))"
@@ -261,7 +261,7 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
       >
         {source === "spotify" && (
           <div className="flex items-center gap-4">
-            <div className={"grid h-16 w-16 shrink-0 place-items-center rounded-2xl shadow-lift " + (playing ? "animate-spin [animation-duration:10s]" : "")}
+            <div className={"grid h-16 w-16 shrink-0 place-items-center rounded-lg shadow-lift " + (playing ? "animate-spin [animation-duration:10s]" : "")}
                  style={{ background: `radial-gradient(circle at 30% 30%, ${active.tint}, oklch(0.25 0.04 160))` }}>
               <span className="h-2.5 w-2.5 rounded-full bg-background" />
             </div>
@@ -285,7 +285,7 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
         )}
         {source === "netflix" && (
           <div className="flex items-center gap-4">
-            <div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl shadow-lift"
+            <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg shadow-lift"
                  style={{ background: `linear-gradient(135deg, ${active.tint}, oklch(0.25 0.08 25))` }}>
               <Tv className="h-6 w-6 text-background" />
             </div>
@@ -303,7 +303,7 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
         )}
         {source === "off" && (
           <div className="flex items-center gap-4 py-2">
-            <div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-muted">
+            <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg bg-muted">
               <Power className="h-6 w-6 text-muted-foreground" />
             </div>
             <div className="min-w-0 flex-1">
