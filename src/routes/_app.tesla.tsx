@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Section } from "@/components/Card";
+import { PageHeader } from "@/components/PageHeader";
 import { tesla } from "@/lib/mock-data";
 import { Plug, Thermometer, MapPin, TrendingDown, TrendingUp, Zap } from "lucide-react";
 
