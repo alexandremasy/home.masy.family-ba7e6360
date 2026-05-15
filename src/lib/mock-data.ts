@@ -122,7 +122,7 @@ export const meteo = {
     humidity: 62,
     sunrise: "05:48",
     sunset: "21:24",
-    location: "Bruxelles",
+    location: "Fumal",
   },
   forecast: [
     { day: "Ven", cond: "sun" as WeatherCond, minC: 12, maxC: 21, rainProb: 5 },
