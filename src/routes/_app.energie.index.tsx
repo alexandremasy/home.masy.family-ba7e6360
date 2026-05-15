@@ -340,7 +340,7 @@ function EnergiePage() {
           </div>
 
           <div className="mt-auto pt-5">
-            <Sparkline data={oilSeries} tone="warm" />
+            <Sparkline data={oilSeries} />
           </div>
         </MetricCard>
       </div>
