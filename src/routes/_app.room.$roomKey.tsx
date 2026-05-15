@@ -369,19 +369,22 @@ function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
   const [state, setState] = useState(items);
   return (
     <div className="grid gap-2 sm:grid-cols-2">
-      {state.map((a, i) => (
-        <button
-          key={a.name}
-          onClick={() => setState(state.map((s, idx) => idx === i ? { ...s, on: !s.on } : s))}
-          className={"flex items-center justify-between rounded-xl border px-3 py-3 text-sm transition-all " + (a.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card hover:border-border")}
-        >
-          <span className="flex items-center gap-2">
-            <Power className={"h-3.5 w-3.5 " + (a.on ? "anim-breathe" : "opacity-50")} />
-            {a.name}
-          </span>
-          <span className={"text-[10px] uppercase tracking-wider " + (a.on ? "opacity-70" : "text-muted-foreground")}>{a.on ? "On" : "Off"}</span>
-        </button>
-      ))}
+      {state.map((a, i) => {
+        const Icon = applianceIcon(a.name);
+        return (
+          <button
+            key={a.name}
+            onClick={() => setState(state.map((s, idx) => idx === i ? { ...s, on: !s.on } : s))}
+            className={"flex items-center justify-between rounded-xl border px-3 py-3 text-sm transition-all " + (a.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card hover:border-border")}
+          >
+            <span className="flex items-center gap-2">
+              <Icon className={"h-3.5 w-3.5 " + (a.on ? "anim-breathe" : "opacity-50")} />
+              {a.name}
+            </span>
+            <span className={"text-[10px] uppercase tracking-wider " + (a.on ? "opacity-70" : "text-muted-foreground")}>{a.on ? "On" : "Off"}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
