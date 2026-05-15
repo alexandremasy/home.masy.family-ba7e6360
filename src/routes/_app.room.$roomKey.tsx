@@ -2,7 +2,14 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
 import { rooms, roomDetails, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, type LucideIcon } from "lucide-react";
+import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, type LucideIcon } from "lucide-react";
+
+function batteryFor(level: number): { Icon: LucideIcon; tone: string } {
+  if (level < 20) return { Icon: BatteryWarning, tone: "text-destructive" };
+  if (level < 40) return { Icon: BatteryLow, tone: "text-warm-foreground" };
+  if (level < 75) return { Icon: BatteryMedium, tone: "text-muted-foreground" };
+  return { Icon: BatteryFull, tone: "text-success" };
+}
 
 function applianceIcon(name: string): LucideIcon {
   const n = name.toLowerCase();
