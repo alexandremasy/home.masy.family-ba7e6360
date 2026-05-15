@@ -5,6 +5,7 @@ import { RoomIcon } from "@/components/RoomIcon";
 import { rooms, tesla, reseau, energie, calendrier, meteo, type WeatherCond } from "@/lib/mock-data";
 import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const Route = createFileRoute("/_app/")({
   // Dashboard is rendered by the parent _app layout (so it stays visible
