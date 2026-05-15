@@ -184,8 +184,9 @@ function TeslaPage() {
       </section>
 
       {/* ============ 2. TRIMESTRE EN COURS ============ */}
-      <Section title={`Trimestre en cours · ${qLabel(currentY, currentQ)}`}>
-        <div className="grid gap-3 sm:grid-cols-3">
+      <section className="space-y-3">
+        <h2 className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Trimestre en cours · {qLabel(currentY, currentQ)}</h2>
+        <div className="grid gap-6 sm:grid-cols-3 sm:divide-x sm:divide-border/60">
           <BigStat
             icon={<Zap className="h-4 w-4" />}
             label="kWh à facturer"
@@ -205,7 +206,7 @@ function TeslaPage() {
             trend={lastFullQ ? (qBetter ? "down" : "up") : undefined}
           />
         </div>
-      </Section>
+      </section>
 
       {/* ============ 3. HISTORIQUE — MENSUEL GROUPÉ PAR TRIMESTRE ============ */}
       <Section
