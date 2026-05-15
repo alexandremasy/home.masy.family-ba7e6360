@@ -51,20 +51,9 @@ export function MapPinBg({ className = "" }: { className?: string }) {
       {/* vignette under pin */}
       <rect x="0" y="0" width="400" height="200" fill="url(#map-vignette)" />
 
-      {/* pin with live pulse — drawn last so it sits above everything */}
-      <g transform="translate(200 100)" filter="url(#pin-glow)">
-        <circle r="50" fill="url(#pin-pulse)">
-          <animate attributeName="r" values="14;58;14" dur="2.4s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.95;0;0.95" dur="2.4s" repeatCount="indefinite" />
-        </circle>
-        <circle r="32" fill="url(#pin-pulse)">
-          <animate attributeName="r" values="10;38;10" dur="2.4s" begin="0.4s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.9;0;0.9" dur="2.4s" begin="0.4s" repeatCount="indefinite" />
-        </circle>
-        <circle r="18" fill="white" opacity="0.95" />
-        <circle r="13" fill="var(--primary)" />
-        <circle r="5" fill="white" />
-      </g>
+      {/* single teal location dot, sized to match the cursor outer ring (~22px) */}
+      <circle cx="200" cy="100" r="11" fill="oklch(0.72 0.13 195)" />
+      <circle cx="200" cy="100" r="11" fill="none" stroke="oklch(0.92 0.05 195)" strokeWidth="1.5" opacity="0.9" />
     </svg>
   );
 }
