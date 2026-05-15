@@ -365,6 +365,6 @@
 
   @media (prefers-reduced-motion: reduce) {
     .bg-mesh-anim { animation: none; }
-    .tile-spotlight__glow { display: none; }
+    .cursor-follower { display: none; }
   }
 }
