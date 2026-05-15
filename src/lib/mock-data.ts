@@ -134,17 +134,36 @@ export const meteo = {
   ],
 };
 
+export type MediaSource = "spotify" | "netflix" | "off";
+
 // Room detail mocks
 export const roomDetails: Record<RoomKey, {
-  lights?: { zones: { name: string; on: boolean }[]; scene: string; scenes: string[]; brightness: number };
+  lights?: { zones: { name: string; on: boolean }[]; scene: string; scenes: string[]; brightness: number; hideBrightness?: boolean };
   climate?: { mode: "auto" | 20 | 21 | 22; current: number };
-  media?: { nowPlaying: string; artist?: string; source: string; volume: number; cover?: string };
-  devices?: { ink?: { c: number; m: number; y: number; k: number }; batteries: { name: string; level: number }[] };
+  media?: { source: MediaSource; nowPlaying?: string; artist?: string; cover?: string };
+  devices?: {
+    ink?: { c: number; m: number; y: number; k: number };
+    batteries: { name: string; level: number }[];
+    appliances?: { name: string; on: boolean }[];
+  };
 }> = {
   salon: {
-    lights: { zones: [{ name: "Plafond", on: false }, { name: "Lampes", on: true }, { name: "TV bias", on: true }], scene: "Film", scenes: ["Film", "Lecture", "Soirée", "Off"], brightness: 35 },
-    media: { nowPlaying: "Linked", artist: "Bonobo", source: "Spotify", volume: 28 },
-    devices: { batteries: [{ name: "Capteur canapé", level: 84 }, { name: "Télécommande", level: 62 }] },
+    lights: {
+      zones: [{ name: "Table", on: false }, { name: "Divan", on: true }],
+      scene: "50%",
+      scenes: ["10%", "25%", "50%", "75%", "100%", "Off"],
+      brightness: 50,
+      hideBrightness: true,
+    },
+    media: { source: "spotify", nowPlaying: "Linked", artist: "Bonobo" },
+    devices: {
+      batteries: [{ name: "Télécommande", level: 62 }],
+      appliances: [
+        { name: "Projecteur", on: false },
+        { name: "Bouboule", on: true },
+        { name: "Coin", on: false },
+      ],
+    },
   },
   cuisine: {
     lights: { zones: [{ name: "Plan de travail", on: false }, { name: "Îlot", on: false }], scene: "Off", scenes: ["Cuisine", "Dîner", "Off"], brightness: 0 },
