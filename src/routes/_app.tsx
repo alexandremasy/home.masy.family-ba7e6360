@@ -72,8 +72,8 @@ function AppLayout() {
           />
 
           {/* Sliding panel */}
-          <div className="overlay-panel relative z-10 mx-auto mt-16 mb-8 w-full max-w-5xl px-4 sm:mt-24 sm:px-6">
-            <div className="relative overflow-clip rounded-3xl border border-border/60 bg-background shadow-lift">
+          <div className="overlay-panel relative z-10 mx-auto mt-16 mb-8 w-full max-w-5xl sm:mt-24 sm:px-6">
+            <div className="relative overflow-clip border border-border/60 bg-background shadow-lift sm:rounded-3xl">
               <div className="px-5 py-7 sm:px-8 sm:py-10">
                 <Outlet />
               </div>
@@ -83,7 +83,7 @@ function AppLayout() {
           <Link
             to="/"
             aria-label="Fermer"
-            className="fixed right-4 top-4 z-30 grid h-9 w-9 place-items-center rounded-full bg-secondary text-foreground/70 shadow-soft transition-colors hover:bg-secondary/80 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:right-6 sm:top-6"
+            className="fixed left-1/2 top-4 z-30 grid h-9 w-9 -translate-x-1/2 place-items-center rounded-full bg-secondary text-foreground/70 shadow-soft transition-colors hover:bg-secondary/80 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:top-6"
           >
             <X className="h-4 w-4" />
           </Link>
