@@ -26,8 +26,7 @@ export function Dashboard() {
 
   return (
     <div className="space-y-8">
-      <div className="relative overflow-hidden rounded-3xl px-5 py-6 anim-slide-up">
-        <span aria-hidden className="bg-mesh-anim pointer-events-none absolute inset-0 -z-10 opacity-60" />
+      <div className="px-1 anim-slide-up">
         <div className="flex items-end justify-between gap-4">
           <div>
             <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">{dateStr}</p>
