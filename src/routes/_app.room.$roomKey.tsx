@@ -34,6 +34,7 @@ function RoomPage() {
   const [scene, setScene] = useState(detail.lights?.scene ?? "Off");
   const [brightness, setBrightness] = useState(detail.lights?.brightness ?? 0);
   const [mode, setMode] = useState<ClimateMode>(detail.climate?.mode ?? "auto");
+  const [roomOn, setRoomOn] = useState(true);
 
   return (
     <div className="space-y-6">
