@@ -25,6 +25,7 @@ export const tesla = {
   pluggedIn: true,
   inGarage: false,
   location: "Bruxelles · Place Flagey",
+  coords: { lat: 50.8275, lng: 4.3719 },
   chargeLimit: 80,
   rangeKm: 310,
   interior: 21,
