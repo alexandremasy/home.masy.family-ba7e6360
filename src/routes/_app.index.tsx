@@ -555,7 +555,7 @@ function WeatherInline() {
         </DialogHeader>
 
         {/* Today */}
-        <div className="rounded-2xl border border-border/60 bg-secondary/40 p-4">
+        <div className="px-1">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Aujourd'hui</p>
