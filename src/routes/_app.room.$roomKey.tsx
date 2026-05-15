@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
 import { rooms, roomDetails, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, type LucideIcon } from "lucide-react";
+import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, type LucideIcon } from "lucide-react";
 
 function sceneIcon(name: string): LucideIcon {
   const n = name.toLowerCase();
@@ -18,6 +18,20 @@ function sceneIcon(name: string): LucideIcon {
   if (n.includes("cuisine")) return ChefHat;
   if (n === "off") return Power;
   return Sparkles;
+}
+
+function zoneIcon(name: string): LucideIcon {
+  const n = name.toLowerCase();
+  if (n.includes("bureau")) return Briefcase;
+  if (n.includes("divan") || n.includes("canapé") || n.includes("canape")) return Armchair;
+  if (n.includes("escalier")) return Footprints;
+  if (n.includes("plafond")) return Square;
+  if (n.includes("playbar") || n.includes("speaker")) return Speaker;
+  if (n.includes("chevet") || n.includes("lit")) return Bed;
+  if (n.includes("îlot") || n.includes("ilot") || n.includes("plan")) return ChefHat;
+  if (n.includes("étagère") || n.includes("etagere")) return BookOpen;
+  if (n.includes("table")) return UtensilsCrossed;
+  return Lightbulb;
 }
 import { RoomIcon } from "@/components/RoomIcon";
 
@@ -128,16 +142,19 @@ function RoomPage() {
           <div className="mt-6">
             <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Zones</p>
             <div className="flex flex-wrap gap-1.5">
-              {zones.map((z, i) => (
-                <button
-                  key={z.name}
-                  onClick={() => setZones(zones.map((zz, idx) => idx === i ? { ...zz, on: !zz.on } : zz))}
-                  className={"inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all " + (z.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card text-muted-foreground hover:border-border hover:text-foreground")}
-                >
-                  <Lightbulb className={"h-3 w-3 " + (z.on ? "anim-breathe" : "opacity-50")} />
-                  {z.name}
-                </button>
-              ))}
+              {zones.map((z, i) => {
+                const Icon = zoneIcon(z.name);
+                return (
+                  <button
+                    key={z.name}
+                    onClick={() => setZones(zones.map((zz, idx) => idx === i ? { ...zz, on: !zz.on } : zz))}
+                    className={"inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all " + (z.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card text-muted-foreground hover:border-border hover:text-foreground")}
+                  >
+                    <Icon className={"h-3 w-3 " + (z.on ? "anim-breathe" : "opacity-50")} />
+                    {z.name}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </Section>
