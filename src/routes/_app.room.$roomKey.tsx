@@ -142,16 +142,19 @@ function RoomPage() {
           <div className="mt-6">
             <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Zones</p>
             <div className="flex flex-wrap gap-1.5">
-              {zones.map((z, i) => (
-                <button
-                  key={z.name}
-                  onClick={() => setZones(zones.map((zz, idx) => idx === i ? { ...zz, on: !zz.on } : zz))}
-                  className={"inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all " + (z.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card text-muted-foreground hover:border-border hover:text-foreground")}
-                >
-                  <Lightbulb className={"h-3 w-3 " + (z.on ? "anim-breathe" : "opacity-50")} />
-                  {z.name}
-                </button>
-              ))}
+              {zones.map((z, i) => {
+                const Icon = zoneIcon(z.name);
+                return (
+                  <button
+                    key={z.name}
+                    onClick={() => setZones(zones.map((zz, idx) => idx === i ? { ...zz, on: !zz.on } : zz))}
+                    className={"inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all " + (z.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card text-muted-foreground hover:border-border hover:text-foreground")}
+                  >
+                    <Icon className={"h-3 w-3 " + (z.on ? "anim-breathe" : "opacity-50")} />
+                    {z.name}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </Section>
