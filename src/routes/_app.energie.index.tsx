@@ -75,7 +75,8 @@ type Domain = "elec" | "eau" | "mazout";
 const domainConfig: Record<Domain, { label: string; unit: string; icon: typeof Zap; pick: (h: typeof energie.history[number]) => number; seasonal: number[] }> = {
   elec: {
     label: "Électricité", unit: "kWh", icon: Zap,
-    pick: (h) => h.jour + h.nuit,
+    // Net grid consumption — negative when solar injection > consumption.
+    pick: (h) => h.jour + h.nuit - (h.solar ?? 0),
     seasonal: [1.15, 1.18, 1.05, 0.95, 0.85, 0.75, 0.7, 0.75, 0.85, 0.95, 1.1, 1.18],
   },
   eau: {
