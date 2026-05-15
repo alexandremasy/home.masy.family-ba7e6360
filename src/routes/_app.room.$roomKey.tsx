@@ -130,33 +130,49 @@ function RoomPage() {
       </div>
 
       {detail.lights && (
-        <Section title="Luminosité">
-          <div
-            className="grid gap-2 stagger"
-            style={{ gridTemplateColumns: `repeat(${detail.lights.scenes.length}, minmax(0, 1fr))` }}
-          >
-            {detail.lights.scenes.map((s) => {
-              const active = scene === s;
-              const Icon = sceneIcon(s);
-              return (
-                <button
-                  key={s}
-                  onClick={() => setScene(s)}
-                  className={
-                    "group relative flex flex-col items-center gap-1.5 overflow-hidden rounded-xl border px-3 py-4 transition-all duration-300 " +
-                    (active
-                      ? "border-foreground bg-foreground text-background shadow-lift -translate-y-0.5"
-                      : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
-                  }
-                >
-                  <Icon className={"h-5 w-5 " + (active ? "anim-breathe" : "opacity-60")} />
-                  <span className="font-serif text-lg leading-none">{s}</span>
-                </button>
-              );
-            })}
-          </div>
+        <Section
+          title="Luminosité"
+          action={
+            zones.length > 0 ? (
+              <span className="text-sm text-muted-foreground">
+                {(() => {
+                  const on = zones.filter((z) => z.on).length;
+                  if (on === 0) return "Tout éteint";
+                  if (on === zones.length) return "Tout allumé";
+                  return `${on} / ${zones.length} allumées`;
+                })()}
+              </span>
+            ) : undefined
+          }
+        >
+          {detail.lights.scenes.length > 0 && (
+            <div
+              className="grid gap-2 stagger"
+              style={{ gridTemplateColumns: `repeat(${detail.lights.scenes.length}, minmax(0, 1fr))` }}
+            >
+              {detail.lights.scenes.map((s) => {
+                const active = scene === s;
+                const Icon = sceneIcon(s);
+                return (
+                  <button
+                    key={s}
+                    onClick={() => setScene(s)}
+                    className={
+                      "group relative flex flex-col items-center gap-1.5 overflow-hidden rounded-xl border px-3 py-4 transition-all duration-300 " +
+                      (active
+                        ? "border-foreground bg-foreground text-background shadow-lift -translate-y-0.5"
+                        : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
+                    }
+                  >
+                    <Icon className={"h-5 w-5 " + (active ? "anim-breathe" : "opacity-60")} />
+                    <span className="font-serif text-lg leading-none">{s}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
-          {scene !== "Off" && !detail.lights.hideBrightness && (
+          {scene !== "Off" && !detail.lights.hideBrightness && detail.lights.scenes.length > 0 && (
             <div className="mt-6">
               <div className="mb-2 flex justify-between text-xs uppercase tracking-[0.18em] text-muted-foreground">
                 <span>Luminosité</span><span>{brightness}%</span>
@@ -169,24 +185,28 @@ function RoomPage() {
             </div>
           )}
 
-          <div className="mt-6">
-            <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Zones</p>
-            <div className="flex flex-wrap gap-1.5">
-              {zones.map((z, i) => {
-                const Icon = zoneIcon(z.name);
-                return (
-                  <button
-                    key={z.name}
-                    onClick={() => setZones(zones.map((zz, idx) => idx === i ? { ...zz, on: !zz.on } : zz))}
-                    className={"inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all " + (z.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card text-muted-foreground hover:border-border hover:text-foreground")}
-                  >
-                    <Icon className={"h-3 w-3 " + (z.on ? "anim-breathe" : "opacity-50")} />
-                    {z.name}
-                  </button>
-                );
-              })}
+          {zones.length > 0 && (
+            <div className={detail.lights.scenes.length > 0 ? "mt-6" : ""}>
+              {detail.lights.scenes.length > 0 && (
+                <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Zones</p>
+              )}
+              <div className="flex flex-wrap gap-1.5">
+                {zones.map((z, i) => {
+                  const Icon = zoneIcon(z.name);
+                  return (
+                    <button
+                      key={z.name}
+                      onClick={() => setZones(zones.map((zz, idx) => idx === i ? { ...zz, on: !zz.on } : zz))}
+                      className={"inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all " + (z.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card text-muted-foreground hover:border-border hover:text-foreground")}
+                    >
+                      <Icon className={"h-3 w-3 " + (z.on ? "anim-breathe" : "opacity-50")} />
+                      {z.name}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
         </Section>
       )}
 
