@@ -120,7 +120,7 @@ export function Dashboard() {
                 <div>
                   <p className="font-serif text-xl">{room.name}</p>
                   {room.scene && room.scene !== "Off" && (
-                    <p className="mt-0.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">Scène · {room.scene}</p>
+                    <p className="mt-0.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">{room.scene}</p>
                   )}
                 </div>
               </div>
