@@ -249,7 +249,6 @@ export function Dashboard() {
 type SalonVariant = "spotify" | "netflix" | "idle";
 
 function SalonTile({ room, variant, label }: { room: typeof rooms[number]; variant: SalonVariant; label: string }) {
-  const playing = variant !== "idle";
   return (
     <Tile to={`/room/${room.key}`} className="relative">
       <span className="absolute right-3 top-3 rounded-full bg-foreground/5 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">{label}</span>
@@ -269,52 +268,43 @@ function SalonTile({ room, variant, label }: { room: typeof rooms[number]; varia
         <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />
       </div>
 
-      <div className="mt-6">
+      <div className="mt-5 flex items-center gap-2.5 rounded-xl bg-secondary/60 p-2.5">
         {variant === "spotify" && (
-          <div className="flex items-center gap-2.5">
+          <>
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[oklch(0.72_0.18_150)]/15 text-[oklch(0.55_0.18_150)]" aria-hidden>
               <SpotifyGlyph className="h-4 w-4" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate font-serif text-lg leading-tight">Linked</p>
-              <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground">
-                <Cast className="h-3 w-3" />
-                <span className="truncate">Bonobo · Chromecast</span>
-              </p>
+              <p className="truncate font-serif text-base leading-tight">Linked</p>
+              <p className="mt-0.5 truncate text-xs text-muted-foreground">Bonobo · Spotify</p>
             </div>
             <EqBars />
-          </div>
+          </>
         )}
 
         {variant === "netflix" && (
-          <div className="flex items-center gap-2.5">
-            <span className="relative grid h-9 w-12 shrink-0 place-items-center overflow-hidden rounded-md bg-[oklch(0.32_0.18_25)] text-white" aria-hidden>
-              <span className="font-serif text-[11px] font-bold tracking-tight">N</span>
-              <span className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/10" />
+          <>
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[oklch(0.32_0.18_25)] text-white" aria-hidden>
+              <span className="font-serif text-[13px] font-bold leading-none">N</span>
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate font-serif text-lg leading-tight">Dark · S2E4</p>
-              <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground">
-                <Cast className="h-3 w-3" />
-                <span className="truncate">Netflix · Chromecast</span>
-              </p>
+              <p className="truncate font-serif text-base leading-tight">Dark · S2E4</p>
+              <p className="mt-0.5 truncate text-xs text-muted-foreground">Netflix</p>
             </div>
-            <span className="flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-warm">
-              <span className="h-1.5 w-1.5 rounded-full bg-warm anim-breathe" /> Live
-            </span>
-          </div>
+            <EqBars />
+          </>
         )}
 
         {variant === "idle" && (
-          <div className="flex items-center gap-2.5 opacity-70">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-secondary text-muted-foreground">
+          <>
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-background text-muted-foreground" aria-hidden>
               <Cast className="h-4 w-4" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate font-serif text-lg leading-tight text-muted-foreground">Chromecast en veille</p>
+              <p className="truncate font-serif text-base leading-tight text-muted-foreground">Chromecast en veille</p>
               <p className="mt-0.5 truncate text-xs text-muted-foreground/70">Aucune diffusion</p>
             </div>
-          </div>
+          </>
         )}
       </div>
 
@@ -323,11 +313,6 @@ function SalonTile({ room, variant, label }: { room: typeof rooms[number]; varia
           <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-accent-foreground" : "")} />
           {room.lightsOn ? "Allumé" : "Éteint"}
         </span>
-        {playing && (
-          <span className="inline-flex items-center gap-1.5">
-            <Cast className="h-3.5 w-3.5" /> Chromecast
-          </span>
-        )}
       </div>
     </Tile>
   );
