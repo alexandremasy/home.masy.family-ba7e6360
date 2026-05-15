@@ -127,10 +127,27 @@ export function Dashboard() {
               <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />
             </div>
 
-            {typeof room.temperature === "number" && (
+            {typeof room.temperature === "number" ? (
               <p className="mt-6 font-serif text-4xl tracking-tight">
                 <CountUp to={room.temperature} decimals={1} /><span className="text-base text-muted-foreground">°C</span>
               </p>
+            ) : roomDetails[room.key]?.media ? (
+              <div className="mt-6 flex items-center gap-2.5">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent/15 text-accent-foreground">
+                  <Music2 className="h-4 w-4 anim-breathe" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-serif text-lg leading-tight">{roomDetails[room.key]!.media!.nowPlaying}</p>
+                  <p className="truncate text-xs text-muted-foreground">{roomDetails[room.key]!.media!.artist} · {roomDetails[room.key]!.media!.source}</p>
+                </div>
+                <span className="flex items-end gap-0.5 pb-1" aria-hidden>
+                  <span className="eq-bar h-3 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "0ms" }} />
+                  <span className="eq-bar h-4 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "150ms" }} />
+                  <span className="eq-bar h-2.5 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "300ms" }} />
+                </span>
+              </div>
+            ) : (
+              <div className="mt-6 h-[2.75rem]" aria-hidden />
             )}
 
             <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
