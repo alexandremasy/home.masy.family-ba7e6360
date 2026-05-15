@@ -50,7 +50,7 @@ export function Tile({
     );
   }
   return (
-    <div data-cursor className={cls} {...rest}>
+    <div className={cls} {...rest}>
       {children}
     </div>
   );
