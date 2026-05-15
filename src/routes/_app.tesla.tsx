@@ -10,12 +10,16 @@ import {
   TrendingUp,
   Zap,
   Lock,
+  LockOpen,
   Gauge,
-  Cpu,
   Wifi,
   BatteryCharging,
   Snowflake,
-  Sun,
+  Flame,
+  Wind,
+  Car,
+  Volume2,
+  Lightbulb,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_app/tesla")({
