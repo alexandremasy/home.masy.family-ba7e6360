@@ -6,8 +6,8 @@
       "name": "tanstack_start_ts",
       "dependencies": {
         "@cloudflare/vite-plugin": "^1.25.5",
-        "@fontsource/inter": "^5.2.8",
-        "@fontsource/lora": "^5.2.8",
+        "@fontsource/barlow": "^5.2.8",
+        "@fontsource/bitter": "^5.2.10",
         "@hookform/resolvers": "^5.2.2",
         "@radix-ui/react-accordion": "^1.2.12",
         "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -228,9 +228,9 @@
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.11", "", {}, "sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg=="],
 
-    "@fontsource/inter": ["@fontsource/inter@5.2.8", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@fontsource/inter/-/inter-5.2.8.tgz", {}, "sha512-P6r5WnJoKiNVV+zvW2xM13gNdFhAEpQ9dQJHt3naLvfg+LkF2ldgSLiF4T41lf1SQCM9QmkqPTn4TH568IRagg=="],
+    "@fontsource/barlow": ["@fontsource/barlow@5.2.8", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@fontsource/barlow/-/barlow-5.2.8.tgz", {}, "sha512-iuFOnY4OI2cd1STrJ3NdJNzWjhcwv6JarmqfdoZzAmz9g0jTVjES86MNbuBxqVR3ydbTEjo4opEl24GXScRM7w=="],
 
-    "@fontsource/lora": ["@fontsource/lora@5.2.8", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@fontsource/lora/-/lora-5.2.8.tgz", {}, "sha512-AQlfsHw4TP1x/eb2IZ6VjQ70ctKa39m9JN9A4zlvDOeKYLrCs+GaYIEQ86Y6YfSPGHn01bErXkRcyktOW0LOPQ=="],
+    "@fontsource/bitter": ["@fontsource/bitter@5.2.10", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@fontsource/bitter/-/bitter-5.2.10.tgz", {}, "sha512-oqQgWAp+lgoGX7iFbVSbTkKyz0k8EK8+bLdUKDTqGTjW0HqrCue70v4jwbZvyNV/3DZol/b/L/WpdXfuQXKBUg=="],
 
     "@hookform/resolvers": ["@hookform/resolvers@5.2.2", "", { "dependencies": { "@standard-schema/utils": "^0.3.0" }, "peerDependencies": { "react-hook-form": "^7.55.0" } }, "sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA=="],
 
