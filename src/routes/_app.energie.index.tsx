@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import { energie } from "@/lib/mock-data";
 import { ArrowRight, Droplet, Zap, Flame, TrendingDown, TrendingUp, Minus, AlertTriangle, CalendarDays, Sun, Moon, Sparkles } from "lucide-react";
@@ -176,8 +177,10 @@ function MetricCard({
 
 function EnergiePage() {
   const { electricity, water, oil, lastReadingDate } = energie;
-  const history = buildHistory();
-  const max = Math.max(...history.map((h) => h.kWh));
+  const [domain, setDomain] = useState<Domain>("elec");
+  const history = buildHistory(domain);
+  const max = Math.max(...history.map((h) => h.value));
+  const cfg = domainConfig[domain];
   const lastReading = new Date(lastReadingDate);
   const lastReadingFmt = lastReading.toLocaleDateString("fr-BE", {
     day: "numeric", month: "long", year: "numeric",
@@ -341,25 +344,50 @@ function EnergiePage() {
       <div className="rounded-2xl border border-border/60 bg-card p-6 shadow-soft sm:p-8 anim-slide-up">
         <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="font-serif text-2xl tracking-tight">Historique électricité</h2>
+            <h2 className="font-serif text-2xl tracking-tight">Historique {cfg.label.toLowerCase()}</h2>
             <p className="mt-1 text-sm text-muted-foreground">12 derniers mois — vue glissante</p>
           </div>
-          <span className="inline-flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-sm bg-primary" /> Relevé
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Domain switcher */}
+            <div className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-secondary/50 p-1">
+              {(Object.keys(domainConfig) as Domain[]).map((d) => {
+                const Icon = domainConfig[d].icon;
+                const active = d === domain;
+                return (
+                  <button
+                    key={d}
+                    type="button"
+                    onClick={() => setDomain(d)}
+                    className={
+                      "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all " +
+                      (active
+                        ? "bg-foreground text-background shadow-soft"
+                        : "text-muted-foreground hover:text-foreground")
+                    }
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                    {domainConfig[d].label}
+                  </button>
+                );
+              })}
+            </div>
+            <span className="hidden items-center gap-3 text-xs text-muted-foreground sm:inline-flex">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-sm bg-primary" /> Relevé
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-sm border border-dashed border-muted-foreground/60" /> Projeté
+              </span>
             </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-sm border border-dashed border-muted-foreground/60" /> Projeté
-            </span>
-          </span>
+          </div>
         </header>
 
         <div className="flex h-56 items-end gap-2 sm:gap-3">
           {history.map((h, i) => {
             const isCurrent = i === latestRecordedIdx;
-            const heightPct = (h.kWh / max) * 100;
+            const heightPct = (h.value / max) * 100;
             return (
-              <div key={h.key} className="group relative flex h-full flex-1 flex-col items-center justify-end gap-2">
+              <div key={h.key} className="group relative flex h-full flex-1 flex-col items-end justify-end gap-2">
                 <div
                   className={
                     "w-full max-w-[60px] rounded-t-xl transition-all duration-700 hover:scale-y-105 origin-bottom " +
@@ -372,11 +400,11 @@ function EnergiePage() {
                   style={{ height: `${heightPct}%` }}
                 />
                 {/* Tooltip on hover */}
-                <div className="pointer-events-none absolute -top-2 -translate-y-full rounded-lg border border-border/60 bg-popover px-2 py-1 text-xs shadow-lift opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
-                  <p className="font-medium">{h.label} {h.year}</p>
-                  <p className="tabular-nums text-muted-foreground">{h.kWh} kWh{h.projected ? " · projeté" : ""}</p>
+                <div className="pointer-events-none absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full rounded-lg border border-border/60 bg-popover px-2 py-1 text-xs shadow-lift opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap z-10">
+                  <p className="font-medium capitalize">{h.label} {h.year}</p>
+                  <p className="tabular-nums text-muted-foreground">{h.value} {cfg.unit}{h.projected ? " · projeté" : ""}</p>
                 </div>
-                <p className={"text-[11px] sm:text-xs " + (isCurrent ? "font-medium text-foreground" : "text-muted-foreground")}>
+                <p className={"w-full text-center text-[11px] sm:text-xs " + (isCurrent ? "font-medium text-foreground" : "text-muted-foreground")}>
                   {h.label}
                 </p>
               </div>
