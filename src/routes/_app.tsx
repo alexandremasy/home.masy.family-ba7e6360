@@ -73,7 +73,7 @@ function AppLayout() {
 
           {/* Sliding panel */}
           <div className="overlay-panel relative z-10 mx-auto mt-16 mb-8 w-full max-w-5xl px-4 sm:mt-24 sm:px-6">
-            <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-background shadow-lift">
+            <div className="relative overflow-clip rounded-3xl border border-border/60 bg-background shadow-lift">
               <div className="px-5 py-7 sm:px-8 sm:py-10">
                 <Outlet />
               </div>
