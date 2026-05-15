@@ -38,7 +38,7 @@ function SaisiePage() {
               type="date"
               value={form.date}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
-              className="w-full rounded-2xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-ring"
+              className="w-full rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
 
@@ -59,7 +59,7 @@ function Field({ label, unit, value, onChange }: { label: string; unit: string; 
   return (
     <div>
       <label className="mb-1.5 block text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</label>
-      <div className="flex overflow-hidden rounded-2xl border border-border bg-card focus-within:ring-2 focus-within:ring-ring">
+      <div className="flex overflow-hidden rounded-xl border border-border bg-card focus-within:ring-2 focus-within:ring-ring">
         <input
           type="number" inputMode="decimal" step="0.01"
           value={value}

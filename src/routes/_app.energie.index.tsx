@@ -19,7 +19,7 @@ function EnergiePage() {
       <PageHeader title="Énergie" subtitle="Consommation mensuelle et relevés" />
 
       {energie.monthlyDue && (
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl bg-warm p-6 text-warm-foreground sm:p-8 anim-pop-in">
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-warm p-6 text-warm-foreground sm:p-8 anim-pop-in">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] opacity-70">À faire</p>
             <p className="mt-1 font-serif text-2xl">Relevé mensuel à saisir</p>
