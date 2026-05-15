@@ -2,7 +2,19 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
 import { rooms, roomDetails, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, type LucideIcon } from "lucide-react";
+import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, type LucideIcon } from "lucide-react";
+
+function applianceIcon(name: string): LucideIcon {
+  const n = name.toLowerCase();
+  if (n.includes("sel") || n.includes("lampe")) return Lamp;
+  if (n.includes("chat")) return Cat;
+  if (n.includes("playbar") || n.includes("speaker") || n.includes("enceinte")) return Speaker;
+  if (n.includes("imprim")) return Printer;
+  if (n.includes("project")) return Projector;
+  if (n.includes("bouboule") || n.includes("boule")) return Disc3;
+  if (n.includes("coin")) return Lightbulb;
+  return Power;
+}
 
 function sceneIcon(name: string): LucideIcon {
   const n = name.toLowerCase();
