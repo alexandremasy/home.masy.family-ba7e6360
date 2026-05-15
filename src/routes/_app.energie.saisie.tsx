@@ -95,7 +95,7 @@ function SaisiePage() {
           <Field label="Eau" unit="m³" value={form.eau} onChange={(v) => update("eau", v)} error={errors.eau} disabled={submitting || done} />
           <Field label="Électricité jour" unit="kWh" value={form.jour} onChange={(v) => update("jour", v)} error={errors.jour} disabled={submitting || done} />
           <Field label="Électricité nuit" unit="kWh" value={form.nuit} onChange={(v) => update("nuit", v)} error={errors.nuit} disabled={submitting || done} />
-          <Field label="Citerne à mazout" unit="litres" value={form.mazout} onChange={(v) => update("mazout", v)} error={errors.mazout} disabled={submitting || done} />
+          <Field label="Citerne à mazout" unit="%" value={form.mazout} onChange={(v) => update("mazout", v)} error={errors.mazout} disabled={submitting || done} />
 
           <div>
             <label className="mb-1.5 block text-xs uppercase tracking-[0.18em] text-muted-foreground">Date</label>
