@@ -130,7 +130,7 @@ function RoomPage() {
       </div>
 
       {detail.lights && (
-        <Section title="Luminosité" action={<span className="text-sm text-muted-foreground">Active · {scene}</span>}>
+        <Section title="Luminosité">
           <div
             className="grid gap-2 stagger"
             style={{ gridTemplateColumns: `repeat(${detail.lights.scenes.length}, minmax(0, 1fr))` }}
