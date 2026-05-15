@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { createFileRoute, Outlet, useLocation, useNavigate, Link } from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { TopNav } from "@/components/TopNav";
+import { CursorFollower } from "@/components/CursorFollower";
 import { footerLines } from "@/lib/mock-data";
 import { Dashboard } from "./_app.index";
 
