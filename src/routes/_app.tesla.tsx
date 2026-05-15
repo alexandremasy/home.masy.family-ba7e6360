@@ -214,24 +214,30 @@ function TeslaPage() {
               </span>
             </div>
 
-            <div className="flex h-full items-end gap-4 sm:gap-5">
+            <div className="flex h-full items-end gap-5 sm:gap-6">
               {visibleQuarters.map((q) => {
                 const isCurrent = q.key === currentQKey;
+                const missing = 3 - q.monthsCounted;
                 return (
-                  <div key={q.key} className="flex h-full flex-1 items-end gap-1">
+                  <div key={q.key} className="flex h-full flex-1 items-end gap-1.5">
                     {q.months.map((m) => (
                       <div key={`${m.year}-${m.month}`} className="group relative flex h-full flex-1 flex-col justify-end">
                         <div
                           className={
-                            "w-full rounded-t-sm transition-all duration-700 " +
+                            "w-full rounded-t-md transition-all duration-700 " +
                             (isCurrent ? "bg-primary" : "bg-secondary group-hover:bg-secondary/70")
                           }
                           style={{ height: `${(m.kWh / maxMonth) * 100}%` }}
                         />
-                        {/* tooltip on hover */}
-                        <div className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-[9px] text-background opacity-0 transition-opacity group-hover:opacity-100">
+                        <div className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-[10px] text-background opacity-0 transition-opacity group-hover:opacity-100">
                           {m.kWh} kWh
                         </div>
+                      </div>
+                    ))}
+                    {/* invisible placeholders so partial quarter aligns with its labels */}
+                    {Array.from({ length: missing }).map((_, i) => (
+                      <div key={`bph-${i}`} className="flex h-full flex-1 items-end">
+                        <div className="w-full rounded-t-md border border-dashed border-border/60" style={{ height: "8%" }} />
                       </div>
                     ))}
                   </div>
@@ -241,40 +247,40 @@ function TeslaPage() {
           </div>
 
           {/* Quarter axis: month labels + quarter total */}
-          <div className="mt-2 flex gap-4 sm:gap-5">
+          <div className="mt-2 flex gap-5 sm:gap-6">
             {visibleQuarters.map((q) => {
               const isCurrent = q.key === currentQKey;
               const partial = q.monthsCounted < 3;
               return (
-                <div key={q.key} className="flex flex-1 flex-col items-stretch gap-1">
+                <div key={q.key} className="flex flex-1 flex-col items-stretch gap-1.5">
                   {/* month labels */}
-                  <div className="flex gap-1">
+                  <div className="flex gap-1.5">
                     {q.months.map((m) => (
-                      <div key={`${m.year}-${m.month}-l`} className="flex-1 text-center text-[9px] text-muted-foreground">
+                      <div key={`${m.year}-${m.month}-l`} className="flex-1 text-center text-[11px] text-muted-foreground">
                         {m.month.slice(0, 3)}
                       </div>
                     ))}
-                    {/* placeholders for missing months in current quarter to keep widths aligned */}
-                    {partial && Array.from({ length: 3 - q.monthsCounted }).map((_, i) => (
-                      <div key={`ph-${i}`} className="flex-1" />
+                    {Array.from({ length: 3 - q.monthsCounted }).map((_, i) => (
+                      <div key={`ph-${i}`} className="flex-1 text-center text-[11px] text-muted-foreground/40">—</div>
                     ))}
                   </div>
                   {/* bracket */}
-                  <div className="relative h-1.5">
+                  <div className="relative h-2">
                     <div className={"absolute inset-x-1 top-0 h-px " + (isCurrent ? "bg-primary" : "bg-border")} />
-                    <div className={"absolute left-1 top-0 h-1.5 w-px " + (isCurrent ? "bg-primary" : "bg-border")} />
-                    <div className={"absolute right-1 top-0 h-1.5 w-px " + (isCurrent ? "bg-primary" : "bg-border")} />
+                    <div className={"absolute left-1 top-0 h-2 w-px " + (isCurrent ? "bg-primary" : "bg-border")} />
+                    <div className={"absolute right-1 top-0 h-2 w-px " + (isCurrent ? "bg-primary" : "bg-border")} />
                   </div>
                   {/* quarter total */}
-                  <div className="flex flex-col items-center">
-                    <span className={"text-[10px] uppercase tracking-wider " + (isCurrent ? "text-primary" : "text-muted-foreground")}>
+                  <div className="flex flex-col items-center gap-0.5">
+                    <span className={"text-[11px] uppercase tracking-[0.14em] " + (isCurrent ? "text-primary font-medium" : "text-muted-foreground")}>
                       Q{q.q} '{String(q.year).slice(2)}
+                      {partial && <span className="ml-1 normal-case tracking-normal opacity-70">(en cours)</span>}
                     </span>
-                    <span className={"font-serif text-base leading-none " + (isCurrent ? "text-primary" : "text-foreground")}>
+                    <span className={"font-serif text-xl leading-none " + (isCurrent ? "text-primary" : "text-foreground")}>
                       {q.kWh}
-                      <span className="ml-0.5 text-[9px] font-sans text-muted-foreground">kWh</span>
+                      <span className="ml-1 text-[11px] font-sans text-muted-foreground">kWh</span>
                     </span>
-                    <span className="text-[9px] tabular-nums text-muted-foreground">{fmtEur(cost(q.kWh))}</span>
+                    <span className="text-[11px] tabular-nums text-muted-foreground">{fmtEur(cost(q.kWh))}</span>
                   </div>
                 </div>
               );
@@ -283,9 +289,124 @@ function TeslaPage() {
         </div>
 
         <p className="mt-4 text-[11px] text-muted-foreground">
-          Médiane calculée sur {previousFull.length} trimestres clos · moyenne {avgPrevKWh} kWh ({fmtEur(cost(avgPrevKWh))}).
+          Médiane <span className="text-foreground">mensuelle</span> ({medianMonth} kWh) calculée sur {previousFull.length} trimestres clos · moyenne trimestrielle {avgPrevKWh} kWh ({fmtEur(cost(avgPrevKWh))}).
         </p>
       </Section>
+    </div>
+  );
+}
+
+// ---------- Hero parts ----------
+
+function FloatStat({
+  label,
+  value,
+  icon,
+  accent,
+}: {
+  label: string;
+  value: string;
+  icon?: React.ReactNode;
+  accent?: boolean;
+}) {
+  return (
+    <div className="leading-tight">
+      <p className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+        {icon}
+        {label}
+      </p>
+      <p className={"font-serif text-lg " + (accent ? "text-primary" : "text-foreground")}>{value}</p>
+    </div>
+  );
+}
+
+function ActionBtn({ icon, label, active }: { icon: React.ReactNode; label: string; active?: boolean }) {
+  return (
+    <button
+      type="button"
+      className={
+        "group flex flex-col items-center gap-1 rounded-xl border px-2 py-2.5 text-[10px] uppercase tracking-[0.12em] transition " +
+        (active
+          ? "border-primary/40 bg-primary/10 text-primary"
+          : "border-border/60 bg-card text-muted-foreground hover:border-foreground/30 hover:text-foreground")
+      }
+    >
+      <span className={"inline-flex h-8 w-8 items-center justify-center rounded-lg " + (active ? "bg-primary/15" : "bg-secondary group-hover:bg-secondary/70")}>
+        {icon}
+      </span>
+      {label}
+    </button>
+  );
+}
+
+function TeslaCar({ charging, locked }: { charging: boolean; locked: boolean }) {
+  return (
+    <div className="relative flex flex-col items-center">
+      <svg viewBox="0 0 240 90" className="h-24 w-44 sm:h-28 sm:w-52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* shadow */}
+        <ellipse cx="120" cy="82" rx="100" ry="4" className="fill-foreground/10" />
+        {/* body */}
+        <path
+          d="M20 62 Q24 50 38 48 L70 44 Q88 28 120 26 Q152 28 170 44 L202 48 Q216 50 220 62 L220 68 Q220 72 216 72 L200 72 Q198 78 190 78 Q182 78 180 72 L60 72 Q58 78 50 78 Q42 78 40 72 L24 72 Q20 72 20 68 Z"
+          className="fill-foreground"
+        />
+        {/* windows */}
+        <path
+          d="M76 46 L96 32 Q108 30 120 30 Q132 30 144 32 L164 46 Z"
+          className="fill-primary/30"
+        />
+        <line x1="120" y1="30" x2="120" y2="46" className="stroke-foreground" strokeWidth="1.2" />
+        {/* wheels */}
+        <circle cx="50" cy="72" r="9" className="fill-background stroke-foreground" strokeWidth="2" />
+        <circle cx="50" cy="72" r="3.5" className="fill-foreground" />
+        <circle cx="190" cy="72" r="9" className="fill-background stroke-foreground" strokeWidth="2" />
+        <circle cx="190" cy="72" r="3.5" className="fill-foreground" />
+        {/* headlight */}
+        <circle cx="216" cy="58" r="2" className="fill-primary" />
+        {/* charge port glow */}
+        {charging && (
+          <g>
+            <circle cx="28" cy="58" r="3" className="fill-primary anim-breathe" />
+            <path d="M22 56 l4 -3 l-1 3 h3 l-4 4 l1 -3 z" className="fill-primary-foreground" />
+          </g>
+        )}
+        {/* lock indicator */}
+        <circle cx="120" cy="50" r="6" className={locked ? "fill-success/20" : "fill-warm/20"} />
+        <circle cx="120" cy="50" r="2" className={locked ? "fill-success" : "fill-warm"} />
+      </svg>
+      <span className={"mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] " + (locked ? "bg-success/10 text-success" : "bg-warm/10 text-warm")}>
+        {locked ? <Lock className="h-3 w-3" /> : <LockOpen className="h-3 w-3" />}
+        {locked ? "Verrouillée" : "Ouverte"}
+      </span>
+    </div>
+  );
+}
+
+function BigStat({
+  icon,
+  label,
+  value,
+  sub,
+  accent,
+  trend,
+}: {
+  icon?: React.ReactNode;
+  label: string;
+  value: string;
+  sub?: string;
+  accent?: boolean;
+  trend?: "up" | "down";
+}) {
+  return (
+    <div className={"rounded-xl border border-border/60 p-4 " + (accent ? "bg-primary/8" : "bg-card")}>
+      <div className="flex items-center gap-1 text-xs uppercase tracking-[0.16em] text-muted-foreground">
+        {icon}
+        {label}
+      </div>
+      <p className={"mt-2 font-serif text-2xl " + (trend === "down" ? "text-success" : trend === "up" ? "text-warm" : "")}>
+        {value}
+      </p>
+      {sub && <p className="mt-0.5 text-[11px] text-muted-foreground">{sub}</p>}
     </div>
   );
 }
