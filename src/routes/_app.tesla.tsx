@@ -10,12 +10,16 @@ import {
   TrendingUp,
   Zap,
   Lock,
+  LockOpen,
   Gauge,
-  Cpu,
   Wifi,
   BatteryCharging,
   Snowflake,
-  Sun,
+  Flame,
+  Wind,
+  Car,
+  Volume2,
+  Lightbulb,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_app/tesla")({
@@ -94,66 +98,65 @@ function TeslaPage() {
       <section className="space-y-3">
         <h2 className="text-xs uppercase tracking-[0.18em] text-muted-foreground">État de la voiture</h2>
 
-        {/* Battery hero */}
-        <div className="relative overflow-hidden rounded-2xl bg-foreground p-6 text-background shadow-soft">
-          {/* decorative gradient */}
-          <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-primary/30 blur-3xl" />
-          <div className="relative flex items-start justify-between gap-4">
+        {/* Hero: car visual with surrounding stats */}
+        <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card p-5 shadow-soft">
+          {/* model + status header */}
+          <div className="mb-2 flex items-start justify-between gap-3">
             <div>
-              <p className="text-xs uppercase tracking-[0.18em] opacity-60">{tesla.model}</p>
-              <p className="mt-2 font-serif text-6xl tracking-tight leading-none">
-                {tesla.charge}
-                <span className="text-2xl opacity-60">%</span>
+              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{tesla.model}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                <MapPin className="mr-1 inline h-3 w-3" />
+                {tesla.location}
               </p>
-              <p className="mt-1 text-sm opacity-70">{tesla.rangeKm} km estimés</p>
             </div>
-            <div className="flex flex-col items-end gap-2 text-right">
-              <span className={"inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs " + (tesla.charging ? "bg-primary text-primary-foreground" : tesla.pluggedIn ? "bg-background/15" : "bg-background/10 opacity-70")}>
-                {tesla.charging ? <BatteryCharging className="h-3.5 w-3.5 anim-breathe" /> : <Plug className="h-3.5 w-3.5" />}
-                {tesla.charging ? "En charge" : tesla.pluggedIn ? "Branchée" : "Débranchée"}
-              </span>
-              <span className="text-[11px] opacity-60">Limite {tesla.chargeLimit}%</span>
-            </div>
+            <span className={"inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] " + (tesla.charging ? "bg-primary text-primary-foreground" : tesla.pluggedIn ? "bg-secondary text-foreground" : "bg-secondary/60 text-muted-foreground")}>
+              {tesla.charging ? <BatteryCharging className="h-3.5 w-3.5 anim-breathe" /> : <Plug className="h-3.5 w-3.5" />}
+              {tesla.charging ? "En charge" : tesla.pluggedIn ? "Branchée" : "Débranchée"}
+            </span>
           </div>
-          <div className="relative mt-5 h-2 w-full overflow-hidden rounded-full bg-background/15">
-            <div className="absolute left-0 top-0 h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${tesla.charge}%` }} />
-            <div className="absolute top-0 h-full w-px bg-background/40" style={{ left: `${tesla.chargeLimit}%` }} />
-          </div>
-        </div>
 
-        {/* Detailed state grid — more graphic */}
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6 stagger">
-          <GraphicTile
-            icon={<MapPin className="h-4 w-4" />}
-            label="Position"
-            value={tesla.inGarage ? "Garage" : "En route"}
-            sub={tesla.location}
-            tone={tesla.inGarage ? "neutral" : "accent"}
-          />
-          <TempTile interior={tesla.interior} exterior={tesla.exterior} />
-          <GraphicTile
-            icon={<Lock className="h-4 w-4" />}
-            label="Verrouillage"
-            value={tesla.locked ? "Verrouillée" : "Ouverte"}
-            sub={tesla.locked ? "Sécurisée" : "À vérifier"}
-            tone={tesla.locked ? "success" : "warm"}
-          />
-          <OdoTile km={tesla.odometerKm} />
-          <GraphicTile
-            icon={<Cpu className="h-4 w-4" />}
-            label="Logiciel"
-            value={tesla.software}
-            sub="à jour"
-            tone="neutral"
-          />
-          <GraphicTile
-            icon={<Wifi className="h-4 w-4" />}
-            label="Sync"
-            value={tesla.lastSeen}
-            sub="connectée"
-            tone="success"
-            pulse
-          />
+          {/* Car visual with floating stats */}
+          <div className="relative mx-auto grid grid-cols-[1fr_auto_1fr] items-center gap-4 py-2">
+            {/* Left stats */}
+            <div className="flex flex-col items-end gap-3 text-right">
+              <FloatStat label="Charge" value={`${tesla.charge}%`} accent />
+              <FloatStat label="Autonomie" value={`${tesla.rangeKm} km`} />
+              <FloatStat label="Intérieur" value={`${tesla.interior}°`} icon={<Flame className="h-3 w-3" />} />
+            </div>
+
+            {/* Tesla SVG */}
+            <TeslaCar charging={tesla.charging} locked={tesla.locked} />
+
+            {/* Right stats */}
+            <div className="flex flex-col items-start gap-3">
+              <FloatStat label="Limite" value={`${tesla.chargeLimit}%`} />
+              <FloatStat label="Odomètre" value={`${(tesla.odometerKm / 1000).toFixed(1)}k km`} icon={<Gauge className="h-3 w-3" />} />
+              <FloatStat label="Extérieur" value={`${tesla.exterior}°`} icon={<Snowflake className="h-3 w-3" />} />
+            </div>
+          </div>
+
+          {/* Charge bar */}
+          <div className="relative mx-auto mt-2 h-1.5 w-full max-w-md overflow-hidden rounded-full bg-secondary">
+            <div className="absolute left-0 top-0 h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${tesla.charge}%` }} />
+            <div className="absolute top-0 h-full w-px bg-foreground/40" style={{ left: `${tesla.chargeLimit}%` }} />
+          </div>
+
+          {/* Quick actions */}
+          <div className="mt-5 grid grid-cols-3 gap-2 sm:grid-cols-6">
+            <ActionBtn icon={tesla.locked ? <Lock className="h-4 w-4" /> : <LockOpen className="h-4 w-4" />} label={tesla.locked ? "Verrouillée" : "Ouverte"} active={tesla.locked} />
+            <ActionBtn icon={<Flame className="h-4 w-4" />} label="Préchauffer" />
+            <ActionBtn icon={<Wind className="h-4 w-4" />} label="Climatiser" />
+            <ActionBtn icon={<Car className="h-4 w-4" />} label="Coffre" />
+            <ActionBtn icon={<Lightbulb className="h-4 w-4" />} label="Phares" />
+            <ActionBtn icon={<Volume2 className="h-4 w-4" />} label="Klaxon" />
+          </div>
+
+          {/* Footer meta */}
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-border/60 pt-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5"><Wifi className="h-3 w-3" /> Sync {tesla.lastSeen}</span>
+            <span>Logiciel {tesla.software}</span>
+            <span>{tesla.inGarage ? "Au garage" : "Hors garage"}</span>
+          </div>
         </div>
       </section>
 
@@ -211,24 +214,30 @@ function TeslaPage() {
               </span>
             </div>
 
-            <div className="flex h-full items-end gap-4 sm:gap-5">
+            <div className="flex h-full items-end gap-5 sm:gap-6">
               {visibleQuarters.map((q) => {
                 const isCurrent = q.key === currentQKey;
+                const missing = 3 - q.monthsCounted;
                 return (
-                  <div key={q.key} className="flex h-full flex-1 items-end gap-1">
+                  <div key={q.key} className="flex h-full flex-1 items-end gap-1.5">
                     {q.months.map((m) => (
                       <div key={`${m.year}-${m.month}`} className="group relative flex h-full flex-1 flex-col justify-end">
                         <div
                           className={
-                            "w-full rounded-t-sm transition-all duration-700 " +
+                            "w-full rounded-t-md transition-all duration-700 " +
                             (isCurrent ? "bg-primary" : "bg-secondary group-hover:bg-secondary/70")
                           }
                           style={{ height: `${(m.kWh / maxMonth) * 100}%` }}
                         />
-                        {/* tooltip on hover */}
-                        <div className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-[9px] text-background opacity-0 transition-opacity group-hover:opacity-100">
+                        <div className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-[10px] text-background opacity-0 transition-opacity group-hover:opacity-100">
                           {m.kWh} kWh
                         </div>
+                      </div>
+                    ))}
+                    {/* invisible placeholders so partial quarter aligns with its labels */}
+                    {Array.from({ length: missing }).map((_, i) => (
+                      <div key={`bph-${i}`} className="flex h-full flex-1 items-end">
+                        <div className="w-full rounded-t-md border border-dashed border-border/60" style={{ height: "8%" }} />
                       </div>
                     ))}
                   </div>
@@ -238,40 +247,40 @@ function TeslaPage() {
           </div>
 
           {/* Quarter axis: month labels + quarter total */}
-          <div className="mt-2 flex gap-4 sm:gap-5">
+          <div className="mt-2 flex gap-5 sm:gap-6">
             {visibleQuarters.map((q) => {
               const isCurrent = q.key === currentQKey;
               const partial = q.monthsCounted < 3;
               return (
-                <div key={q.key} className="flex flex-1 flex-col items-stretch gap-1">
+                <div key={q.key} className="flex flex-1 flex-col items-stretch gap-1.5">
                   {/* month labels */}
-                  <div className="flex gap-1">
+                  <div className="flex gap-1.5">
                     {q.months.map((m) => (
-                      <div key={`${m.year}-${m.month}-l`} className="flex-1 text-center text-[9px] text-muted-foreground">
+                      <div key={`${m.year}-${m.month}-l`} className="flex-1 text-center text-[11px] text-muted-foreground">
                         {m.month.slice(0, 3)}
                       </div>
                     ))}
-                    {/* placeholders for missing months in current quarter to keep widths aligned */}
-                    {partial && Array.from({ length: 3 - q.monthsCounted }).map((_, i) => (
-                      <div key={`ph-${i}`} className="flex-1" />
+                    {Array.from({ length: 3 - q.monthsCounted }).map((_, i) => (
+                      <div key={`ph-${i}`} className="flex-1 text-center text-[11px] text-muted-foreground/40">—</div>
                     ))}
                   </div>
                   {/* bracket */}
-                  <div className="relative h-1.5">
+                  <div className="relative h-2">
                     <div className={"absolute inset-x-1 top-0 h-px " + (isCurrent ? "bg-primary" : "bg-border")} />
-                    <div className={"absolute left-1 top-0 h-1.5 w-px " + (isCurrent ? "bg-primary" : "bg-border")} />
-                    <div className={"absolute right-1 top-0 h-1.5 w-px " + (isCurrent ? "bg-primary" : "bg-border")} />
+                    <div className={"absolute left-1 top-0 h-2 w-px " + (isCurrent ? "bg-primary" : "bg-border")} />
+                    <div className={"absolute right-1 top-0 h-2 w-px " + (isCurrent ? "bg-primary" : "bg-border")} />
                   </div>
                   {/* quarter total */}
-                  <div className="flex flex-col items-center">
-                    <span className={"text-[10px] uppercase tracking-wider " + (isCurrent ? "text-primary" : "text-muted-foreground")}>
+                  <div className="flex flex-col items-center gap-0.5">
+                    <span className={"text-[11px] uppercase tracking-[0.14em] " + (isCurrent ? "text-primary font-medium" : "text-muted-foreground")}>
                       Q{q.q} '{String(q.year).slice(2)}
+                      {partial && <span className="ml-1 normal-case tracking-normal opacity-70">(en cours)</span>}
                     </span>
-                    <span className={"font-serif text-base leading-none " + (isCurrent ? "text-primary" : "text-foreground")}>
+                    <span className={"font-serif text-xl leading-none " + (isCurrent ? "text-primary" : "text-foreground")}>
                       {q.kWh}
-                      <span className="ml-0.5 text-[9px] font-sans text-muted-foreground">kWh</span>
+                      <span className="ml-1 text-[11px] font-sans text-muted-foreground">kWh</span>
                     </span>
-                    <span className="text-[9px] tabular-nums text-muted-foreground">{fmtEur(cost(q.kWh))}</span>
+                    <span className="text-[11px] tabular-nums text-muted-foreground">{fmtEur(cost(q.kWh))}</span>
                   </div>
                 </div>
               );
@@ -280,92 +289,95 @@ function TeslaPage() {
         </div>
 
         <p className="mt-4 text-[11px] text-muted-foreground">
-          Médiane calculée sur {previousFull.length} trimestres clos · moyenne {avgPrevKWh} kWh ({fmtEur(cost(avgPrevKWh))}).
+          Médiane <span className="text-foreground">mensuelle</span> ({medianMonth} kWh) calculée sur {previousFull.length} trimestres clos · moyenne trimestrielle {avgPrevKWh} kWh ({fmtEur(cost(avgPrevKWh))}).
         </p>
       </Section>
     </div>
   );
 }
 
-// ---------- Tiles ----------
+// ---------- Hero parts ----------
 
-function GraphicTile({
-  icon,
+function FloatStat({
   label,
   value,
-  sub,
-  tone = "neutral",
-  pulse,
+  icon,
+  accent,
 }: {
-  icon: React.ReactNode;
   label: string;
   value: string;
-  sub?: string;
-  tone?: "neutral" | "accent" | "success" | "warm";
-  pulse?: boolean;
+  icon?: React.ReactNode;
+  accent?: boolean;
 }) {
-  const toneBg =
-    tone === "accent" ? "bg-primary/10 text-primary"
-    : tone === "success" ? "bg-success/10 text-success"
-    : tone === "warm" ? "bg-warm/10 text-warm"
-    : "bg-secondary text-foreground";
   return (
-    <div className="rounded-xl border border-border/60 bg-card p-3">
-      <div className="flex items-center gap-2">
-        <span className={"relative inline-flex h-7 w-7 items-center justify-center rounded-lg " + toneBg}>
-          {icon}
-          {pulse && <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-success anim-breathe" />}
-        </span>
-        <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{label}</span>
-      </div>
-      <p className="mt-2 font-serif text-base leading-tight">{value}</p>
-      {sub && <p className="text-[10px] text-muted-foreground">{sub}</p>}
+    <div className="leading-tight">
+      <p className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+        {icon}
+        {label}
+      </p>
+      <p className={"font-serif text-lg " + (accent ? "text-primary" : "text-foreground")}>{value}</p>
     </div>
   );
 }
 
-function TempTile({ interior, exterior }: { interior: number; exterior: number }) {
+function ActionBtn({ icon, label, active }: { icon: React.ReactNode; label: string; active?: boolean }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-card p-3">
-      <div className="flex items-center gap-2">
-        <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-secondary">
-          <Thermometer className="h-4 w-4" />
-        </span>
-        <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Température</span>
-      </div>
-      <div className="mt-2 flex items-baseline gap-3">
-        <div>
-          <p className="font-serif text-base leading-none">{interior}°</p>
-          <p className="mt-0.5 inline-flex items-center gap-0.5 text-[9px] text-muted-foreground">
-            <Sun className="h-2.5 w-2.5" /> intérieur
-          </p>
-        </div>
-        <div className="opacity-70">
-          <p className="font-serif text-base leading-none">{exterior}°</p>
-          <p className="mt-0.5 inline-flex items-center gap-0.5 text-[9px] text-muted-foreground">
-            <Snowflake className="h-2.5 w-2.5" /> extérieur
-          </p>
-        </div>
-      </div>
-    </div>
+    <button
+      type="button"
+      className={
+        "group flex flex-col items-center gap-1 rounded-xl border px-2 py-2.5 text-[10px] uppercase tracking-[0.12em] transition " +
+        (active
+          ? "border-primary/40 bg-primary/10 text-primary"
+          : "border-border/60 bg-card text-muted-foreground hover:border-foreground/30 hover:text-foreground")
+      }
+    >
+      <span className={"inline-flex h-8 w-8 items-center justify-center rounded-lg " + (active ? "bg-primary/15" : "bg-secondary group-hover:bg-secondary/70")}>
+        {icon}
+      </span>
+      {label}
+    </button>
   );
 }
 
-function OdoTile({ km }: { km: number }) {
-  // visualize a 200k km lifetime gauge
-  const pct = Math.min(100, (km / 200000) * 100);
+function TeslaCar({ charging, locked }: { charging: boolean; locked: boolean }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-card p-3">
-      <div className="flex items-center gap-2">
-        <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-secondary">
-          <Gauge className="h-4 w-4" />
-        </span>
-        <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Odomètre</span>
-      </div>
-      <p className="mt-2 font-serif text-base leading-tight">{km.toLocaleString("fr-BE")} km</p>
-      <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-secondary">
-        <div className="h-full rounded-full bg-foreground/70 transition-all duration-700" style={{ width: `${pct}%` }} />
-      </div>
+    <div className="relative flex flex-col items-center">
+      <svg viewBox="0 0 240 90" className="h-24 w-44 sm:h-28 sm:w-52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* shadow */}
+        <ellipse cx="120" cy="82" rx="100" ry="4" className="fill-foreground/10" />
+        {/* body */}
+        <path
+          d="M20 62 Q24 50 38 48 L70 44 Q88 28 120 26 Q152 28 170 44 L202 48 Q216 50 220 62 L220 68 Q220 72 216 72 L200 72 Q198 78 190 78 Q182 78 180 72 L60 72 Q58 78 50 78 Q42 78 40 72 L24 72 Q20 72 20 68 Z"
+          className="fill-foreground"
+        />
+        {/* windows */}
+        <path
+          d="M76 46 L96 32 Q108 30 120 30 Q132 30 144 32 L164 46 Z"
+          className="fill-primary/30"
+        />
+        <line x1="120" y1="30" x2="120" y2="46" className="stroke-foreground" strokeWidth="1.2" />
+        {/* wheels */}
+        <circle cx="50" cy="72" r="9" className="fill-background stroke-foreground" strokeWidth="2" />
+        <circle cx="50" cy="72" r="3.5" className="fill-foreground" />
+        <circle cx="190" cy="72" r="9" className="fill-background stroke-foreground" strokeWidth="2" />
+        <circle cx="190" cy="72" r="3.5" className="fill-foreground" />
+        {/* headlight */}
+        <circle cx="216" cy="58" r="2" className="fill-primary" />
+        {/* charge port glow */}
+        {charging && (
+          <g>
+            <circle cx="28" cy="58" r="3" className="fill-primary anim-breathe" />
+            <path d="M22 56 l4 -3 l-1 3 h3 l-4 4 l1 -3 z" className="fill-primary-foreground" />
+          </g>
+        )}
+        {/* lock indicator */}
+        <circle cx="120" cy="50" r="6" className={locked ? "fill-success/20" : "fill-warm/20"} />
+        <circle cx="120" cy="50" r="2" className={locked ? "fill-success" : "fill-warm"} />
+      </svg>
+      <span className={"mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] " + (locked ? "bg-success/10 text-success" : "bg-warm/10 text-warm")}>
+        {locked ? <Lock className="h-3 w-3" /> : <LockOpen className="h-3 w-3" />}
+        {locked ? "Verrouillée" : "Ouverte"}
+      </span>
     </div>
   );
 }
