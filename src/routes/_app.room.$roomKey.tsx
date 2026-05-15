@@ -189,6 +189,12 @@ function RoomPage() {
               </div>
             </div>
           )}
+          {detail.devices.appliances && detail.devices.appliances.length > 0 && (
+            <div className="mb-6">
+              <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Appareils</p>
+              <AppliancesGrid items={detail.devices.appliances} />
+            </div>
+          )}
           <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Capteurs · batterie</p>
           <div className="grid gap-2 sm:grid-cols-2">
             {detail.devices.batteries.map((b) => (
