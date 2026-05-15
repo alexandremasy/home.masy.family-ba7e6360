@@ -120,6 +120,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <CursorFollower />
       <Outlet />
     </QueryClientProvider>
   );
