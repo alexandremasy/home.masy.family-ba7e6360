@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Section } from "@/components/Card";
+import { PageHeader } from "@/components/PageHeader";
 import { tesla } from "@/lib/mock-data";
 import { Plug, Thermometer, MapPin, TrendingDown, TrendingUp, Zap } from "lucide-react";
 
@@ -17,10 +18,7 @@ function TeslaPage() {
 
   return (
     <div className="space-y-6">
-      <div className="px-1 anim-slide-up">
-        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">← Cockpit</Link>
-        <h1 className="mt-3 font-serif text-4xl tracking-tight sm:text-5xl">Tesla</h1>
-      </div>
+      <PageHeader title="Tesla" />
 
       {/* Concise stat row up top */}
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 stagger">

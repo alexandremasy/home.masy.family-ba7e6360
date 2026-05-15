@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Section } from "@/components/Card";
+import { PageHeader } from "@/components/PageHeader";
 import { energie } from "@/lib/mock-data";
 import { ArrowRight, Droplet, Zap, Flame } from "lucide-react";
 
@@ -15,11 +16,7 @@ function EnergiePage() {
 
   return (
     <div className="space-y-6">
-      <div className="px-1 anim-slide-up">
-        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">← Cockpit</Link>
-        <h1 className="mt-3 font-serif text-4xl tracking-tight sm:text-5xl">Énergie</h1>
-        <p className="mt-1 text-muted-foreground">Consommation mensuelle et relevés</p>
-      </div>
+      <PageHeader title="Énergie" subtitle="Consommation mensuelle et relevés" />
 
       {energie.monthlyDue && (
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl bg-warm p-6 text-warm-foreground sm:p-8 anim-pop-in">

@@ -37,13 +37,16 @@ function RoomPage() {
 
   return (
     <div className="space-y-6">
-      <div className="px-1 anim-slide-up">
-        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">← Cockpit</Link>
-          <div className="mt-3 flex items-center gap-3">
-            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/12 text-primary">
-              <RoomIcon icon={room.icon} className="h-6 w-6 anim-float" />
+      <div className="page-header sticky top-0 z-20 -mx-5 -mt-7 px-5 pt-7 pb-4 sm:-mx-8 sm:-mt-10 sm:px-8 sm:pt-10">
+        <div className="page-header__bg pointer-events-none absolute inset-0 bg-background/85 backdrop-blur-xl" />
+        <div className="page-header__fade pointer-events-none absolute inset-x-0 top-full h-8 bg-gradient-to-b from-background to-transparent" />
+        <div className="relative">
+          <Link to="/" className="text-sm text-muted-foreground transition-colors hover:text-foreground">← Cockpit</Link>
+          <div className="mt-2 flex items-center gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/12 text-primary">
+              <RoomIcon icon={room.icon} className="h-5 w-5 anim-float" />
             </span>
-            <h1 className="font-serif text-4xl tracking-tight sm:text-5xl">{room.name}</h1>
+            <h1 className="font-serif text-3xl tracking-tight sm:text-4xl">{room.name}</h1>
             {room.occupied && (
               <span className="relative inline-flex h-3 w-3">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-success/40 animate-ping" />
@@ -51,9 +54,10 @@ function RoomPage() {
               </span>
             )}
           </div>
-        {typeof room.temperature === "number" && (
-          <p className="mt-1 text-muted-foreground">Actuellement {room.temperature.toFixed(1)}°C</p>
-        )}
+          {typeof room.temperature === "number" && (
+            <p className="mt-1 text-sm text-muted-foreground">Actuellement {room.temperature.toFixed(1)}°C</p>
+          )}
+        </div>
       </div>
 
       {detail.lights && (

@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
+import { PageHeader } from "@/components/PageHeader";
 import { Check } from "lucide-react";
 
 export const Route = createFileRoute("/_app/energie/saisie")({
@@ -22,11 +23,7 @@ function SaisiePage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <div className="px-1">
-        <Link to="/energie" className="text-sm text-muted-foreground hover:text-foreground">← Énergie</Link>
-        <h1 className="mt-3 font-serif text-4xl tracking-tight sm:text-5xl">Relevé mensuel</h1>
-        <p className="mt-1 text-muted-foreground">Saisis les 4 compteurs ci-dessous.</p>
-      </div>
+      <PageHeader title="Relevé mensuel" subtitle="Saisis les 4 compteurs ci-dessous." back="/energie" backLabel="Énergie" />
 
       <Section title="Compteurs">
         <form onSubmit={submit} className="space-y-4">
