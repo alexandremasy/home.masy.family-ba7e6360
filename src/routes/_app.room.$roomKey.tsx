@@ -86,11 +86,12 @@ function RoomPage() {
             })}
           </div>
 
-          {scene === "Off" ? (
+          {scene === "Off" && (
             <p className="mt-6 text-xs text-muted-foreground">
               Aucune scène active — toutes les lumières sont éteintes.
             </p>
-          ) : (
+          )}
+          {scene !== "Off" && !detail.lights.hideBrightness && (
             <div className="mt-6">
               <div className="mb-2 flex justify-between text-xs uppercase tracking-[0.18em] text-muted-foreground">
                 <span>Luminosité</span><span>{brightness}%</span>
