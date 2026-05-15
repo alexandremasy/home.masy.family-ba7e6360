@@ -75,7 +75,8 @@ type Domain = "elec" | "eau" | "mazout";
 const domainConfig: Record<Domain, { label: string; unit: string; icon: typeof Zap; pick: (h: typeof energie.history[number]) => number; seasonal: number[] }> = {
   elec: {
     label: "Électricité", unit: "kWh", icon: Zap,
-    pick: (h) => h.jour + h.nuit,
+    // Net grid consumption — negative when solar injection > consumption.
+    pick: (h) => h.jour + h.nuit - (h.solar ?? 0),
     seasonal: [1.15, 1.18, 1.05, 0.95, 0.85, 0.75, 0.7, 0.75, 0.85, 0.95, 1.1, 1.18],
   },
   eau: {
@@ -179,7 +180,11 @@ function EnergiePage() {
   const { electricity, water, oil, lastReadingDate } = energie;
   const [domain, setDomain] = useState<Domain>("elec");
   const history = buildHistory(domain);
-  const max = Math.max(...history.map((h) => h.value));
+  const maxPos = Math.max(0, ...history.map((h) => h.value));
+  const maxNeg = Math.abs(Math.min(0, ...history.map((h) => h.value)));
+  const totalRange = maxPos + maxNeg || 1;
+  const posZonePct = (maxPos / totalRange) * 100;
+  const negZonePct = (maxNeg / totalRange) * 100;
   const cfg = domainConfig[domain];
   const lastReading = new Date(lastReadingDate);
   const lastReadingFmt = lastReading.toLocaleDateString("fr-BE", {
@@ -375,6 +380,11 @@ function EnergiePage() {
               <span className="inline-flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-sm bg-primary" /> Relevé
               </span>
+              {domain === "elec" && (
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-sm bg-success/70" /> Injection solaire
+                </span>
+              )}
               <span className="inline-flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-sm border border-dashed border-muted-foreground/60" /> Projeté
               </span>
@@ -382,29 +392,59 @@ function EnergiePage() {
           </div>
         </header>
 
-        <div className="flex h-56 items-end gap-2 sm:gap-3">
+        <div className="flex h-56 gap-2 sm:gap-3">
           {history.map((h, i) => {
             const isCurrent = i === latestRecordedIdx;
-            const heightPct = (h.value / max) * 100;
+            const isNeg = h.value < 0;
+            const heightPct = isNeg
+              ? (Math.abs(h.value) / (maxNeg || 1)) * 100
+              : (h.value / (maxPos || 1)) * 100;
             return (
-              <div key={h.key} className="group relative flex h-full flex-1 flex-col items-end justify-end gap-2">
-                <div
-                  className={
-                    "w-full max-w-[60px] rounded-t-xl transition-all duration-700 hover:scale-y-105 origin-bottom " +
-                    (h.projected
-                      ? "border border-dashed border-muted-foreground/40 bg-muted-foreground/10"
-                      : isCurrent
-                        ? "bg-primary"
-                        : "bg-secondary")
-                  }
-                  style={{ height: `${heightPct}%` }}
-                />
+              <div key={h.key} className="group relative flex h-full flex-1 flex-col">
+                {/* Positive zone */}
+                <div style={{ height: `${posZonePct}%` }} className="flex items-end justify-center">
+                  {!isNeg && (
+                    <div
+                      className={
+                        "w-full max-w-[60px] rounded-t-xl transition-all duration-700 hover:scale-y-105 origin-bottom " +
+                        (h.projected
+                          ? "border border-dashed border-muted-foreground/40 bg-muted-foreground/10"
+                          : isCurrent
+                            ? "bg-primary"
+                            : "bg-secondary")
+                      }
+                      style={{ height: `${heightPct}%` }}
+                    />
+                  )}
+                </div>
+                {/* Zero baseline */}
+                {maxNeg > 0 && <div className="h-px bg-border/60" />}
+                {/* Negative zone (solar surplus) */}
+                {maxNeg > 0 && (
+                  <div style={{ height: `${negZonePct}%` }} className="flex items-start justify-center">
+                    {isNeg && (
+                      <div
+                        className={
+                          "w-full max-w-[60px] rounded-b-xl transition-all duration-700 hover:scale-y-105 origin-top " +
+                          (h.projected
+                            ? "border border-dashed border-success/40 bg-success/10"
+                            : "bg-success/70")
+                        }
+                        style={{ height: `${heightPct}%` }}
+                      />
+                    )}
+                  </div>
+                )}
                 {/* Tooltip on hover */}
                 <div className="pointer-events-none absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full rounded-lg border border-border/60 bg-popover px-2 py-1 text-xs shadow-lift opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap z-10">
                   <p className="font-medium capitalize">{h.label} {h.year}</p>
-                  <p className="tabular-nums text-muted-foreground">{h.value} {cfg.unit}{h.projected ? " · projeté" : ""}</p>
+                  <p className="tabular-nums text-muted-foreground">
+                    {h.value} {cfg.unit}
+                    {isNeg ? " · injection solaire" : ""}
+                    {h.projected ? " · projeté" : ""}
+                  </p>
                 </div>
-                <p className={"w-full text-center text-[11px] sm:text-xs " + (isCurrent ? "font-medium text-foreground" : "text-muted-foreground")}>
+                <p className={"mt-1 w-full text-center text-[11px] sm:text-xs " + (isCurrent ? "font-medium text-foreground" : "text-muted-foreground")}>
                   {h.label}
                 </p>
               </div>

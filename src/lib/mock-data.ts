@@ -111,20 +111,23 @@ export const energie = {
   trend: { eau: -0.2, jour: -14, nuit: -8, mazout: -100 },
   // 13 months ending on the latest fully-recorded month (April 2026 if last reading = May 1).
   // Order: oldest → newest.
+  // `solar` = kWh injected on the grid (PV surplus over self-consumption).
+  // Net grid consumption shown on the elec chart = (jour + nuit) - solar,
+  // which goes negative in summer when production exceeds consumption.
   history: [
-    { month: "Avr", eau: 8.6, jour: 168, nuit: 142, mazout: 1320 }, // Apr 2025
-    { month: "Mai", eau: 9.4, jour: 152, nuit: 134, mazout: 980 },  // May 2025
-    { month: "Juin", eau: 10.2, jour: 138, nuit: 122, mazout: 540 }, // Jun 2025
-    { month: "Juil", eau: 11.1, jour: 132, nuit: 118, mazout: 320 }, // Jul 2025
-    { month: "Août", eau: 10.8, jour: 128, nuit: 116, mazout: 280 }, // Aug 2025
-    { month: "Sep", eau: 9.6, jour: 142, nuit: 126, mazout: 620 },   // Sep 2025
-    { month: "Oct", eau: 8.8, jour: 168, nuit: 148, mazout: 1180 },  // Oct 2025
-    { month: "Nov", eau: 8.2, jour: 198, nuit: 168, mazout: 1620 },  // Nov 2025
-    { month: "Déc", eau: 7.9, jour: 224, nuit: 184, mazout: 1980 },  // Dec 2025
-    { month: "Jan", eau: 8.2, jour: 210, nuit: 165, mazout: 1850 },  // Jan 2026
-    { month: "Fév", eau: 7.6, jour: 198, nuit: 172, mazout: 1620 },  // Feb 2026
-    { month: "Mar", eau: 9.1, jour: 184, nuit: 158, mazout: 1430 },  // Mar 2026
-    { month: "Avr", eau: 8.4, jour: 162, nuit: 140, mazout: 1280 },  // Apr 2026
+    { month: "Avr", eau: 8.6, jour: 168, nuit: 142, mazout: 1320, solar: 180 },  // Apr 2025
+    { month: "Mai", eau: 9.4, jour: 152, nuit: 134, mazout: 980,  solar: 320 },  // May 2025
+    { month: "Juin", eau: 10.2, jour: 138, nuit: 122, mazout: 540, solar: 340 }, // Jun 2025
+    { month: "Juil", eau: 11.1, jour: 132, nuit: 118, mazout: 320, solar: 360 }, // Jul 2025 (net -110)
+    { month: "Août", eau: 10.8, jour: 128, nuit: 116, mazout: 280, solar: 330 }, // Aug 2025 (net -86)
+    { month: "Sep", eau: 9.6, jour: 142, nuit: 126, mazout: 620,  solar: 230 },  // Sep 2025
+    { month: "Oct", eau: 8.8, jour: 168, nuit: 148, mazout: 1180, solar: 110 },  // Oct 2025
+    { month: "Nov", eau: 8.2, jour: 198, nuit: 168, mazout: 1620, solar: 40 },   // Nov 2025
+    { month: "Déc", eau: 7.9, jour: 224, nuit: 184, mazout: 1980, solar: 20 },   // Dec 2025
+    { month: "Jan", eau: 8.2, jour: 210, nuit: 165, mazout: 1850, solar: 30 },   // Jan 2026
+    { month: "Fév", eau: 7.6, jour: 198, nuit: 172, mazout: 1620, solar: 70 },   // Feb 2026
+    { month: "Mar", eau: 9.1, jour: 184, nuit: 158, mazout: 1430, solar: 160 },  // Mar 2026
+    { month: "Avr", eau: 8.4, jour: 162, nuit: 140, mazout: 1280, solar: 220 },  // Apr 2026
   ],
 };
 
