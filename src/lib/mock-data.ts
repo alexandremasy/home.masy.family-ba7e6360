@@ -21,25 +21,40 @@ export const rooms: Room[] = [
 ];
 
 export const tesla = {
+  model: "Model 3 Long Range",
   charge: 74,
   pluggedIn: true,
+  charging: false,
   inGarage: false,
+  locked: true,
   location: "Bruxelles · Place Flagey",
   coords: { lat: 50.8275, lng: 4.3719 },
   chargeLimit: 80,
   rangeKm: 310,
   interior: 21,
   exterior: 14,
+  odometerKm: 48230,
+  software: "2026.8.3",
+  lastSeen: "il y a 4 min",
+  pricePerKWh: 0.231, // € — used to invoice quarterly
   monthly: {
     current: { kWh: 184, sessions: 12, cost: 42.6 },
     previous: { kWh: 212, sessions: 14, cost: 49.1 },
+    // 13 months so we can show the current quarter + 4 previous full quarters
     history: [
-      { month: "Déc", kWh: 240 },
-      { month: "Jan", kWh: 228 },
-      { month: "Fév", kWh: 196 },
-      { month: "Mar", kWh: 220 },
-      { month: "Avr", kWh: 212 },
-      { month: "Mai", kWh: 184 },
+      { month: "Mai", year: 2025, kWh: 168, sessions: 11 },
+      { month: "Juin", year: 2025, kWh: 152, sessions: 10 },
+      { month: "Juil", year: 2025, kWh: 144, sessions: 9 },
+      { month: "Août", year: 2025, kWh: 138, sessions: 9 },
+      { month: "Sep", year: 2025, kWh: 176, sessions: 12 },
+      { month: "Oct", year: 2025, kWh: 198, sessions: 13 },
+      { month: "Nov", year: 2025, kWh: 224, sessions: 14 },
+      { month: "Déc", year: 2025, kWh: 240, sessions: 15 },
+      { month: "Jan", year: 2026, kWh: 228, sessions: 14 },
+      { month: "Fév", year: 2026, kWh: 196, sessions: 13 },
+      { month: "Mar", year: 2026, kWh: 220, sessions: 14 },
+      { month: "Avr", year: 2026, kWh: 212, sessions: 14 },
+      { month: "Mai", year: 2026, kWh: 184, sessions: 12 },
     ],
   },
 };
