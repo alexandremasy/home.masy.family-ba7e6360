@@ -143,16 +143,27 @@ function TeslaPage() {
         </div>
 
         {/* Car visual with floating stats — no card background */}
-        <div className="relative grid grid-cols-[1fr_auto_1fr] items-center gap-4 py-2">
-          <div className="flex flex-col items-end gap-3 text-right">
+        <div className="relative flex flex-col items-center gap-3 py-2 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:gap-4">
+          <div className="order-2 grid w-full grid-cols-3 gap-3 sm:hidden">
+            <FloatStat label="Charge" value={`${tesla.charge}%`} accent />
+            <FloatStat label="Autonomie" value={`${tesla.rangeKm} km`} />
+            <FloatStat label="Limite" value={`${tesla.chargeLimit}%`} />
+            <FloatStat label="Intérieur" value={`${tesla.interior}°`} icon={<Flame className="h-3 w-3" />} />
+            <FloatStat label="Extérieur" value={`${tesla.exterior}°`} icon={<Snowflake className="h-3 w-3" />} />
+            <FloatStat label="Odomètre" value={`${(tesla.odometerKm / 1000).toFixed(1)}k km`} icon={<Gauge className="h-3 w-3" />} />
+          </div>
+
+          <div className="hidden flex-col items-end gap-3 text-right sm:flex">
             <FloatStat label="Charge" value={`${tesla.charge}%`} accent />
             <FloatStat label="Autonomie" value={`${tesla.rangeKm} km`} />
             <FloatStat label="Intérieur" value={`${tesla.interior}°`} icon={<Flame className="h-3 w-3" />} />
           </div>
 
-          <TeslaCar charging={tesla.charging} locked={tesla.locked} />
+          <div className="order-1 sm:order-none">
+            <TeslaCar charging={tesla.charging} locked={tesla.locked} />
+          </div>
 
-          <div className="flex flex-col items-start gap-3">
+          <div className="hidden flex-col items-start gap-3 sm:flex">
             <FloatStat label="Limite" value={`${tesla.chargeLimit}%`} />
             <FloatStat label="Odomètre" value={`${(tesla.odometerKm / 1000).toFixed(1)}k km`} icon={<Gauge className="h-3 w-3" />} />
             <FloatStat label="Extérieur" value={`${tesla.exterior}°`} icon={<Snowflake className="h-3 w-3" />} />
@@ -165,7 +176,7 @@ function TeslaPage() {
         </div>
 
         {/* Quick actions */}
-        <div className="grid grid-cols-3 gap-2 stagger sm:grid-cols-5">
+        <div className="grid grid-cols-5 gap-1.5 stagger sm:gap-2">
           <ActionBtn icon={tesla.locked ? <Lock className="h-5 w-5" /> : <LockOpen className="h-5 w-5" />} label={tesla.locked ? "Verrouillée" : "Déverrouiller"} active={tesla.locked} />
           <ActionBtn icon={<Flame className="h-5 w-5" />} label="Préchauffage" />
           <ActionBtn icon={<Plug className="h-5 w-5" />} label="Port de charge" active={tesla.pluggedIn} />
