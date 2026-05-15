@@ -142,7 +142,6 @@ export const roomDetails: Record<RoomKey, {
 }> = {
   salon: {
     lights: { zones: [{ name: "Plafond", on: false }, { name: "Lampes", on: true }, { name: "TV bias", on: true }], scene: "Film", scenes: ["Film", "Lecture", "Soirée", "Off"], brightness: 35 },
-    climate: { mode: 21, current: 21.4 },
     media: { nowPlaying: "Linked", artist: "Bonobo", source: "Spotify", volume: 28 },
     devices: { batteries: [{ name: "Capteur canapé", level: 84 }, { name: "Télécommande", level: 62 }] },
   },
