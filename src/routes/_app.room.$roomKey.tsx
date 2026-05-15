@@ -2,7 +2,23 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
 import { rooms, roomDetails, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon } from "lucide-react";
+import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, type LucideIcon } from "lucide-react";
+
+function sceneIcon(name: string): LucideIcon {
+  const n = name.toLowerCase();
+  if (n.includes("medit")) return Moon;
+  if (n.includes("cosy") || n.includes("cozy")) return Flame;
+  if (n.includes("moyen")) return SunMedium;
+  if (n.includes("lumineux")) return Sun;
+  if (n.includes("nuit")) return Moon;
+  if (n.includes("réveil") || n.includes("reveil")) return Sunrise;
+  if (n.includes("lecture")) return BookOpen;
+  if (n.includes("travail")) return SunMedium;
+  if (n.includes("dîner") || n.includes("diner")) return UtensilsCrossed;
+  if (n.includes("cuisine")) return ChefHat;
+  if (n === "off") return Power;
+  return Sparkles;
+}
 import { RoomIcon } from "@/components/RoomIcon";
 
 export const Route = createFileRoute("/_app/room/$roomKey")({
@@ -77,19 +93,20 @@ function RoomPage() {
           <div className="grid grid-cols-2 gap-2 stagger sm:grid-cols-4">
             {detail.lights.scenes.map((s) => {
               const active = scene === s;
+              const Icon = sceneIcon(s);
               return (
                 <button
                   key={s}
                   onClick={() => setScene(s)}
                   className={
-                    "group relative flex flex-col items-center gap-1 overflow-hidden rounded-xl border px-2 py-3 transition-all duration-300 " +
+                    "group relative flex flex-col items-center gap-1.5 overflow-hidden rounded-xl border px-3 py-4 transition-all duration-300 " +
                     (active
                       ? "border-foreground bg-foreground text-background shadow-lift -translate-y-0.5"
                       : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
                   }
                 >
-                  <Sparkles className={"h-3.5 w-3.5 " + (active ? "anim-breathe" : "opacity-50")} />
-                  <span className="font-serif text-base leading-none">{s}</span>
+                  <Icon className={"h-5 w-5 " + (active ? "anim-breathe" : "opacity-60")} />
+                  <span className="font-serif text-lg leading-none">{s}</span>
                 </button>
               );
             })}
