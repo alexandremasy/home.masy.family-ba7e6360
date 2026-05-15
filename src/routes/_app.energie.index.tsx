@@ -69,49 +69,68 @@ function makeSeries(base: number, count = 30, jitter = 0.12) {
   return out;
 }
 
+type Domain = "elec" | "eau" | "mazout";
+
+const domainConfig: Record<Domain, { label: string; unit: string; icon: typeof Zap; pick: (h: typeof energie.history[number]) => number; seasonal: number[] }> = {
+  elec: {
+    label: "Électricité", unit: "kWh", icon: Zap,
+    pick: (h) => h.jour + h.nuit,
+    seasonal: [1.15, 1.18, 1.05, 0.95, 0.85, 0.75, 0.7, 0.75, 0.85, 0.95, 1.1, 1.18],
+  },
+  eau: {
+    label: "Eau", unit: "m³", icon: Droplet,
+    pick: (h) => h.eau,
+    seasonal: [0.95, 0.95, 1, 1, 1.05, 1.1, 1.12, 1.1, 1.05, 1, 0.95, 0.95],
+  },
+  mazout: {
+    label: "Mazout", unit: "L", icon: Flame,
+    pick: (h) => h.mazout,
+    seasonal: [1.3, 1.25, 1.05, 0.85, 0.6, 0.45, 0.4, 0.45, 0.65, 0.9, 1.15, 1.3],
+  },
+};
+
 // 12-month rolling history with year metadata.
 // Readings happen on the 1st of each month and cover the *previous* month.
 // So the latest recorded month = (month of lastReadingDate) - 1.
-function buildHistory() {
+function buildHistory(domain: Domain) {
   const monthLabels = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
   const now = new Date();
   const recorded = new Map<string, number>();
+  const cfg = domainConfig[domain];
 
   const lastReading = new Date(energie.lastReadingDate);
-  // Latest recorded month = month before the last reading
   const anchor = new Date(lastReading.getFullYear(), lastReading.getMonth() - 1, 1);
 
-  const recVals = energie.history.map((h) => h.jour + h.nuit);
+  const recVals = energie.history.map(cfg.pick);
   for (let i = 0; i < recVals.length; i++) {
     const offset = recVals.length - 1 - i;
     const d = new Date(anchor.getFullYear(), anchor.getMonth() - offset, 1);
     recorded.set(`${d.getFullYear()}-${d.getMonth()}`, recVals[i]);
   }
 
-  // Average for projection (recent recorded values)
   const recent = recVals.slice(-3);
   const avg = recent.reduce((a, b) => a + b, 0) / Math.max(1, recent.length);
 
-  const series: { key: string; label: string; year: number; monthIdx: number; kWh: number; projected: boolean }[] = [];
+  const series: { key: string; label: string; year: number; monthIdx: number; value: number; projected: boolean }[] = [];
   for (let i = 11; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const m = d.getMonth();
     const y = d.getFullYear();
     const key = `${y}-${m}`;
     const has = recorded.has(key);
-    // Seasonal projection: winter months trend higher
-    const seasonal = [1.15, 1.18, 1.05, 0.95, 0.85, 0.75, 0.7, 0.75, 0.85, 0.95, 1.1, 1.18][m];
+    const proj = avg * cfg.seasonal[m];
     series.push({
       key,
       label: monthLabels[m],
       year: y,
       monthIdx: m,
-      kWh: has ? recorded.get(key)! : Math.round(avg * seasonal),
+      value: has ? recorded.get(key)! : Math.round(proj * 10) / 10,
       projected: !has,
     });
   }
   return series;
 }
+
 
 // ---------- card shell ----------
 
