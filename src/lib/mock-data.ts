@@ -151,7 +151,7 @@ export const roomDetails: Record<RoomKey, {
     lights: {
       zones: [{ name: "Table", on: false }, { name: "Divan", on: true }],
       scene: "50%",
-      scenes: ["10%", "25%", "50%", "75%", "100%", "Off"],
+      scenes: ["10%", "25%", "50%", "75%", "100%"],
       brightness: 50,
       hideBrightness: true,
     },
