@@ -185,7 +185,7 @@ function TeslaPage() {
 
       {/* ============ 2. TRIMESTRE EN COURS ============ */}
       <section className="space-y-3 pt-6">
-        <h2 className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Trimestre en cours · {qLabel(currentY, currentQ)}</h2>
+        <h2 className="font-serif text-xl text-foreground">Trimestre en cours <span className="text-muted-foreground">· {qLabel(currentY, currentQ)}</span></h2>
         <div className="grid gap-6 sm:grid-cols-3 sm:divide-x sm:divide-border/60">
           <BigStat
             icon={<Zap className="h-4 w-4" />}
