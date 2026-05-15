@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
+import { PageHeader } from "@/components/PageHeader";
 import { Check } from "lucide-react";
 
 export const Route = createFileRoute("/_app/energie/saisie")({
