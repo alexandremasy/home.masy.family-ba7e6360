@@ -65,3 +65,6 @@ export function MapPinBg({ className = "" }: { className?: string }) {
         <circle r="13" fill="var(--primary)" />
         <circle r="5" fill="white" />
       </g>
+    </svg>
+  );
+}
