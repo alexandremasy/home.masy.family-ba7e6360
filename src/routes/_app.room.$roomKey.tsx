@@ -123,7 +123,10 @@ function RoomPage() {
 
       {detail.lights && (
         <Section title="Luminosité" action={<span className="text-sm text-muted-foreground">Active · {scene}</span>}>
-          <div className="grid grid-cols-2 gap-2 stagger sm:grid-cols-4">
+          <div
+            className="grid gap-2 stagger"
+            style={{ gridTemplateColumns: `repeat(${detail.lights.scenes.length}, minmax(0, 1fr))` }}
+          >
             {detail.lights.scenes.map((s) => {
               const active = scene === s;
               const Icon = sceneIcon(s);
