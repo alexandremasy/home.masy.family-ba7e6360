@@ -3,8 +3,8 @@ import { Tile } from "@/components/Card";
 import { CountUp } from "@/components/CountUp";
 import { MapPinBg } from "@/components/MapPinBg";
 import { RoomIcon } from "@/components/RoomIcon";
-import { rooms, tesla, reseau, energie, calendrier, meteo, type WeatherCond } from "@/lib/mock-data";
-import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer } from "lucide-react";
+import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, type WeatherCond } from "@/lib/mock-data";
+import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer, Music2, Gauge, Server } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -70,18 +70,17 @@ export function Dashboard() {
                 <p className="mt-1 font-serif text-xl">Vue d'ensemble</p>
               </div>
               {(() => {
-                const alerts = [
-                  energie.electricity.status === "alert" && "élec.",
-                  energie.water.status === "alert" && "eau",
-                  energie.oil.status === "alert" && "mazout",
-                ].filter(Boolean) as string[];
+                const alerts: string[] = [];
+                if (energie.oil.status === "alert") alerts.push("Niveau de mazout faible");
+                if (energie.electricity.status === "alert") alerts.push("Conso électrique élevée");
+                if (energie.water.status === "alert") alerts.push("Conso d'eau élevée");
                 const anyAlert = alerts.length > 0;
                 return anyAlert ? (
                   <span className="inline-flex items-center gap-2 rounded-full bg-warm/15 px-2.5 py-1 text-warm">
-                    <span className="relative grid h-5 w-5 place-items-center anim-pulse-ring">
+                    <span className="relative grid h-5 w-5 place-items-center rounded-full anim-pulse-ring">
                       <AlertTriangle className="h-3.5 w-3.5" />
                     </span>
-                    <span className="text-xs font-medium tracking-tight">Attention · {alerts.join(", ")}</span>
+                    <span className="text-xs font-medium tracking-tight">{alerts[0]}{alerts.length > 1 ? ` · +${alerts.length - 1}` : ""}</span>
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-2 rounded-full bg-success/15 px-2.5 py-1 text-success">
@@ -128,10 +127,27 @@ export function Dashboard() {
               <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />
             </div>
 
-            {typeof room.temperature === "number" && (
+            {typeof room.temperature === "number" ? (
               <p className="mt-6 font-serif text-4xl tracking-tight">
                 <CountUp to={room.temperature} decimals={1} /><span className="text-base text-muted-foreground">°C</span>
               </p>
+            ) : roomDetails[room.key]?.media ? (
+              <div className="mt-6 flex items-center gap-2.5">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent/15 text-accent-foreground">
+                  <Music2 className="h-4 w-4 anim-breathe" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-serif text-lg leading-tight">{roomDetails[room.key]!.media!.nowPlaying}</p>
+                  <p className="truncate text-xs text-muted-foreground">{roomDetails[room.key]!.media!.artist} · {roomDetails[room.key]!.media!.source}</p>
+                </div>
+                <span className="flex items-end gap-0.5 pb-1" aria-hidden>
+                  <span className="eq-bar h-3 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "0ms" }} />
+                  <span className="eq-bar h-4 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "150ms" }} />
+                  <span className="eq-bar h-2.5 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "300ms" }} />
+                </span>
+              </div>
+            ) : (
+              <div className="mt-6 h-[2.75rem]" aria-hidden />
             )}
 
             <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
@@ -151,7 +167,8 @@ export function Dashboard() {
 
         {/* PRIORITY 3 — Tesla (compact) */}
         <Tile span={3} to="/tesla" tone="dark" className="relative isolate">
-          <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-25" />
+          <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-55" />
+          <span className="pointer-events-none absolute inset-0 -z-10 rounded-[inherit] bg-gradient-to-br from-background/0 via-background/30 to-background/70" />
           <div className="flex items-start gap-3">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-background/10 text-background">
               <Car className="h-4.5 w-4.5 icon-hover anim-drift" />
@@ -191,33 +208,42 @@ export function Dashboard() {
 
         {/* PRIORITY 3 — Réseau (compact) */}
         <Tile span={3} to="/reseau">
-          <div className="flex items-start gap-3">
-            <span className="relative grid h-9 w-9 shrink-0 place-items-center rounded-full bg-success/15 text-success">
-              <Wifi className="h-4.5 w-4.5 icon-hover anim-glow" />
-              <span className="absolute inset-0 rounded-full ring-2 ring-success/30 anim-blink" />
-            </span>
-            <div className="flex-1">
+          <div className="flex items-start justify-between">
+            <div>
               <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Réseau</p>
               <p className="mt-1 font-serif text-xl">Tout est en ligne</p>
             </div>
+            <span className="inline-flex items-center gap-2 rounded-full bg-success/15 px-2.5 py-1 text-success">
+              <span className="relative grid h-5 w-5 place-items-center rounded-full">
+                <Wifi className="h-3.5 w-3.5" />
+              </span>
+              <span className="text-xs font-medium tracking-tight">Stable</span>
+            </span>
           </div>
-          <div className="mt-4 flex items-end justify-between gap-3 rounded-xl bg-secondary/50 px-3 py-2.5">
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Dernier speedtest</p>
-              <div className="mt-0.5 flex items-baseline gap-1">
-                <span className="font-serif text-2xl tabular-nums leading-none"><CountUp to={reseau.internet.lastSpeedtest.downMbps} /></span>
-                <span className="text-xs text-muted-foreground">Mbps ↓</span>
-              </div>
-              <p className="mt-1 text-[11px] text-muted-foreground">
-                <span className="tabular-nums">{reseau.internet.lastSpeedtest.upMbps}</span> Mbps ↑ ·
-                <span className="tabular-nums"> {reseau.internet.lastSpeedtest.pingMs}</span> ms
-              </p>
-            </div>
-            <span className="text-[10px] text-muted-foreground">{reseau.internet.lastSpeedtest.when}</span>
-          </div>
-          <div className="mt-3 space-y-1.5 text-sm">
-            <NetRow label={reseau.wifi1.ssid} on={reseau.wifi1.on} />
-            <NetRow label={reseau.wifi2.ssid} on={reseau.wifi2.on} />
+          <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
+            <NetBlock
+              icon={<Gauge className="h-3.5 w-3.5 anim-glow sm:h-4 sm:w-4" />}
+              label="Internet"
+              value={<><CountUp to={reseau.internet.lastSpeedtest.downMbps} /><span className="text-xs text-muted-foreground"> Mbps ↓</span></>}
+              sub={`${reseau.internet.lastSpeedtest.upMbps} Mbps ↑ · ${reseau.internet.lastSpeedtest.pingMs} ms`}
+              foot={reseau.internet.lastSpeedtest.when}
+            />
+            <NetBlock
+              icon={<Wifi className="h-3.5 w-3.5 anim-breathe sm:h-4 sm:w-4" />}
+              label="WiFi privé"
+              value={<>{reseau.wifi1.clients}<span className="text-xs text-muted-foreground"> clients</span></>}
+              sub={reseau.wifi1.ssid}
+              foot={reseau.wifi1.on ? "En ligne" : "Hors ligne"}
+              ok={reseau.wifi1.on}
+            />
+            <NetBlock
+              icon={<Server className="h-3.5 w-3.5 anim-breathe sm:h-4 sm:w-4" />}
+              label="Homelab"
+              value={<>{reseau.homelab.cpu}<span className="text-xs text-muted-foreground">% CPU</span></>}
+              sub={`RAM ${reseau.homelab.memory}% · Disk ${reseau.homelab.disk}%`}
+              foot={`up ${reseau.homelab.uptimeDays}j`}
+              ok
+            />
           </div>
         </Tile>
       </div>
@@ -240,14 +266,22 @@ function RoomStatus({ on, occupied }: { on: boolean; occupied: boolean }) {
   );
 }
 
-function NetRow({ label, on }: { label: string; on: boolean }) {
+function NetBlock({
+  icon, label, value, sub, foot, ok = true,
+}: { icon: React.ReactNode; label: string; value: React.ReactNode; sub: string; foot: string; ok?: boolean }) {
   return (
-    <div className="flex items-center justify-between">
-      <span className="font-mono text-xs text-muted-foreground">{label}</span>
-      <span className={"flex items-center gap-1.5 text-xs " + (on ? "text-success" : "text-muted-foreground")}>
-        <span className={"h-1.5 w-1.5 rounded-full " + (on ? "bg-success" : "bg-muted-foreground/40")} />
-        {on ? "OK" : "Off"}
+    <div className="rounded-xl bg-secondary/60 p-2.5 sm:p-3 transition-colors min-w-0">
+      <div className="flex items-center justify-between gap-1">
+        <div className="flex min-w-0 items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] text-muted-foreground sm:text-xs">
+          {icon}<span className="truncate">{label}</span>
+        </div>
+        <span className={"h-2 w-2 rounded-full " + (ok ? "bg-success/70" : "bg-muted-foreground/40")} />
+      </div>
+      <span className="mt-2 flex items-baseline gap-1 font-serif text-lg leading-none sm:text-xl tabular-nums">
+        {value}
       </span>
+      <p className="mt-1.5 truncate text-[11px] text-muted-foreground">{sub}</p>
+      <p className="mt-1 truncate text-[10px] uppercase tracking-[0.12em] text-muted-foreground/80">{foot}</p>
     </div>
   );
 }

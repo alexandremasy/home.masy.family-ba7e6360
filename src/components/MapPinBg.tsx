@@ -19,7 +19,8 @@ export function MapPinBg({ className = "" }: { className?: string }) {
           <stop offset="100%" stopColor="black" stopOpacity="0.55" />
         </radialGradient>
         <radialGradient id="pin-pulse" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.55" />
+          <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.85" />
+          <stop offset="60%" stopColor="var(--primary)" stopOpacity="0.35" />
           <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
         </radialGradient>
       </defs>
@@ -43,14 +44,19 @@ export function MapPinBg({ className = "" }: { className?: string }) {
       <ellipse cx="60" cy="170" rx="55" ry="22" fill="currentColor" opacity="0.08" />
       <ellipse cx="340" cy="40" rx="40" ry="18" fill="currentColor" opacity="0.08" />
 
-      {/* pin */}
+      {/* pin with live pulse */}
       <g transform="translate(200 100)">
-        <circle r="34" fill="url(#pin-pulse)">
-          <animate attributeName="r" values="22;38;22" dur="2.4s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.9;0.2;0.9" dur="2.4s" repeatCount="indefinite" />
+        <circle r="50" fill="url(#pin-pulse)">
+          <animate attributeName="r" values="14;58;14" dur="2.4s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.95;0;0.95" dur="2.4s" repeatCount="indefinite" />
         </circle>
-        <circle r="10" fill="var(--primary)" />
-        <circle r="4" fill="white" />
+        <circle r="32" fill="url(#pin-pulse)">
+          <animate attributeName="r" values="10;38;10" dur="2.4s" begin="0.4s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.9;0;0.9" dur="2.4s" begin="0.4s" repeatCount="indefinite" />
+        </circle>
+        <circle r="14" fill="var(--primary)" opacity="0.9" />
+        <circle r="9" fill="var(--primary)" />
+        <circle r="3.5" fill="white" />
       </g>
 
       {/* vignette */}
