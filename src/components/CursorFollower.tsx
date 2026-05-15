@@ -1,23 +1,32 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Stripe-like / alexandremasy.com-inspired cursor: a wobbly rounded rect
- * (SVG with a fractal-noise displacement filter) that snaps onto any
- * element marked with `data-cursor` and morphs to its bounds.
+ * Custom cursor inspired by alexandremasy.com:
+ * - Always: a tiny dot replaces the native cursor, with a soft circle ring trailing it.
+ * - On interactive elements (a, button, [data-cursor], [role="button"], inputs):
+ *   the ring morphs into a wobbly rounded rectangle snapped to the element's bounds,
+ *   distorted by an SVG fractal-noise displacement filter.
  */
 export function CursorFollower() {
   const svgRef = useRef<SVGSVGElement>(null);
-  const rectRef = useRef<SVGRectElement>(null);
+  const shapeRef = useRef<SVGRectElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const svg = svgRef.current;
-    const rect = rectRef.current;
-    if (!svg || !rect) return;
+    const shape = shapeRef.current;
+    const dot = dotRef.current;
+    if (!svg || !shape || !dot) return;
+
+    const INTERACTIVE = 'a, button, [role="button"], [data-cursor], input, select, textarea, summary, label';
+    const PAD = 8;
+    const IDLE = 36; // diameter of the idle ring
 
     let active: Element | null = null;
-    const PAD = 8;
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
 
-    const place = (el: Element) => {
+    const placeOnTarget = (el: Element) => {
       const r = el.getBoundingClientRect();
       const w = r.width + PAD * 2;
       const h = r.height + PAD * 2;
@@ -25,31 +34,54 @@ export function CursorFollower() {
       svg.style.width = `${w}px`;
       svg.style.height = `${h}px`;
       svg.style.transform = `translate3d(${r.left - PAD}px, ${r.top - PAD}px, 0)`;
-      rect.setAttribute("width", String(w - 2));
-      rect.setAttribute("height", String(h - 2));
+      shape.setAttribute("width", String(w - 2));
+      shape.setAttribute("height", String(h - 2));
+      shape.setAttribute("rx", "16");
+      shape.setAttribute("ry", "16");
+      svg.classList.add("is-warp");
+    };
+
+    const placeIdle = () => {
+      const w = IDLE;
+      const h = IDLE;
+      svg.style.opacity = "1";
+      svg.style.width = `${w}px`;
+      svg.style.height = `${h}px`;
+      svg.style.transform = `translate3d(${mouseX - w / 2}px, ${mouseY - h / 2}px, 0)`;
+      shape.setAttribute("width", String(w - 2));
+      shape.setAttribute("height", String(h - 2));
+      shape.setAttribute("rx", String(w / 2));
+      shape.setAttribute("ry", String(h / 2));
+      svg.classList.remove("is-warp");
     };
 
     const onMove = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      // Always update dot position
+      dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+      dot.style.opacity = "1";
+
       const t = e.target as Element | null;
-      const el = t?.closest("[data-cursor]") ?? null;
-      if (!el) {
-        if (active) {
-          active = null;
-          svg.style.opacity = "0";
-        }
-        return;
+      const el = t?.closest(INTERACTIVE) ?? null;
+      if (el) {
+        active = el;
+        placeOnTarget(el);
+      } else {
+        active = null;
+        placeIdle();
       }
-      if (el !== active) active = el;
-      place(el);
     };
 
     const onLeave = () => {
       active = null;
       svg.style.opacity = "0";
+      dot.style.opacity = "0";
     };
 
     const onScroll = () => {
-      if (active) place(active);
+      if (active) placeOnTarget(active);
+      else placeIdle();
     };
 
     window.addEventListener("mousemove", onMove, { passive: true });
@@ -63,16 +95,19 @@ export function CursorFollower() {
   }, []);
 
   return (
-    <svg ref={svgRef} className="cursor-follower" aria-hidden style={{ opacity: 0 }}>
-      <defs>
-        <filter id="cursor-warp" x="-20%" y="-20%" width="140%" height="140%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="3" result="warp">
-            <animate attributeName="baseFrequency" dur="9s" values="0.012;0.022;0.012" repeatCount="indefinite" />
-          </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="warp" scale="5" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </defs>
-      <rect ref={rectRef} className="cursor-follower__rect" x="1" y="1" width="100" height="100" rx="16" />
-    </svg>
+    <>
+      <div ref={dotRef} className="cursor-dot" aria-hidden style={{ opacity: 0 }} />
+      <svg ref={svgRef} className="cursor-follower" aria-hidden style={{ opacity: 0 }}>
+        <defs>
+          <filter id="cursor-warp" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.014" numOctaves="2" seed="3" result="warp">
+              <animate attributeName="baseFrequency" dur="9s" values="0.014;0.024;0.014" repeatCount="indefinite" />
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="warp" scale="5" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+        <rect ref={shapeRef} className="cursor-follower__rect" x="1" y="1" width="36" height="36" rx="18" ry="18" />
+      </svg>
+    </>
   );
 }
