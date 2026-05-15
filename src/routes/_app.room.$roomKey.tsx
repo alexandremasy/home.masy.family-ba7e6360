@@ -2,7 +2,19 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
 import { rooms, roomDetails, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, type LucideIcon } from "lucide-react";
+import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, type LucideIcon } from "lucide-react";
+
+function applianceIcon(name: string): LucideIcon {
+  const n = name.toLowerCase();
+  if (n.includes("sel") || n.includes("lampe")) return Lamp;
+  if (n.includes("chat")) return Cat;
+  if (n.includes("playbar") || n.includes("speaker") || n.includes("enceinte")) return Speaker;
+  if (n.includes("imprim")) return Printer;
+  if (n.includes("project")) return Projector;
+  if (n.includes("bouboule") || n.includes("boule")) return Disc3;
+  if (n.includes("coin")) return Lightbulb;
+  return Power;
+}
 
 function sceneIcon(name: string): LucideIcon {
   const n = name.toLowerCase();
@@ -357,19 +369,22 @@ function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
   const [state, setState] = useState(items);
   return (
     <div className="grid gap-2 sm:grid-cols-2">
-      {state.map((a, i) => (
-        <button
-          key={a.name}
-          onClick={() => setState(state.map((s, idx) => idx === i ? { ...s, on: !s.on } : s))}
-          className={"flex items-center justify-between rounded-xl border px-3 py-3 text-sm transition-all " + (a.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card hover:border-border")}
-        >
-          <span className="flex items-center gap-2">
-            <Power className={"h-3.5 w-3.5 " + (a.on ? "anim-breathe" : "opacity-50")} />
-            {a.name}
-          </span>
-          <span className={"text-[10px] uppercase tracking-wider " + (a.on ? "opacity-70" : "text-muted-foreground")}>{a.on ? "On" : "Off"}</span>
-        </button>
-      ))}
+      {state.map((a, i) => {
+        const Icon = applianceIcon(a.name);
+        return (
+          <button
+            key={a.name}
+            onClick={() => setState(state.map((s, idx) => idx === i ? { ...s, on: !s.on } : s))}
+            className={"flex items-center justify-between rounded-xl border px-3 py-3 text-sm transition-all " + (a.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card hover:border-border")}
+          >
+            <span className="flex items-center gap-2">
+              <Icon className={"h-3.5 w-3.5 " + (a.on ? "anim-breathe" : "opacity-50")} />
+              {a.name}
+            </span>
+            <span className={"text-[10px] uppercase tracking-wider " + (a.on ? "opacity-70" : "text-muted-foreground")}>{a.on ? "On" : "Off"}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
