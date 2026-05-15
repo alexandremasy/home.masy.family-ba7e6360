@@ -51,9 +51,9 @@ export function MapPinBg({ className = "" }: { className?: string }) {
       {/* vignette under pin */}
       <rect x="0" y="0" width="400" height="200" fill="url(#map-vignette)" />
 
-      {/* single teal location dot, sized to match the cursor outer ring (~22px) */}
-      <circle cx="200" cy="100" r="11" fill="oklch(0.72 0.13 195)" />
-      <circle cx="200" cy="100" r="11" fill="none" stroke="oklch(0.92 0.05 195)" strokeWidth="1.5" opacity="0.9" />
+      {/* single teal location dot */}
+      <circle cx="200" cy="100" r="5" fill="oklch(0.72 0.13 195)" />
+      <circle cx="200" cy="100" r="5" fill="none" stroke="oklch(0.92 0.05 195)" strokeWidth="1" opacity="0.9" />
     </svg>
   );
 }
