@@ -111,11 +111,9 @@ function RoomPage() {
             </div>
           )}
 
-          <details className="mt-6 group">
-            <summary className="cursor-pointer text-xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground">
-              Zones · réglage manuel
-            </summary>
-            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          <div className="mt-6">
+            <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Zones</p>
+            <div className="grid gap-2 sm:grid-cols-2">
               {zones.map((z, i) => (
                 <button
                   key={z.name}
@@ -130,7 +128,7 @@ function RoomPage() {
                 </button>
               ))}
             </div>
-          </details>
+          </div>
         </Section>
       )}
 
