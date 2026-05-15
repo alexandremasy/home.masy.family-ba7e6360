@@ -203,7 +203,7 @@ function RoomPage() {
           <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Batteries</p>
           <div className="grid gap-2 sm:grid-cols-2">
             {detail.devices.batteries.map((b) => (
-              <div key={b.name} className="flex items-center justify-between rounded-lg border border-border/60 bg-card p-3 text-sm">
+              <div key={b.name} className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 text-sm">
                 <span className="flex items-center gap-2"><Battery className="h-4 w-4 text-muted-foreground" />{b.name}</span>
                 <span className={"font-medium " + (b.level < 20 ? "text-destructive" : "")}>{b.level}%</span>
               </div>
