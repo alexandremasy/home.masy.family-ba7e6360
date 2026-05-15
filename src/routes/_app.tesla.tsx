@@ -165,13 +165,12 @@ function TeslaPage() {
         </div>
 
         {/* Quick actions */}
-        <div className="grid grid-cols-3 gap-2 stagger sm:grid-cols-6">
-          <ActionBtn icon={tesla.locked ? <Lock className="h-5 w-5" /> : <LockOpen className="h-5 w-5" />} label={tesla.locked ? "Verrouillée" : "Ouverte"} active={tesla.locked} />
-          <ActionBtn icon={<Flame className="h-5 w-5" />} label="Préchauffer" />
-          <ActionBtn icon={<Wind className="h-5 w-5" />} label="Climatiser" />
-          <ActionBtn icon={<Car className="h-5 w-5" />} label="Coffre" />
-          <ActionBtn icon={<Lightbulb className="h-5 w-5" />} label="Phares" />
-          <ActionBtn icon={<Volume2 className="h-5 w-5" />} label="Klaxon" />
+        <div className="grid grid-cols-3 gap-2 stagger sm:grid-cols-5">
+          <ActionBtn icon={tesla.locked ? <Lock className="h-5 w-5" /> : <LockOpen className="h-5 w-5" />} label={tesla.locked ? "Verrouillée" : "Déverrouiller"} active={tesla.locked} />
+          <ActionBtn icon={<Flame className="h-5 w-5" />} label="Préchauffage" />
+          <ActionBtn icon={<Plug className="h-5 w-5" />} label="Port de charge" active={tesla.pluggedIn} />
+          <ActionBtn icon={<Car className="h-5 w-5" />} label="Coffre avant" />
+          <ActionBtn icon={<Car className="h-5 w-5 -scale-x-100" />} label="Coffre arrière" />
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
