@@ -69,21 +69,22 @@ function makeSeries(base: number, count = 30, jitter = 0.12) {
   return out;
 }
 
-// 12-month rolling history with year metadata
+// 12-month rolling history with year metadata.
+// Readings happen on the 1st of each month and cover the *previous* month.
+// So the latest recorded month = (month of lastReadingDate) - 1.
 function buildHistory() {
   const monthLabels = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
   const now = new Date();
   const recorded = new Map<string, number>();
-  const currentYear = now.getFullYear();
 
-  // Map mock history to recorded values within the current year (most-recent months)
-  // Spread the recorded values across the months ending at the current month - 1.
+  const lastReading = new Date(energie.lastReadingDate);
+  // Latest recorded month = month before the last reading
+  const anchor = new Date(lastReading.getFullYear(), lastReading.getMonth() - 1, 1);
+
   const recVals = energie.history.map((h) => h.jour + h.nuit);
-  // Anchor recorded values to the most recent fully-completed months.
-  const anchorEnd = now.getMonth() - 1; // last fully-completed month index
   for (let i = 0; i < recVals.length; i++) {
     const offset = recVals.length - 1 - i;
-    const d = new Date(currentYear, anchorEnd - offset, 1);
+    const d = new Date(anchor.getFullYear(), anchor.getMonth() - offset, 1);
     recorded.set(`${d.getFullYear()}-${d.getMonth()}`, recVals[i]);
   }
 
