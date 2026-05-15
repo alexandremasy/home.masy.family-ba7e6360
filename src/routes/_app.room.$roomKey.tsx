@@ -2,7 +2,23 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
 import { rooms, roomDetails, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon } from "lucide-react";
+import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, type LucideIcon } from "lucide-react";
+
+function sceneIcon(name: string): LucideIcon {
+  const n = name.toLowerCase();
+  if (n.includes("medit")) return Moon;
+  if (n.includes("cosy") || n.includes("cozy")) return Flame;
+  if (n.includes("moyen")) return SunMedium;
+  if (n.includes("lumineux")) return Sun;
+  if (n.includes("nuit")) return Moon;
+  if (n.includes("réveil") || n.includes("reveil")) return Sunrise;
+  if (n.includes("lecture")) return BookOpen;
+  if (n.includes("travail")) return SunMedium;
+  if (n.includes("dîner") || n.includes("diner")) return UtensilsCrossed;
+  if (n.includes("cuisine")) return ChefHat;
+  if (n === "off") return Power;
+  return Sparkles;
+}
 import { RoomIcon } from "@/components/RoomIcon";
 
 export const Route = createFileRoute("/_app/room/$roomKey")({
