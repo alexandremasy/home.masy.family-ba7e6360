@@ -34,11 +34,20 @@ const MONTH_TO_Q: Record<string, number> = {
   Juil: 3, Août: 3, Sep: 3,
   Oct: 4, Nov: 4, Déc: 4,
 };
+const Q_MONTHS_FR: Record<number, string[]> = {
+  1: ["Jan", "Fév", "Mar"],
+  2: ["Avr", "Mai", "Juin"],
+  3: ["Juil", "Août", "Sep"],
+  4: ["Oct", "Nov", "Déc"],
+};
 
-type MonthRow = { month: string; year: number; kWh: number; sessions: number };
+type MonthRow = { month: string; year: number; kWh: number; sessions: number; projected?: boolean };
 
 function quarterKey(row: MonthRow) {
   return `${row.year}-Q${MONTH_TO_Q[row.month]}`;
+}
+function qLabel(year: number, q: number) {
+  return `${year}.Q${q}`;
 }
 
 function TeslaPage() {
