@@ -125,54 +125,48 @@ function TeslaPage() {
       <PageHeader title="Tesla" />
 
       {/* ============ 1. ÉTAT DE LA VOITURE ============ */}
-      <section className="space-y-3">
+      <section className="space-y-4">
         <h2 className="text-xs uppercase tracking-[0.18em] text-muted-foreground">État de la voiture</h2>
 
-        {/* Hero: car visual with surrounding stats */}
-        <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card p-5 shadow-soft">
-          {/* model + status header */}
-          <div className="mb-2 flex items-start justify-between gap-3">
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{tesla.model}</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                <MapPin className="mr-1 inline h-3 w-3" />
-                {tesla.location}
-              </p>
-            </div>
-            <span className={"inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] " + (tesla.charging ? "bg-primary text-primary-foreground" : tesla.pluggedIn ? "bg-secondary text-foreground" : "bg-secondary/60 text-muted-foreground")}>
-              {tesla.charging ? <BatteryCharging className="h-3.5 w-3.5 anim-breathe" /> : <Plug className="h-3.5 w-3.5" />}
-              {tesla.charging ? "En charge" : tesla.pluggedIn ? "Branchée" : "Débranchée"}
-            </span>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="font-serif text-xl text-foreground">{tesla.model}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              <MapPin className="mr-1 inline h-3 w-3" />
+              {tesla.location}
+            </p>
+          </div>
+          <span className={"inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] " + (tesla.charging ? "bg-primary text-primary-foreground" : tesla.pluggedIn ? "bg-secondary text-foreground" : "bg-secondary/60 text-muted-foreground")}>
+            {tesla.charging ? <BatteryCharging className="h-3.5 w-3.5 anim-breathe" /> : <Plug className="h-3.5 w-3.5" />}
+            {tesla.charging ? "En charge" : tesla.pluggedIn ? "Branchée" : "Débranchée"}
+          </span>
+        </div>
+
+        {/* Car visual with floating stats — no card background */}
+        <div className="relative grid grid-cols-[1fr_auto_1fr] items-center gap-4 py-2">
+          <div className="flex flex-col items-end gap-3 text-right">
+            <FloatStat label="Charge" value={`${tesla.charge}%`} accent />
+            <FloatStat label="Autonomie" value={`${tesla.rangeKm} km`} />
+            <FloatStat label="Intérieur" value={`${tesla.interior}°`} icon={<Flame className="h-3 w-3" />} />
           </div>
 
-          {/* Car visual with floating stats */}
-          <div className="relative mx-auto grid grid-cols-[1fr_auto_1fr] items-center gap-4 py-2">
-            {/* Left stats */}
-            <div className="flex flex-col items-end gap-3 text-right">
-              <FloatStat label="Charge" value={`${tesla.charge}%`} accent />
-              <FloatStat label="Autonomie" value={`${tesla.rangeKm} km`} />
-              <FloatStat label="Intérieur" value={`${tesla.interior}°`} icon={<Flame className="h-3 w-3" />} />
-            </div>
+          <TeslaCar charging={tesla.charging} locked={tesla.locked} />
 
-            {/* Tesla SVG */}
-            <TeslaCar charging={tesla.charging} locked={tesla.locked} />
-
-            {/* Right stats */}
-            <div className="flex flex-col items-start gap-3">
-              <FloatStat label="Limite" value={`${tesla.chargeLimit}%`} />
-              <FloatStat label="Odomètre" value={`${(tesla.odometerKm / 1000).toFixed(1)}k km`} icon={<Gauge className="h-3 w-3" />} />
-              <FloatStat label="Extérieur" value={`${tesla.exterior}°`} icon={<Snowflake className="h-3 w-3" />} />
-            </div>
+          <div className="flex flex-col items-start gap-3">
+            <FloatStat label="Limite" value={`${tesla.chargeLimit}%`} />
+            <FloatStat label="Odomètre" value={`${(tesla.odometerKm / 1000).toFixed(1)}k km`} icon={<Gauge className="h-3 w-3" />} />
+            <FloatStat label="Extérieur" value={`${tesla.exterior}°`} icon={<Snowflake className="h-3 w-3" />} />
           </div>
+        </div>
 
-          {/* Charge bar */}
-          <div className="relative mx-auto mt-2 h-1.5 w-full max-w-md overflow-hidden rounded-full bg-secondary">
-            <div className="absolute left-0 top-0 h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${tesla.charge}%` }} />
-            <div className="absolute top-0 h-full w-px bg-foreground/40" style={{ left: `${tesla.chargeLimit}%` }} />
-          </div>
+        <div className="relative mx-auto h-1.5 w-full max-w-md overflow-hidden rounded-full bg-secondary">
+          <div className="absolute left-0 top-0 h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${tesla.charge}%` }} />
+          <div className="absolute top-0 h-full w-px bg-foreground/40" style={{ left: `${tesla.chargeLimit}%` }} />
+        </div>
 
-          {/* Quick actions */}
-          <div className="mt-5 grid grid-cols-3 gap-2 sm:grid-cols-6">
+        {/* Quick actions — kept inside a card */}
+        <div className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft">
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
             <ActionBtn icon={tesla.locked ? <Lock className="h-4 w-4" /> : <LockOpen className="h-4 w-4" />} label={tesla.locked ? "Verrouillée" : "Ouverte"} active={tesla.locked} />
             <ActionBtn icon={<Flame className="h-4 w-4" />} label="Préchauffer" />
             <ActionBtn icon={<Wind className="h-4 w-4" />} label="Climatiser" />
@@ -180,33 +174,32 @@ function TeslaPage() {
             <ActionBtn icon={<Lightbulb className="h-4 w-4" />} label="Phares" />
             <ActionBtn icon={<Volume2 className="h-4 w-4" />} label="Klaxon" />
           </div>
+        </div>
 
-          {/* Footer meta */}
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-border/60 pt-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><Wifi className="h-3 w-3" /> Sync {tesla.lastSeen}</span>
-            <span>Logiciel {tesla.software}</span>
-            <span>{tesla.inGarage ? "Au garage" : "Hors garage"}</span>
-          </div>
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5"><Wifi className="h-3 w-3" /> Sync {tesla.lastSeen}</span>
+          <span>Logiciel {tesla.software}</span>
+          <span>{tesla.inGarage ? "Au garage" : "Hors garage"}</span>
         </div>
       </section>
 
       {/* ============ 2. TRIMESTRE EN COURS ============ */}
-      <Section title={`Trimestre en cours · Q${currentQ} ${currentY}`}>
+      <Section title={`Trimestre en cours · ${qLabel(currentY, currentQ)}`}>
         <div className="grid gap-3 sm:grid-cols-3">
           <BigStat
             icon={<Zap className="h-4 w-4" />}
             label="kWh à facturer"
-            value={`${currentQuarter.kWh}`}
-            sub={`${currentQuarter.monthsCounted}/3 mois · ${currentQuarter.sessions} sessions`}
+            value={`${realKWh}`}
+            sub={`${currentQRaw.monthsCounted}/3 mois · ${currentQRaw.sessions} sessions · projection ${estimatedKWh} kWh`}
             accent
           />
           <BigStat
-            label="Montant"
-            value={fmtEur(cost(currentQuarter.kWh))}
-            sub={`${tesla.pricePerKWh.toFixed(3)} € / kWh`}
+            label="Estimation de montant"
+            value={fmtEur(cost(estimatedKWh))}
+            sub={`réel ${fmtEur(cost(realKWh))} · ${tesla.pricePerKWh.toFixed(3)} € / kWh`}
           />
           <BigStat
-            label={lastFullQ ? `vs Q${lastFullQ.q} ${lastFullQ.year}` : "vs précédent"}
+            label={lastFullQ ? `vs ${qLabel(lastFullQ.year, lastFullQ.q)}` : "vs précédent"}
             value={lastFullQ ? `${qBetter ? "−" : "+"}${qDeltaPct}%` : "—"}
             sub={lastFullQ ? `${lastFullQ.kWh} kWh · ${fmtEur(cost(lastFullQ.kWh))}` : undefined}
             trend={lastFullQ ? (qBetter ? "down" : "up") : undefined}
