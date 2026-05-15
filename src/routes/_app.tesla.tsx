@@ -353,14 +353,14 @@ function ActionBtn({ icon, label, active }: { icon: React.ReactNode; label: stri
     <button
       type="button"
       className={
-        "group flex flex-col items-center gap-1.5 rounded-xl border px-3 py-4 transition-all duration-300 " +
+        "group flex flex-col items-center gap-1.5 rounded-xl border px-1.5 py-3 text-center transition-all duration-300 sm:px-3 sm:py-4 " +
         (active
           ? "border-foreground bg-foreground text-background shadow-lift -translate-y-0.5"
           : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
       }
     >
       <span className={active ? "anim-breathe" : "opacity-60"}>{icon}</span>
-      <span className="text-[10px] uppercase tracking-[0.14em] leading-none">{label}</span>
+      <span className="text-[9px] uppercase tracking-[0.08em] leading-tight sm:text-[10px] sm:tracking-[0.14em]">{label}</span>
     </button>
   );
 }
