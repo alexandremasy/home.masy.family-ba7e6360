@@ -387,29 +387,59 @@ function EnergiePage() {
           </div>
         </header>
 
-        <div className="flex h-56 items-end gap-2 sm:gap-3">
+        <div className="flex h-56 gap-2 sm:gap-3">
           {history.map((h, i) => {
             const isCurrent = i === latestRecordedIdx;
-            const heightPct = (h.value / max) * 100;
+            const isNeg = h.value < 0;
+            const heightPct = isNeg
+              ? (Math.abs(h.value) / (maxNeg || 1)) * 100
+              : (h.value / (maxPos || 1)) * 100;
             return (
-              <div key={h.key} className="group relative flex h-full flex-1 flex-col items-end justify-end gap-2">
-                <div
-                  className={
-                    "w-full max-w-[60px] rounded-t-xl transition-all duration-700 hover:scale-y-105 origin-bottom " +
-                    (h.projected
-                      ? "border border-dashed border-muted-foreground/40 bg-muted-foreground/10"
-                      : isCurrent
-                        ? "bg-primary"
-                        : "bg-secondary")
-                  }
-                  style={{ height: `${heightPct}%` }}
-                />
+              <div key={h.key} className="group relative flex h-full flex-1 flex-col">
+                {/* Positive zone */}
+                <div style={{ height: `${posZonePct}%` }} className="flex items-end justify-center">
+                  {!isNeg && (
+                    <div
+                      className={
+                        "w-full max-w-[60px] rounded-t-xl transition-all duration-700 hover:scale-y-105 origin-bottom " +
+                        (h.projected
+                          ? "border border-dashed border-muted-foreground/40 bg-muted-foreground/10"
+                          : isCurrent
+                            ? "bg-primary"
+                            : "bg-secondary")
+                      }
+                      style={{ height: `${heightPct}%` }}
+                    />
+                  )}
+                </div>
+                {/* Zero baseline */}
+                {maxNeg > 0 && <div className="h-px bg-border/60" />}
+                {/* Negative zone (solar surplus) */}
+                {maxNeg > 0 && (
+                  <div style={{ height: `${negZonePct}%` }} className="flex items-start justify-center">
+                    {isNeg && (
+                      <div
+                        className={
+                          "w-full max-w-[60px] rounded-b-xl transition-all duration-700 hover:scale-y-105 origin-top " +
+                          (h.projected
+                            ? "border border-dashed border-success/40 bg-success/10"
+                            : "bg-success/70")
+                        }
+                        style={{ height: `${heightPct}%` }}
+                      />
+                    )}
+                  </div>
+                )}
                 {/* Tooltip on hover */}
                 <div className="pointer-events-none absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full rounded-lg border border-border/60 bg-popover px-2 py-1 text-xs shadow-lift opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap z-10">
                   <p className="font-medium capitalize">{h.label} {h.year}</p>
-                  <p className="tabular-nums text-muted-foreground">{h.value} {cfg.unit}{h.projected ? " · projeté" : ""}</p>
+                  <p className="tabular-nums text-muted-foreground">
+                    {h.value} {cfg.unit}
+                    {isNeg ? " · injection solaire" : ""}
+                    {h.projected ? " · projeté" : ""}
+                  </p>
                 </div>
-                <p className={"w-full text-center text-[11px] sm:text-xs " + (isCurrent ? "font-medium text-foreground" : "text-muted-foreground")}>
+                <p className={"mt-1 w-full text-center text-[11px] sm:text-xs " + (isCurrent ? "font-medium text-foreground" : "text-muted-foreground")}>
                   {h.label}
                 </p>
               </div>
