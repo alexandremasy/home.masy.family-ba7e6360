@@ -184,8 +184,9 @@ function TeslaPage() {
       </section>
 
       {/* ============ 2. TRIMESTRE EN COURS ============ */}
-      <Section title={`Trimestre en cours · ${qLabel(currentY, currentQ)}`}>
-        <div className="grid gap-3 sm:grid-cols-3">
+      <section className="space-y-3">
+        <h2 className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Trimestre en cours · {qLabel(currentY, currentQ)}</h2>
+        <div className="grid gap-6 sm:grid-cols-3 sm:divide-x sm:divide-border/60">
           <BigStat
             icon={<Zap className="h-4 w-4" />}
             label="kWh à facturer"
@@ -205,7 +206,7 @@ function TeslaPage() {
             trend={lastFullQ ? (qBetter ? "down" : "up") : undefined}
           />
         </div>
-      </Section>
+      </section>
 
       {/* ============ 3. HISTORIQUE — MENSUEL GROUPÉ PAR TRIMESTRE ============ */}
       <Section
@@ -481,15 +482,15 @@ function BigStat({
   trend?: "up" | "down";
 }) {
   return (
-    <div className={"rounded-xl border border-border/60 p-4 " + (accent ? "bg-primary/8" : "bg-card")}>
+    <div className="px-0 sm:px-4 first:sm:pl-0">
       <div className="flex items-center gap-1 text-xs uppercase tracking-[0.16em] text-muted-foreground">
         {icon}
         {label}
       </div>
-      <p className={"mt-2 font-serif text-2xl " + (trend === "down" ? "text-success" : trend === "up" ? "text-warm" : "")}>
+      <p className={"mt-2 font-serif text-3xl " + (accent ? "text-primary" : trend === "down" ? "text-success" : trend === "up" ? "text-warm" : "text-foreground")}>
         {value}
       </p>
-      {sub && <p className="mt-0.5 text-[11px] text-muted-foreground">{sub}</p>}
+      {sub && <p className="mt-1 text-[11px] text-muted-foreground">{sub}</p>}
     </div>
   );
 }
