@@ -60,7 +60,7 @@ function AppLayout() {
       {isOverlay && (
         <div
           key={pathname}
-          className="fixed inset-0 z-40 overflow-y-auto overlay-enter"
+          className="fixed inset-0 z-40 overflow-y-auto overflow-x-hidden overlay-enter [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           role="dialog"
           aria-modal="true"
         >
@@ -72,7 +72,7 @@ function AppLayout() {
           />
 
           {/* Sliding panel */}
-          <div className="overlay-panel relative z-10 mx-auto mt-16 mb-8 w-full max-w-5xl sm:mt-24 sm:px-6">
+          <div className="overlay-panel relative z-10 mx-0 mt-16 mb-8 w-screen max-w-none sm:mx-auto sm:mt-24 sm:w-full sm:max-w-5xl sm:px-6">
             <div className="relative overflow-clip border border-border/60 bg-background shadow-lift sm:rounded-3xl">
               <div className="px-5 py-7 sm:px-8 sm:py-10">
                 <Outlet />
