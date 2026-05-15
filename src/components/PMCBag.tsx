@@ -1,86 +1,79 @@
 /**
- * Stylized PMC bag (Belgian recycling) — yellow sack with subtle sway,
- * peeking bottle + can silhouettes. Pure SVG, themed via design tokens.
+ * Stylized PMC wheelie bin in flat-illustration style (Dribbble inspired).
+ * Yellow body (Belgian PMC), domed lid, hinge ridge, recycling glyph,
+ * side highlight, two wheels. Sways gently from the lid handle.
  */
 export function PMCBag({ className = "" }: { className?: string }) {
   return (
-    <svg
-      aria-hidden
-      viewBox="0 0 120 140"
-      className={className + " anim-sway origin-top"}
-    >
-      <defs>
-        <linearGradient id="pmc-bag" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="oklch(0.92 0.16 95)" />
-          <stop offset="100%" stopColor="oklch(0.82 0.18 85)" />
-        </linearGradient>
-        <linearGradient id="pmc-bottle" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="oklch(0.78 0.12 200)" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="oklch(0.62 0.14 210)" stopOpacity="0.95" />
-        </linearGradient>
-        <linearGradient id="pmc-can" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="oklch(0.92 0.02 0)" />
-          <stop offset="100%" stopColor="oklch(0.72 0.02 0)" />
-        </linearGradient>
-      </defs>
+    <svg aria-hidden viewBox="0 0 220 240" className={className + " anim-sway origin-top"}>
+      {/* ground shadow */}
+      <ellipse cx="110" cy="226" rx="78" ry="5" fill="black" opacity="0.18" />
 
-      {/* soft ground shadow */}
-      <ellipse cx="60" cy="132" rx="34" ry="3.5" fill="black" opacity="0.18" />
+      {/* wheels */}
+      <circle cx="56" cy="218" r="11" fill="oklch(0.42 0.02 270)" />
+      <circle cx="56" cy="218" r="4" fill="oklch(0.32 0.02 270)" />
+      <circle cx="164" cy="218" r="11" fill="oklch(0.42 0.02 270)" />
+      <circle cx="164" cy="218" r="4" fill="oklch(0.32 0.02 270)" />
 
-      {/* knot at top */}
+      {/* body */}
       <path
-        d="M44 28 Q60 14 76 28 Q70 22 60 22 Q50 22 44 28Z"
-        fill="url(#pmc-bag)"
-        stroke="oklch(0.55 0.14 75)"
-        strokeWidth="1"
+        d="M40 70 Q40 60 50 60 L170 60 Q180 60 180 70 L172 214 Q172 222 162 222 L58 222 Q48 222 48 214 Z"
+        fill="oklch(0.86 0.17 92)"
       />
-      <path d="M52 22 Q60 16 68 22" stroke="oklch(0.55 0.14 75)" strokeWidth="1.2" fill="none" strokeLinecap="round" />
-
-      {/* bag body */}
+      {/* darker side shadow on right */}
       <path
-        d="M30 38 Q60 26 90 38 L96 120 Q60 134 24 120 Z"
-        fill="url(#pmc-bag)"
-        stroke="oklch(0.55 0.14 75)"
-        strokeWidth="1.2"
+        d="M158 60 L170 60 Q180 60 180 70 L172 214 Q172 222 162 222 L150 222 Z"
+        fill="oklch(0.78 0.18 88)"
       />
-
-      {/* translucent transparency fold */}
-      <path d="M40 50 L45 118" stroke="oklch(0.55 0.14 75)" strokeWidth="0.7" opacity="0.4" fill="none" />
-      <path d="M80 50 L75 118" stroke="oklch(0.55 0.14 75)" strokeWidth="0.7" opacity="0.4" fill="none" />
-
-      {/* peeking bottle */}
-      <g transform="translate(48 44)">
-        <rect x="-4" y="-12" width="8" height="6" rx="1.5" fill="url(#pmc-bottle)" />
-        <path d="M-3 -6 Q-3 -2 -6 2 L-6 16 Q0 18 6 16 L6 2 Q3 -2 3 -6 Z" fill="url(#pmc-bottle)" />
-        <path d="M-4 4 L4 4" stroke="white" strokeWidth="0.6" opacity="0.5" />
+      {/* hinge ridge */}
+      <rect x="42" y="74" width="136" height="14" rx="3" fill="oklch(0.74 0.17 88)" />
+      <g fill="oklch(0.62 0.16 82)" opacity="0.6">
+        {Array.from({ length: 22 }).map((_, i) => (
+          <rect key={i} x={48 + i * 6} y="78" width="2.5" height="6" rx="1" />
+        ))}
       </g>
 
-      {/* peeking can */}
-      <g transform="translate(72 46)">
-        <rect x="-5" y="-10" width="10" height="20" rx="2" fill="url(#pmc-can)" />
-        <rect x="-5" y="-10" width="10" height="2.5" rx="1" fill="oklch(0.55 0.02 0)" />
-        <rect x="-3.5" y="-4" width="7" height="9" rx="0.5" fill="oklch(0.62 0.18 25)" opacity="0.85" />
+      {/* front recessed panel */}
+      <rect x="62" y="100" width="96" height="108" rx="6" fill="oklch(0.82 0.18 90)" />
+
+      {/* recycling triangle */}
+      <g transform="translate(110 138)" fill="white">
+        <path d="M-18 6 L-8 -10 L-2 -7 L-12 8 Z" />
+        <path d="M18 6 L8 -10 L2 -7 L12 8 Z" />
+        <path d="M-10 11 L10 11 L8 17 L-8 17 Z" />
+        <path d="M-12 8 L-7 8 L-9 13 Z" opacity="0.7" />
+        <path d="M12 8 L7 8 L9 13 Z" opacity="0.7" />
+        <path d="M-10 -10 L-7 -5 L-2 -7 Z" opacity="0.7" />
       </g>
 
-      {/* PMC label patch */}
-      <g transform="translate(60 92)">
-        <rect x="-16" y="-10" width="32" height="20" rx="3" fill="white" opacity="0.95" />
-        <text
-          x="0"
-          y="4.5"
-          textAnchor="middle"
-          fontFamily="ui-sans-serif, system-ui, sans-serif"
-          fontWeight="800"
-          fontSize="12"
-          letterSpacing="1.2"
-          fill="oklch(0.45 0.14 75)"
-        >
-          PMC
-        </text>
-      </g>
+      {/* PMC label */}
+      <text
+        x="110"
+        y="186"
+        textAnchor="middle"
+        fontFamily="ui-sans-serif, system-ui, sans-serif"
+        fontWeight="700"
+        fontSize="14"
+        letterSpacing="2"
+        fill="white"
+      >
+        PMC
+      </text>
 
-      {/* highlight */}
-      <path d="M34 48 Q40 42 52 42" stroke="white" strokeWidth="2" opacity="0.45" fill="none" strokeLinecap="round" />
+      {/* lid */}
+      <path
+        d="M34 60 Q34 44 50 44 L170 44 Q186 44 186 60 L186 64 Q186 68 182 68 L38 68 Q34 68 34 64 Z"
+        fill="oklch(0.78 0.18 88)"
+      />
+      {/* lid handle */}
+      <rect x="98" y="32" width="24" height="14" rx="4" fill="oklch(0.72 0.17 85)" />
+
+      {/* glossy highlight */}
+      <path
+        d="M52 90 Q56 86 64 86 L66 200 Q60 204 54 200 Z"
+        fill="white"
+        opacity="0.18"
+      />
     </svg>
   );
 }
