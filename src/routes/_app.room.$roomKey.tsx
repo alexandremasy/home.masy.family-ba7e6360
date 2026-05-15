@@ -74,7 +74,10 @@ function RoomPage() {
 
       {detail.lights && (
         <Section title="Scènes" action={<span className="text-sm text-muted-foreground">Active · {scene}</span>}>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 stagger">
+          <div
+            className="grid gap-2 stagger"
+            style={{ gridTemplateColumns: `repeat(${detail.lights.scenes.length}, minmax(0, 1fr))` }}
+          >
             {detail.lights.scenes.map((s) => {
               const active = scene === s;
               return (
@@ -82,27 +85,19 @@ function RoomPage() {
                   key={s}
                   onClick={() => setScene(s)}
                   className={
-                    "group relative overflow-hidden rounded-xl border p-4 text-left transition-all duration-300 " +
+                    "group relative flex flex-col items-center gap-1 overflow-hidden rounded-xl border px-2 py-3 transition-all duration-300 " +
                     (active
                       ? "border-foreground bg-foreground text-background shadow-lift -translate-y-0.5"
                       : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
                   }
                 >
-                  <Sparkles className={"h-4 w-4 " + (active ? "anim-breathe" : "opacity-50")} />
-                  <p className={"mt-3 font-serif text-lg " + (active ? "" : "")}>{s}</p>
-                  <p className={"text-xs " + (active ? "opacity-70" : "text-muted-foreground")}>
-                    {s === "Off" ? "Tout éteint" : "Ambiance"}
-                  </p>
+                  <Sparkles className={"h-3.5 w-3.5 " + (active ? "anim-breathe" : "opacity-50")} />
+                  <span className="font-serif text-base leading-none">{s}</span>
                 </button>
               );
             })}
           </div>
 
-          {scene === "Off" && (
-            <p className="mt-6 text-xs text-muted-foreground">
-              Aucune scène active — toutes les lumières sont éteintes.
-            </p>
-          )}
           {scene !== "Off" && !detail.lights.hideBrightness && (
             <div className="mt-6">
               <div className="mb-2 flex justify-between text-xs uppercase tracking-[0.18em] text-muted-foreground">
@@ -125,13 +120,13 @@ function RoomPage() {
                 <button
                   key={z.name}
                   onClick={() => setZones(zones.map((zz, idx) => idx === i ? { ...zz, on: !zz.on } : zz))}
-                  className={"flex items-center justify-between rounded-lg border border-border/60 px-3 py-2 text-sm transition-colors " + (z.on ? "bg-accent/15" : "bg-card")}
+                  className={"flex items-center justify-between rounded-xl border px-3 py-3 text-sm transition-all " + (z.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card hover:border-border")}
                 >
                   <span className="flex items-center gap-2">
-                    <Lightbulb className={"h-3.5 w-3.5 " + (z.on ? "text-accent-foreground anim-breathe" : "text-muted-foreground")} />
+                    <Lightbulb className={"h-3.5 w-3.5 " + (z.on ? "anim-breathe" : "opacity-50")} />
                     {z.name}
                   </span>
-                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{z.on ? "On" : "Off"}</span>
+                  <span className={"text-[10px] uppercase tracking-wider " + (z.on ? "opacity-70" : "text-muted-foreground")}>{z.on ? "On" : "Off"}</span>
                 </button>
               ))}
             </div>
