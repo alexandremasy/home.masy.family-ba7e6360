@@ -342,7 +342,7 @@
   .cursor-follower__rect {
     fill: none;
     stroke: color-mix(in oklab, var(--primary) 70%, transparent);
-    stroke-width: 1.25;
+    stroke-width: 2;
     transition:
       width 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
       height 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
