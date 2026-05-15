@@ -3,8 +3,8 @@ import { Tile } from "@/components/Card";
 import { CountUp } from "@/components/CountUp";
 import { MapPinBg } from "@/components/MapPinBg";
 import { RoomIcon } from "@/components/RoomIcon";
-import { rooms, tesla, reseau, energie, calendrier, meteo, type WeatherCond } from "@/lib/mock-data";
-import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer } from "lucide-react";
+import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, type WeatherCond } from "@/lib/mock-data";
+import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer, Music2, Gauge, Server } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
