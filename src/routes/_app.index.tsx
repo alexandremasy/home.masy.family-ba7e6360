@@ -70,18 +70,17 @@ export function Dashboard() {
                 <p className="mt-1 font-serif text-xl">Vue d'ensemble</p>
               </div>
               {(() => {
-                const alerts = [
-                  energie.electricity.status === "alert" && "élec.",
-                  energie.water.status === "alert" && "eau",
-                  energie.oil.status === "alert" && "mazout",
-                ].filter(Boolean) as string[];
+                const alerts: string[] = [];
+                if (energie.oil.status === "alert") alerts.push("Niveau de mazout faible");
+                if (energie.electricity.status === "alert") alerts.push("Conso électrique élevée");
+                if (energie.water.status === "alert") alerts.push("Conso d'eau élevée");
                 const anyAlert = alerts.length > 0;
                 return anyAlert ? (
                   <span className="inline-flex items-center gap-2 rounded-full bg-warm/15 px-2.5 py-1 text-warm">
-                    <span className="relative grid h-5 w-5 place-items-center anim-pulse-ring">
+                    <span className="relative grid h-5 w-5 place-items-center rounded-full anim-pulse-ring">
                       <AlertTriangle className="h-3.5 w-3.5" />
                     </span>
-                    <span className="text-xs font-medium tracking-tight">Attention · {alerts.join(", ")}</span>
+                    <span className="text-xs font-medium tracking-tight">{alerts[0]}{alerts.length > 1 ? ` · +${alerts.length - 1}` : ""}</span>
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-2 rounded-full bg-success/15 px-2.5 py-1 text-success">
