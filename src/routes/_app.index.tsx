@@ -112,9 +112,9 @@ export function Dashboard() {
         {visibleRooms.flatMap((room) => {
           if (room.key === "salon") {
             return [
-              <SalonTile key="salon-v1" room={room} variant="spotify" label="V1 — minimal" />,
-              <SalonTile key="salon-v2" room={room} variant="netflix" label="V2 — cover" />,
-              <SalonTile key="salon-v3" room={room} variant="idle" label="V3 — vide" />,
+              <SalonTile key="salon-v1" room={room} variant="spotify" />,
+              <SalonTile key="salon-v2" room={room} variant="netflix" />,
+              <SalonTile key="salon-v3" room={room} variant="idle" />,
             ];
           }
           return [
