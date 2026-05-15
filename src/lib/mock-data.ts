@@ -166,7 +166,7 @@ export const roomDetails: Record<RoomKey, {
     },
   },
   cuisine: {
-    lights: { zones: [{ name: "Plan de travail", on: false }, { name: "Îlot", on: false }], scene: "Off", scenes: ["Cuisine", "Dîner", "Off"], brightness: 0 },
+    lights: { zones: [{ name: "Table", on: false }, { name: "Plan de travail", on: false }], scene: "Off", scenes: [], brightness: 0, hideBrightness: true },
     climate: { mode: "auto", current: 22.1 },
     devices: { batteries: [{ name: "Capteur four", level: 91 }, { name: "Capteur frigo", level: 78 }] },
   },
