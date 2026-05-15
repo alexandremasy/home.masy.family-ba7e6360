@@ -175,14 +175,7 @@ function TeslaPage() {
           <div className="absolute top-0 h-full w-px bg-foreground/40" style={{ left: `${tesla.chargeLimit}%` }} />
         </div>
 
-        {/* Quick actions */}
-        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 stagger [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-5 sm:overflow-visible sm:px-0 sm:pb-0 [&::-webkit-scrollbar]:hidden">
-          <ActionBtn icon={tesla.locked ? <Lock className="h-5 w-5" /> : <LockOpen className="h-5 w-5" />} label={tesla.locked ? "Verrouillée" : "Déverrouiller"} active={tesla.locked} />
-          <ActionBtn icon={<Flame className="h-5 w-5" />} label="Préchauffage" />
-          <ActionBtn icon={<Plug className="h-5 w-5" />} label="Port de charge" active={tesla.pluggedIn} />
-          <ActionBtn icon={<Car className="h-5 w-5" />} label="Coffre avant" />
-          <ActionBtn icon={<Car className="h-5 w-5 -scale-x-100" />} label="Coffre arrière" />
-        </div>
+
 
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
           <span className="inline-flex items-center gap-1.5"><Wifi className="h-3 w-3" /> Sync {tesla.lastSeen}</span>
