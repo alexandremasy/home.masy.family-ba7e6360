@@ -65,7 +65,7 @@ export function Dashboard() {
           <Tile span={3} to="/energie">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Énergie · ce mois</p>
+                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Énergie · {now.toLocaleDateString("fr-BE", { month: "long", year: "numeric" }).replace(/^./, (c) => c.toUpperCase())}</p>
                 <p className="mt-1 font-serif text-xl">Vue d'ensemble</p>
               </div>
               {(() => {
