@@ -16,13 +16,17 @@ export function MapPinBg({ className = "" }: { className?: string }) {
         </pattern>
         <radialGradient id="map-vignette" cx="50%" cy="50%" r="65%">
           <stop offset="0%" stopColor="white" stopOpacity="0" />
-          <stop offset="100%" stopColor="black" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="black" stopOpacity="0.25" />
         </radialGradient>
         <radialGradient id="pin-pulse" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.85" />
-          <stop offset="60%" stopColor="var(--primary)" stopOpacity="0.35" />
+          <stop offset="0%" stopColor="var(--primary)" stopOpacity="1" />
+          <stop offset="60%" stopColor="var(--primary)" stopOpacity="0.5" />
           <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
         </radialGradient>
+        <filter id="pin-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="2.5" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
       </defs>
 
       {/* base grid */}
@@ -44,8 +48,11 @@ export function MapPinBg({ className = "" }: { className?: string }) {
       <ellipse cx="60" cy="170" rx="55" ry="22" fill="currentColor" opacity="0.08" />
       <ellipse cx="340" cy="40" rx="40" ry="18" fill="currentColor" opacity="0.08" />
 
-      {/* pin with live pulse */}
-      <g transform="translate(200 100)">
+      {/* vignette under pin */}
+      <rect x="0" y="0" width="400" height="200" fill="url(#map-vignette)" />
+
+      {/* pin with live pulse — drawn last so it sits above everything */}
+      <g transform="translate(200 100)" filter="url(#pin-glow)">
         <circle r="50" fill="url(#pin-pulse)">
           <animate attributeName="r" values="14;58;14" dur="2.4s" repeatCount="indefinite" />
           <animate attributeName="opacity" values="0.95;0;0.95" dur="2.4s" repeatCount="indefinite" />
@@ -54,13 +61,10 @@ export function MapPinBg({ className = "" }: { className?: string }) {
           <animate attributeName="r" values="10;38;10" dur="2.4s" begin="0.4s" repeatCount="indefinite" />
           <animate attributeName="opacity" values="0.9;0;0.9" dur="2.4s" begin="0.4s" repeatCount="indefinite" />
         </circle>
-        <circle r="14" fill="var(--primary)" opacity="0.9" />
-        <circle r="9" fill="var(--primary)" />
-        <circle r="3.5" fill="white" />
+        <circle r="18" fill="white" opacity="0.95" />
+        <circle r="13" fill="var(--primary)" />
+        <circle r="5" fill="white" />
       </g>
-
-      {/* vignette */}
-      <rect x="0" y="0" width="400" height="200" fill="url(#map-vignette)" />
     </svg>
   );
 }

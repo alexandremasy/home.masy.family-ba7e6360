@@ -4,7 +4,7 @@ import { CountUp } from "@/components/CountUp";
 import { MapPinBg } from "@/components/MapPinBg";
 import { RoomIcon } from "@/components/RoomIcon";
 import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, type WeatherCond } from "@/lib/mock-data";
-import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer, Music2, Gauge, Server } from "lucide-react";
+import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer, Music2, Gauge, Server, Cast } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -110,65 +110,59 @@ export function Dashboard() {
         </Tile>
 
         {/* PRIORITY 2 — Rooms */}
-        {visibleRooms.map((room) => (
-          <Tile key={room.key} to={`/room/${room.key}`}>
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-3">
-                <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-accent/20 text-accent-foreground" : "bg-secondary text-muted-foreground")}>
-                  <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
-                </span>
-                <div>
-                  <p className="font-serif text-xl">{room.name}</p>
-                  {room.scene && room.scene !== "Off" && (
-                    <p className="mt-0.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">Scène · {room.scene}</p>
-                  )}
+        {visibleRooms.flatMap((room) => {
+          if (room.key === "salon") {
+            return [
+              <SalonTile key="salon-v1" room={room} variant="spotify" label="V1 — minimal" />,
+              <SalonTile key="salon-v2" room={room} variant="netflix" label="V2 — cover" />,
+              <SalonTile key="salon-v3" room={room} variant="idle" label="V3 — vide" />,
+            ];
+          }
+          return [
+            <Tile key={room.key} to={`/room/${room.key}`}>
+              <div className="flex items-start justify-between">
+                <div className="flex items-start gap-3">
+                  <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-accent/20 text-accent-foreground" : "bg-secondary text-muted-foreground")}>
+                    <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
+                  </span>
+                  <div>
+                    <p className="font-serif text-xl">{room.name}</p>
+                    {room.scene && room.scene !== "Off" && (
+                      <p className="mt-0.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">{room.scene}</p>
+                    )}
+                  </div>
                 </div>
+                <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />
               </div>
-              <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />
-            </div>
 
-            {typeof room.temperature === "number" ? (
-              <p className="mt-6 font-serif text-4xl tracking-tight">
-                <CountUp to={room.temperature} decimals={1} /><span className="text-base text-muted-foreground">°C</span>
-              </p>
-            ) : roomDetails[room.key]?.media ? (
-              <div className="mt-6 flex items-center gap-2.5">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent/15 text-accent-foreground">
-                  <Music2 className="h-4 w-4 anim-breathe" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-serif text-lg leading-tight">{roomDetails[room.key]!.media!.nowPlaying}</p>
-                  <p className="truncate text-xs text-muted-foreground">{roomDetails[room.key]!.media!.artist} · {roomDetails[room.key]!.media!.source}</p>
-                </div>
-                <span className="flex items-end gap-0.5 pb-1" aria-hidden>
-                  <span className="eq-bar h-3 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "0ms" }} />
-                  <span className="eq-bar h-4 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "150ms" }} />
-                  <span className="eq-bar h-2.5 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "300ms" }} />
-                </span>
-              </div>
-            ) : (
-              <div className="mt-6 h-[2.75rem]" aria-hidden />
-            )}
-
-            <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
-              <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-accent-foreground" : "")}>
-                <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-accent-foreground" : "")} />
-                {room.lightsOn ? "Allumé" : "Éteint"}
-              </span>
-              {room.climate && (
-                <span className="inline-flex items-center gap-1.5">
-                  <Wind className={"h-3.5 w-3.5 " + (room.climate.on ? "text-primary" : "")} />
-                  {room.climate.on ? `${room.climate.setpoint}°` : "Auto"}
-                </span>
+              {typeof room.temperature === "number" ? (
+                <p className="mt-6 font-serif text-4xl tracking-tight">
+                  <CountUp to={room.temperature} decimals={1} /><span className="text-base text-muted-foreground">°C</span>
+                </p>
+              ) : (
+                <div className="mt-6 h-[2.75rem]" aria-hidden />
               )}
-            </div>
-          </Tile>
-        ))}
+
+              <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
+                <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-accent-foreground" : "")}>
+                  <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-accent-foreground" : "")} />
+                  {room.lightsOn ? "Allumé" : "Éteint"}
+                </span>
+                {room.climate && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Wind className={"h-3.5 w-3.5 " + (room.climate.on ? "text-primary" : "")} />
+                    {room.climate.on ? `${room.climate.setpoint}°` : "Auto"}
+                  </span>
+                )}
+              </div>
+            </Tile>,
+          ];
+        })}
 
         {/* PRIORITY 3 — Tesla (compact) */}
         <Tile span={3} to="/tesla" tone="dark" className="relative isolate">
-          <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-55" />
-          <span className="pointer-events-none absolute inset-0 -z-10 rounded-[inherit] bg-gradient-to-br from-background/0 via-background/30 to-background/70" />
+          <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-80" />
+          <span className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 rounded-b-[inherit] bg-gradient-to-t from-foreground via-foreground/70 to-transparent" />
           <div className="flex items-start gap-3">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-background/10 text-background">
               <Car className="h-4.5 w-4.5 icon-hover anim-drift" />
@@ -249,6 +243,111 @@ export function Dashboard() {
       </div>
 
     </div>
+  );
+}
+
+type SalonVariant = "spotify" | "netflix" | "idle";
+
+function SalonTile({ room, variant, label }: { room: typeof rooms[number]; variant: SalonVariant; label: string }) {
+  const playing = variant !== "idle";
+  return (
+    <Tile to={`/room/${room.key}`} className="relative">
+      <span className="absolute right-3 top-3 rounded-full bg-foreground/5 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">{label}</span>
+
+      <div className="flex items-start justify-between">
+        <div className="flex items-start gap-3">
+          <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : "bg-secondary text-muted-foreground")}>
+            <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
+          </span>
+          <div>
+            <p className="font-serif text-xl">{room.name}</p>
+            {room.scene && room.scene !== "Off" && (
+              <p className="mt-0.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">{room.scene}</p>
+            )}
+          </div>
+        </div>
+        <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />
+      </div>
+
+      <div className="mt-6">
+        {variant === "spotify" && (
+          <div className="flex items-center gap-2.5">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[oklch(0.72_0.18_150)]/15 text-[oklch(0.55_0.18_150)]" aria-hidden>
+              <SpotifyGlyph className="h-4 w-4" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-serif text-lg leading-tight">Linked</p>
+              <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground">
+                <Cast className="h-3 w-3" />
+                <span className="truncate">Bonobo · Chromecast</span>
+              </p>
+            </div>
+            <EqBars />
+          </div>
+        )}
+
+        {variant === "netflix" && (
+          <div className="flex items-center gap-2.5">
+            <span className="relative grid h-9 w-12 shrink-0 place-items-center overflow-hidden rounded-md bg-[oklch(0.32_0.18_25)] text-white" aria-hidden>
+              <span className="font-serif text-[11px] font-bold tracking-tight">N</span>
+              <span className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/10" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-serif text-lg leading-tight">Dark · S2E4</p>
+              <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground">
+                <Cast className="h-3 w-3" />
+                <span className="truncate">Netflix · Chromecast</span>
+              </p>
+            </div>
+            <span className="flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-warm">
+              <span className="h-1.5 w-1.5 rounded-full bg-warm anim-breathe" /> Live
+            </span>
+          </div>
+        )}
+
+        {variant === "idle" && (
+          <div className="flex items-center gap-2.5 opacity-70">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-secondary text-muted-foreground">
+              <Cast className="h-4 w-4" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-serif text-lg leading-tight text-muted-foreground">Chromecast en veille</p>
+              <p className="mt-0.5 truncate text-xs text-muted-foreground/70">Aucune diffusion</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
+        <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-accent-foreground" : "")}>
+          <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-accent-foreground" : "")} />
+          {room.lightsOn ? "Allumé" : "Éteint"}
+        </span>
+        {playing && (
+          <span className="inline-flex items-center gap-1.5">
+            <Cast className="h-3.5 w-3.5" /> Chromecast
+          </span>
+        )}
+      </div>
+    </Tile>
+  );
+}
+
+function EqBars() {
+  return (
+    <span className="flex items-end gap-0.5 pb-1" aria-hidden>
+      <span className="eq-bar h-3 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "0ms" }} />
+      <span className="eq-bar h-4 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "150ms" }} />
+      <span className="eq-bar h-2.5 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "300ms" }} />
+    </span>
+  );
+}
+
+function SpotifyGlyph({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
+      <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.6 14.4a.7.7 0 0 1-.96.23c-2.63-1.6-5.94-1.97-9.84-1.07a.7.7 0 1 1-.31-1.36c4.27-.98 7.93-.56 10.88 1.24.33.2.43.64.23.96zm1.23-2.74a.88.88 0 0 1-1.2.29c-3.01-1.85-7.6-2.39-11.16-1.31a.88.88 0 1 1-.51-1.68c4.07-1.24 9.13-.64 12.59 1.49.41.25.54.79.28 1.21zm.11-2.86c-3.61-2.14-9.57-2.34-13.02-1.29a1.05 1.05 0 1 1-.61-2.01c3.96-1.2 10.54-.97 14.7 1.5a1.05 1.05 0 1 1-1.07 1.8z"/>
+    </svg>
   );
 }
 
