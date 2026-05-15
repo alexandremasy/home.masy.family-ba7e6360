@@ -177,7 +177,6 @@ export const roomDetails: Record<RoomKey, {
         { name: "Bureau Cathy", on: true },
         { name: "Escalier", on: false },
         { name: "Plafond", on: false },
-        { name: "Playbar", on: false },
       ],
       scene: "Moyen",
       scenes: ["Meditation", "Cosy", "Moyen", "Lumineux"],
@@ -190,6 +189,7 @@ export const roomDetails: Record<RoomKey, {
       appliances: [
         { name: "Lampe à sel", on: true },
         { name: "Chat", on: false },
+        { name: "Playbar", on: false },
       ],
       batteries: [
         { name: "Radiateur Jardin", level: 78 },
