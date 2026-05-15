@@ -20,7 +20,7 @@ export function CursorFollower() {
 
     const INTERACTIVE = 'a, button, [role="button"], [data-cursor], input, select, textarea, summary, label';
     const PAD = 8;
-    const IDLE = 36; // diameter of the idle ring
+    const IDLE = 22; // diameter of the idle ring
 
     let active: Element | null = null;
     let mouseX = window.innerWidth / 2;
