@@ -234,8 +234,57 @@ function TeslaPage() {
           <span className="inline-flex items-center gap-1.5"><span className="h-px w-4 border-t border-dashed border-foreground/40" />médiane {medianMonth} kWh/mois</span>
         </div>
 
+        {/* Mobile chart */}
+        <div className="space-y-3 sm:hidden">
+          {visibleQuarters.map((q) => {
+            const isCurrent = q.key === currentQKey;
+            return (
+              <div key={`${q.key}-mobile`} className="rounded-xl border border-border/60 bg-background/45 p-3">
+                <div className="mb-3 flex items-start justify-between gap-3">
+                  <div>
+                    <p className={"text-xs uppercase tracking-[0.14em] " + (isCurrent ? "text-primary" : "text-muted-foreground")}>
+                      {qLabel(q.year, q.q)}{isCurrent ? " · estimé" : ""}
+                    </p>
+                    <p className={"mt-1 font-serif text-2xl leading-none " + (isCurrent ? "text-primary" : "text-foreground")}>
+                      {q.kWh}<span className="ml-1 text-xs font-sans text-muted-foreground">kWh</span>
+                    </p>
+                  </div>
+                  <span className="shrink-0 text-xs tabular-nums text-muted-foreground">{fmtEur(cost(q.kWh))}</span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  {q.months.map((m) => {
+                    const projected = !!m.projected;
+                    return (
+                      <div key={`${m.year}-${m.month}-mobile`} className="min-w-0">
+                        <div className="flex h-16 items-end rounded-lg bg-secondary/45 px-2 pb-1.5">
+                          <div
+                            className={
+                              "w-full rounded-t-md " +
+                              (projected
+                                ? "bg-primary/25 ring-1 ring-primary/50 ring-inset"
+                                : isCurrent
+                                  ? "bg-primary"
+                                  : "bg-secondary")
+                            }
+                            style={{ height: `${Math.max((m.kWh / maxMonth) * 100, 8)}%` }}
+                          />
+                        </div>
+                        <div className="mt-1 flex items-baseline justify-between gap-1 text-[10px]">
+                          <span className={projected ? "truncate italic text-muted-foreground/60" : "truncate text-muted-foreground"}>{m.month}</span>
+                          <span className="shrink-0 tabular-nums text-foreground">{m.kWh}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
         {/* Chart */}
-        <div className="relative">
+        <div className="relative hidden sm:block">
           <div className="relative h-40">
             <div
               className="absolute left-0 right-0 border-t border-dashed border-foreground/30"
