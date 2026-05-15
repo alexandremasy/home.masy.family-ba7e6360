@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
 import { rooms, roomDetails, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, type LucideIcon } from "lucide-react";
+import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunDim, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, Flower2, type LucideIcon } from "lucide-react";
 
 function batteryFor(level: number): { Icon: LucideIcon; tone: string } {
   if (level < 20) return { Icon: BatteryWarning, tone: "text-destructive" };
@@ -25,9 +25,9 @@ function applianceIcon(name: string): LucideIcon {
 
 function sceneIcon(name: string): LucideIcon {
   const n = name.toLowerCase();
-  if (n.includes("medit")) return Moon;
+  if (n.includes("medit")) return Flower2;
   if (n.includes("cosy") || n.includes("cozy")) return Flame;
-  if (n.includes("moyen")) return SunMedium;
+  if (n.includes("moyen")) return SunDim;
   if (n.includes("lumineux")) return Sun;
   if (n.includes("nuit")) return Moon;
   if (n.includes("réveil") || n.includes("reveil")) return Sunrise;
