@@ -40,6 +40,7 @@ function AppLayout() {
 
   return (
     <div className="min-h-screen bg-background">
+      <CursorFollower />
       <TopNav />
 
       {/* Dashboard: always rendered as the persistent base layer */}
