@@ -36,6 +36,14 @@ function sceneIcon(name: string): LucideIcon {
   if (n.includes("dîner") || n.includes("diner")) return UtensilsCrossed;
   if (n.includes("cuisine")) return ChefHat;
   if (n === "off") return Power;
+  const pct = parseInt(n, 10);
+  if (!Number.isNaN(pct)) {
+    if (pct <= 10) return Moon;
+    if (pct <= 25) return Flame;
+    if (pct <= 50) return SunDim;
+    if (pct <= 75) return SunMedium;
+    return Sun;
+  }
   return Sparkles;
 }
 
