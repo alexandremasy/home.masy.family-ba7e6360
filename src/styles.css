@@ -203,6 +203,11 @@
     50% { filter: drop-shadow(0 0 8px color-mix(in oklab, var(--primary) 40%, transparent)); }
   }
   @keyframes spin-slow { to { transform: rotate(360deg); } }
+  @keyframes sway {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+  .anim-sway { animation: sway 4.5s ease-in-out infinite; transform-origin: top center; }
 
   .anim-breathe { animation: breathe 2.4s ease-in-out infinite; }
   .anim-blink { animation: blink-soft 2s ease-in-out infinite; }
