@@ -148,10 +148,10 @@ function MetricCard({
   return (
     <div
       className={
-        "group relative overflow-hidden rounded-2xl border p-6 shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 " +
+        "group relative overflow-hidden rounded-2xl border bg-card p-6 shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 " +
         (alert
-          ? "border-warm/30 bg-warm/10 ring-1 ring-warm/30"
-          : "border-border/60 bg-card hover:border-border")
+          ? "border-warm/40 hover:border-warm/60"
+          : "border-border/60 hover:border-border")
       }
     >
       <div className="flex items-center justify-between">

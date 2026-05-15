@@ -109,12 +109,22 @@ export const energie = {
   // legacy (still used by /energie page + saisie)
   current: { eau: 9.8, jour: 148, nuit: 132, mazout: 1180 },
   trend: { eau: -0.2, jour: -14, nuit: -8, mazout: -100 },
+  // 13 months ending on the latest fully-recorded month (April 2026 if last reading = May 1).
+  // Order: oldest → newest.
   history: [
-    { month: "Jan", eau: 8.2, jour: 210, nuit: 165, mazout: 1850 },
-    { month: "Fév", eau: 7.6, jour: 198, nuit: 172, mazout: 1620 },
-    { month: "Mar", eau: 9.1, jour: 184, nuit: 158, mazout: 1430 },
-    { month: "Avr", eau: 8.4, jour: 162, nuit: 140, mazout: 1280 },
-    { month: "Mai", eau: 9.8, jour: 148, nuit: 132, mazout: 1180 },
+    { month: "Avr", eau: 8.6, jour: 168, nuit: 142, mazout: 1320 }, // Apr 2025
+    { month: "Mai", eau: 9.4, jour: 152, nuit: 134, mazout: 980 },  // May 2025
+    { month: "Juin", eau: 10.2, jour: 138, nuit: 122, mazout: 540 }, // Jun 2025
+    { month: "Juil", eau: 11.1, jour: 132, nuit: 118, mazout: 320 }, // Jul 2025
+    { month: "Août", eau: 10.8, jour: 128, nuit: 116, mazout: 280 }, // Aug 2025
+    { month: "Sep", eau: 9.6, jour: 142, nuit: 126, mazout: 620 },   // Sep 2025
+    { month: "Oct", eau: 8.8, jour: 168, nuit: 148, mazout: 1180 },  // Oct 2025
+    { month: "Nov", eau: 8.2, jour: 198, nuit: 168, mazout: 1620 },  // Nov 2025
+    { month: "Déc", eau: 7.9, jour: 224, nuit: 184, mazout: 1980 },  // Dec 2025
+    { month: "Jan", eau: 8.2, jour: 210, nuit: 165, mazout: 1850 },  // Jan 2026
+    { month: "Fév", eau: 7.6, jour: 198, nuit: 172, mazout: 1620 },  // Feb 2026
+    { month: "Mar", eau: 9.1, jour: 184, nuit: 158, mazout: 1430 },  // Mar 2026
+    { month: "Avr", eau: 8.4, jour: 162, nuit: 140, mazout: 1280 },  // Apr 2026
   ],
 };
 
