@@ -113,7 +113,7 @@ function RoomPage() {
 
           <details className="mt-6 group">
             <summary className="cursor-pointer text-xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground">
-              Groupes de lumières · réglage manuel
+              Zones · réglage manuel
             </summary>
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
               {zones.map((z, i) => (
