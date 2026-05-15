@@ -47,7 +47,7 @@ function ReseauPage() {
               href={s.url}
               target="_blank"
               rel="noreferrer"
-              className="group flex items-center justify-between gap-2 rounded-lg border border-border/50 bg-card px-3 py-2 text-sm transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-soft"
+              className="group flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-card px-3 py-2 text-sm transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-soft"
             >
               <span className="flex items-center gap-2 truncate">
                 <span className={"h-1.5 w-1.5 shrink-0 rounded-full " + (s.status === "ok" ? "bg-success" : "bg-destructive")} />
