@@ -98,14 +98,12 @@ export function Dashboard() {
           </Tile>
         )}
 
-        <Tile span={3} tone="accent">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.18em] opacity-70">Aujourd'hui</p>
-              <p className="mt-1 font-serif text-xl">Poubelles {calendrier.poubelleToday.type}</p>
-              <p className="text-sm opacity-80">À sortir avant {calendrier.poubelleToday.time}</p>
-            </div>
-            <Trash2 className="h-6 w-6 opacity-70 anim-float anim-wiggle" />
+        <Tile span={3} tone="accent" className="relative overflow-hidden">
+          <PMCBag className="pointer-events-none absolute -right-3 -top-2 h-[140%] w-auto opacity-95" />
+          <div className="relative max-w-[60%]">
+            <p className="text-xs uppercase tracking-[0.18em] opacity-70">Aujourd'hui</p>
+            <p className="mt-1 font-serif text-xl">Poubelles {calendrier.poubelleToday.type}</p>
+            <p className="text-sm opacity-80">À sortir avant {calendrier.poubelleToday.time}</p>
           </div>
         </Tile>
 
