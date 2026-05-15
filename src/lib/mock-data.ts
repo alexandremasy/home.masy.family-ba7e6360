@@ -171,11 +171,30 @@ export const roomDetails: Record<RoomKey, {
     devices: { batteries: [{ name: "Capteur four", level: 91 }, { name: "Capteur frigo", level: 78 }] },
   },
   bureau: {
-    lights: { zones: [{ name: "Bureau", on: true }, { name: "Étagère", on: true }], scene: "Travail", scenes: ["Travail", "Lecture", "Off"], brightness: 70 },
+    lights: {
+      zones: [
+        { name: "Bureau Alex", on: true },
+        { name: "Bureau Cathy", on: true },
+        { name: "Escalier", on: false },
+        { name: "Plafond", on: false },
+        { name: "Playbar", on: false },
+      ],
+      scene: "Moyen",
+      scenes: ["Meditation", "Cosy", "Moyen", "Lumineux"],
+      brightness: 70,
+      hideBrightness: true,
+    },
     climate: { mode: 21, current: 20.8 },
     devices: {
       ink: { c: 72, m: 58, y: 64, k: 81 },
-      batteries: [{ name: "Capteur fenêtre", level: 78 }, { name: "Souris", level: 91 }],
+      appliances: [
+        { name: "Lampe à sel", on: true },
+        { name: "Chat", on: false },
+      ],
+      batteries: [
+        { name: "Radiateur Jardin", level: 78 },
+        { name: "Radiateur Rue", level: 64 },
+      ],
     },
   },
   chambre: {
