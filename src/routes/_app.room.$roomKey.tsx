@@ -2,7 +2,14 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
 import { rooms, roomDetails, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, type LucideIcon } from "lucide-react";
+import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, type LucideIcon } from "lucide-react";
+
+function batteryFor(level: number): { Icon: LucideIcon; tone: string } {
+  if (level < 20) return { Icon: BatteryWarning, tone: "text-destructive" };
+  if (level < 40) return { Icon: BatteryLow, tone: "text-warm-foreground" };
+  if (level < 75) return { Icon: BatteryMedium, tone: "text-muted-foreground" };
+  return { Icon: BatteryFull, tone: "text-success" };
+}
 
 function applianceIcon(name: string): LucideIcon {
   const n = name.toLowerCase();
@@ -242,12 +249,15 @@ function RoomPage() {
           )}
           <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Batteries</p>
           <div className="grid gap-2 sm:grid-cols-2">
-            {detail.devices.batteries.map((b) => (
-              <div key={b.name} className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 text-sm">
-                <span className="flex items-center gap-2"><Battery className="h-4 w-4 text-muted-foreground" />{b.name}</span>
-                <span className={"font-medium " + (b.level < 20 ? "text-destructive" : "")}>{b.level}%</span>
-              </div>
-            ))}
+            {detail.devices.batteries.map((b) => {
+              const { Icon, tone } = batteryFor(b.level);
+              return (
+                <div key={b.name} className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 text-sm">
+                  <span className="flex items-center gap-2"><Icon className={"h-4 w-4 " + tone} />{b.name}</span>
+                  <span className={"font-medium " + (b.level < 20 ? "text-destructive" : "")}>{b.level}%</span>
+                </div>
+              );
+            })}
           </div>
         </Section>
       )}
