@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Section } from "@/components/Card";
+import { PageHeader } from "@/components/PageHeader";
 import { reseau } from "@/lib/mock-data";
 import { Wifi, Cpu, HardDrive, MemoryStick, Shield, ExternalLink, Gauge, Users } from "lucide-react";
 
