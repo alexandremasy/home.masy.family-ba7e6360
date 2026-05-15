@@ -110,60 +110,54 @@ export function Dashboard() {
         </Tile>
 
         {/* PRIORITY 2 — Rooms */}
-        {visibleRooms.map((room) => (
-          <Tile key={room.key} to={`/room/${room.key}`}>
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-3">
-                <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-accent/20 text-accent-foreground" : "bg-secondary text-muted-foreground")}>
-                  <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
-                </span>
-                <div>
-                  <p className="font-serif text-xl">{room.name}</p>
-                  {room.scene && room.scene !== "Off" && (
-                    <p className="mt-0.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">{room.scene}</p>
-                  )}
+        {visibleRooms.flatMap((room) => {
+          if (room.key === "salon") {
+            return [
+              <SalonTile key="salon-v1" room={room} variant="spotify" label="V1 — minimal" />,
+              <SalonTile key="salon-v2" room={room} variant="netflix" label="V2 — cover" />,
+              <SalonTile key="salon-v3" room={room} variant="idle" label="V3 — vide" />,
+            ];
+          }
+          return [
+            <Tile key={room.key} to={`/room/${room.key}`}>
+              <div className="flex items-start justify-between">
+                <div className="flex items-start gap-3">
+                  <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-accent/20 text-accent-foreground" : "bg-secondary text-muted-foreground")}>
+                    <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
+                  </span>
+                  <div>
+                    <p className="font-serif text-xl">{room.name}</p>
+                    {room.scene && room.scene !== "Off" && (
+                      <p className="mt-0.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">{room.scene}</p>
+                    )}
+                  </div>
                 </div>
+                <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />
               </div>
-              <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />
-            </div>
 
-            {typeof room.temperature === "number" ? (
-              <p className="mt-6 font-serif text-4xl tracking-tight">
-                <CountUp to={room.temperature} decimals={1} /><span className="text-base text-muted-foreground">°C</span>
-              </p>
-            ) : roomDetails[room.key]?.media ? (
-              <div className="mt-6 flex items-center gap-2.5">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent/15 text-accent-foreground">
-                  <Music2 className="h-4 w-4 anim-breathe" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-serif text-lg leading-tight">{roomDetails[room.key]!.media!.nowPlaying}</p>
-                  <p className="truncate text-xs text-muted-foreground">{roomDetails[room.key]!.media!.artist} · {roomDetails[room.key]!.media!.source}</p>
-                </div>
-                <span className="flex items-end gap-0.5 pb-1" aria-hidden>
-                  <span className="eq-bar h-3 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "0ms" }} />
-                  <span className="eq-bar h-4 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "150ms" }} />
-                  <span className="eq-bar h-2.5 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "300ms" }} />
-                </span>
-              </div>
-            ) : (
-              <div className="mt-6 h-[2.75rem]" aria-hidden />
-            )}
-
-            <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
-              <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-accent-foreground" : "")}>
-                <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-accent-foreground" : "")} />
-                {room.lightsOn ? "Allumé" : "Éteint"}
-              </span>
-              {room.climate && (
-                <span className="inline-flex items-center gap-1.5">
-                  <Wind className={"h-3.5 w-3.5 " + (room.climate.on ? "text-primary" : "")} />
-                  {room.climate.on ? `${room.climate.setpoint}°` : "Auto"}
-                </span>
+              {typeof room.temperature === "number" ? (
+                <p className="mt-6 font-serif text-4xl tracking-tight">
+                  <CountUp to={room.temperature} decimals={1} /><span className="text-base text-muted-foreground">°C</span>
+                </p>
+              ) : (
+                <div className="mt-6 h-[2.75rem]" aria-hidden />
               )}
-            </div>
-          </Tile>
-        ))}
+
+              <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
+                <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-accent-foreground" : "")}>
+                  <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-accent-foreground" : "")} />
+                  {room.lightsOn ? "Allumé" : "Éteint"}
+                </span>
+                {room.climate && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Wind className={"h-3.5 w-3.5 " + (room.climate.on ? "text-primary" : "")} />
+                    {room.climate.on ? `${room.climate.setpoint}°` : "Auto"}
+                  </span>
+                )}
+              </div>
+            </Tile>,
+          ];
+        })}
 
         {/* PRIORITY 3 — Tesla (compact) */}
         <Tile span={3} to="/tesla" tone="dark" className="relative isolate">
