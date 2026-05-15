@@ -482,15 +482,15 @@ function BigStat({
   trend?: "up" | "down";
 }) {
   return (
-    <div className={"rounded-xl border border-border/60 p-4 " + (accent ? "bg-primary/8" : "bg-card")}>
+    <div className="px-0 sm:px-4 first:sm:pl-0">
       <div className="flex items-center gap-1 text-xs uppercase tracking-[0.16em] text-muted-foreground">
         {icon}
         {label}
       </div>
-      <p className={"mt-2 font-serif text-2xl " + (trend === "down" ? "text-success" : trend === "up" ? "text-warm" : "")}>
+      <p className={"mt-2 font-serif text-3xl " + (accent ? "text-primary" : trend === "down" ? "text-success" : trend === "up" ? "text-warm" : "text-foreground")}>
         {value}
       </p>
-      {sub && <p className="mt-0.5 text-[11px] text-muted-foreground">{sub}</p>}
+      {sub && <p className="mt-1 text-[11px] text-muted-foreground">{sub}</p>}
     </div>
   );
 }
