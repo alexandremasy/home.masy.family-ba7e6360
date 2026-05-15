@@ -69,21 +69,22 @@ function makeSeries(base: number, count = 30, jitter = 0.12) {
   return out;
 }
 
-// 12-month rolling history with year metadata
+// 12-month rolling history with year metadata.
+// Readings happen on the 1st of each month and cover the *previous* month.
+// So the latest recorded month = (month of lastReadingDate) - 1.
 function buildHistory() {
   const monthLabels = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
   const now = new Date();
   const recorded = new Map<string, number>();
-  const currentYear = now.getFullYear();
 
-  // Map mock history to recorded values within the current year (most-recent months)
-  // Spread the recorded values across the months ending at the current month - 1.
+  const lastReading = new Date(energie.lastReadingDate);
+  // Latest recorded month = month before the last reading
+  const anchor = new Date(lastReading.getFullYear(), lastReading.getMonth() - 1, 1);
+
   const recVals = energie.history.map((h) => h.jour + h.nuit);
-  // Anchor recorded values to the most recent fully-completed months.
-  const anchorEnd = now.getMonth() - 1; // last fully-completed month index
   for (let i = 0; i < recVals.length; i++) {
     const offset = recVals.length - 1 - i;
-    const d = new Date(currentYear, anchorEnd - offset, 1);
+    const d = new Date(anchor.getFullYear(), anchor.getMonth() - offset, 1);
     recorded.set(`${d.getFullYear()}-${d.getMonth()}`, recVals[i]);
   }
 
@@ -158,9 +159,14 @@ function EnergiePage() {
   const { electricity, water, oil, lastReadingDate } = energie;
   const history = buildHistory();
   const max = Math.max(...history.map((h) => h.kWh));
-  const lastReadingFmt = new Date(lastReadingDate).toLocaleDateString("fr-BE", {
+  const lastReading = new Date(lastReadingDate);
+  const lastReadingFmt = lastReading.toLocaleDateString("fr-BE", {
     day: "numeric", month: "long", year: "numeric",
   });
+  // The reading on the 1st covers the previous month
+  const coveredMonth = new Date(lastReading.getFullYear(), lastReading.getMonth() - 1, 1);
+  const coveredMonthLabel = coveredMonth.toLocaleDateString("fr-BE", { month: "long", year: "numeric" });
+  const coveredMonthShort = coveredMonth.toLocaleDateString("fr-BE", { month: "long" });
 
   // Build sparkline series for each top block
   const elecSeries = makeSeries(electricity.dailyKWh, 30, 0.18);
@@ -179,6 +185,12 @@ function EnergiePage() {
     return acc;
   }, []);
 
+  // Index of the most recent recorded month (used to highlight the "current" bar)
+  const latestRecordedIdx = (() => {
+    for (let i = history.length - 1; i >= 0; i--) if (!history[i].projected) return i;
+    return -1;
+  })();
+
   return (
     <div className="space-y-6">
       <PageHeader title="Énergie" subtitle="Vue d'ensemble de la consommation" />
@@ -186,7 +198,8 @@ function EnergiePage() {
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card px-5 py-3 text-sm shadow-soft">
         <span className="inline-flex items-center gap-2 text-muted-foreground">
           <CalendarDays className="h-4 w-4" />
-          Dernier relevé : <strong className="text-foreground">{lastReadingFmt}</strong>
+          Relevé du <strong className="text-foreground">{lastReadingFmt}</strong>
+          <span className="hidden sm:inline">— consommation de <strong className="text-foreground capitalize">{coveredMonthLabel}</strong></span>
         </span>
         <Link to="/energie/saisie" className="group inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-1.5 text-xs font-medium text-background">
           Nouveau relevé <ArrowRight className="h-3.5 w-3.5 icon-hover-x transition-transform" />
@@ -219,7 +232,7 @@ function EnergiePage() {
           </div>
 
           <div className="mt-5 flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Total ce mois</span>
+            <span className="text-muted-foreground capitalize">Total {coveredMonthShort}</span>
             <strong className="font-serif text-lg tabular-nums">{electricity.monthKWh} kWh</strong>
           </div>
 
@@ -324,7 +337,7 @@ function EnergiePage() {
 
         <div className="flex h-56 items-end gap-2 sm:gap-3">
           {history.map((h, i) => {
-            const isCurrent = i === history.length - 1;
+            const isCurrent = i === latestRecordedIdx;
             const heightPct = (h.kWh / max) * 100;
             return (
               <div key={h.key} className="group relative flex h-full flex-1 flex-col items-center justify-end gap-2">
