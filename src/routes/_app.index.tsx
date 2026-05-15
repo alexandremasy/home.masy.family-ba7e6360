@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Tile } from "@/components/Card";
 import { CountUp } from "@/components/CountUp";
+import { MapPinBg } from "@/components/MapPinBg";
 import { RoomIcon } from "@/components/RoomIcon";
 import { rooms, tesla, reseau, energie, calendrier, meteo, type WeatherCond } from "@/lib/mock-data";
 import { Lightbulb, Wind, Wifi, Car, Trash2, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer } from "lucide-react";
@@ -149,7 +150,8 @@ export function Dashboard() {
         ))}
 
         {/* PRIORITY 3 — Tesla (compact) */}
-        <Tile span={3} to="/tesla" tone="dark">
+        <Tile span={3} to="/tesla" tone="dark" className="relative isolate">
+          <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-25" />
           <div className="flex items-start gap-3">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-background/10 text-background">
               <Car className="h-4.5 w-4.5 icon-hover anim-drift" />
@@ -199,7 +201,21 @@ export function Dashboard() {
               <p className="mt-1 font-serif text-xl">Tout est en ligne</p>
             </div>
           </div>
-          <div className="mt-4 space-y-1.5 text-sm">
+          <div className="mt-4 flex items-end justify-between gap-3 rounded-xl bg-secondary/50 px-3 py-2.5">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Dernier speedtest</p>
+              <div className="mt-0.5 flex items-baseline gap-1">
+                <span className="font-serif text-2xl tabular-nums leading-none"><CountUp to={reseau.internet.lastSpeedtest.downMbps} /></span>
+                <span className="text-xs text-muted-foreground">Mbps ↓</span>
+              </div>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                <span className="tabular-nums">{reseau.internet.lastSpeedtest.upMbps}</span> Mbps ↑ ·
+                <span className="tabular-nums"> {reseau.internet.lastSpeedtest.pingMs}</span> ms
+              </p>
+            </div>
+            <span className="text-[10px] text-muted-foreground">{reseau.internet.lastSpeedtest.when}</span>
+          </div>
+          <div className="mt-3 space-y-1.5 text-sm">
             <NetRow label={reseau.wifi1.ssid} on={reseau.wifi1.on} />
             <NetRow label={reseau.wifi2.ssid} on={reseau.wifi2.on} />
           </div>
