@@ -68,11 +68,30 @@ function TeslaPage() {
     cur.months.push(row);
     quartersMap.set(k, cur);
   }
+
+  // Projection: fill the missing months of the current quarter using the same month last year
+  const currentQRaw = quartersMap.get(currentQKey)!;
+  const presentNames = new Set(currentQRaw.months.map((m) => m.month));
+  const projectedMonths: MonthRow[] = Q_MONTHS_FR[currentQ]
+    .filter((m) => !presentNames.has(m))
+    .map((m) => {
+      const prior = history.find((h) => h.month === m && h.year === currentY - 1);
+      return { month: m, year: currentY, kWh: prior?.kWh ?? 0, sessions: prior?.sessions ?? 0, projected: true };
+    });
+  const currentQuarter = {
+    ...currentQRaw,
+    months: [...currentQRaw.months, ...projectedMonths].sort(
+      (a, b) => Q_MONTHS_FR[currentQ].indexOf(a.month) - Q_MONTHS_FR[currentQ].indexOf(b.month),
+    ),
+  };
+  const realKWh = currentQRaw.kWh;
+  const projectedKWh = projectedMonths.reduce((s, m) => s + m.kWh, 0);
+  const estimatedKWh = realKWh + projectedKWh;
+
   const quarters = Array.from(quartersMap.values()).sort((a, b) =>
     a.year === b.year ? a.q - b.q : a.year - b.year,
   );
 
-  const currentQuarter = quartersMap.get(currentQKey)!;
   const previousFull = quarters.filter((q) => q.key !== currentQKey && q.monthsCounted === 3);
   const lastFullQ = previousFull[previousFull.length - 1];
   const avgPrevKWh = previousFull.length
@@ -87,7 +106,7 @@ function TeslaPage() {
   })();
   const medianMonth = medianQ ? Math.round(medianQ / 3) : 0;
 
-  const qDelta = currentQuarter.kWh - (lastFullQ?.kWh ?? 0);
+  const qDelta = estimatedKWh - (lastFullQ?.kWh ?? 0);
   const qBetter = qDelta < 0;
   const qDeltaPct = lastFullQ ? Math.round((Math.abs(qDelta) / lastFullQ.kWh) * 100) : 0;
 
@@ -95,8 +114,10 @@ function TeslaPage() {
   const fmtEur = (n: number) =>
     n.toLocaleString("fr-BE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
 
-  // Visible window: only full quarters (groups of 3 months)
-  const visibleQuarters = quarters.filter((q) => q.monthsCounted === 3 || q.key === currentQKey);
+  // Visible window: full quarters + current (which now always has 3 months thanks to projection)
+  const visibleQuarters = quarters
+    .filter((q) => q.monthsCounted === 3 || q.key === currentQKey)
+    .map((q) => (q.key === currentQKey ? { ...q, months: currentQuarter.months, kWh: estimatedKWh, monthsCounted: 3 } : q));
   const maxMonth = Math.max(...visibleQuarters.flatMap((q) => q.months.map((m) => m.kWh)));
 
   return (
