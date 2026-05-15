@@ -187,7 +187,6 @@ function TeslaPage() {
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
           <span className="inline-flex items-center gap-1.5"><Wifi className="h-3 w-3" /> Sync {tesla.lastSeen}</span>
           <span>Logiciel {tesla.software}</span>
-          <span>{tesla.inGarage ? "Au garage" : "Hors garage"}</span>
         </div>
       </section>
 
