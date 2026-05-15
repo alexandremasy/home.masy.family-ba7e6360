@@ -16,13 +16,17 @@ export function MapPinBg({ className = "" }: { className?: string }) {
         </pattern>
         <radialGradient id="map-vignette" cx="50%" cy="50%" r="65%">
           <stop offset="0%" stopColor="white" stopOpacity="0" />
-          <stop offset="100%" stopColor="black" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="black" stopOpacity="0.25" />
         </radialGradient>
         <radialGradient id="pin-pulse" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.85" />
-          <stop offset="60%" stopColor="var(--primary)" stopOpacity="0.35" />
+          <stop offset="0%" stopColor="var(--primary)" stopOpacity="1" />
+          <stop offset="60%" stopColor="var(--primary)" stopOpacity="0.5" />
           <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
         </radialGradient>
+        <filter id="pin-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="2.5" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
       </defs>
 
       {/* base grid */}
