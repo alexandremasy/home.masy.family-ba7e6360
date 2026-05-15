@@ -246,11 +246,11 @@ function TeslaPage() {
               </span>
             </div>
 
-            <div className="flex h-full items-end gap-5 sm:gap-6">
+            <div className="flex h-full items-end gap-2 sm:gap-6">
               {visibleQuarters.map((q) => {
                 const isCurrent = q.key === currentQKey;
                 return (
-                  <div key={q.key} className="flex h-full flex-1 items-end gap-1.5">
+                  <div key={q.key} className="flex h-full flex-1 items-end gap-1 sm:gap-1.5">
                     {q.months.map((m) => {
                       const projected = !!m.projected;
                       return (
@@ -279,7 +279,7 @@ function TeslaPage() {
           </div>
 
           {/* Quarter axis: month labels + quarter total */}
-          <div className="mt-2 flex gap-5 sm:gap-6">
+          <div className="mt-2 flex gap-2 sm:gap-6">
             {visibleQuarters.map((q) => {
               const isCurrent = q.key === currentQKey;
               return (
