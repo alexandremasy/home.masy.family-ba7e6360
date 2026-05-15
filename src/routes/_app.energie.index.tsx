@@ -232,7 +232,7 @@ function EnergiePage() {
           </div>
 
           <div className="mt-5 flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Total ce mois</span>
+            <span className="text-muted-foreground capitalize">Total {coveredMonthShort}</span>
             <strong className="font-serif text-lg tabular-nums">{electricity.monthKWh} kWh</strong>
           </div>
 
@@ -337,7 +337,7 @@ function EnergiePage() {
 
         <div className="flex h-56 items-end gap-2 sm:gap-3">
           {history.map((h, i) => {
-            const isCurrent = i === history.length - 1;
+            const isCurrent = i === latestRecordedIdx;
             const heightPct = (h.kWh / max) * 100;
             return (
               <div key={h.key} className="group relative flex h-full flex-1 flex-col items-center justify-end gap-2">
