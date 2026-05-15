@@ -180,7 +180,11 @@ function EnergiePage() {
   const { electricity, water, oil, lastReadingDate } = energie;
   const [domain, setDomain] = useState<Domain>("elec");
   const history = buildHistory(domain);
-  const max = Math.max(...history.map((h) => h.value));
+  const maxPos = Math.max(0, ...history.map((h) => h.value));
+  const maxNeg = Math.abs(Math.min(0, ...history.map((h) => h.value)));
+  const totalRange = maxPos + maxNeg || 1;
+  const posZonePct = (maxPos / totalRange) * 100;
+  const negZonePct = (maxNeg / totalRange) * 100;
   const cfg = domainConfig[domain];
   const lastReading = new Date(lastReadingDate);
   const lastReadingFmt = lastReading.toLocaleDateString("fr-BE", {
