@@ -148,7 +148,7 @@ function MetricCard({
   return (
     <div
       className={
-        "group relative overflow-hidden rounded-2xl border bg-card p-6 shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 " +
+        "group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-card p-6 shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 " +
         (alert
           ? "border-warm/40 hover:border-warm/60"
           : "border-border/60 hover:border-border")
@@ -249,10 +249,6 @@ function EnergiePage() {
           </div>
           <div className="mt-2"><TrendBadge trend={electricity.trend} pct={electricity.trendPct} /></div>
 
-          <div className="mt-4">
-            <Sparkline data={elecSeries} />
-          </div>
-
           <div className="mt-5 flex items-center justify-between text-sm">
             <span className="text-muted-foreground capitalize">Total {coveredMonthShort}</span>
             <strong className="font-serif text-lg tabular-nums">{electricity.monthKWh} kWh</strong>
@@ -272,6 +268,10 @@ function EnergiePage() {
               <p className="mt-1 font-serif text-xl tabular-nums">{electricity.nightTotal}<span className="ml-1 text-xs text-muted-foreground">kWh</span></p>
             </div>
           </div>
+
+          <div className="mt-auto pt-5">
+            <Sparkline data={elecSeries} />
+          </div>
         </MetricCard>
 
         {/* WATER */}
@@ -283,12 +283,12 @@ function EnergiePage() {
           <p className="mt-1 text-sm text-muted-foreground tabular-nums">≈ {water.dailyL} L par jour</p>
           <div className="mt-2"><TrendBadge trend={water.trend} pct={water.trendPct} suffix="vs période préc." /></div>
 
-          <div className="mt-4">
-            <Sparkline data={waterSeries} />
-          </div>
-
           <div className="mt-5 rounded-xl bg-secondary/60 p-3 text-sm text-muted-foreground">
             Tendance stable sur les 30 derniers jours — aucune anomalie détectée.
+          </div>
+
+          <div className="mt-auto pt-5">
+            <Sparkline data={waterSeries} />
           </div>
         </MetricCard>
 
@@ -323,10 +323,6 @@ function EnergiePage() {
             </div>
           )}
 
-          <div className="mt-4">
-            <Sparkline data={oilSeries} tone="warm" />
-          </div>
-
           <div className="mt-4 grid grid-cols-2 gap-2">
             <div className="rounded-xl bg-secondary/60 p-3">
               <p className="text-xs text-muted-foreground">30 derniers jours</p>
@@ -336,6 +332,10 @@ function EnergiePage() {
               <p className="text-xs text-muted-foreground">Autonomie</p>
               <p className={"mt-1 font-serif text-xl tabular-nums " + (oil.status === "alert" ? "text-warm" : "")}>~{oil.autonomyDays}<span className="ml-1 text-xs text-muted-foreground">j</span></p>
             </div>
+          </div>
+
+          <div className="mt-auto pt-5">
+            <Sparkline data={oilSeries} tone="warm" />
           </div>
         </MetricCard>
       </div>
