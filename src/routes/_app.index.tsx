@@ -167,7 +167,8 @@ export function Dashboard() {
 
         {/* PRIORITY 3 — Tesla (compact) */}
         <Tile span={3} to="/tesla" tone="dark" className="relative isolate">
-          <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-25" />
+          <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-55" />
+          <span className="pointer-events-none absolute inset-0 -z-10 rounded-[inherit] bg-gradient-to-br from-background/0 via-background/30 to-background/70" />
           <div className="flex items-start gap-3">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-background/10 text-background">
               <Car className="h-4.5 w-4.5 icon-hover anim-drift" />
