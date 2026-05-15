@@ -13,7 +13,7 @@ export interface Room {
 }
 
 export const rooms: Room[] = [
-  { key: "salon", name: "Salon", icon: "sofa", hasSensors: true, lightsOn: true, temperature: 21.4, climate: { on: true, setpoint: 21 }, scene: "Film", occupied: true },
+  { key: "salon", name: "Salon", icon: "sofa", hasSensors: true, lightsOn: true, scene: "Film", occupied: true },
   { key: "bureau", name: "Bureau", icon: "briefcase", hasSensors: true, lightsOn: true, temperature: 20.8, climate: { on: true, setpoint: 21 }, scene: "Travail", occupied: true },
   { key: "cuisine", name: "Cuisine", icon: "utensils", hasSensors: true, lightsOn: false, temperature: 22.1, climate: { on: false }, scene: "Off" },
   { key: "chambre", name: "Chambre", icon: "bed", hasSensors: true, lightsOn: false, temperature: 19.6, climate: { on: false }, scene: "Off" },
