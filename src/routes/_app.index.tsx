@@ -31,14 +31,6 @@ export function Dashboard() {
     <div className="space-y-8">
       <div className="grid-bento stagger">
 
-        {/* Greeting — first cell, with card background */}
-        <Tile span={2}>
-          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{dateStr}</p>
-          <h1 className="mt-2 font-serif text-3xl tracking-tight text-foreground sm:text-4xl">
-            {greeting}.
-          </h1>
-        </Tile>
-
         {/* Weather — single cell, no background, floats into any hole */}
         <WeatherTile />
 
@@ -101,6 +93,14 @@ export function Dashboard() {
             </Tile>,
           ];
         })}
+
+        {/* Greeting — single cell, no background, centered, floats into a hole */}
+        <div className="col-span-1 flex flex-col items-center justify-center text-center px-2 py-4">
+          <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{dateStr}</p>
+          <h1 className="mt-1 font-serif text-2xl tracking-tight text-foreground sm:text-3xl">
+            {greeting}.
+          </h1>
+        </div>
 
         {/* Énergie */}
         {energie.monthlyDue ? (
