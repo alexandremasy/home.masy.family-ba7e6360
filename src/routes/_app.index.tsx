@@ -227,7 +227,7 @@ export function Dashboard() {
         </Tile>
 
         {/* PRIORITY 3 — Réseau (compact) */}
-        <Tile span={2} to="/reseau" className="!col-span-1 sm:!col-span-2">
+        <Tile span={3} to="/reseau" className="!col-span-1 sm:!col-span-3">
           {/* Mobile compact */}
           <div className="sm:hidden">
             <div className="flex items-center justify-between gap-2">
