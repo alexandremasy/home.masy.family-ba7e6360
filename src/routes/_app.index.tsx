@@ -244,72 +244,37 @@ export function Dashboard() {
           </div>
         </Tile>
 
-        {/* PRIORITY 3 — Réseau (compact) */}
-        <Tile span={3} to="/reseau" className="!col-span-1 sm:!col-span-3">
-          {/* Mobile compact */}
-          <div className="sm:hidden">
-            <div className="flex items-center justify-between gap-2">
+        {/* PRIORITY 3 — Réseau (compact, mêmes proportions qu'Énergie) */}
+        <Tile span={2} to="/reseau" className="flex flex-col">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
               <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Réseau</p>
-              <span className="inline-flex items-center gap-1 text-[11px] text-success">
-                <Wifi className="h-3 w-3" />
-                Stable
-              </span>
+              <p className="mt-1 font-serif text-xl">Tout est en ligne</p>
             </div>
-            <div className="mt-3 flex items-baseline gap-1">
-              <span className="font-serif text-3xl tracking-tight tabular-nums">
-                <CountUp to={reseau.internet.lastSpeedtest.downMbps} />
-              </span>
-              <span className="text-xs text-muted-foreground">Mbps ↓</span>
-            </div>
-            <div className="mt-3 flex flex-col gap-1 text-[11px] text-muted-foreground">
-              <span className="inline-flex items-center gap-1.5">
-                <Wifi className="h-3 w-3" /> {reseau.wifi1.clients} clients
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Server className="h-3 w-3" /> {reseau.homelab.cpu}% CPU
-              </span>
-            </div>
+            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
+              <Wifi className="h-3 w-3" />
+              <span className="text-[11px] font-medium">Stable</span>
+            </span>
           </div>
-
-          {/* sm+ original */}
-          <div className="hidden sm:block">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Réseau</p>
-                <p className="mt-1 font-serif text-xl">Tout est en ligne</p>
-              </div>
-              <span className="inline-flex items-center gap-2 rounded-full bg-success/15 px-2.5 py-1 text-success">
-                <span className="relative grid h-5 w-5 place-items-center rounded-full">
-                  <Wifi className="h-3.5 w-3.5" />
-                </span>
-                <span className="text-xs font-medium tracking-tight">Stable</span>
-              </span>
-            </div>
-            <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
-              <NetBlock
-                icon={<Gauge className="h-3.5 w-3.5 anim-glow sm:h-4 sm:w-4" />}
-                label="Internet"
-                value={<><CountUp to={reseau.internet.lastSpeedtest.downMbps} /><span className="text-xs text-muted-foreground"> Mbps ↓</span></>}
-                sub={`${reseau.internet.lastSpeedtest.upMbps} Mbps ↑ · ${reseau.internet.lastSpeedtest.pingMs} ms`}
-                foot={reseau.internet.lastSpeedtest.when}
-              />
-              <NetBlock
-                icon={<Wifi className="h-3.5 w-3.5 anim-breathe sm:h-4 sm:w-4" />}
-                label="WiFi privé"
-                value={<>{reseau.wifi1.clients}<span className="text-xs text-muted-foreground"> clients</span></>}
-                sub={reseau.wifi1.ssid}
-                foot={reseau.wifi1.on ? "En ligne" : "Hors ligne"}
-                ok={reseau.wifi1.on}
-              />
-              <NetBlock
-                icon={<Server className="h-3.5 w-3.5 anim-breathe sm:h-4 sm:w-4" />}
-                label="Homelab"
-                value={<>{reseau.homelab.cpu}<span className="text-xs text-muted-foreground">% CPU</span></>}
-                sub={`RAM ${reseau.homelab.memory}% · Disk ${reseau.homelab.disk}%`}
-                foot={`up ${reseau.homelab.uptimeDays}j`}
-                ok
-              />
-            </div>
+          <div className="mt-4 flex flex-1 flex-col gap-2">
+            <ReseauRow
+              icon={<Gauge className="h-4 w-4 anim-glow" />}
+              label="Internet"
+              value={`${reseau.internet.lastSpeedtest.downMbps} Mbps`}
+              sub={`${reseau.internet.lastSpeedtest.pingMs} ms`}
+            />
+            <ReseauRow
+              icon={<Wifi className="h-4 w-4 anim-breathe" />}
+              label="WiFi"
+              value={`${reseau.wifi1.clients + reseau.wifi2.clients}`}
+              sub="clients"
+            />
+            <ReseauRow
+              icon={<Server className="h-4 w-4 anim-breathe" />}
+              label="Homelab"
+              value={`${reseau.homelab.cpu}%`}
+              sub={`up ${reseau.homelab.uptimeDays}j`}
+            />
           </div>
         </Tile>
       </div>
@@ -678,6 +643,18 @@ function EnergieRow({
       {sub && <span className="text-[11px] tabular-nums text-muted-foreground">{sub}</span>}
       {trend && <TrendBadge trend={trend} pct={trendPct} hidePct />}
       <StatusDot status={status} />
+    </div>
+  );
+}
+
+function ReseauRow({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub?: string }) {
+  return (
+    <div className="flex flex-1 items-center gap-2 rounded-lg bg-secondary/60 px-2.5">
+      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-card text-foreground/80">{icon}</span>
+      <span className="min-w-0 flex-1 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{label}</span>
+      <span className="font-serif text-sm leading-none tabular-nums">{value}</span>
+      {sub && <span className="text-[11px] tabular-nums text-muted-foreground">{sub}</span>}
+      <span className="h-1.5 w-1.5 rounded-full bg-success" />
     </div>
   );
 }
