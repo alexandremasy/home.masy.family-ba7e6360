@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/PageHeader";
 
 import { Switch } from "@/components/ui/switch";
 import { reseau } from "@/lib/mock-data";
-import { Wifi, Cpu, HardDrive, MemoryStick, Shield, ExternalLink, Gauge, Users, Router, Globe } from "lucide-react";
+import { Wifi, Cpu, HardDrive, MemoryStick, Shield, ExternalLink, Gauge, Users, Router, Globe, ShieldOff } from "lucide-react";
 
 export const Route = createFileRoute("/_app/reseau")({
   component: ReseauPage,
