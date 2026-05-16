@@ -72,7 +72,7 @@ export function Dashboard() {
                     )}
                   </div>
                 </div>
-                <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />
+                {bureauCls && <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />}
               </div>
 
               {typeof room.temperature === "number" ? (
@@ -303,7 +303,7 @@ type SalonVariant = "spotify" | "netflix" | "idle";
 
 function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: SalonVariant }) {
   return (
-    <Tile span={2} to={`/room/${room.key}`} className="relative">
+    <Tile span={2} to={`/room/${room.key}`} className="relative flex flex-col">
 
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">
@@ -320,12 +320,7 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
         <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />
       </div>
 
-      {variant === "idle" ? (
-        <div className="mt-5 inline-flex items-center gap-1.5 text-[11px] text-muted-foreground/70">
-          <Cast className="h-3 w-3" />
-          <span>Chromecast en veille</span>
-        </div>
-      ) : (
+      {variant !== "idle" && (
         <div className="mt-5 flex items-center gap-2.5 rounded-xl bg-secondary/60 p-2.5">
           {variant === "spotify" && (
             <>
@@ -355,11 +350,17 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
         </div>
       )}
 
-      <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
+      <div className="mt-auto pt-3 flex items-center gap-3 text-xs text-muted-foreground">
         <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-accent-foreground" : "")}>
           <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-accent-foreground" : "")} />
           {room.lightsOn ? "Allumé" : "Éteint"}
         </span>
+        {variant === "idle" && (
+          <span className="inline-flex items-center gap-1.5">
+            <Cast className="h-3.5 w-3.5" />
+            Chromecast en veille
+          </span>
+        )}
       </div>
     </Tile>
   );
