@@ -417,8 +417,8 @@ function NetBlock({
       <span className="mt-2 flex items-baseline gap-1 font-serif text-lg leading-none sm:text-xl tabular-nums">
         {value}
       </span>
-      <p className="mt-1.5 hidden truncate text-[11px] text-muted-foreground lg:block">{sub}</p>
-      <p className="mt-1 hidden truncate text-[10px] uppercase tracking-[0.12em] text-muted-foreground/80 lg:block">{foot}</p>
+      <p className="mt-1.5 truncate text-[11px] text-muted-foreground">{sub}</p>
+      <p className="mt-1 truncate text-[10px] uppercase tracking-[0.12em] text-muted-foreground/80">{foot}</p>
     </div>
   );
 }
