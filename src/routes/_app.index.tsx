@@ -43,62 +43,6 @@ export function Dashboard() {
 
       <div className="grid-bento stagger">
 
-        {/* PRIORITY 1 — Events */}
-        {energie.monthlyDue ? (
-          <Tile span={3} tone="warm">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.18em] opacity-70">Énergie · à faire</p>
-                <p className="mt-1 font-serif text-xl">Relevé mensuel à saisir</p>
-                <p className="mt-1 text-sm opacity-80">3 compteurs en attente — eau, électricité, mazout.</p>
-              </div>
-              <span className="relative grid h-9 w-9 place-items-center rounded-full bg-foreground/10">
-                <Sparkles className="h-4 w-4 anim-breathe" />
-              </span>
-            </div>
-            <Link
-              to="/energie/saisie"
-              className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-transform hover:translate-x-0.5"
-            >
-              Saisir <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Tile>
-        ) : (
-          <Tile span={3} to="/energie">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Énergie · {now.toLocaleDateString("fr-BE", { month: "long", year: "numeric" }).replace(/^./, (c) => c.toUpperCase())}</p>
-                <p className="mt-1 font-serif text-xl">Vue d'ensemble</p>
-              </div>
-              {(() => {
-                const alerts: string[] = [];
-                if (energie.oil.status === "alert") alerts.push("Niveau de mazout faible");
-                if (energie.electricity.status === "alert") alerts.push("Conso électrique élevée");
-                if (energie.water.status === "alert") alerts.push("Conso d'eau élevée");
-                const anyAlert = alerts.length > 0;
-                return anyAlert ? (
-                  <span className="inline-flex items-center gap-2 rounded-full bg-warm/15 px-2.5 py-1 text-warm">
-                    <span className="relative grid h-5 w-5 place-items-center rounded-full anim-pulse-ring">
-                      <AlertTriangle className="h-3.5 w-3.5" />
-                    </span>
-                    <span className="text-xs font-medium tracking-tight">{alerts[0]}{alerts.length > 1 ? ` · +${alerts.length - 1}` : ""}</span>
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-2 rounded-full bg-success/15 px-2.5 py-1 text-success">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    <span className="text-xs font-medium tracking-tight">Tout va bien</span>
-                  </span>
-                );
-              })()}
-            </div>
-            <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
-              <ElecBlock />
-              <WaterBlock />
-              <OilBlock />
-            </div>
-          </Tile>
-        )}
-
         <Tile span={1} tone="accent" className="relative overflow-hidden">
           <PMCBag className="pointer-events-none absolute -right-3 -top-3 h-[110%] w-auto opacity-90" />
           <div className="relative">
