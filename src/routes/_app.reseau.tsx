@@ -154,3 +154,13 @@ function Meter({ icon, label, value }: { icon: React.ReactNode; label: string; v
     </div>
   );
 }
+
+function Stat({ icon, label, value, sub, tone = "default" }: { icon: React.ReactNode; label: string; value: string; sub?: string; tone?: "default" | "warm" }) {
+  return (
+    <div className="rounded-xl border border-border/60 bg-card p-4">
+      <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">{icon}{label}</div>
+      <p className={"mt-2 font-serif text-2xl tabular-nums " + (tone === "warm" ? "text-warm" : "text-foreground")}>{value}</p>
+      {sub && <p className="mt-1 text-xs text-muted-foreground">{sub}</p>}
+    </div>
+  );
+}
