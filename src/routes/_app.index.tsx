@@ -33,7 +33,7 @@ export function Dashboard() {
       <div className="grid-bento stagger">
 
         {/* Greeting — first cell top-left, no background, centered */}
-        <div className="col-span-1 flex flex-col items-center justify-center text-center px-2 py-4">
+        <div className="col-span-1 flex h-full flex-col items-center justify-center text-center px-2 py-4">
           <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{dateStr}</p>
           <h1 className="mt-1 font-serif text-2xl tracking-tight text-foreground sm:text-3xl">
             {greeting}.
@@ -124,37 +124,55 @@ export function Dashboard() {
             </Link>
           </Tile>
         ) : (
-          <Tile span={2} to="/energie">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Énergie · {now.toLocaleDateString("fr-BE", { month: "long", year: "numeric" }).replace(/^./, (c) => c.toUpperCase())}</p>
+          <Tile span={2} to="/energie" className="flex flex-col">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Énergie</p>
                 <p className="mt-1 font-serif text-xl">Vue d'ensemble</p>
               </div>
               {(() => {
                 const alerts: string[] = [];
-                if (energie.oil.status === "alert") alerts.push("Niveau de mazout faible");
-                if (energie.electricity.status === "alert") alerts.push("Conso électrique élevée");
-                if (energie.water.status === "alert") alerts.push("Conso d'eau élevée");
+                if (energie.oil.status === "alert") alerts.push("Mazout faible");
+                if (energie.electricity.status === "alert") alerts.push("Élec. élevée");
+                if (energie.water.status === "alert") alerts.push("Eau élevée");
                 const anyAlert = alerts.length > 0;
                 return anyAlert ? (
-                  <span className="inline-flex items-center gap-2 rounded-full bg-warm/15 px-2.5 py-1 text-warm">
-                    <span className="relative grid h-5 w-5 place-items-center rounded-full anim-pulse-ring">
-                      <AlertTriangle className="h-3.5 w-3.5" />
-                    </span>
-                    <span className="text-xs font-medium tracking-tight">{alerts[0]}{alerts.length > 1 ? ` · +${alerts.length - 1}` : ""}</span>
+                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-warm/15 px-2 py-0.5 text-warm">
+                    <AlertTriangle className="h-3 w-3" />
+                    <span className="text-[11px] font-medium">{alerts[0]}{alerts.length > 1 ? ` +${alerts.length - 1}` : ""}</span>
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-2 rounded-full bg-success/15 px-2.5 py-1 text-success">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    <span className="text-xs font-medium tracking-tight">Tout va bien</span>
+                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
+                    <Sparkles className="h-3 w-3" />
+                    <span className="text-[11px] font-medium">OK</span>
                   </span>
                 );
               })()}
             </div>
-            <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
-              <ElecBlock />
-              <WaterBlock />
-              <OilBlock />
+            <div className="mt-auto pt-4 flex flex-col gap-1.5">
+              <EnergieRow
+                icon={<Zap className="h-3.5 w-3.5 anim-glow" />}
+                label="Élec."
+                value={`${energie.electricity.dailyKWh} kWh/j`}
+                trend={energie.electricity.trend}
+                trendPct={energie.electricity.trendPct}
+                status={energie.electricity.status}
+              />
+              <EnergieRow
+                icon={<Droplet className="h-3.5 w-3.5 anim-float" />}
+                label="Eau"
+                value={`${energie.water.dailyM3} m³/j`}
+                trend={energie.water.trend}
+                trendPct={energie.water.trendPct}
+                status={energie.water.status}
+              />
+              <EnergieRow
+                icon={<Flame className={"h-3.5 w-3.5 " + (energie.oil.tankPct < 25 ? "anim-wiggle text-warm" : "anim-breathe")} />}
+                label="Mazout"
+                value={`${energie.oil.tankPct}%`}
+                sub={`~${energie.oil.autonomyDays} j`}
+                status={energie.oil.status}
+              />
             </div>
           </Tile>
         )}
@@ -227,7 +245,7 @@ export function Dashboard() {
         </Tile>
 
         {/* PRIORITY 3 — Réseau (compact) */}
-        <Tile span={2} to="/reseau" className="!col-span-1 sm:!col-span-2">
+        <Tile span={3} to="/reseau" className="!col-span-1 sm:!col-span-3">
           {/* Mobile compact */}
           <div className="sm:hidden">
             <div className="flex items-center justify-between gap-2">
@@ -577,7 +595,7 @@ function WeatherTile() {
       <DialogTrigger asChild>
         <button
           type="button"
-          className="group relative col-span-1 overflow-hidden rounded-2xl p-4 text-left transition-colors hover:bg-secondary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="group relative col-span-1 h-full overflow-hidden rounded-2xl p-4 text-left transition-colors hover:bg-secondary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Voir la météo détaillée"
         >
           <div className="flex items-start justify-between gap-2">
@@ -645,3 +663,21 @@ function WeatherTile() {
   );
 }
 
+function EnergieRow({
+  icon, label, value, sub, trend, trendPct, status,
+}: {
+  icon: React.ReactNode; label: string; value: string; sub?: string;
+  trend?: "up" | "down" | "stable"; trendPct?: number; status: "normal" | "alert";
+}) {
+  const alert = status === "alert";
+  return (
+    <div className={"flex items-center gap-2.5 rounded-xl px-2.5 py-2 transition-colors " + (alert ? "bg-warm/10 ring-1 ring-warm/30" : "bg-secondary/60")}>
+      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-card text-foreground/80">{icon}</span>
+      <span className="min-w-0 flex-1 text-xs uppercase tracking-[0.12em] text-muted-foreground">{label}</span>
+      <span className="font-serif text-sm leading-none tabular-nums">{value}</span>
+      {sub && <span className="text-[11px] tabular-nums text-muted-foreground">{sub}</span>}
+      {trend && <TrendBadge trend={trend} pct={trendPct} hidePct />}
+      <StatusDot status={status} />
+    </div>
+  );
+}
