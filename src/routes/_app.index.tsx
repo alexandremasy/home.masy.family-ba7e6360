@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_app/")({
   head: () => ({
     meta: [
       { title: "Maison — Cockpit" },
-      { name: "description", content: "Tableau de bord domestique : pièces, Tesla, réseau et énergie en un coup d'œil." },
+      { name: "description", content: "Tableau de bord domestique : pièces, Bernard, réseau et énergie en un coup d'œil." },
     ],
   }),
 });
