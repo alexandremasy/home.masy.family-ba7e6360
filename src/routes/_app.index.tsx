@@ -595,7 +595,7 @@ function WeatherTile() {
       <DialogTrigger asChild>
         <button
           type="button"
-          className="group relative col-span-1 overflow-hidden rounded-2xl p-4 text-left transition-colors hover:bg-secondary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="group relative col-span-1 h-full overflow-hidden rounded-2xl p-4 text-left transition-colors hover:bg-secondary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Voir la météo détaillée"
         >
           <div className="flex items-start justify-between gap-2">
