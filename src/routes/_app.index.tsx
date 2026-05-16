@@ -483,17 +483,9 @@ function ElecBlock() {
           <span className="hidden text-xs text-muted-foreground sm:inline">vs 90j</span>
         </span>
       </Tip>
-      <div className="mt-2 flex flex-col gap-1 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:gap-2">
-        <Tip label={`Total cumulé en tarif jour ce mois : ${e.dayTotal} kWh.`}>
-          <span className="inline-flex items-center gap-1">☀️<span className="tabular-nums text-foreground/80">{e.dayTotal}</span></span>
-        </Tip>
-        <Tip label={`Total cumulé en tarif nuit ce mois : ${e.nightTotal} kWh.`}>
-          <span className="inline-flex items-center gap-1">✨<span className="tabular-nums text-foreground/80">{e.nightTotal}</span></span>
-        </Tip>
-        <Tip label="Total consommé sur le mois en cours.">
-          <span className="hidden tabular-nums sm:inline">{e.monthKWh} kWh</span>
-        </Tip>
-      </div>
+      <Tip label="Total consommé sur le mois en cours.">
+        <p className="mt-2 text-xs tabular-nums text-muted-foreground">{e.monthKWh} kWh ce mois</p>
+      </Tip>
     </BlockShell>
   );
 }
