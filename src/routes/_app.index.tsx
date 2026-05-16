@@ -31,14 +31,6 @@ export function Dashboard() {
     <div className="space-y-8">
       <div className="grid-bento stagger">
 
-        {/* Greeting — first cell, with card background */}
-        <Tile span={2}>
-          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{dateStr}</p>
-          <h1 className="mt-2 font-serif text-3xl tracking-tight text-foreground sm:text-4xl">
-            {greeting}.
-          </h1>
-        </Tile>
-
         {/* Weather — single cell, no background, floats into any hole */}
         <WeatherTile />
 
