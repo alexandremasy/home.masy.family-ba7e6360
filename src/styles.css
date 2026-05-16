@@ -140,6 +140,7 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
+    grid-auto-flow: row dense;
   }
   @media (min-width: 640px) {
     .grid-bento { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
