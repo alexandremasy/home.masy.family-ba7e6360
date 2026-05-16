@@ -24,7 +24,7 @@ import {
 
 export const Route = createFileRoute("/_app/tesla")({
   component: TeslaPage,
-  head: () => ({ meta: [{ title: "Tesla — Maison" }] }),
+  head: () => ({ meta: [{ title: "Bernard — Maison" }] }),
 });
 
 // --- Quarter helpers ---
