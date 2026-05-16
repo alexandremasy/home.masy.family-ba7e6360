@@ -31,8 +31,13 @@ export function Dashboard() {
     <div className="space-y-8">
       <div className="grid-bento stagger">
 
-        {/* Weather — single cell, no background, floats into any hole */}
-        <WeatherTile />
+        {/* Greeting — first cell top-left, no background, centered */}
+        <div className="col-span-1 flex flex-col items-center justify-center text-center px-2 py-4">
+          <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{dateStr}</p>
+          <h1 className="mt-1 font-serif text-2xl tracking-tight text-foreground sm:text-3xl">
+            {greeting}.
+          </h1>
+        </div>
 
         <Tile span={1} tone="accent" className="relative overflow-hidden">
           <PMCBag className="pointer-events-none absolute -right-3 -top-3 h-[110%] w-auto opacity-90" />
