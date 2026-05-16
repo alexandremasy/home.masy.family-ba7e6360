@@ -5,7 +5,16 @@ import { PageHeader } from "@/components/PageHeader";
 
 import { Switch } from "@/components/ui/switch";
 import { reseau } from "@/lib/mock-data";
-import { Wifi, Cpu, HardDrive, MemoryStick, Shield, ExternalLink, Gauge, Users, Router, Globe, ShieldOff } from "lucide-react";
+import { Wifi, Cpu, HardDrive, MemoryStick, Shield, ExternalLink, Gauge, Users, Router, Globe, ShieldOff, Container, Network, BarChart3, Home, Film, KeyRound, Boxes } from "lucide-react";
+
+const serviceIcons: Record<string, typeof Container> = {
+  Portainer: Container,
+  Traefik: Network,
+  Grafana: BarChart3,
+  "Home Assistant": Home,
+  Plex: Film,
+  Vaultwarden: KeyRound,
+};
 
 export const Route = createFileRoute("/_app/reseau")({
   component: ReseauPage,
@@ -87,21 +96,25 @@ function ReseauPage() {
           <Meter icon={<HardDrive className="h-4 w-4 anim-breathe" />} label="Disque" value={reseau.homelab.disk} />
         </div>
         <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3 stagger">
-          {reseau.services.map((s) => (
-            <a
-              key={s.name}
-              href={s.url}
-              target="_blank"
-              rel="noreferrer"
-              className="group flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-card px-3 py-2.5 text-sm transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-soft"
-            >
-              <span className="flex items-center gap-2 truncate">
-                <span className={"h-1.5 w-1.5 shrink-0 rounded-full " + (s.status === "ok" ? "bg-success" : "bg-destructive")} />
-                <span className="truncate">{s.name}</span>
-              </span>
-              <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
-          ))}
+          {reseau.services.map((s) => {
+            const Icon = serviceIcons[s.name] ?? Boxes;
+            return (
+              <a
+                key={s.name}
+                href={s.url}
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-card px-3 py-2.5 text-sm transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-soft"
+              >
+                <span className="flex items-center gap-2 truncate">
+                  <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <span className="truncate">{s.name}</span>
+                  <span className={"h-1.5 w-1.5 shrink-0 rounded-full " + (s.status === "ok" ? "bg-success" : "bg-destructive")} />
+                </span>
+                <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
+            );
+          })}
         </div>
       </Section>
     </div>
