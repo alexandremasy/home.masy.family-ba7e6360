@@ -117,9 +117,9 @@ export function Dashboard() {
               <SalonTile key="salon-v3" room={room} variant="idle" />,
             ];
           }
-          const span: 1 | 2 = room.key === "bureau" ? 2 : 1;
+          const bureauCls = room.key === "bureau" ? "sm:col-span-2" : "";
           return [
-            <Tile key={room.key} span={span} to={`/room/${room.key}`}>
+            <Tile key={room.key} span={1} to={`/room/${room.key}`} className={bureauCls}>
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-3">
                   <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-accent/20 text-accent-foreground" : "bg-secondary text-muted-foreground")}>
@@ -250,7 +250,7 @@ type SalonVariant = "spotify" | "netflix" | "idle";
 
 function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: SalonVariant }) {
   return (
-    <Tile to={`/room/${room.key}`} className="relative">
+    <Tile span={1} to={`/room/${room.key}`} className="relative sm:col-span-2">
 
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">
