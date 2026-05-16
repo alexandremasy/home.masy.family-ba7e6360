@@ -14,6 +14,15 @@ const serviceIcons: Record<string, typeof Container> = {
   "Home Assistant": Home,
   Plex: Film,
   Vaultwarden: KeyRound,
+  Duplicati: HardDrive,
+  Adminer: HardDrive,
+  RedisInsight: MemoryStick,
+  Qdrant: Boxes,
+  Metabase: BarChart3,
+  n8n: Network,
+  TeslaMate: Gauge,
+  Zigbee2MQTT: Wifi,
+  SearXNG: Globe,
 };
 
 export const Route = createFileRoute("/_app/reseau")({
