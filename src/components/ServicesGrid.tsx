@@ -1,10 +1,11 @@
+import type { ReactNode } from "react";
 import { ExternalLink } from "lucide-react";
 
 type Service = {
   name: string;
   desc: string;
   url: string;
-  glyph: JSX.Element;
+  glyph: ReactNode;
   /** Brand-ish accent color, used as a soft background tint behind the glyph. */
   color: string;
 };
