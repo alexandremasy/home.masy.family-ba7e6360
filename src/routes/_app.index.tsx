@@ -663,3 +663,21 @@ function WeatherTile() {
   );
 }
 
+function EnergieRow({
+  icon, label, value, sub, trend, trendPct, status,
+}: {
+  icon: React.ReactNode; label: string; value: string; sub?: string;
+  trend?: "up" | "down" | "stable"; trendPct?: number; status: "normal" | "alert";
+}) {
+  const alert = status === "alert";
+  return (
+    <div className={"flex items-center gap-2.5 rounded-xl px-2.5 py-2 transition-colors " + (alert ? "bg-warm/10 ring-1 ring-warm/30" : "bg-secondary/60")}>
+      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-card text-foreground/80">{icon}</span>
+      <span className="min-w-0 flex-1 text-xs uppercase tracking-[0.12em] text-muted-foreground">{label}</span>
+      <span className="font-serif text-sm leading-none tabular-nums">{value}</span>
+      {sub && <span className="text-[11px] tabular-nums text-muted-foreground">{sub}</span>}
+      {trend && <TrendBadge trend={trend} pct={trendPct} hidePct />}
+      <StatusDot status={status} />
+    </div>
+  );
+}
