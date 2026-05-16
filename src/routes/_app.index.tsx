@@ -186,7 +186,7 @@ export function Dashboard() {
           </div>
 
           {/* sm+ original layout */}
-          <div className="hidden sm:block">
+          <div className="hidden h-full sm:flex sm:flex-col sm:justify-between">
             <div className="flex items-start gap-3">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-background/10 text-background">
                 <Car className="h-4.5 w-4.5 icon-hover anim-drift" />
