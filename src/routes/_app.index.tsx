@@ -31,15 +31,15 @@ export function Dashboard() {
     <div className="space-y-8">
       <div className="grid-bento stagger">
 
-        {/* Greeting — no background, first cell */}
-        <div className="col-span-2 px-1 sm:col-span-3 lg:col-span-4 anim-slide-up self-end">
-          <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">{dateStr}</p>
-          <h1 className="mt-2 font-serif text-4xl tracking-tight text-foreground sm:text-5xl">
+        {/* Greeting — first cell, with card background */}
+        <Tile span={2}>
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{dateStr}</p>
+          <h1 className="mt-2 font-serif text-3xl tracking-tight text-foreground sm:text-4xl">
             {greeting}.
           </h1>
-        </div>
+        </Tile>
 
-        {/* Weather — fills the hole next to greeting */}
+        {/* Weather — single cell, no background, floats into any hole */}
         <WeatherTile />
 
         <Tile span={1} tone="accent" className="relative overflow-hidden">
