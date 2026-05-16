@@ -580,25 +580,29 @@ function WeatherIcon({ cond, className, animated = true }: { cond: WeatherCond; 
   return <Icon className={(className ?? "") + anim} />;
 }
 
-function WeatherInline() {
+function WeatherTile() {
   const m = meteo.today;
   return (
     <Dialog>
       <DialogTrigger asChild>
         <button
           type="button"
-          className="flex items-center gap-3 rounded-xl px-2 py-1 text-right transition-colors hover:bg-secondary/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="group relative col-span-2 sm:col-span-1 lg:col-span-2 overflow-hidden rounded-2xl border border-border/50 bg-card p-5 text-left shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 hover:border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Voir la météo détaillée"
         >
-          <div className="text-xs text-muted-foreground">
-            <p className="font-medium text-foreground">{m.label}</p>
-            <p className="mt-0.5">{m.location} · {m.minC}°/{m.maxC}°</p>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{m.location}</p>
+              <p className="mt-1 font-serif text-lg leading-tight text-foreground">{m.label}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{m.minC}° / {m.maxC}°</p>
+            </div>
+            <WeatherIcon cond={m.cond} className="h-8 w-8 text-foreground/80" />
           </div>
-          <div className="flex items-center gap-2">
-            <WeatherIcon cond={m.cond} className="h-7 w-7 text-foreground/80" />
-            <span className="font-serif text-3xl leading-none tracking-tight text-foreground">
-              {m.tempC}<span className="text-base text-muted-foreground">°</span>
+          <div className="mt-3 flex items-baseline gap-1">
+            <span className="font-serif text-4xl tracking-tight text-foreground">
+              {m.tempC}
             </span>
+            <span className="text-base text-muted-foreground">°</span>
           </div>
         </button>
       </DialogTrigger>
