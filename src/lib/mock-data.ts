@@ -240,7 +240,7 @@ export const footerLines = [
   "Café chaud, WiFi stable, lumière douce — la sainte trinité.",
   "“Avoir un toit, c'est déjà un luxe.” — un raton laveur, sous la pluie",
   "Aujourd'hui la maison ronronne.",
-  "Si la Tesla pouvait parler, elle dirait merci pour la prise.",
+  "Si Bernard pouvait parler, il dirait merci pour la prise.",
   "Le mazout baisse, le moral monte.",
   "“Domus dulcis domus.” — un romain, vers -42",
   "Tout est sous contrôle. Probablement.",
