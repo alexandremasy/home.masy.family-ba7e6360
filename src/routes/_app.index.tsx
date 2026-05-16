@@ -160,17 +160,17 @@ export function Dashboard() {
         })}
 
         {/* PRIORITY 3 — Bernard (compact) */}
-        <Tile span={3} to="/tesla" tone="dark" className="relative isolate">
+        <Tile span={3} to="/tesla" tone="dark" className="relative isolate !col-span-1 sm:!col-span-3">
           <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-80" />
           <span className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 rounded-b-[inherit] bg-gradient-to-t from-foreground via-foreground/70 to-transparent" />
           <div className="flex items-start gap-3">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-background/10 text-background">
               <Car className="h-4.5 w-4.5 icon-hover anim-drift" />
             </span>
-            <div className="flex-1">
+            <div className="min-w-0 flex-1">
               <p className="text-xs uppercase tracking-[0.18em] opacity-60">Bernard</p>
               <p className="mt-1 font-serif text-xl">{tesla.inGarage ? "Au garage" : "En déplacement"}</p>
-              <p className="mt-0.5 inline-flex items-center gap-1 text-xs opacity-60">
+              <p className="mt-0.5 hidden items-center gap-1 text-xs opacity-60 sm:inline-flex">
                 <MapPin className="h-3 w-3" />{tesla.location}
               </p>
             </div>
@@ -182,14 +182,14 @@ export function Dashboard() {
                 <span className="font-serif text-5xl tracking-tight"><CountUp to={tesla.charge} /></span>
                 <span className="text-lg opacity-60">%</span>
               </div>
-              <p className="text-xs opacity-60">{tesla.rangeKm} km · limite {tesla.chargeLimit}%</p>
+              <p className="hidden text-xs opacity-60 sm:block">{tesla.rangeKm} km · limite {tesla.chargeLimit}%</p>
             </div>
             <div className="flex-1 pb-1">
               <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-background/15">
                 <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${tesla.charge}%` }} />
                 <div className="absolute top-0 h-full w-px bg-background/40" style={{ left: `${tesla.chargeLimit}%` }} />
               </div>
-              <div className="mt-3 flex items-center gap-3 text-xs opacity-70">
+              <div className="mt-3 hidden items-center gap-3 text-xs opacity-70 sm:flex">
                 <span className="inline-flex items-center gap-1">
                   <Plug className={"h-3 w-3 " + (tesla.pluggedIn ? "text-primary anim-breathe" : "")} />
                   {tesla.pluggedIn ? "Branchée" : "Débranchée"}
