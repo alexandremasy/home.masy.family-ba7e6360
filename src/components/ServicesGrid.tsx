@@ -100,39 +100,30 @@ export function ServicesGrid() {
   return (
     <section className="pt-2">
       <div className="mb-3 flex items-baseline justify-between px-1">
-        <h2 className="font-serif text-lg tracking-tight">Services</h2>
-        <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-          {services.length} raccourcis
-        </span>
+        <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Services</p>
+        <span className="text-[11px] text-muted-foreground/60">{services.length}</span>
       </div>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 stagger">
+      <div className="flex flex-wrap gap-1.5">
         {services.map((s) => (
           <a
             key={s.name}
             href={s.url}
             target="_blank"
             rel="noreferrer"
-            className="group relative flex items-center gap-3 rounded-2xl border border-border/50 bg-card/60 p-3 transition-all hover:-translate-y-0.5 hover:border-border hover:bg-card hover:shadow-soft"
+            title={s.desc}
+            className="group inline-flex items-center gap-2 rounded-full border border-border/40 bg-card/40 py-1 pl-1 pr-3 text-xs text-muted-foreground transition-colors hover:border-border hover:bg-card hover:text-foreground"
           >
             <span
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-xl transition-transform group-hover:scale-105"
+              className="grid h-5 w-5 shrink-0 place-items-center rounded-full transition-colors"
               style={{
-                background: `color-mix(in oklab, ${s.color} 14%, transparent)`,
+                background: `color-mix(in oklab, ${s.color} 16%, transparent)`,
                 color: s.color,
               }}
               aria-hidden
             >
-              <span className="block h-5 w-5">{s.glyph}</span>
+              <span className="block h-3 w-3">{s.glyph}</span>
             </span>
-            <span className="min-w-0 flex-1">
-              <span className="block truncate font-serif text-sm leading-tight text-foreground">
-                {s.name}
-              </span>
-              <span className="mt-0.5 block truncate text-[11px] text-muted-foreground">
-                {s.desc}
-              </span>
-            </span>
-            <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground/60 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100" />
+            <span className="truncate">{s.name}</span>
           </a>
         ))}
       </div>
