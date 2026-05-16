@@ -31,15 +31,15 @@ export function Dashboard() {
     <div className="space-y-8">
       <div className="grid-bento stagger">
 
-        {/* Greeting — no background, first cell */}
-        <div className="col-span-2 px-1 sm:col-span-3 lg:col-span-4 anim-slide-up self-end">
-          <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">{dateStr}</p>
-          <h1 className="mt-2 font-serif text-4xl tracking-tight text-foreground sm:text-5xl">
+        {/* Greeting — first cell, with card background */}
+        <Tile span={2}>
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{dateStr}</p>
+          <h1 className="mt-2 font-serif text-3xl tracking-tight text-foreground sm:text-4xl">
             {greeting}.
           </h1>
-        </div>
+        </Tile>
 
-        {/* Weather — fills the hole next to greeting */}
+        {/* Weather — single cell, no background, floats into any hole */}
         <WeatherTile />
 
         <Tile span={1} tone="accent" className="relative overflow-hidden">
@@ -587,23 +587,18 @@ function WeatherTile() {
       <DialogTrigger asChild>
         <button
           type="button"
-          className="group relative col-span-2 sm:col-span-1 lg:col-span-2 overflow-hidden rounded-2xl border border-border/50 bg-card p-5 text-left shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 hover:border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="group relative col-span-1 overflow-hidden rounded-2xl p-4 text-left transition-colors hover:bg-secondary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Voir la météo détaillée"
         >
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{m.location}</p>
-              <p className="mt-1 font-serif text-lg leading-tight text-foreground">{m.label}</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">{m.minC}° / {m.maxC}°</p>
-            </div>
-            <WeatherIcon cond={m.cond} className="h-8 w-8 text-foreground/80" />
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{m.location}</p>
+            <WeatherIcon cond={m.cond} className="h-6 w-6 text-foreground/80" />
           </div>
-          <div className="mt-3 flex items-baseline gap-1">
-            <span className="font-serif text-4xl tracking-tight text-foreground">
-              {m.tempC}
-            </span>
-            <span className="text-base text-muted-foreground">°</span>
+          <div className="mt-2 flex items-baseline gap-1">
+            <span className="font-serif text-3xl tracking-tight text-foreground">{m.tempC}</span>
+            <span className="text-sm text-muted-foreground">°</span>
           </div>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">{m.minC}° / {m.maxC}° · {m.label}</p>
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg duration-300 data-[state=open]:slide-in-from-top-4 data-[state=closed]:slide-out-to-top-2 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95">
