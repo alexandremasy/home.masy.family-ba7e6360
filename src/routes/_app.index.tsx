@@ -296,6 +296,7 @@ export function Dashboard() {
         </Tile>
       </div>
 
+      <ServicesGrid />
     </div>
   );
 }
