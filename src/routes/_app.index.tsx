@@ -33,7 +33,7 @@ export function Dashboard() {
       <div className="grid-bento stagger">
 
         {/* Greeting — first cell top-left, no background, centered */}
-        <div className="col-span-1 flex flex-col items-center justify-center text-center px-2 py-4">
+        <div className="col-span-1 flex h-full flex-col items-center justify-center text-center px-2 py-4">
           <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{dateStr}</p>
           <h1 className="mt-1 font-serif text-2xl tracking-tight text-foreground sm:text-3xl">
             {greeting}.
