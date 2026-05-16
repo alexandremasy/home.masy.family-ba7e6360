@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
 import { PageHeader } from "@/components/PageHeader";
-import { ServicesGrid } from "@/components/ServicesGrid";
+
 import { Switch } from "@/components/ui/switch";
 import { reseau } from "@/lib/mock-data";
 import { Wifi, Cpu, HardDrive, MemoryStick, Shield, ExternalLink, Gauge, Users, Router, Globe } from "lucide-react";
