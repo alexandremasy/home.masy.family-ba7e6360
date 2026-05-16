@@ -646,3 +646,15 @@ function EnergieRow({
     </div>
   );
 }
+
+function ReseauRow({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub?: string }) {
+  return (
+    <div className="flex flex-1 items-center gap-2 rounded-lg bg-secondary/60 px-2.5">
+      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-card text-foreground/80">{icon}</span>
+      <span className="min-w-0 flex-1 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{label}</span>
+      <span className="font-serif text-sm leading-none tabular-nums">{value}</span>
+      {sub && <span className="text-[11px] tabular-nums text-muted-foreground">{sub}</span>}
+      <span className="h-1.5 w-1.5 rounded-full bg-success" />
+    </div>
+  );
+}
