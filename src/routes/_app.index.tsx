@@ -72,7 +72,7 @@ export function Dashboard() {
                     )}
                   </div>
                 </div>
-                <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />
+                {bureauCls && <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />}
               </div>
 
               {typeof room.temperature === "number" ? (
