@@ -149,9 +149,9 @@ export function Dashboard() {
                 );
               })()}
             </div>
-            <div className="mt-auto pt-4 flex flex-col gap-1.5">
+            <div className="mt-4 flex flex-1 flex-col gap-2">
               <EnergieRow
-                icon={<Zap className="h-3.5 w-3.5 anim-glow" />}
+                icon={<Zap className="h-4 w-4 anim-glow" />}
                 label="Élec."
                 value={`${energie.electricity.dailyKWh} kWh/j`}
                 trend={energie.electricity.trend}
@@ -159,7 +159,7 @@ export function Dashboard() {
                 status={energie.electricity.status}
               />
               <EnergieRow
-                icon={<Droplet className="h-3.5 w-3.5 anim-float" />}
+                icon={<Droplet className="h-4 w-4 anim-float" />}
                 label="Eau"
                 value={`${energie.water.dailyM3} m³/j`}
                 trend={energie.water.trend}
@@ -167,7 +167,7 @@ export function Dashboard() {
                 status={energie.water.status}
               />
               <EnergieRow
-                icon={<Flame className={"h-3.5 w-3.5 " + (energie.oil.tankPct < 25 ? "anim-wiggle text-warm" : "anim-breathe")} />}
+                icon={<Flame className={"h-4 w-4 " + (energie.oil.tankPct < 25 ? "anim-wiggle text-warm" : "anim-breathe")} />}
                 label="Mazout"
                 value={`${energie.oil.tankPct}%`}
                 sub={`~${energie.oil.autonomyDays} j`}
@@ -671,9 +671,9 @@ function EnergieRow({
 }) {
   const alert = status === "alert";
   return (
-    <div className={"flex items-center gap-2.5 rounded-xl px-2.5 py-2 transition-colors " + (alert ? "bg-warm/10 ring-1 ring-warm/30" : "bg-secondary/60")}>
-      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-card text-foreground/80">{icon}</span>
-      <span className="min-w-0 flex-1 text-xs uppercase tracking-[0.12em] text-muted-foreground">{label}</span>
+    <div className={"flex flex-1 items-center gap-2 rounded-lg px-2.5 transition-colors " + (alert ? "bg-warm/10 ring-1 ring-warm/30" : "bg-secondary/60")}>
+      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-card text-foreground/80">{icon}</span>
+      <span className="min-w-0 flex-1 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{label}</span>
       <span className="font-serif text-sm leading-none tabular-nums">{value}</span>
       {sub && <span className="text-[11px] tabular-nums text-muted-foreground">{sub}</span>}
       {trend && <TrendBadge trend={trend} pct={trendPct} hidePct />}
