@@ -65,6 +65,20 @@ export const reseau = {
   internet: { on: true, speedMbps: 450, latencyMs: 12, lastSpeedtest: { downMbps: 472, upMbps: 38, pingMs: 11, when: "il y a 2h" } },
   homelab: { cpu: 28, memory: 61, disk: 42, uptimeDays: 47 },
   twingate: true,
+  pihole: {
+    on: true,
+    queries24h: 48230,
+    blocked24h: 7124,
+    blockedPct: 14.8,
+    domainsOnList: 152340,
+    clients: 22,
+    topBlocked: [
+      { domain: "telemetry.microsoft.com", hits: 412 },
+      { domain: "graph.facebook.com", hits: 287 },
+      { domain: "ads.google.com", hits: 196 },
+    ],
+    url: "https://pihole.local",
+  },
   services: [
     { name: "Portainer", url: "https://portainer.local", status: "ok" as const },
     { name: "Traefik", url: "https://traefik.local", status: "ok" as const },

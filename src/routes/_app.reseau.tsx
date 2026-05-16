@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/PageHeader";
 
 import { Switch } from "@/components/ui/switch";
 import { reseau } from "@/lib/mock-data";
-import { Wifi, Cpu, HardDrive, MemoryStick, Shield, ExternalLink, Gauge, Users, Router, Globe } from "lucide-react";
+import { Wifi, Cpu, HardDrive, MemoryStick, Shield, ExternalLink, Gauge, Users, Router, Globe, ShieldOff } from "lucide-react";
 
 export const Route = createFileRoute("/_app/reseau")({
   component: ReseauPage,
@@ -26,25 +26,63 @@ function ReseauPage() {
           <span className="inline-flex items-center gap-2"><Gauge className="h-3.5 w-3.5" />Internet · {reseau.internet.speedMbps} Mbps · {reseau.internet.latencyMs} ms</span>
           <span className={reseau.internet.on ? "text-success" : "text-muted-foreground"}>{reseau.internet.on ? "stable" : "interrompu"}</span>
         </div>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        <a
+          href="https://unifi.local"
+          target="_blank"
+          rel="noreferrer"
+          className="group mt-3 flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-card px-3 py-2.5 text-sm transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-soft"
+        >
+          <span className="flex items-center gap-2"><Router className="h-4 w-4 text-muted-foreground" />UniFi</span>
+          <ExternalLink className="h-3 w-3 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        </a>
+      </Section>
+
+      <Section
+        title="DNS"
+        action={
           <a
-            href="https://unifi.local"
+            href={reseau.pihole.url}
             target="_blank"
             rel="noreferrer"
-            className="group flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-card px-3 py-2.5 text-sm transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-soft"
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
           >
-            <span className="flex items-center gap-2"><Router className="h-4 w-4 text-muted-foreground" />UniFi</span>
-            <ExternalLink className="h-3 w-3 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            Pi-hole <ExternalLink className="h-3 w-3" />
           </a>
-          <a
-            href="https://dns.local"
-            target="_blank"
-            rel="noreferrer"
-            className="group flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-card px-3 py-2.5 text-sm transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-soft"
-          >
-            <span className="flex items-center gap-2"><Globe className="h-4 w-4 text-muted-foreground" />DNS</span>
-            <ExternalLink className="h-3 w-3 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
+        }
+      >
+        <div className="grid gap-3 sm:grid-cols-3">
+          <Stat
+            icon={<Globe className="h-4 w-4 anim-drift" />}
+            label="Requêtes 24 h"
+            value={reseau.pihole.queries24h.toLocaleString("fr-BE")}
+          />
+          <Stat
+            icon={<ShieldOff className="h-4 w-4 anim-glow" />}
+            label="Bloquées"
+            value={reseau.pihole.blocked24h.toLocaleString("fr-BE")}
+            sub={`${reseau.pihole.blockedPct}%`}
+            tone="warm"
+          />
+          <Stat
+            icon={<Users className="h-4 w-4 anim-float" />}
+            label="Clients"
+            value={reseau.pihole.clients.toString()}
+            sub={`${reseau.pihole.domainsOnList.toLocaleString("fr-BE")} domaines listés`}
+          />
+        </div>
+        <div className="mt-4 overflow-hidden rounded-xl border border-border/60 bg-card">
+          <div className="flex items-center justify-between border-b border-border/50 px-4 py-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            <span>Top domaines bloqués</span>
+            <span>Hits</span>
+          </div>
+          <ul className="divide-y divide-border/40">
+            {reseau.pihole.topBlocked.map((d) => (
+              <li key={d.domain} className="flex items-center justify-between px-4 py-2 text-sm">
+                <span className="font-mono truncate text-muted-foreground">{d.domain}</span>
+                <span className="tabular-nums">{d.hits}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </Section>
 
@@ -113,6 +151,16 @@ function Meter({ icon, label, value }: { icon: React.ReactNode; label: string; v
       <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-muted">
         <div className={"h-full rounded-full transition-all duration-700 " + (value > 80 ? "bg-destructive" : value > 60 ? "bg-warm" : "bg-primary")} style={{ width: `${value}%` }} />
       </div>
+    </div>
+  );
+}
+
+function Stat({ icon, label, value, sub, tone = "default" }: { icon: React.ReactNode; label: string; value: string; sub?: string; tone?: "default" | "warm" }) {
+  return (
+    <div className="rounded-xl border border-border/60 bg-card p-4">
+      <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">{icon}{label}</div>
+      <p className={"mt-2 font-serif text-2xl tabular-nums " + (tone === "warm" ? "text-warm" : "text-foreground")}>{value}</p>
+      {sub && <p className="mt-1 text-xs text-muted-foreground">{sub}</p>}
     </div>
   );
 }
