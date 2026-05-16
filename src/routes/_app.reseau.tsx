@@ -26,15 +26,26 @@ function ReseauPage() {
           <span className="inline-flex items-center gap-2"><Gauge className="h-3.5 w-3.5" />Internet · {reseau.internet.speedMbps} Mbps · {reseau.internet.latencyMs} ms</span>
           <span className={reseau.internet.on ? "text-success" : "text-muted-foreground"}>{reseau.internet.on ? "stable" : "interrompu"}</span>
         </div>
-        <a
-          href="https://unifi.local"
-          target="_blank"
-          rel="noreferrer"
-          className="group mt-3 flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-card px-3 py-2.5 text-sm transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-soft"
-        >
-          <span className="flex items-center gap-2"><Router className="h-4 w-4 text-muted-foreground" />UniFi</span>
-          <ExternalLink className="h-3 w-3 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-        </a>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          <a
+            href="https://unifi.local"
+            target="_blank"
+            rel="noreferrer"
+            className="group flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-card px-3 py-2.5 text-sm transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-soft"
+          >
+            <span className="flex items-center gap-2"><Router className="h-4 w-4 text-muted-foreground" />UniFi</span>
+            <ExternalLink className="h-3 w-3 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
+          <a
+            href="https://twingate.com"
+            target="_blank"
+            rel="noreferrer"
+            className="group flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-card px-3 py-2.5 text-sm transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-soft"
+          >
+            <span className="flex items-center gap-2"><Shield className="h-4 w-4 text-muted-foreground" />Twingate</span>
+            <ExternalLink className="h-3 w-3 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
+        </div>
       </Section>
 
       <Section
@@ -91,12 +102,6 @@ function ReseauPage() {
           <Meter icon={<Cpu className="h-4 w-4 anim-drift" />} label="CPU" value={reseau.homelab.cpu} />
           <Meter icon={<MemoryStick className="h-4 w-4 anim-float" />} label="Mémoire" value={reseau.homelab.memory} />
           <Meter icon={<HardDrive className="h-4 w-4 anim-breathe" />} label="Disque" value={reseau.homelab.disk} />
-        </div>
-        <div className="mt-4 flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 text-sm">
-          <span className="flex items-center gap-2"><Shield className="h-4 w-4 text-success" /> Twingate</span>
-          <span className={"rounded-full px-2.5 py-0.5 text-xs " + (reseau.twingate ? "bg-success/15 text-success" : "bg-muted text-muted-foreground")}>
-            {reseau.twingate ? "Connecté" : "Hors ligne"}
-          </span>
         </div>
       </Section>
 
