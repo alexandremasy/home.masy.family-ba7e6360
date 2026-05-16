@@ -149,9 +149,9 @@ export function Dashboard() {
                 );
               })()}
             </div>
-            <div className="mt-auto pt-4 flex flex-col gap-1.5">
+            <div className="mt-4 flex flex-1 flex-col gap-2">
               <EnergieRow
-                icon={<Zap className="h-3.5 w-3.5 anim-glow" />}
+                icon={<Zap className="h-4 w-4 anim-glow" />}
                 label="Élec."
                 value={`${energie.electricity.dailyKWh} kWh/j`}
                 trend={energie.electricity.trend}
@@ -159,7 +159,7 @@ export function Dashboard() {
                 status={energie.electricity.status}
               />
               <EnergieRow
-                icon={<Droplet className="h-3.5 w-3.5 anim-float" />}
+                icon={<Droplet className="h-4 w-4 anim-float" />}
                 label="Eau"
                 value={`${energie.water.dailyM3} m³/j`}
                 trend={energie.water.trend}
@@ -167,7 +167,7 @@ export function Dashboard() {
                 status={energie.water.status}
               />
               <EnergieRow
-                icon={<Flame className={"h-3.5 w-3.5 " + (energie.oil.tankPct < 25 ? "anim-wiggle text-warm" : "anim-breathe")} />}
+                icon={<Flame className={"h-4 w-4 " + (energie.oil.tankPct < 25 ? "anim-wiggle text-warm" : "anim-breathe")} />}
                 label="Mazout"
                 value={`${energie.oil.tankPct}%`}
                 sub={`~${energie.oil.autonomyDays} j`}
