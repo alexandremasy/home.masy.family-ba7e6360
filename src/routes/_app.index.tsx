@@ -250,7 +250,7 @@ type SalonVariant = "spotify" | "netflix" | "idle";
 
 function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: SalonVariant }) {
   return (
-    <Tile span={1} to={`/room/${room.key}`} className="relative sm:col-span-2">
+    <Tile span={2} to={`/room/${room.key}`} className="relative">
 
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">
