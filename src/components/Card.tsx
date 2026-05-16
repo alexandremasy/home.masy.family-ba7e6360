@@ -4,7 +4,7 @@ import { Link } from "@tanstack/react-router";
 interface BaseProps {
   children: ReactNode;
   className?: string;
-  span?: 2 | 3 | 4 | 6;
+  span?: 1 | 2 | 3 | 4 | 6;
   rowSpan?: 2;
   tone?: "default" | "primary" | "warm" | "accent" | "dark";
 }
@@ -18,6 +18,7 @@ const toneClasses: Record<NonNullable<BaseProps["tone"]>, string> = {
 };
 
 const spanClasses: Record<NonNullable<BaseProps["span"]>, string> = {
+  1: "col-span-1",
   2: "col-span-2",
   3: "col-span-2 sm:col-span-3",
   4: "col-span-2 sm:col-span-4",
