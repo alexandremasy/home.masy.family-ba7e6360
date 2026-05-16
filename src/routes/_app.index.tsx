@@ -104,7 +104,7 @@ export function Dashboard() {
 
         {/* Énergie */}
         {energie.monthlyDue ? (
-          <Tile span={3} tone="warm">
+          <Tile span={2} tone="warm">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.18em] opacity-70">Énergie · à faire</p>
