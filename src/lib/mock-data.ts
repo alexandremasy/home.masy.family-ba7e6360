@@ -79,13 +79,38 @@ export const reseau = {
     ],
     url: "https://pihole.local",
   },
-  services: [
-    { name: "Portainer", url: "https://portainer.local", status: "ok" as const },
-    { name: "Traefik", url: "https://traefik.local", status: "ok" as const },
-    { name: "Grafana", url: "https://grafana.local", status: "ok" as const },
-    { name: "Home Assistant", url: "https://ha.local", status: "ok" as const },
-    { name: "Plex", url: "https://plex.local", status: "ok" as const },
-    { name: "Vaultwarden", url: "https://vault.local", status: "ok" as const },
+  serviceGroups: [
+    {
+      key: "data" as const,
+      label: "Data",
+      services: [
+        { name: "Duplicati", url: "https://backup.masy.family", status: "ok" as const },
+        { name: "Adminer", url: "https://db.masy.family", status: "ok" as const },
+        { name: "RedisInsight", url: "https://redis.masy.family", status: "ok" as const },
+        { name: "Qdrant", url: "https://qdrant.masy.family", status: "ok" as const },
+        { name: "Metabase", url: "https://data.masy.family", status: "ok" as const },
+        { name: "Grafana", url: "https://grafana.masy.family", status: "ok" as const },
+      ],
+    },
+    {
+      key: "home" as const,
+      label: "Home",
+      services: [
+        { name: "Home Assistant", url: "https://ha.masy.family", status: "ok" as const },
+        { name: "n8n", url: "https://automate.masy.family", status: "ok" as const },
+        { name: "TeslaMate", url: "https://tesla.masy.family", status: "ok" as const },
+        { name: "Portainer", url: "https://docker.masy.family", status: "ok" as const },
+      ],
+    },
+    {
+      key: "network" as const,
+      label: "Network",
+      services: [
+        { name: "Zigbee2MQTT", url: "https://zigbee.masy.family", status: "ok" as const },
+        { name: "SearXNG", url: "https://search.masy.family", status: "ok" as const },
+        { name: "Traefik", url: "https://traefik.masy.family", status: "ok" as const },
+      ],
+    },
   ],
 };
 
