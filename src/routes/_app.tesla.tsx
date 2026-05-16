@@ -122,7 +122,7 @@ function TeslaPage() {
 
   return (
     <div className="space-y-8">
-      <PageHeader title="Tesla" />
+      <PageHeader title="Bernard" />
 
       {/* ============ 1. ÉTAT DE LA VOITURE ============ */}
       <section className="space-y-4">
