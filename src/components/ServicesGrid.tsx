@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { ExternalLink } from "lucide-react";
 
 type Service = {
   name: string;
