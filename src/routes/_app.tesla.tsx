@@ -24,7 +24,7 @@ import {
 
 export const Route = createFileRoute("/_app/tesla")({
   component: TeslaPage,
-  head: () => ({ meta: [{ title: "Tesla — Maison" }] }),
+  head: () => ({ meta: [{ title: "Bernard — Maison" }] }),
 });
 
 // --- Quarter helpers ---
@@ -122,7 +122,7 @@ function TeslaPage() {
 
   return (
     <div className="space-y-8">
-      <PageHeader title="Tesla" />
+      <PageHeader title="Bernard" />
 
       {/* ============ 1. ÉTAT DE LA VOITURE ============ */}
       <section className="space-y-4">

@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_app/")({
   head: () => ({
     meta: [
       { title: "Maison — Cockpit" },
-      { name: "description", content: "Tableau de bord domestique : pièces, Tesla, réseau et énergie en un coup d'œil." },
+      { name: "description", content: "Tableau de bord domestique : pièces, Bernard, réseau et énergie en un coup d'œil." },
     ],
   }),
 });
@@ -159,7 +159,7 @@ export function Dashboard() {
           ];
         })}
 
-        {/* PRIORITY 3 — Tesla (compact) */}
+        {/* PRIORITY 3 — Bernard (compact) */}
         <Tile span={3} to="/tesla" tone="dark" className="relative isolate">
           <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-80" />
           <span className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 rounded-b-[inherit] bg-gradient-to-t from-foreground via-foreground/70 to-transparent" />
@@ -168,7 +168,7 @@ export function Dashboard() {
               <Car className="h-4.5 w-4.5 icon-hover anim-drift" />
             </span>
             <div className="flex-1">
-              <p className="text-xs uppercase tracking-[0.18em] opacity-60">Tesla</p>
+              <p className="text-xs uppercase tracking-[0.18em] opacity-60">Bernard</p>
               <p className="mt-1 font-serif text-xl">{tesla.inGarage ? "Au garage" : "En déplacement"}</p>
               <p className="mt-0.5 inline-flex items-center gap-1 text-xs opacity-60">
                 <MapPin className="h-3 w-3" />{tesla.location}
