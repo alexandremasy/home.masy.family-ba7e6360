@@ -98,32 +98,39 @@ function ReseauPage() {
         </a>
       </Section>
 
-      <Section title="Homelab" action={<span className="text-xs text-muted-foreground">Uptime {reseau.homelab.uptimeDays} j · {reseau.services.length} services</span>}>
+      <Section title="Homelab" action={<span className="text-xs text-muted-foreground">Uptime {reseau.homelab.uptimeDays} j · {reseau.serviceGroups.reduce((n, g) => n + g.services.length, 0)} services</span>}>
         <div className="grid gap-3 sm:grid-cols-3">
           <Meter icon={<Cpu className="h-4 w-4 anim-drift" />} label="CPU" value={reseau.homelab.cpu} />
           <Meter icon={<MemoryStick className="h-4 w-4 anim-float" />} label="Mémoire" value={reseau.homelab.memory} />
           <Meter icon={<HardDrive className="h-4 w-4 anim-breathe" />} label="Disque" value={reseau.homelab.disk} />
         </div>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3 stagger">
-          {reseau.services.map((s) => {
-            const Icon = serviceIcons[s.name] ?? Boxes;
-            return (
-              <a
-                key={s.name}
-                href={s.url}
-                target="_blank"
-                rel="noreferrer"
-                className="group flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-card px-3 py-2.5 text-sm transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-soft"
-              >
-                <span className="flex items-center gap-2 truncate">
-                  <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  <span className="truncate">{s.name}</span>
-                  <span className={"h-1.5 w-1.5 shrink-0 rounded-full " + (s.status === "ok" ? "bg-success" : "bg-destructive")} />
-                </span>
-                <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
-            );
-          })}
+        <div className="mt-4 space-y-4">
+          {reseau.serviceGroups.map((g) => (
+            <div key={g.key}>
+              <p className="mb-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">{g.label}</p>
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 stagger">
+                {g.services.map((s) => {
+                  const Icon = serviceIcons[s.name] ?? Boxes;
+                  return (
+                    <a
+                      key={s.name}
+                      href={s.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-card px-3 py-2.5 text-sm transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-soft"
+                    >
+                      <span className="flex items-center gap-2 truncate">
+                        <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                        <span className="truncate">{s.name}</span>
+                        <span className={"h-1.5 w-1.5 shrink-0 rounded-full " + (s.status === "ok" ? "bg-success" : "bg-destructive")} />
+                      </span>
+                      <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       </Section>
     </div>
