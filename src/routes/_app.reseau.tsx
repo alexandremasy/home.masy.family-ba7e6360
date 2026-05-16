@@ -1,8 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Section } from "@/components/Card";
 import { PageHeader } from "@/components/PageHeader";
+
+import { Switch } from "@/components/ui/switch";
 import { reseau } from "@/lib/mock-data";
-import { Wifi, Cpu, HardDrive, MemoryStick, Shield, ExternalLink, Gauge, Users } from "lucide-react";
+import { Wifi, Cpu, HardDrive, MemoryStick, Shield, ExternalLink, Gauge, Users, Router, Globe } from "lucide-react";
 
 export const Route = createFileRoute("/_app/reseau")({
   component: ReseauPage,
@@ -16,12 +19,32 @@ function ReseauPage() {
 
       <Section title="Connectivité" action={<span className="inline-flex items-center gap-1.5 text-sm text-success"><Wifi className="h-4 w-4 anim-glow" />Tout en ligne</span>}>
         <div className="grid gap-3 sm:grid-cols-2">
-          <WifiCard ssid={reseau.wifi1.ssid} clients={reseau.wifi1.clients} on={reseau.wifi1.on} />
-          <WifiCard ssid={reseau.wifi2.ssid} clients={reseau.wifi2.clients} on={reseau.wifi2.on} />
+          <WifiCard ssid={reseau.wifi1.ssid} clients={reseau.wifi1.clients} initialOn={reseau.wifi1.on} />
+          <WifiCard ssid={reseau.wifi2.ssid} clients={reseau.wifi2.clients} initialOn={reseau.wifi2.on} />
         </div>
         <div className="mt-3 flex items-center justify-between rounded-xl bg-secondary/40 px-4 py-2.5 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-2"><Gauge className="h-3.5 w-3.5" />Internet · {reseau.internet.speedMbps} Mbps · {reseau.internet.latencyMs} ms</span>
           <span className={reseau.internet.on ? "text-success" : "text-muted-foreground"}>{reseau.internet.on ? "stable" : "interrompu"}</span>
+        </div>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          <a
+            href="https://unifi.local"
+            target="_blank"
+            rel="noreferrer"
+            className="group flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-card px-3 py-2.5 text-sm transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-soft"
+          >
+            <span className="flex items-center gap-2"><Router className="h-4 w-4 text-muted-foreground" />UniFi</span>
+            <ExternalLink className="h-3 w-3 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
+          <a
+            href="https://dns.local"
+            target="_blank"
+            rel="noreferrer"
+            className="group flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-card px-3 py-2.5 text-sm transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-soft"
+          >
+            <span className="flex items-center gap-2"><Globe className="h-4 w-4 text-muted-foreground" />DNS</span>
+            <ExternalLink className="h-3 w-3 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
         </div>
       </Section>
 
@@ -62,7 +85,8 @@ function ReseauPage() {
   );
 }
 
-function WifiCard({ ssid, clients, on }: { ssid: string; clients: number; on: boolean }) {
+function WifiCard({ ssid, clients, initialOn }: { ssid: string; clients: number; initialOn: boolean }) {
+  const [on, setOn] = useState(initialOn);
   return (
     <div className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-4">
       <div>
@@ -71,13 +95,12 @@ function WifiCard({ ssid, clients, on }: { ssid: string; clients: number; on: bo
           <Users className="h-3 w-3" />{clients} clients
         </p>
       </div>
-      <span className={"flex items-center gap-1.5 text-xs " + (on ? "text-success" : "text-muted-foreground")}>
-        <span className="relative inline-flex h-2 w-2">
-          <span className={"absolute inline-flex h-full w-full rounded-full " + (on ? "bg-success/40 animate-ping" : "")} />
-          <span className={"relative inline-flex h-2 w-2 rounded-full " + (on ? "bg-success" : "bg-muted-foreground/40")} />
+      <div className="flex items-center gap-3">
+        <span className={"text-xs " + (on ? "text-success" : "text-muted-foreground")}>
+          {on ? "Actif" : "Hors ligne"}
         </span>
-        {on ? "Actif" : "Hors ligne"}
-      </span>
+        <Switch checked={on} onCheckedChange={setOn} aria-label={`Toggle ${ssid}`} />
+      </div>
     </div>
   );
 }
