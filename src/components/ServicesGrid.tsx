@@ -110,7 +110,7 @@ export function ServicesGrid() {
             target="_blank"
             rel="noreferrer"
             title={s.desc}
-            className="group inline-flex items-center gap-2 rounded-full border border-border/40 bg-card/40 py-1 pl-1 pr-3 text-xs text-muted-foreground transition-colors hover:border-border hover:bg-card hover:text-foreground"
+            className="group inline-flex items-center gap-2 rounded-full border border-border/40 bg-card/40 py-1 pl-1 pr-3 text-sm text-muted-foreground transition-colors hover:border-border hover:bg-card hover:text-foreground"
           >
             <span
               className="grid h-5 w-5 shrink-0 place-items-center rounded-full transition-colors"
