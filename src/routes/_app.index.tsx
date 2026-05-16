@@ -124,37 +124,55 @@ export function Dashboard() {
             </Link>
           </Tile>
         ) : (
-          <Tile span={2} to="/energie">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Énergie · {now.toLocaleDateString("fr-BE", { month: "long", year: "numeric" }).replace(/^./, (c) => c.toUpperCase())}</p>
+          <Tile span={2} to="/energie" className="flex flex-col">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Énergie</p>
                 <p className="mt-1 font-serif text-xl">Vue d'ensemble</p>
               </div>
               {(() => {
                 const alerts: string[] = [];
-                if (energie.oil.status === "alert") alerts.push("Niveau de mazout faible");
-                if (energie.electricity.status === "alert") alerts.push("Conso électrique élevée");
-                if (energie.water.status === "alert") alerts.push("Conso d'eau élevée");
+                if (energie.oil.status === "alert") alerts.push("Mazout faible");
+                if (energie.electricity.status === "alert") alerts.push("Élec. élevée");
+                if (energie.water.status === "alert") alerts.push("Eau élevée");
                 const anyAlert = alerts.length > 0;
                 return anyAlert ? (
-                  <span className="inline-flex items-center gap-2 rounded-full bg-warm/15 px-2.5 py-1 text-warm">
-                    <span className="relative grid h-5 w-5 place-items-center rounded-full anim-pulse-ring">
-                      <AlertTriangle className="h-3.5 w-3.5" />
-                    </span>
-                    <span className="text-xs font-medium tracking-tight">{alerts[0]}{alerts.length > 1 ? ` · +${alerts.length - 1}` : ""}</span>
+                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-warm/15 px-2 py-0.5 text-warm">
+                    <AlertTriangle className="h-3 w-3" />
+                    <span className="text-[11px] font-medium">{alerts[0]}{alerts.length > 1 ? ` +${alerts.length - 1}` : ""}</span>
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-2 rounded-full bg-success/15 px-2.5 py-1 text-success">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    <span className="text-xs font-medium tracking-tight">Tout va bien</span>
+                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
+                    <Sparkles className="h-3 w-3" />
+                    <span className="text-[11px] font-medium">OK</span>
                   </span>
                 );
               })()}
             </div>
-            <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
-              <ElecBlock />
-              <WaterBlock />
-              <OilBlock />
+            <div className="mt-auto pt-4 flex flex-col gap-1.5">
+              <EnergieRow
+                icon={<Zap className="h-3.5 w-3.5 anim-glow" />}
+                label="Élec."
+                value={`${energie.electricity.dailyKWh} kWh/j`}
+                trend={energie.electricity.trend}
+                trendPct={energie.electricity.trendPct}
+                status={energie.electricity.status}
+              />
+              <EnergieRow
+                icon={<Droplet className="h-3.5 w-3.5 anim-float" />}
+                label="Eau"
+                value={`${energie.water.dailyM3} m³/j`}
+                trend={energie.water.trend}
+                trendPct={energie.water.trendPct}
+                status={energie.water.status}
+              />
+              <EnergieRow
+                icon={<Flame className={"h-3.5 w-3.5 " + (energie.oil.tankPct < 25 ? "anim-wiggle text-warm" : "anim-breathe")} />}
+                label="Mazout"
+                value={`${energie.oil.tankPct}%`}
+                sub={`~${energie.oil.autonomyDays} j`}
+                status={energie.oil.status}
+              />
             </div>
           </Tile>
         )}
