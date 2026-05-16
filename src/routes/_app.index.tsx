@@ -83,7 +83,7 @@ export function Dashboard() {
                 <div className="mt-6 h-[2.75rem]" aria-hidden />
               )}
 
-              <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
+              <div className="mt-auto pt-3 flex items-center gap-3 text-xs text-muted-foreground">
                 <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-accent-foreground" : "")}>
                   <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-accent-foreground" : "")} />
                   {room.lightsOn ? "Allumé" : "Éteint"}
