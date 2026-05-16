@@ -99,12 +99,12 @@ export function Dashboard() {
           </Tile>
         )}
 
-        <Tile span={3} tone="accent" className="relative overflow-hidden">
-          <PMCBag className="pointer-events-none absolute -right-2 -top-3 h-[125%] w-auto" />
-          <div className="relative max-w-[60%]">
-            <p className="text-xs uppercase tracking-[0.18em] opacity-70">Aujourd'hui</p>
-            <p className="mt-1 font-serif text-xl">Poubelles {calendrier.poubelleToday.type}</p>
-            <p className="text-sm opacity-80">À sortir avant {calendrier.poubelleToday.time}</p>
+        <Tile span={1} tone="accent" className="relative overflow-hidden">
+          <PMCBag className="pointer-events-none absolute -right-3 -top-3 h-[110%] w-auto opacity-90" />
+          <div className="relative">
+            <p className="text-xs uppercase tracking-[0.18em] opacity-70">Auj.</p>
+            <p className="mt-1 font-serif text-lg leading-tight">{calendrier.poubelleToday.type}</p>
+            <p className="mt-0.5 text-xs opacity-80">avant {calendrier.poubelleToday.time}</p>
           </div>
         </Tile>
 
