@@ -29,19 +29,18 @@ export function Dashboard() {
 
   return (
     <div className="space-y-8">
-      <div className="px-1 anim-slide-up">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">{dateStr}</p>
-            <h1 className="mt-2 font-serif text-4xl tracking-tight text-foreground sm:text-5xl">
-              {greeting}.
-            </h1>
-          </div>
-          <WeatherInline />
-        </div>
-      </div>
-
       <div className="grid-bento stagger">
+
+        {/* Greeting — no background, first cell */}
+        <div className="col-span-2 px-1 sm:col-span-3 lg:col-span-4 anim-slide-up self-end">
+          <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">{dateStr}</p>
+          <h1 className="mt-2 font-serif text-4xl tracking-tight text-foreground sm:text-5xl">
+            {greeting}.
+          </h1>
+        </div>
+
+        {/* Weather — fills the hole next to greeting */}
+        <WeatherTile />
 
         <Tile span={1} tone="accent" className="relative overflow-hidden">
           <PMCBag className="pointer-events-none absolute -right-3 -top-3 h-[110%] w-auto opacity-90" />
