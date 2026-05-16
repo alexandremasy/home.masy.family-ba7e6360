@@ -159,7 +159,7 @@ export function Dashboard() {
         )}
 
         {/* PRIORITY 3 — Bernard (compact) */}
-        <Tile span={3} to="/tesla" tone="dark" className="relative isolate !col-span-1 sm:!col-span-3">
+        <Tile span={2} to="/tesla" tone="dark" className="relative isolate !col-span-1 sm:!col-span-2">
           <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-80" />
           <span className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 rounded-b-[inherit] bg-gradient-to-t from-foreground via-foreground/70 to-transparent" />
 
