@@ -85,7 +85,8 @@ function ReseauPage() {
   );
 }
 
-function WifiCard({ ssid, clients, on }: { ssid: string; clients: number; on: boolean }) {
+function WifiCard({ ssid, clients, initialOn }: { ssid: string; clients: number; initialOn: boolean }) {
+  const [on, setOn] = useState(initialOn);
   return (
     <div className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-4">
       <div>
@@ -94,13 +95,12 @@ function WifiCard({ ssid, clients, on }: { ssid: string; clients: number; on: bo
           <Users className="h-3 w-3" />{clients} clients
         </p>
       </div>
-      <span className={"flex items-center gap-1.5 text-xs " + (on ? "text-success" : "text-muted-foreground")}>
-        <span className="relative inline-flex h-2 w-2">
-          <span className={"absolute inline-flex h-full w-full rounded-full " + (on ? "bg-success/40 animate-ping" : "")} />
-          <span className={"relative inline-flex h-2 w-2 rounded-full " + (on ? "bg-success" : "bg-muted-foreground/40")} />
+      <div className="flex items-center gap-3">
+        <span className={"text-xs " + (on ? "text-success" : "text-muted-foreground")}>
+          {on ? "Actif" : "Hors ligne"}
         </span>
-        {on ? "Actif" : "Hors ligne"}
-      </span>
+        <Switch checked={on} onCheckedChange={setOn} aria-label={`Toggle ${ssid}`} />
+      </div>
     </div>
   );
 }
