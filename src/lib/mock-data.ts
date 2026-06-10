@@ -252,7 +252,7 @@ export const roomDetails: Record<RoomKey, {
       brightness: 70,
       hideBrightness: true,
     },
-    climate: { mode: 21, current: 20.8 },
+    climate: { dual: true, mode: "heat", heatSetpoint: 21, coolSetpoint: 24, current: 20.8 },
     devices: {
       ink: { c: 72, m: 58, y: 64, k: 81 },
       appliances: [
