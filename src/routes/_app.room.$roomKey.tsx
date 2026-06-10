@@ -236,30 +236,41 @@ function RoomPage() {
             </span>
           }
         >
-          <div className="grid grid-cols-4 gap-2 stagger">
-            {(["auto", 20, 21, 22] as const).map((m) => {
-              const active = mode === m;
-              const label = m === "auto" ? "Auto" : `${m}°`;
-              const sub = m === "auto" ? "off" : "on";
-              return (
-                <button
-                  key={String(m)}
-                  onClick={() => setMode(m)}
-                  className={
-                    "flex flex-col items-center gap-1 rounded-xl border px-3 py-4 transition-all duration-300 " +
-                    (active
-                      ? "border-foreground bg-foreground text-background -translate-y-0.5 shadow-lift"
-                      : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
-                  }
-                >
-                  <span className="font-serif text-2xl leading-none">{label}</span>
-                  <span className={"text-[10px] uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
-                    {sub}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          {isDualClimate ? (
+            <DualClimate
+              mode={dualMode}
+              setMode={setDualMode}
+              heatSetpoint={heatSetpoint}
+              setHeatSetpoint={setHeatSetpoint}
+              coolSetpoint={coolSetpoint}
+              setCoolSetpoint={setCoolSetpoint}
+            />
+          ) : (
+            <div className="grid grid-cols-4 gap-2 stagger">
+              {(["auto", 20, 21, 22] as const).map((m) => {
+                const active = mode === m;
+                const label = m === "auto" ? "Auto" : `${m}°`;
+                const sub = m === "auto" ? "off" : "on";
+                return (
+                  <button
+                    key={String(m)}
+                    onClick={() => setMode(m)}
+                    className={
+                      "flex flex-col items-center gap-1 rounded-xl border px-3 py-4 transition-all duration-300 " +
+                      (active
+                        ? "border-foreground bg-foreground text-background -translate-y-0.5 shadow-lift"
+                        : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
+                    }
+                  >
+                    <span className="font-serif text-2xl leading-none">{label}</span>
+                    <span className={"text-[10px] uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
+                      {sub}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </Section>
       )}
 
