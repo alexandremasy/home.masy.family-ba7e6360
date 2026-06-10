@@ -247,12 +247,12 @@ function RoomPage() {
         >
           {isDualClimate ? (
             <DualClimate
-              mode={dualMode}
-              setMode={setDualMode}
-              heatSetpoint={heatSetpoint}
-              setHeatSetpoint={setHeatSetpoint}
-              coolSetpoint={coolSetpoint}
-              setCoolSetpoint={setCoolSetpoint}
+              system={dualSystem}
+              setSystem={setDualSystem}
+              heatPreset={heatPreset}
+              setHeatPreset={setHeatPreset}
+              coolPreset={coolPreset}
+              setCoolPreset={setCoolPreset}
             />
           ) : (
             <div className="grid grid-cols-4 gap-2 stagger">
