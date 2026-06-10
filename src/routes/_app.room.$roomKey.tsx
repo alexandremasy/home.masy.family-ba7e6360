@@ -82,10 +82,11 @@ export const Route = createFileRoute("/_app/room/$roomKey")({
 });
 
 type ClimateMode = "auto" | 20 | 21 | 22;
-type DualMode = "off" | "heat" | "cool";
+type DualSystem = "heat" | "cool";
+type DualPreset = "off" | number;
 
-const HEAT_RANGE = { min: 19, max: 22 };
-const COOL_RANGE = { min: 22, max: 26 };
+const HEAT_PRESETS: number[] = [19, 20, 21, 22];
+const COOL_PRESETS: number[] = [22, 24, 26];
 
 function RoomPage() {
   const data = Route.useLoaderData() as { room: typeof rooms[number] };
@@ -98,14 +99,22 @@ function RoomPage() {
   const [mode, setMode] = useState<ClimateMode>(
     detail.climate && !("dual" in detail.climate) ? detail.climate.mode : "auto"
   );
-  const [dualMode, setDualMode] = useState<DualMode>(
-    detail.climate && "dual" in detail.climate ? detail.climate.mode : "off"
+  const [dualSystem, setDualSystem] = useState<DualSystem>(
+    detail.climate && "dual" in detail.climate && detail.climate.mode === "cool" ? "cool" : "heat"
   );
-  const [heatSetpoint, setHeatSetpoint] = useState(
-    detail.climate && "dual" in detail.climate ? detail.climate.heatSetpoint : 21
+  const [heatPreset, setHeatPreset] = useState<DualPreset>(
+    detail.climate && "dual" in detail.climate && detail.climate.mode === "heat"
+      ? detail.climate.heatSetpoint
+      : detail.climate && "dual" in detail.climate
+        ? detail.climate.heatSetpoint
+        : "off"
   );
-  const [coolSetpoint, setCoolSetpoint] = useState(
-    detail.climate && "dual" in detail.climate ? detail.climate.coolSetpoint : 24
+  const [coolPreset, setCoolPreset] = useState<DualPreset>(
+    detail.climate && "dual" in detail.climate && detail.climate.mode === "cool"
+      ? detail.climate.coolSetpoint
+      : detail.climate && "dual" in detail.climate
+        ? detail.climate.coolSetpoint
+        : "off"
   );
   const [roomOn, setRoomOn] = useState(true);
 
