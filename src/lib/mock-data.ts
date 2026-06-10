@@ -206,7 +206,9 @@ export type MediaSource = "spotify" | "netflix" | "off";
 // Room detail mocks
 export const roomDetails: Record<RoomKey, {
   lights?: { zones: { name: string; on: boolean }[]; scene: string; scenes: string[]; brightness: number; hideBrightness?: boolean };
-  climate?: { mode: "auto" | 20 | 21 | 22; current: number };
+  climate?:
+    | { mode: "auto" | 20 | 21 | 22; current: number }
+    | { dual: true; mode: "off" | "heat" | "cool"; heatSetpoint: number; coolSetpoint: number; current: number };
   media?: { source: MediaSource; nowPlaying?: string; artist?: string; cover?: string };
   devices?: {
     ink?: { c: number; m: number; y: number; k: number };
