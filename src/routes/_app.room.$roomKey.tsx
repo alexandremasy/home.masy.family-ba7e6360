@@ -565,7 +565,7 @@ function DualClimate({
                     : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
                 }
               >
-                <span className="font-serif text-2xl leading-none">{isOff ? "Off" : `${p}°`}</span>
+                <span className="font-serif text-2xl leading-none">{isOff ? (system === "heat" ? "Auto" : "Off") : `${p}°`}</span>
                 <span className={"text-[10px] uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
                   {isOff ? "éteint" : "on"}
                 </span>
