@@ -494,44 +494,54 @@ function DualClimate({
   coolPreset: DualPreset;
   setCoolPreset: (p: DualPreset) => void;
 }) {
-  const systems: { key: DualSystem; label: string; sub: string; Icon: LucideIcon; tint: string }[] = [
-    { key: "heat", label: "Chaud", sub: "radiateur", Icon: Flame, tint: "oklch(0.68 0.18 40)" },
-    { key: "cool", label: "Froid", sub: "clim", Icon: Snowflake, tint: "oklch(0.72 0.12 220)" },
-  ];
+  const HEAT_TINT = "oklch(0.68 0.18 40)";
+  const COOL_TINT = "oklch(0.72 0.12 220)";
 
   const presets = system === "heat" ? HEAT_PRESETS : COOL_PRESETS;
   const activePreset = system === "heat" ? heatPreset : coolPreset;
   const setPreset = system === "heat" ? setHeatPreset : setCoolPreset;
-  const tint = system === "heat" ? "oklch(0.68 0.18 40)" : "oklch(0.72 0.12 220)";
+  const tint = system === "heat" ? HEAT_TINT : COOL_TINT;
 
   const choices: DualPreset[] = ["off", ...presets];
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-2 stagger">
-        {systems.map(({ key, label, sub, Icon, tint: t }) => {
+      <div
+        className="relative grid grid-cols-2 rounded-full border border-border/60 bg-card p-1"
+        role="tablist"
+        aria-label="Mode climatisation"
+      >
+        <span
+          aria-hidden
+          className="absolute inset-y-1 w-[calc(50%-0.25rem)] rounded-full shadow-lift transition-all duration-300 ease-out"
+          style={{
+            left: system === "heat" ? "0.25rem" : "calc(50% + 0rem)",
+            background: `linear-gradient(135deg, ${tint}, color-mix(in oklab, ${tint} 60%, var(--foreground)))`,
+          }}
+        />
+        {([
+          { key: "heat" as const, label: "Chaud", Icon: Flame },
+          { key: "cool" as const, label: "Froid", Icon: Snowflake },
+        ]).map(({ key, label, Icon }) => {
           const active = system === key;
           return (
             <button
               key={key}
+              role="tab"
+              aria-selected={active}
               onClick={() => setSystem(key)}
               className={
-                "flex items-center justify-center gap-2 rounded-xl border px-3 py-3 transition-all duration-300 " +
-                (active
-                  ? "border-foreground text-background -translate-y-0.5 shadow-lift"
-                  : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
+                "relative z-10 flex items-center justify-center gap-2 rounded-full px-3 py-2.5 text-sm font-medium transition-colors duration-300 " +
+                (active ? "text-background" : "text-muted-foreground hover:text-foreground")
               }
-              style={active ? { background: `linear-gradient(135deg, color-mix(in oklab, ${t} 80%, var(--foreground)), var(--foreground))` } : undefined}
             >
               <Icon className={"h-4 w-4 " + (active ? "anim-breathe" : "opacity-60")} />
-              <span className="font-serif text-lg leading-none">{label}</span>
-              <span className={"text-[10px] uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
-                {sub}
-              </span>
+              <span className="font-serif text-base leading-none">{label}</span>
             </button>
           );
         })}
       </div>
+
 
       <div
         className="rounded-xl border border-border/60 p-3"
