@@ -516,7 +516,7 @@ function DualClimate({
           className="absolute inset-y-1 w-[calc(50%-0.25rem)] rounded-full shadow-lift transition-all duration-300 ease-out"
           style={{
             left: system === "heat" ? "0.25rem" : "calc(50% + 0rem)",
-            background: `linear-gradient(135deg, ${tint}, color-mix(in oklab, ${tint} 60%, var(--foreground)))`,
+            background: `linear-gradient(to right, color-mix(in oklab, ${tint} 45%, var(--card)), ${tint})`,
           }}
         />
         {([
