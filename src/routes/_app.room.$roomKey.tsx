@@ -480,49 +480,50 @@ function ActionButton({ icon, label, onClick }: { icon: React.ReactNode; label: 
 }
 
 function DualClimate({
-  mode,
-  setMode,
-  heatSetpoint,
-  setHeatSetpoint,
-  coolSetpoint,
-  setCoolSetpoint,
+  system,
+  setSystem,
+  heatPreset,
+  setHeatPreset,
+  coolPreset,
+  setCoolPreset,
 }: {
-  mode: DualMode;
-  setMode: (m: DualMode) => void;
-  heatSetpoint: number;
-  setHeatSetpoint: (n: number) => void;
-  coolSetpoint: number;
-  setCoolSetpoint: (n: number) => void;
+  system: DualSystem;
+  setSystem: (s: DualSystem) => void;
+  heatPreset: DualPreset;
+  setHeatPreset: (p: DualPreset) => void;
+  coolPreset: DualPreset;
+  setCoolPreset: (p: DualPreset) => void;
 }) {
-  const options: { key: DualMode; label: string; sub: string; Icon: LucideIcon; tint: string }[] = [
-    { key: "off", label: "Off", sub: "éteint", Icon: Power, tint: "oklch(0.55 0 0)" },
+  const systems: { key: DualSystem; label: string; sub: string; Icon: LucideIcon; tint: string }[] = [
     { key: "heat", label: "Chaud", sub: "radiateur", Icon: Flame, tint: "oklch(0.68 0.18 40)" },
     { key: "cool", label: "Froid", sub: "clim", Icon: Snowflake, tint: "oklch(0.72 0.12 220)" },
   ];
 
-  const range = mode === "heat" ? HEAT_RANGE : mode === "cool" ? COOL_RANGE : null;
-  const setpoint = mode === "heat" ? heatSetpoint : mode === "cool" ? coolSetpoint : null;
-  const setSetpoint = mode === "heat" ? setHeatSetpoint : setCoolSetpoint;
-  const tint = mode === "heat" ? "oklch(0.68 0.18 40)" : mode === "cool" ? "oklch(0.72 0.12 220)" : null;
+  const presets = system === "heat" ? HEAT_PRESETS : COOL_PRESETS;
+  const activePreset = system === "heat" ? heatPreset : coolPreset;
+  const setPreset = system === "heat" ? setHeatPreset : setCoolPreset;
+  const tint = system === "heat" ? "oklch(0.68 0.18 40)" : "oklch(0.72 0.12 220)";
+
+  const choices: DualPreset[] = ["off", ...presets];
 
   return (
-    <div className="space-y-5">
-      <div className="grid grid-cols-3 gap-2 stagger">
-        {options.map(({ key, label, sub, Icon, tint: t }) => {
-          const active = mode === key;
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-2 stagger">
+        {systems.map(({ key, label, sub, Icon, tint: t }) => {
+          const active = system === key;
           return (
             <button
               key={key}
-              onClick={() => setMode(key)}
+              onClick={() => setSystem(key)}
               className={
-                "flex flex-col items-center gap-1.5 rounded-xl border px-3 py-4 transition-all duration-300 " +
+                "flex items-center justify-center gap-2 rounded-xl border px-3 py-3 transition-all duration-300 " +
                 (active
-                  ? "border-foreground bg-foreground text-background -translate-y-0.5 shadow-lift"
+                  ? "border-foreground text-background -translate-y-0.5 shadow-lift"
                   : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
               }
               style={active ? { background: `linear-gradient(135deg, color-mix(in oklab, ${t} 80%, var(--foreground)), var(--foreground))` } : undefined}
             >
-              <Icon className={"h-5 w-5 " + (active ? "anim-breathe" : "opacity-60")} />
+              <Icon className={"h-4 w-4 " + (active ? "anim-breathe" : "opacity-60")} />
               <span className="font-serif text-lg leading-none">{label}</span>
               <span className={"text-[10px] uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
                 {sub}
@@ -532,40 +533,37 @@ function DualClimate({
         })}
       </div>
 
-      {range && setpoint !== null && tint && (
+      <div
+        className="rounded-xl border border-border/60 p-3"
+        style={{ background: `linear-gradient(135deg, color-mix(in oklab, ${tint} 14%, var(--card)), var(--card) 75%)` }}
+      >
         <div
-          className="rounded-xl border border-border/60 p-4"
-          style={{ background: `linear-gradient(135deg, color-mix(in oklab, ${tint} 14%, var(--card)), var(--card) 75%)` }}
+          className="grid gap-2 stagger"
+          style={{ gridTemplateColumns: `repeat(${choices.length}, minmax(0, 1fr))` }}
         >
-          <p className="mb-3 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-            {mode === "heat" ? "Consigne chaud" : "Consigne froid"}
-          </p>
-          <div className="flex items-center justify-between gap-4">
-            <button
-              onClick={() => setSetpoint(Math.max(range.min, setpoint - 1))}
-              disabled={setpoint <= range.min}
-              className="grid h-10 w-10 place-items-center rounded-full border border-border/60 bg-card transition-colors hover:border-border disabled:opacity-30"
-              aria-label="Diminuer"
-            >
-              <Minus className="h-4 w-4" />
-            </button>
-            <div className="text-center">
-              <p className="font-serif text-4xl leading-none">{setpoint}°</p>
-              <p className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">
-                {range.min}° – {range.max}°
-              </p>
-            </div>
-            <button
-              onClick={() => setSetpoint(Math.min(range.max, setpoint + 1))}
-              disabled={setpoint >= range.max}
-              className="grid h-10 w-10 place-items-center rounded-full border border-border/60 bg-card transition-colors hover:border-border disabled:opacity-30"
-              aria-label="Augmenter"
-            >
-              <Plus className="h-4 w-4" />
-            </button>
-          </div>
+          {choices.map((p) => {
+            const active = activePreset === p;
+            const isOff = p === "off";
+            return (
+              <button
+                key={String(p)}
+                onClick={() => setPreset(p)}
+                className={
+                  "flex flex-col items-center gap-1 rounded-xl border px-3 py-4 transition-all duration-300 " +
+                  (active
+                    ? "border-foreground bg-foreground text-background -translate-y-0.5 shadow-lift"
+                    : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
+                }
+              >
+                <span className="font-serif text-2xl leading-none">{isOff ? "Off" : `${p}°`}</span>
+                <span className={"text-[10px] uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
+                  {isOff ? "éteint" : "on"}
+                </span>
+              </button>
+            );
+          })}
         </div>
-      )}
+      </div>
     </div>
   );
 }
