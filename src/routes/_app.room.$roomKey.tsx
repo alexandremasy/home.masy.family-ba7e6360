@@ -545,7 +545,7 @@ function DualClimate({
 
       <div
         className="rounded-xl border border-border/60 p-3"
-        style={{ background: `linear-gradient(135deg, color-mix(in oklab, ${tint} 14%, var(--card)), var(--card) 75%)` }}
+        style={{ background: `linear-gradient(to right, var(--card), color-mix(in oklab, ${tint} 28%, var(--card)))` }}
       >
         <div
           className="grid gap-2 stagger"
