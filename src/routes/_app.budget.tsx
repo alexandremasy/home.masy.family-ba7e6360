@@ -424,7 +424,10 @@ function BudgetPage() {
           ))}
         </div>
       </section>
+        </>
+      )}
     </div>
+
   );
 }
 
