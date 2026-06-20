@@ -13,6 +13,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTeslaRouteImport } from './routes/_app.tesla'
 import { Route as AppReseauRouteImport } from './routes/_app.reseau'
+import { Route as AppBudgetRouteImport } from './routes/_app.budget'
 import { Route as AppEnergieIndexRouteImport } from './routes/_app.energie.index'
 import { Route as AppRoomRoomKeyRouteImport } from './routes/_app.room.$roomKey'
 import { Route as AppEnergieSaisieRouteImport } from './routes/_app.energie.saisie'
@@ -36,6 +37,11 @@ const AppReseauRoute = AppReseauRouteImport.update({
   path: '/reseau',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBudgetRoute = AppBudgetRouteImport.update({
+  id: '/budget',
+  path: '/budget',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppEnergieIndexRoute = AppEnergieIndexRouteImport.update({
   id: '/energie/',
   path: '/energie/',
@@ -54,6 +60,7 @@ const AppEnergieSaisieRoute = AppEnergieSaisieRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/budget': typeof AppBudgetRoute
   '/reseau': typeof AppReseauRoute
   '/tesla': typeof AppTeslaRoute
   '/energie/saisie': typeof AppEnergieSaisieRoute
@@ -61,6 +68,7 @@ export interface FileRoutesByFullPath {
   '/energie/': typeof AppEnergieIndexRoute
 }
 export interface FileRoutesByTo {
+  '/budget': typeof AppBudgetRoute
   '/reseau': typeof AppReseauRoute
   '/tesla': typeof AppTeslaRoute
   '/': typeof AppIndexRoute
@@ -71,6 +79,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/_app/budget': typeof AppBudgetRoute
   '/_app/reseau': typeof AppReseauRoute
   '/_app/tesla': typeof AppTeslaRoute
   '/_app/': typeof AppIndexRoute
@@ -82,6 +91,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/budget'
     | '/reseau'
     | '/tesla'
     | '/energie/saisie'
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/energie/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/budget'
     | '/reseau'
     | '/tesla'
     | '/'
@@ -98,6 +109,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
+    | '/_app/budget'
     | '/_app/reseau'
     | '/_app/tesla'
     | '/_app/'
@@ -140,6 +152,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppReseauRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/budget': {
+      id: '/_app/budget'
+      path: '/budget'
+      fullPath: '/budget'
+      preLoaderRoute: typeof AppBudgetRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/energie/': {
       id: '/_app/energie/'
       path: '/energie'
@@ -165,6 +184,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppBudgetRoute: typeof AppBudgetRoute
   AppReseauRoute: typeof AppReseauRoute
   AppTeslaRoute: typeof AppTeslaRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -174,6 +194,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppBudgetRoute: AppBudgetRoute,
   AppReseauRoute: AppReseauRoute,
   AppTeslaRoute: AppTeslaRoute,
   AppIndexRoute: AppIndexRoute,
