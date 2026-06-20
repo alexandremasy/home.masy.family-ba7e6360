@@ -424,6 +424,50 @@ function BudgetPage() {
 
 // ---------- subcomponents ----------
 
+function FlowCard({
+  label,
+  total,
+  lines,
+  icon: Icon,
+  tone,
+}: {
+  label: string;
+  total: number;
+  lines: { label: string; value: number }[];
+  icon: typeof ArrowDownRight;
+  tone: "primary" | "warm";
+}) {
+  return (
+    <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card p-5 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
+      <div className="flex items-center justify-between">
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
+        <span
+          className={
+            "grid h-8 w-8 place-items-center rounded-full " +
+            (tone === "warm" ? "bg-warm/15 text-warm" : "bg-primary/10 text-primary")
+          }
+        >
+          <Icon className="h-4 w-4" />
+        </span>
+      </div>
+      <p className="mt-3 font-serif text-3xl tracking-tight tabular-nums">
+        <CountUp to={total} />
+        <span className="ml-1 text-base text-muted-foreground">€</span>
+      </p>
+      <ul className="mt-4 space-y-1.5 border-t border-border/40 pt-3 text-sm">
+        {lines.map((l) => (
+          <li key={l.label} className="flex items-center justify-between gap-3">
+            <span className="truncate text-muted-foreground">{l.label}</span>
+            <span className="shrink-0 tabular-nums">{eur(l.value)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+
+
 function CategoryRow({ cat, index }: { cat: typeof categories[number]; index: number }) {
   const [open, setOpen] = useState(false);
   const Icon = cat.icon;
