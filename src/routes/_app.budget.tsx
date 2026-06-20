@@ -141,17 +141,20 @@ function BudgetPage() {
   const net = entrees - depenses - provision;
   const epargne = envelopes.reduce((s, e) => s + e.contrib, 0);
 
-  const kpis = [
-    { label: "Entrées",  value: entrees,  delta: 0,    icon: ArrowDownRight, tone: "primary" as const },
-    { label: "Dépenses", value: depenses, delta: depenses - totalBudget, icon: ArrowUpRight, tone: "warm" as const, invert: true },
-    { label: "Net",      value: net,      delta: net,  icon: Wallet,         tone: "default" as const },
-    { label: "Épargne",  value: epargne,  delta: 0,    icon: PiggyBank,      tone: "primary" as const },
+  const incomeLines = [
+    { label: "Salaire net", value: 5200 },
   ];
+  const outflowLines = [
+    { label: "Dépenses courantes", value: depenses },
+    { label: "Provision annualisation", value: provision },
+  ];
+  const totalOutflow = outflowLines.reduce((s, l) => s + l.value, 0);
 
-  const sortedCats = [...categories].sort((a, b) => b.actual - a.actual);
+  const alphaCats = [...categories].sort((a, b) => a.label.localeCompare(b.label, "fr"));
 
   const avgSpend = Math.round(rolling.reduce((s, r) => s + r.spend, 0) / rolling.length);
   const currentIdx = rolling.length - 1;
+
 
   const tabs = [
     { key: "mois" as const,  label: "Mois",  icon: CalendarDays },
