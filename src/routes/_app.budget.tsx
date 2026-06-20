@@ -124,7 +124,7 @@ const eur = (n: number) =>
 function BudgetPage() {
   const now = new Date();
   const [monthOffset, setMonthOffset] = useState(0); // 0 = current
-  const [rollingView, setRollingView] = useState(false);
+  const [view, setView] = useState<"mois" | "annee">("mois");
 
   const viewDate = useMemo(() => {
     const d = new Date(now.getFullYear(), now.getMonth() + monthOffset, 1);
@@ -135,11 +135,11 @@ function BudgetPage() {
 
   // KPIs (snapshot — same regardless of selected month in this prototype)
   const entrees = 5200;
-  const depenses = categories.reduce((s, c) => s + c.actual, 0); // = 4625; close to 4400 brief — using sum for consistency
+  const depenses = categories.reduce((s, c) => s + c.actual, 0);
   const totalBudget = categories.reduce((s, c) => s + c.budget, 0);
   const provision = monthlyAnnualProvision;
   const net = entrees - depenses - provision;
-  const epargne = envelopes.reduce((s, e) => s + e.contrib, 0); // 1670
+  const epargne = envelopes.reduce((s, e) => s + e.contrib, 0);
 
   const kpis = [
     { label: "Entrées",  value: entrees,  delta: 0,    icon: ArrowDownRight, tone: "primary" as const },
@@ -153,27 +153,45 @@ function BudgetPage() {
   const avgSpend = Math.round(rolling.reduce((s, r) => s + r.spend, 0) / rolling.length);
   const currentIdx = rolling.length - 1;
 
+  const tabs = [
+    { key: "mois" as const,  label: "Mois",  icon: CalendarDays },
+    { key: "annee" as const, label: "Année", icon: Repeat },
+  ];
+
   return (
     <div className="space-y-8">
       <PageHeader
         title="Budget"
-        subtitle="Vue d'ensemble du mois — prévu, réel, et ce qui arrive."
-        action={
-          <button
-            type="button"
-            onClick={() => setRollingView((v) => !v)}
-            className={
-              "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
-              (rollingView
-                ? "border-foreground bg-foreground text-background"
-                : "border-border bg-card text-muted-foreground hover:text-foreground")
-            }
-          >
-            <CalendarDays className="h-3.5 w-3.5" />
-            12 mois glissants
-          </button>
-        }
+        subtitle={view === "mois" ? "Vue du mois — prévu, réel, et provision." : "Vue annuelle — évolution, pression et épargne."}
       />
+
+      {/* Sub-navigation */}
+      <div className="inline-flex rounded-full border border-border/60 bg-card p-1 shadow-soft">
+        {tabs.map((t) => {
+          const Icon = t.icon;
+          const active = view === t.key;
+          return (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => setView(t.key)}
+              className={
+                "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium transition-colors " +
+                (active
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground")
+              }
+            >
+              <Icon className="h-3.5 w-3.5" />
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {view === "mois" ? (
+        <>
+
 
       {/* Month selector */}
       <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card px-4 py-3 shadow-soft">
