@@ -221,49 +221,36 @@ function BudgetPage() {
         </button>
       </div>
 
-      {/* KPIs */}
-      <div className="grid grid-cols-2 gap-3 stagger sm:grid-cols-4">
-        {kpis.map((k) => {
-          const isPos = (k.invert ? -1 : 1) * k.delta >= 0;
-          const Icon = k.icon;
-          return (
-            <div
-              key={k.label}
-              className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card p-5 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift"
-            >
-              <div className="flex items-center justify-between">
-                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{k.label}</p>
-                <span
-                  className={
-                    "grid h-8 w-8 place-items-center rounded-full " +
-                    (k.tone === "warm"
-                      ? "bg-warm/15 text-warm"
-                      : k.tone === "primary"
-                      ? "bg-primary/10 text-primary"
-                      : "bg-secondary text-foreground")
-                  }
-                >
-                  <Icon className="h-4 w-4" />
-                </span>
-              </div>
-              <p className="mt-3 font-serif text-3xl tracking-tight tabular-nums">
-                <CountUp to={k.value} />
-                <span className="ml-1 text-base text-muted-foreground">€</span>
-              </p>
-              {k.delta !== 0 && (
-                <p
-                  className={
-                    "mt-1 inline-flex items-center gap-1 text-xs font-medium tabular-nums " +
-                    (isPos ? "text-success" : "text-warm")
-                  }
-                >
-                  {isPos ? <TrendingDown className="h-3 w-3" /> : <TrendingUp className="h-3 w-3" />}
-                  {k.delta > 0 ? "+" : ""}{eur(k.delta)} vs prévu
-                </p>
-              )}
-            </div>
-          );
-        })}
+      {/* Flows: Entrées / Sorties / Épargne */}
+      <div className="grid gap-3 stagger lg:grid-cols-3">
+        <FlowCard
+          label="Entrées"
+          total={entrees}
+          lines={incomeLines}
+          icon={ArrowDownRight}
+          tone="primary"
+        />
+        <FlowCard
+          label="Sorties"
+          total={totalOutflow}
+          lines={outflowLines}
+          icon={ArrowUpRight}
+          tone="warm"
+        />
+        <FlowCard
+          label="Épargne"
+          total={epargne}
+          lines={envelopes.map((e) => ({ label: e.label, value: e.contrib }))}
+          icon={PiggyBank}
+          tone="primary"
+        />
+      </div>
+
+      <div className="rounded-2xl border border-border/60 bg-card px-5 py-3 text-sm shadow-soft flex items-center justify-between">
+        <span className="text-muted-foreground">Net du mois (Entrées − Sorties)</span>
+        <span className={"font-serif text-xl tabular-nums " + (net >= 0 ? "text-success" : "text-warm")}>
+          {net >= 0 ? "+" : ""}{eur(net)}
+        </span>
       </div>
 
       {/* CATEGORIES */}
@@ -271,21 +258,22 @@ function BudgetPage() {
         <header className="mb-5 flex items-end justify-between gap-3">
           <div>
             <h2 className="font-serif text-2xl tracking-tight">Catégories</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Prévu vs réel — triées par dépense</p>
+            <p className="mt-1 text-sm text-muted-foreground">Prévu vs réel — ordre alphabétique</p>
           </div>
           <p className="text-xs text-muted-foreground tabular-nums">
             {eur(depenses)} / {eur(totalBudget)}
           </p>
         </header>
 
-        <ul className="space-y-2">
-          {sortedCats.map((c, i) => (
+        <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          {alphaCats.map((c, i) => (
             <CategoryRow key={c.key} cat={c} index={i} />
           ))}
         </ul>
       </section>
         </>
       ) : (
+
         <>
 
 
