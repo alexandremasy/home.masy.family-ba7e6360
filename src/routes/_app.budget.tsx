@@ -367,33 +367,35 @@ function BudgetPage() {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      </section>
 
-      {/* PRESSURE + ANNUALISATION */}
-      <section className="grid gap-5 lg:grid-cols-3">
-        <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up lg:col-span-2">
-          <header className="mb-5">
-            <h2 className="font-serif text-2xl tracking-tight">Pression de l'année</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Calendrier des grosses échéances</p>
+        <div className="mt-7 border-t border-border/40 pt-6">
+          <header className="mb-4 flex items-end justify-between gap-3">
+            <div>
+              <h3 className="font-serif text-xl tracking-tight">Pression de l'année</h3>
+              <p className="mt-1 text-sm text-muted-foreground">Calendrier des grosses échéances</p>
+            </div>
           </header>
           <PressureStrip />
         </div>
+      </section>
 
-        <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up">
-          <header className="mb-4 flex items-center justify-between">
-            <div>
-              <h2 className="font-serif text-xl tracking-tight">Annualisation</h2>
-              <p className="mt-0.5 text-xs text-muted-foreground">Provision mensuelle</p>
-            </div>
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/10 text-primary">
-              <Flame className="h-4 w-4 anim-breathe" />
-            </span>
-          </header>
-          <p className="mt-2 font-serif text-4xl tracking-tight tabular-nums">
+      {/* ANNUALISATION */}
+      <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up">
+        <header className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="font-serif text-xl tracking-tight">Annualisation</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground">Provision mensuelle</p>
+          </div>
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/10 text-primary">
+            <Flame className="h-4 w-4 anim-breathe" />
+          </span>
+        </header>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <p className="font-serif text-4xl tracking-tight tabular-nums">
             <CountUp to={monthlyAnnualProvision} />
             <span className="ml-1 text-base text-muted-foreground">€/mois</span>
           </p>
-          <div className="mt-5 rounded-xl bg-secondary/60 p-4">
+          <div className="rounded-xl bg-secondary/60 p-4">
             <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Solde actuel</p>
             <p className="mt-1 font-serif text-2xl tabular-nums">{eur(annualBalance)}</p>
             <p className="mt-2 text-xs text-muted-foreground">
@@ -402,6 +404,7 @@ function BudgetPage() {
           </div>
         </div>
       </section>
+
 
       {/* ENVELOPES */}
       <section className="anim-slide-up">
