@@ -281,6 +281,10 @@ function BudgetPage() {
           ))}
         </ul>
       </section>
+        </>
+      ) : (
+        <>
+
 
       {/* ROLLING 12M CHART */}
       <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up">
