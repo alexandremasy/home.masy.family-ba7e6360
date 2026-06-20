@@ -11,9 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
-import { Route as AppBudgetRouteImport } from './routes/_app.budget'
 import { Route as AppTeslaRouteImport } from './routes/_app.tesla'
 import { Route as AppReseauRouteImport } from './routes/_app.reseau'
+import { Route as AppBudgetRouteImport } from './routes/_app.budget'
 import { Route as AppEnergieIndexRouteImport } from './routes/_app.energie.index'
 import { Route as AppRoomRoomKeyRouteImport } from './routes/_app.room.$roomKey'
 import { Route as AppEnergieSaisieRouteImport } from './routes/_app.energie.saisie'
@@ -27,11 +27,6 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
-const AppBudgetRoute = AppBudgetRouteImport.update({
-  id: '/budget',
-  path: '/budget',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppTeslaRoute = AppTeslaRouteImport.update({
   id: '/tesla',
   path: '/tesla',
@@ -40,6 +35,11 @@ const AppTeslaRoute = AppTeslaRouteImport.update({
 const AppReseauRoute = AppReseauRouteImport.update({
   id: '/reseau',
   path: '/reseau',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBudgetRoute = AppBudgetRouteImport.update({
+  id: '/budget',
+  path: '/budget',
   getParentRoute: () => AppRoute,
 } as any)
 const AppEnergieIndexRoute = AppEnergieIndexRouteImport.update({
@@ -138,13 +138,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/budget': {
-      id: '/_app/budget'
-      path: '/budget'
-      fullPath: '/budget'
-      preLoaderRoute: typeof AppBudgetRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/tesla': {
       id: '/_app/tesla'
       path: '/tesla'
@@ -157,6 +150,13 @@ declare module '@tanstack/react-router' {
       path: '/reseau'
       fullPath: '/reseau'
       preLoaderRoute: typeof AppReseauRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/budget': {
+      id: '/_app/budget'
+      path: '/budget'
+      fullPath: '/budget'
+      preLoaderRoute: typeof AppBudgetRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/energie/': {
