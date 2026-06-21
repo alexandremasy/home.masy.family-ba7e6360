@@ -1,0 +1,255 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { Search, X, Check, Pencil, ArrowUpDown } from "lucide-react";
+import { categories, transactionsSeed, RECURRENCES, eur2, type Transaction, type CatKey, type Recurrence } from "@/lib/budget-data";
+
+export const Route = createFileRoute("/_app/budget/transactions")({
+  component: TransactionsPage,
+  head: () => ({
+    meta: [
+      { title: "Transactions — Budget" },
+      { name: "description", content: "Table éditable des transactions importées." },
+    ],
+  }),
+});
+
+type SortKey = "date" | "label" | "category" | "amount";
+
+function TransactionsPage() {
+  const [rows, setRows] = useState<Transaction[]>(transactionsSeed);
+  const [query, setQuery] = useState("");
+  const [catFilter, setCatFilter] = useState<CatKey | "all">("all");
+  const [recFilter, setRecFilter] = useState<Recurrence | "all">("all");
+  const [onlyUncat, setOnlyUncat] = useState(false);
+  const [onlyEdited, setOnlyEdited] = useState(false);
+  const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "date", dir: -1 });
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [editing, setEditing] = useState<{ id: string; field: "category" | "amount" } | null>(null);
+  const [bulkCat, setBulkCat] = useState<CatKey | "">("");
+
+  const filtered = useMemo(() => {
+    let r = rows;
+    if (query) {
+      const q = query.toLowerCase();
+      r = r.filter((x) => x.label.toLowerCase().includes(q));
+    }
+    if (catFilter !== "all") r = r.filter((x) => x.category === catFilter);
+    if (recFilter !== "all") r = r.filter((x) => x.recurrence === recFilter);
+    if (onlyUncat) r = r.filter((x) => x.category === "divers");
+    if (onlyEdited) r = r.filter((x) => x.provenance === "Édité");
+    r = [...r].sort((a, b) => {
+      const k = sort.key;
+      const va = k === "category" ? a.category : a[k];
+      const vb = k === "category" ? b.category : b[k];
+      if (va! < vb!) return -1 * sort.dir;
+      if (va! > vb!) return  1 * sort.dir;
+      return 0;
+    });
+    return r;
+  }, [rows, query, catFilter, recFilter, onlyUncat, onlyEdited, sort]);
+
+  const runningTotal = filtered.reduce((s, x) => s + x.amount, 0);
+
+  function updateRow(id: string, patch: Partial<Transaction>) {
+    setRows((rs) => rs.map((r) => r.id === id ? { ...r, ...patch, provenance: "Édité" as const } : r));
+  }
+  function toggleSelect(id: string) {
+    setSelected((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  }
+  function applyBulk() {
+    if (!bulkCat) return;
+    const sub = categories.find((c) => c.key === bulkCat)?.subs[0]?.label ?? "—";
+    setRows((rs) => rs.map((r) => selected.has(r.id) ? { ...r, category: bulkCat, sub, provenance: "Édité" as const } : r));
+    setSelected(new Set());
+    setBulkCat("");
+  }
+
+  return (
+    <div className="space-y-6 anim-slide-up">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Budget · Transactions</p>
+          <h1 className="mt-1 font-serif text-3xl tracking-tight sm:text-4xl">Le journal</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Recherchez, recatégorisez, éditez. Vos modifications restent protégées à l'import.</p>
+        </div>
+        <div className="text-right">
+          <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Total filtré</p>
+          <p className={"font-serif text-2xl tabular-nums " + (runningTotal >= 0 ? "text-success" : "text-warm")}>
+            {runningTotal >= 0 ? "+" : ""}{eur2(runningTotal)}
+          </p>
+        </div>
+      </div>
+
+      {/* Toolbar */}
+      <div className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative min-w-[200px] flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Rechercher un libellé…"
+              className="w-full rounded-full border border-border/60 bg-background pl-9 pr-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+            />
+            {query && (
+              <button onClick={() => setQuery("")} className="absolute right-2 top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center rounded-full hover:bg-secondary" aria-label="Effacer">
+                <X className="h-3 w-3" />
+              </button>
+            )}
+          </div>
+          <select value={catFilter} onChange={(e) => setCatFilter(e.target.value as CatKey | "all")}
+            className="rounded-full border border-border/60 bg-background px-3 py-2 text-sm outline-none focus:border-ring">
+            <option value="all">Toutes catégories</option>
+            {categories.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+          </select>
+          <select value={recFilter} onChange={(e) => setRecFilter(e.target.value as Recurrence | "all")}
+            className="rounded-full border border-border/60 bg-background px-3 py-2 text-sm outline-none focus:border-ring">
+            <option value="all">Toute récurrence</option>
+            {RECURRENCES.map((r) => <option key={r} value={r}>{r}</option>)}
+          </select>
+          <Chip on={onlyUncat} onClick={() => setOnlyUncat((v) => !v)}>Non catégorisées</Chip>
+          <Chip on={onlyEdited} onClick={() => setOnlyEdited((v) => !v)}>Modifiées localement</Chip>
+        </div>
+      </div>
+
+      {/* Bulk action bar */}
+      {selected.size > 0 && (
+        <div className="sticky top-[68px] z-20 flex flex-wrap items-center gap-3 rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 shadow-soft anim-slide-up">
+          <span className="text-sm font-medium">{selected.size} sélection{selected.size > 1 ? "s" : ""}</span>
+          <select value={bulkCat} onChange={(e) => setBulkCat(e.target.value as CatKey | "")}
+            className="rounded-full border border-border/60 bg-background px-3 py-1.5 text-sm">
+            <option value="">Recatégoriser en…</option>
+            {categories.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+          </select>
+          <button onClick={applyBulk} disabled={!bulkCat}
+            className="inline-flex items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-sm text-background disabled:opacity-40">
+            <Check className="h-3.5 w-3.5" /> Appliquer
+          </button>
+          <button onClick={() => setSelected(new Set())} className="text-sm text-muted-foreground hover:text-foreground">Annuler</button>
+        </div>
+      )}
+
+      {/* Table */}
+      <div className="overflow-x-auto rounded-2xl border border-border/60 bg-card shadow-soft">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border/60 text-left text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+              <th className="w-10 px-3 py-3">
+                <input type="checkbox"
+                  checked={selected.size === filtered.length && filtered.length > 0}
+                  onChange={(e) => setSelected(e.target.checked ? new Set(filtered.map((r) => r.id)) : new Set())}
+                  className="h-3.5 w-3.5 accent-foreground" />
+              </th>
+              <ThSort label="Date" k="date" sort={sort} setSort={setSort} />
+              <ThSort label="Libellé" k="label" sort={sort} setSort={setSort} />
+              <ThSort label="Catégorie" k="category" sort={sort} setSort={setSort} />
+              <ThSort label="Montant" k="amount" sort={sort} setSort={setSort} className="text-right" />
+              <th className="px-3 py-3">Récurrence</th>
+              <th className="px-3 py-3">Provenance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((r) => {
+              const cat = categories.find((c) => c.key === r.category);
+              const isUncat = r.category === "divers";
+              const isSelected = selected.has(r.id);
+              return (
+                <tr key={r.id}
+                  className={"group border-b border-border/40 transition-colors " +
+                    (isSelected ? "bg-primary/5" : "hover:bg-secondary/40")}>
+                  <td className="px-3 py-2.5">
+                    <input type="checkbox" checked={isSelected} onChange={() => toggleSelect(r.id)} className="h-3.5 w-3.5 accent-foreground" />
+                  </td>
+                  <td className="px-3 py-2.5 tabular-nums text-muted-foreground">{r.date.slice(8,10)}/{r.date.slice(5,7)}</td>
+                  <td className="px-3 py-2.5">
+                    <span className="font-medium">{r.label}</span>
+                    {isUncat && <span className="ml-2 inline-block rounded-full bg-warm/10 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-warm">À trier</span>}
+                  </td>
+                  <td className="px-3 py-2.5">
+                    {editing?.id === r.id && editing.field === "category" ? (
+                      <select autoFocus value={r.category}
+                        onBlur={() => setEditing(null)}
+                        onChange={(e) => {
+                          const k = e.target.value as CatKey;
+                          const sub = categories.find((c) => c.key === k)?.subs[0]?.label ?? "—";
+                          updateRow(r.id, { category: k, sub });
+                          setEditing(null);
+                        }}
+                        className="rounded-md border border-ring bg-background px-2 py-1 text-sm">
+                        {categories.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+                      </select>
+                    ) : (
+                      <button onClick={() => setEditing({ id: r.id, field: "category" })}
+                        className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 hover:bg-secondary">
+                        <span className="h-2 w-2 rounded-sm" style={{ background: cat?.color ?? "var(--muted-foreground)" }} />
+                        <span>{cat?.label ?? r.category}</span>
+                        <span className="text-muted-foreground"> › {r.sub}</span>
+                        <Pencil className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-50" />
+                      </button>
+                    )}
+                  </td>
+                  <td className="px-3 py-2.5 text-right">
+                    {editing?.id === r.id && editing.field === "amount" ? (
+                      <input autoFocus type="number" defaultValue={r.amount} step="0.01"
+                        onBlur={(e) => { updateRow(r.id, { amount: parseFloat(e.target.value) || 0 }); setEditing(null); }}
+                        onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+                        className="w-24 rounded-md border border-ring bg-background px-2 py-1 text-right text-sm" />
+                    ) : (
+                      <button onClick={() => setEditing({ id: r.id, field: "amount" })}
+                        className={"rounded-md px-1.5 py-0.5 tabular-nums hover:bg-secondary " +
+                          (r.amount > 0 ? "text-success font-medium" : "")}>
+                        {r.amount > 0 ? "+" : ""}{eur2(r.amount)}
+                      </button>
+                    )}
+                  </td>
+                  <td className="px-3 py-2.5 text-muted-foreground">{r.recurrence}</td>
+                  <td className="px-3 py-2.5">
+                    <span className={"inline-block rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider " +
+                      (r.provenance === "Édité"
+                        ? "bg-accent/20 text-accent-foreground"
+                        : "bg-secondary text-muted-foreground")}>
+                      {r.provenance}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
+            {filtered.length === 0 && (
+              <tr><td colSpan={7} className="px-3 py-10 text-center text-sm text-muted-foreground">Aucune transaction ne correspond.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      <p className="text-center text-xs text-muted-foreground">
+        {filtered.length} ligne{filtered.length > 1 ? "s" : ""} · Total {eur2(runningTotal)}
+      </p>
+    </div>
+  );
+}
+
+function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button onClick={onClick}
+      className={"inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-colors " +
+        (on ? "border-foreground/30 bg-foreground text-background" : "border-border/60 bg-card text-muted-foreground hover:text-foreground")}>
+      <span className={"h-1.5 w-1.5 rounded-full " + (on ? "bg-background" : "bg-muted-foreground")} />
+      {children}
+    </button>
+  );
+}
+
+function ThSort({ label, k, sort, setSort, className = "" }: {
+  label: string; k: SortKey; sort: { key: SortKey; dir: 1|-1 }; setSort: (s: { key: SortKey; dir: 1|-1 }) => void; className?: string;
+}) {
+  const active = sort.key === k;
+  return (
+    <th className={"px-3 py-3 " + className}>
+      <button
+        onClick={() => setSort({ key: k, dir: active ? (sort.dir === 1 ? -1 : 1) : 1 })}
+        className={"inline-flex items-center gap-1 transition-colors " + (active ? "text-foreground" : "hover:text-foreground")}
+      >
+        {label} <ArrowUpDown className="h-3 w-3 opacity-60" />
+      </button>
+    </th>
+  );
+}

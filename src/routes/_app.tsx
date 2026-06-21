@@ -12,7 +12,10 @@ export const Route = createFileRoute("/_app")({
 function AppLayout() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const isOverlay = pathname !== "/";
+
+  // Budget mode = full-bleed; bypass the overlay/dashboard pattern.
+  const isBudgetMode = pathname.startsWith("/budget");
+  const isOverlay = !isBudgetMode && pathname !== "/";
 
   // Pick a line based on day-of-year for a stable but rotating feel
   const start = new Date(new Date().getFullYear(), 0, 0);
@@ -37,11 +40,25 @@ function AppLayout() {
     return () => { document.body.style.overflow = prev; };
   }, [isOverlay]);
 
+  // Budget mode: dedicated, full-bleed shell — no Maison backdrop, no overlay.
+  if (isBudgetMode) {
+    return (
+      <div className="min-h-screen bg-background">
+        <TopNav />
+        <main key={pathname} className="mode-enter mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-10">
+          <Outlet />
+        </main>
+        <footer className="mx-auto max-w-7xl px-4 pb-10 pt-6 text-center sm:px-6">
+          <p className="font-serif text-sm italic text-muted-foreground">{line}</p>
+        </footer>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <TopNav />
 
-      {/* Dashboard: always rendered as the persistent base layer */}
       <main
         className={
           "mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10 transition-all duration-500 " +
@@ -56,7 +73,6 @@ function AppLayout() {
         <p className="font-serif text-sm italic text-muted-foreground">{line}</p>
       </footer>
 
-      {/* Stripe-like slide-up modal for child routes */}
       {isOverlay && (
         <div
           key={pathname}
@@ -64,14 +80,11 @@ function AppLayout() {
           role="dialog"
           aria-modal="true"
         >
-          {/* Backdrop — click to close */}
           <Link
             to="/"
             aria-label="Fermer"
             className="overlay-backdrop fixed inset-0 z-0 bg-foreground/30 backdrop-blur-md"
           />
-
-          {/* Sliding panel */}
           <div className="overlay-panel relative z-10 mx-0 mt-16 mb-8 w-screen max-w-none sm:mx-auto sm:mt-24 sm:w-full sm:max-w-5xl sm:px-6">
             <div className="relative overflow-clip border border-border/60 bg-background shadow-lift sm:rounded-3xl">
               <div className="px-5 py-7 sm:px-8 sm:py-10">
@@ -79,7 +92,6 @@ function AppLayout() {
               </div>
             </div>
           </div>
-          {/* Floating close button — fixed so it stays in view while modal scrolls */}
           <Link
             to="/"
             aria-label="Fermer"

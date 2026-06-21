@@ -15,8 +15,13 @@ import { Route as AppTeslaRouteImport } from './routes/_app.tesla'
 import { Route as AppReseauRouteImport } from './routes/_app.reseau'
 import { Route as AppBudgetRouteImport } from './routes/_app.budget'
 import { Route as AppEnergieIndexRouteImport } from './routes/_app.energie.index'
+import { Route as AppBudgetIndexRouteImport } from './routes/_app.budget.index'
 import { Route as AppRoomRoomKeyRouteImport } from './routes/_app.room.$roomKey'
 import { Route as AppEnergieSaisieRouteImport } from './routes/_app.energie.saisie'
+import { Route as AppBudgetTransactionsRouteImport } from './routes/_app.budget.transactions'
+import { Route as AppBudgetMensuelRouteImport } from './routes/_app.budget.mensuel'
+import { Route as AppBudgetImportRouteImport } from './routes/_app.budget.import'
+import { Route as AppBudgetAnnuelRouteImport } from './routes/_app.budget.annuel'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -47,6 +52,11 @@ const AppEnergieIndexRoute = AppEnergieIndexRouteImport.update({
   path: '/energie/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBudgetIndexRoute = AppBudgetIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppBudgetRoute,
+} as any)
 const AppRoomRoomKeyRoute = AppRoomRoomKeyRouteImport.update({
   id: '/room/$roomKey',
   path: '/room/$roomKey',
@@ -57,34 +67,68 @@ const AppEnergieSaisieRoute = AppEnergieSaisieRouteImport.update({
   path: '/energie/saisie',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBudgetTransactionsRoute = AppBudgetTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => AppBudgetRoute,
+} as any)
+const AppBudgetMensuelRoute = AppBudgetMensuelRouteImport.update({
+  id: '/mensuel',
+  path: '/mensuel',
+  getParentRoute: () => AppBudgetRoute,
+} as any)
+const AppBudgetImportRoute = AppBudgetImportRouteImport.update({
+  id: '/import',
+  path: '/import',
+  getParentRoute: () => AppBudgetRoute,
+} as any)
+const AppBudgetAnnuelRoute = AppBudgetAnnuelRouteImport.update({
+  id: '/annuel',
+  path: '/annuel',
+  getParentRoute: () => AppBudgetRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
-  '/budget': typeof AppBudgetRoute
+  '/budget': typeof AppBudgetRouteWithChildren
   '/reseau': typeof AppReseauRoute
   '/tesla': typeof AppTeslaRoute
+  '/budget/annuel': typeof AppBudgetAnnuelRoute
+  '/budget/import': typeof AppBudgetImportRoute
+  '/budget/mensuel': typeof AppBudgetMensuelRoute
+  '/budget/transactions': typeof AppBudgetTransactionsRoute
   '/energie/saisie': typeof AppEnergieSaisieRoute
   '/room/$roomKey': typeof AppRoomRoomKeyRoute
+  '/budget/': typeof AppBudgetIndexRoute
   '/energie/': typeof AppEnergieIndexRoute
 }
 export interface FileRoutesByTo {
-  '/budget': typeof AppBudgetRoute
   '/reseau': typeof AppReseauRoute
   '/tesla': typeof AppTeslaRoute
   '/': typeof AppIndexRoute
+  '/budget/annuel': typeof AppBudgetAnnuelRoute
+  '/budget/import': typeof AppBudgetImportRoute
+  '/budget/mensuel': typeof AppBudgetMensuelRoute
+  '/budget/transactions': typeof AppBudgetTransactionsRoute
   '/energie/saisie': typeof AppEnergieSaisieRoute
   '/room/$roomKey': typeof AppRoomRoomKeyRoute
+  '/budget': typeof AppBudgetIndexRoute
   '/energie': typeof AppEnergieIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
-  '/_app/budget': typeof AppBudgetRoute
+  '/_app/budget': typeof AppBudgetRouteWithChildren
   '/_app/reseau': typeof AppReseauRoute
   '/_app/tesla': typeof AppTeslaRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/budget/annuel': typeof AppBudgetAnnuelRoute
+  '/_app/budget/import': typeof AppBudgetImportRoute
+  '/_app/budget/mensuel': typeof AppBudgetMensuelRoute
+  '/_app/budget/transactions': typeof AppBudgetTransactionsRoute
   '/_app/energie/saisie': typeof AppEnergieSaisieRoute
   '/_app/room/$roomKey': typeof AppRoomRoomKeyRoute
+  '/_app/budget/': typeof AppBudgetIndexRoute
   '/_app/energie/': typeof AppEnergieIndexRoute
 }
 export interface FileRouteTypes {
@@ -94,17 +138,26 @@ export interface FileRouteTypes {
     | '/budget'
     | '/reseau'
     | '/tesla'
+    | '/budget/annuel'
+    | '/budget/import'
+    | '/budget/mensuel'
+    | '/budget/transactions'
     | '/energie/saisie'
     | '/room/$roomKey'
+    | '/budget/'
     | '/energie/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/budget'
     | '/reseau'
     | '/tesla'
     | '/'
+    | '/budget/annuel'
+    | '/budget/import'
+    | '/budget/mensuel'
+    | '/budget/transactions'
     | '/energie/saisie'
     | '/room/$roomKey'
+    | '/budget'
     | '/energie'
   id:
     | '__root__'
@@ -113,8 +166,13 @@ export interface FileRouteTypes {
     | '/_app/reseau'
     | '/_app/tesla'
     | '/_app/'
+    | '/_app/budget/annuel'
+    | '/_app/budget/import'
+    | '/_app/budget/mensuel'
+    | '/_app/budget/transactions'
     | '/_app/energie/saisie'
     | '/_app/room/$roomKey'
+    | '/_app/budget/'
     | '/_app/energie/'
   fileRoutesById: FileRoutesById
 }
@@ -166,6 +224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEnergieIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/budget/': {
+      id: '/_app/budget/'
+      path: '/'
+      fullPath: '/budget/'
+      preLoaderRoute: typeof AppBudgetIndexRouteImport
+      parentRoute: typeof AppBudgetRoute
+    }
     '/_app/room/$roomKey': {
       id: '/_app/room/$roomKey'
       path: '/room/$roomKey'
@@ -180,11 +245,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEnergieSaisieRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/budget/transactions': {
+      id: '/_app/budget/transactions'
+      path: '/transactions'
+      fullPath: '/budget/transactions'
+      preLoaderRoute: typeof AppBudgetTransactionsRouteImport
+      parentRoute: typeof AppBudgetRoute
+    }
+    '/_app/budget/mensuel': {
+      id: '/_app/budget/mensuel'
+      path: '/mensuel'
+      fullPath: '/budget/mensuel'
+      preLoaderRoute: typeof AppBudgetMensuelRouteImport
+      parentRoute: typeof AppBudgetRoute
+    }
+    '/_app/budget/import': {
+      id: '/_app/budget/import'
+      path: '/import'
+      fullPath: '/budget/import'
+      preLoaderRoute: typeof AppBudgetImportRouteImport
+      parentRoute: typeof AppBudgetRoute
+    }
+    '/_app/budget/annuel': {
+      id: '/_app/budget/annuel'
+      path: '/annuel'
+      fullPath: '/budget/annuel'
+      preLoaderRoute: typeof AppBudgetAnnuelRouteImport
+      parentRoute: typeof AppBudgetRoute
+    }
   }
 }
 
+interface AppBudgetRouteChildren {
+  AppBudgetAnnuelRoute: typeof AppBudgetAnnuelRoute
+  AppBudgetImportRoute: typeof AppBudgetImportRoute
+  AppBudgetMensuelRoute: typeof AppBudgetMensuelRoute
+  AppBudgetTransactionsRoute: typeof AppBudgetTransactionsRoute
+  AppBudgetIndexRoute: typeof AppBudgetIndexRoute
+}
+
+const AppBudgetRouteChildren: AppBudgetRouteChildren = {
+  AppBudgetAnnuelRoute: AppBudgetAnnuelRoute,
+  AppBudgetImportRoute: AppBudgetImportRoute,
+  AppBudgetMensuelRoute: AppBudgetMensuelRoute,
+  AppBudgetTransactionsRoute: AppBudgetTransactionsRoute,
+  AppBudgetIndexRoute: AppBudgetIndexRoute,
+}
+
+const AppBudgetRouteWithChildren = AppBudgetRoute._addFileChildren(
+  AppBudgetRouteChildren,
+)
+
 interface AppRouteChildren {
-  AppBudgetRoute: typeof AppBudgetRoute
+  AppBudgetRoute: typeof AppBudgetRouteWithChildren
   AppReseauRoute: typeof AppReseauRoute
   AppTeslaRoute: typeof AppTeslaRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -194,7 +307,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppBudgetRoute: AppBudgetRoute,
+  AppBudgetRoute: AppBudgetRouteWithChildren,
   AppReseauRoute: AppReseauRoute,
   AppTeslaRoute: AppTeslaRoute,
   AppIndexRoute: AppIndexRoute,
