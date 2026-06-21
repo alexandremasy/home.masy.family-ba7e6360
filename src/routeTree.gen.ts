@@ -15,6 +15,7 @@ import { Route as AppTeslaRouteImport } from './routes/_app.tesla'
 import { Route as AppReseauRouteImport } from './routes/_app.reseau'
 import { Route as AppBudgetRouteImport } from './routes/_app.budget'
 import { Route as AppEnergieIndexRouteImport } from './routes/_app.energie.index'
+import { Route as AppBudgetIndexRouteImport } from './routes/_app.budget.index'
 import { Route as AppRoomRoomKeyRouteImport } from './routes/_app.room.$roomKey'
 import { Route as AppEnergieSaisieRouteImport } from './routes/_app.energie.saisie'
 
@@ -47,6 +48,11 @@ const AppEnergieIndexRoute = AppEnergieIndexRouteImport.update({
   path: '/energie/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBudgetIndexRoute = AppBudgetIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppBudgetRoute,
+} as any)
 const AppRoomRoomKeyRoute = AppRoomRoomKeyRouteImport.update({
   id: '/room/$roomKey',
   path: '/room/$roomKey',
@@ -60,31 +66,33 @@ const AppEnergieSaisieRoute = AppEnergieSaisieRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
-  '/budget': typeof AppBudgetRoute
+  '/budget': typeof AppBudgetRouteWithChildren
   '/reseau': typeof AppReseauRoute
   '/tesla': typeof AppTeslaRoute
   '/energie/saisie': typeof AppEnergieSaisieRoute
   '/room/$roomKey': typeof AppRoomRoomKeyRoute
+  '/budget/': typeof AppBudgetIndexRoute
   '/energie/': typeof AppEnergieIndexRoute
 }
 export interface FileRoutesByTo {
-  '/budget': typeof AppBudgetRoute
   '/reseau': typeof AppReseauRoute
   '/tesla': typeof AppTeslaRoute
   '/': typeof AppIndexRoute
   '/energie/saisie': typeof AppEnergieSaisieRoute
   '/room/$roomKey': typeof AppRoomRoomKeyRoute
+  '/budget': typeof AppBudgetIndexRoute
   '/energie': typeof AppEnergieIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
-  '/_app/budget': typeof AppBudgetRoute
+  '/_app/budget': typeof AppBudgetRouteWithChildren
   '/_app/reseau': typeof AppReseauRoute
   '/_app/tesla': typeof AppTeslaRoute
   '/_app/': typeof AppIndexRoute
   '/_app/energie/saisie': typeof AppEnergieSaisieRoute
   '/_app/room/$roomKey': typeof AppRoomRoomKeyRoute
+  '/_app/budget/': typeof AppBudgetIndexRoute
   '/_app/energie/': typeof AppEnergieIndexRoute
 }
 export interface FileRouteTypes {
@@ -96,15 +104,16 @@ export interface FileRouteTypes {
     | '/tesla'
     | '/energie/saisie'
     | '/room/$roomKey'
+    | '/budget/'
     | '/energie/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/budget'
     | '/reseau'
     | '/tesla'
     | '/'
     | '/energie/saisie'
     | '/room/$roomKey'
+    | '/budget'
     | '/energie'
   id:
     | '__root__'
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/_app/'
     | '/_app/energie/saisie'
     | '/_app/room/$roomKey'
+    | '/_app/budget/'
     | '/_app/energie/'
   fileRoutesById: FileRoutesById
 }
@@ -166,6 +176,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEnergieIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/budget/': {
+      id: '/_app/budget/'
+      path: '/'
+      fullPath: '/budget/'
+      preLoaderRoute: typeof AppBudgetIndexRouteImport
+      parentRoute: typeof AppBudgetRoute
+    }
     '/_app/room/$roomKey': {
       id: '/_app/room/$roomKey'
       path: '/room/$roomKey'
@@ -183,8 +200,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppBudgetRouteChildren {
+  AppBudgetIndexRoute: typeof AppBudgetIndexRoute
+}
+
+const AppBudgetRouteChildren: AppBudgetRouteChildren = {
+  AppBudgetIndexRoute: AppBudgetIndexRoute,
+}
+
+const AppBudgetRouteWithChildren = AppBudgetRoute._addFileChildren(
+  AppBudgetRouteChildren,
+)
+
 interface AppRouteChildren {
-  AppBudgetRoute: typeof AppBudgetRoute
+  AppBudgetRoute: typeof AppBudgetRouteWithChildren
   AppReseauRoute: typeof AppReseauRoute
   AppTeslaRoute: typeof AppTeslaRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -194,7 +223,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppBudgetRoute: AppBudgetRoute,
+  AppBudgetRoute: AppBudgetRouteWithChildren,
   AppReseauRoute: AppReseauRoute,
   AppTeslaRoute: AppTeslaRoute,
   AppIndexRoute: AppIndexRoute,
