@@ -19,6 +19,7 @@ import { Route as AppBudgetIndexRouteImport } from './routes/_app.budget.index'
 import { Route as AppRoomRoomKeyRouteImport } from './routes/_app.room.$roomKey'
 import { Route as AppEnergieSaisieRouteImport } from './routes/_app.energie.saisie'
 import { Route as AppBudgetMensuelRouteImport } from './routes/_app.budget.mensuel'
+import { Route as AppBudgetAnnuelRouteImport } from './routes/_app.budget.annuel'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -69,12 +70,18 @@ const AppBudgetMensuelRoute = AppBudgetMensuelRouteImport.update({
   path: '/mensuel',
   getParentRoute: () => AppBudgetRoute,
 } as any)
+const AppBudgetAnnuelRoute = AppBudgetAnnuelRouteImport.update({
+  id: '/annuel',
+  path: '/annuel',
+  getParentRoute: () => AppBudgetRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/budget': typeof AppBudgetRouteWithChildren
   '/reseau': typeof AppReseauRoute
   '/tesla': typeof AppTeslaRoute
+  '/budget/annuel': typeof AppBudgetAnnuelRoute
   '/budget/mensuel': typeof AppBudgetMensuelRoute
   '/energie/saisie': typeof AppEnergieSaisieRoute
   '/room/$roomKey': typeof AppRoomRoomKeyRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/reseau': typeof AppReseauRoute
   '/tesla': typeof AppTeslaRoute
   '/': typeof AppIndexRoute
+  '/budget/annuel': typeof AppBudgetAnnuelRoute
   '/budget/mensuel': typeof AppBudgetMensuelRoute
   '/energie/saisie': typeof AppEnergieSaisieRoute
   '/room/$roomKey': typeof AppRoomRoomKeyRoute
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   '/_app/reseau': typeof AppReseauRoute
   '/_app/tesla': typeof AppTeslaRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/budget/annuel': typeof AppBudgetAnnuelRoute
   '/_app/budget/mensuel': typeof AppBudgetMensuelRoute
   '/_app/energie/saisie': typeof AppEnergieSaisieRoute
   '/_app/room/$roomKey': typeof AppRoomRoomKeyRoute
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/budget'
     | '/reseau'
     | '/tesla'
+    | '/budget/annuel'
     | '/budget/mensuel'
     | '/energie/saisie'
     | '/room/$roomKey'
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/reseau'
     | '/tesla'
     | '/'
+    | '/budget/annuel'
     | '/budget/mensuel'
     | '/energie/saisie'
     | '/room/$roomKey'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/_app/reseau'
     | '/_app/tesla'
     | '/_app/'
+    | '/_app/budget/annuel'
     | '/_app/budget/mensuel'
     | '/_app/energie/saisie'
     | '/_app/room/$roomKey'
@@ -216,15 +228,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBudgetMensuelRouteImport
       parentRoute: typeof AppBudgetRoute
     }
+    '/_app/budget/annuel': {
+      id: '/_app/budget/annuel'
+      path: '/annuel'
+      fullPath: '/budget/annuel'
+      preLoaderRoute: typeof AppBudgetAnnuelRouteImport
+      parentRoute: typeof AppBudgetRoute
+    }
   }
 }
 
 interface AppBudgetRouteChildren {
+  AppBudgetAnnuelRoute: typeof AppBudgetAnnuelRoute
   AppBudgetMensuelRoute: typeof AppBudgetMensuelRoute
   AppBudgetIndexRoute: typeof AppBudgetIndexRoute
 }
 
 const AppBudgetRouteChildren: AppBudgetRouteChildren = {
+  AppBudgetAnnuelRoute: AppBudgetAnnuelRoute,
   AppBudgetMensuelRoute: AppBudgetMensuelRoute,
   AppBudgetIndexRoute: AppBudgetIndexRoute,
 }
