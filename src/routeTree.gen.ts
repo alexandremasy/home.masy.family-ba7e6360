@@ -18,6 +18,7 @@ import { Route as AppEnergieIndexRouteImport } from './routes/_app.energie.index
 import { Route as AppBudgetIndexRouteImport } from './routes/_app.budget.index'
 import { Route as AppRoomRoomKeyRouteImport } from './routes/_app.room.$roomKey'
 import { Route as AppEnergieSaisieRouteImport } from './routes/_app.energie.saisie'
+import { Route as AppBudgetVueRouteImport } from './routes/_app.budget.vue'
 import { Route as AppBudgetTransactionsRouteImport } from './routes/_app.budget.transactions'
 import { Route as AppBudgetMensuelRouteImport } from './routes/_app.budget.mensuel'
 import { Route as AppBudgetImportRouteImport } from './routes/_app.budget.import'
@@ -67,6 +68,11 @@ const AppEnergieSaisieRoute = AppEnergieSaisieRouteImport.update({
   path: '/energie/saisie',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBudgetVueRoute = AppBudgetVueRouteImport.update({
+  id: '/vue',
+  path: '/vue',
+  getParentRoute: () => AppBudgetRoute,
+} as any)
 const AppBudgetTransactionsRoute = AppBudgetTransactionsRouteImport.update({
   id: '/transactions',
   path: '/transactions',
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/budget/import': typeof AppBudgetImportRoute
   '/budget/mensuel': typeof AppBudgetMensuelRoute
   '/budget/transactions': typeof AppBudgetTransactionsRoute
+  '/budget/vue': typeof AppBudgetVueRoute
   '/energie/saisie': typeof AppEnergieSaisieRoute
   '/room/$roomKey': typeof AppRoomRoomKeyRoute
   '/budget/': typeof AppBudgetIndexRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/budget/import': typeof AppBudgetImportRoute
   '/budget/mensuel': typeof AppBudgetMensuelRoute
   '/budget/transactions': typeof AppBudgetTransactionsRoute
+  '/budget/vue': typeof AppBudgetVueRoute
   '/energie/saisie': typeof AppEnergieSaisieRoute
   '/room/$roomKey': typeof AppRoomRoomKeyRoute
   '/budget': typeof AppBudgetIndexRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/_app/budget/import': typeof AppBudgetImportRoute
   '/_app/budget/mensuel': typeof AppBudgetMensuelRoute
   '/_app/budget/transactions': typeof AppBudgetTransactionsRoute
+  '/_app/budget/vue': typeof AppBudgetVueRoute
   '/_app/energie/saisie': typeof AppEnergieSaisieRoute
   '/_app/room/$roomKey': typeof AppRoomRoomKeyRoute
   '/_app/budget/': typeof AppBudgetIndexRoute
@@ -142,6 +151,7 @@ export interface FileRouteTypes {
     | '/budget/import'
     | '/budget/mensuel'
     | '/budget/transactions'
+    | '/budget/vue'
     | '/energie/saisie'
     | '/room/$roomKey'
     | '/budget/'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
     | '/budget/import'
     | '/budget/mensuel'
     | '/budget/transactions'
+    | '/budget/vue'
     | '/energie/saisie'
     | '/room/$roomKey'
     | '/budget'
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '/_app/budget/import'
     | '/_app/budget/mensuel'
     | '/_app/budget/transactions'
+    | '/_app/budget/vue'
     | '/_app/energie/saisie'
     | '/_app/room/$roomKey'
     | '/_app/budget/'
@@ -245,6 +257,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEnergieSaisieRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/budget/vue': {
+      id: '/_app/budget/vue'
+      path: '/vue'
+      fullPath: '/budget/vue'
+      preLoaderRoute: typeof AppBudgetVueRouteImport
+      parentRoute: typeof AppBudgetRoute
+    }
     '/_app/budget/transactions': {
       id: '/_app/budget/transactions'
       path: '/transactions'
@@ -281,6 +300,7 @@ interface AppBudgetRouteChildren {
   AppBudgetImportRoute: typeof AppBudgetImportRoute
   AppBudgetMensuelRoute: typeof AppBudgetMensuelRoute
   AppBudgetTransactionsRoute: typeof AppBudgetTransactionsRoute
+  AppBudgetVueRoute: typeof AppBudgetVueRoute
   AppBudgetIndexRoute: typeof AppBudgetIndexRoute
 }
 
@@ -289,6 +309,7 @@ const AppBudgetRouteChildren: AppBudgetRouteChildren = {
   AppBudgetImportRoute: AppBudgetImportRoute,
   AppBudgetMensuelRoute: AppBudgetMensuelRoute,
   AppBudgetTransactionsRoute: AppBudgetTransactionsRoute,
+  AppBudgetVueRoute: AppBudgetVueRoute,
   AppBudgetIndexRoute: AppBudgetIndexRoute,
 }
 
