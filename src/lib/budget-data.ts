@@ -188,3 +188,114 @@ export const importHistory = [
   { filename: "isavemoney-export-avril.xlsx", date: "2025-05-02", month: "Avril 2025", added: 38, updated: 1 },
   { filename: "isavemoney-export-mars.xlsx", date: "2025-04-03", month: "Mars 2025", added: 44, updated: 4 },
 ];
+
+// ---------- Planification: recurring postes ----------
+
+export type Recurrence4 = "Mensuelle" | "Trimestrielle" | "Annuelle" | "Au besoin";
+export const RECURRENCES4: Recurrence4[] = ["Mensuelle", "Trimestrielle", "Annuelle", "Au besoin"];
+
+export type Poste = {
+  id: string;
+  category: CatKey;
+  sub: string;
+  label: string;
+  amount: number;        // unit amount per occurrence
+  budget: number;        // planned budget per occurrence
+  recurrence: Recurrence4;
+  months: number[];      // 0..11 occurrences
+};
+
+export function defaultMonthsFor(rec: Recurrence4, anchor = 0): number[] {
+  if (rec === "Mensuelle") return [0,1,2,3,4,5,6,7,8,9,10,11];
+  if (rec === "Trimestrielle") {
+    const base = ((anchor % 3) + 3) % 3;
+    return [base, base + 3, base + 6, base + 9];
+  }
+  return [anchor];
+}
+
+export const postesSeed: Poste[] = [
+  // Logement
+  { id: "p01", category: "logement",    sub: "Loyer",                label: "Loyer",                amount: 1100, budget: 1100, recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "p02", category: "logement",    sub: "Charges",              label: "Charges communes",     amount: 180,  budget: 180,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "p03", category: "logement",    sub: "Eau",                  label: "Eau",                  amount: 180,  budget: 180,  recurrence: "Trimestrielle", months: defaultMonthsFor("Trimestrielle", 2) },
+  { id: "p04", category: "logement",    sub: "Assurance",            label: "Assurance habitation", amount: 420,  budget: 420,  recurrence: "Annuelle",      months: [7] },
+  { id: "p05", category: "logement",    sub: "Entretien",            label: "Petits travaux",       amount: 200,  budget: 250,  recurrence: "Au besoin",     months: [9] },
+  // Énergie
+  { id: "p10", category: "energie",     sub: "Électricité",          label: "Électricité",          amount: 140,  budget: 140,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "p11", category: "energie",     sub: "Gaz",                  label: "Gaz",                  amount: 100,  budget: 100,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "p12", category: "energie",     sub: "Mazout",               label: "Mazout",               amount: 1500, budget: 1500, recurrence: "Au besoin",     months: [9] },
+  // Alimentation
+  { id: "p20", category: "alimentation",sub: "Courses",              label: "Courses",              amount: 600,  budget: 650,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  // Transport
+  { id: "p30", category: "transport",   sub: "Carburant",            label: "Carburant",            amount: 220,  budget: 220,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "p31", category: "transport",   sub: "Parking",              label: "Parking",              amount: 60,   budget: 60,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "p32", category: "transport",   sub: "Taxe de circulation",  label: "Taxe de circulation",  amount: 320,  budget: 320,  recurrence: "Annuelle",      months: [10] },
+  { id: "p33", category: "transport",   sub: "Entretien voiture",    label: "Entretien voiture",    amount: 600,  budget: 600,  recurrence: "Annuelle",      months: [3] },
+  // Santé
+  { id: "p40", category: "sante",       sub: "Mutuelle",             label: "Mutuelle",             amount: 480,  budget: 480,  recurrence: "Annuelle",      months: [11] },
+  // Abonnements
+  { id: "p50", category: "abonnements", sub: "Téléphone",            label: "Proximus Mobile",      amount: 50,   budget: 50,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "p51", category: "abonnements", sub: "Netflix",              label: "Netflix",              amount: 18,   budget: 18,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "p52", category: "abonnements", sub: "Spotify",              label: "Spotify",              amount: 13,   budget: 13,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "p53", category: "abonnements", sub: "iCloud",               label: "iCloud+",              amount: 10,   budget: 10,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  // Loisirs
+  { id: "p60", category: "loisirs",     sub: "Sorties",              label: "Sorties & restos",     amount: 150,  budget: 200,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "p61", category: "loisirs",     sub: "Vacances",             label: "Vacances été",         amount: 1800, budget: 1800, recurrence: "Annuelle",      months: [6] },
+  // Animaux
+  { id: "p70", category: "animaux",     sub: "Croquettes",           label: "Royal Canin 12kg",     amount: 80,   budget: 80,   recurrence: "Trimestrielle", months: defaultMonthsFor("Trimestrielle", 0) },
+  // Cadeaux
+  { id: "p80", category: "cadeaux",     sub: "Cadeaux fin d'année",  label: "Cadeaux fin d'année",  amount: 600,  budget: 600,  recurrence: "Annuelle",      months: [11] },
+  // Divers
+  { id: "p90", category: "divers",      sub: "Impôts",               label: "Solde impôts",         amount: 900,  budget: 900,  recurrence: "Annuelle",      months: [5] },
+];
+
+export const _now = new Date();
+export const currentMonthIdx = _now.getMonth();
+export const currentYear = _now.getFullYear();
+
+export type TemporalState = "passe" | "en-cours" | "futur";
+export function temporalState(monthIdx: number, year = currentYear): TemporalState {
+  if (year < currentYear) return "passe";
+  if (year > currentYear) return "futur";
+  if (monthIdx < currentMonthIdx) return "passe";
+  if (monthIdx === currentMonthIdx) return "en-cours";
+  return "futur";
+}
+
+// Projected amount = sum of postes whose `months` includes this index.
+export function projectedForMonth(postes: Poste[], idx: number): number {
+  return postes.filter(p => p.months.includes(idx)).reduce((s, p) => s + p.amount, 0);
+}
+export function budgetForMonth(postes: Poste[], idx: number): number {
+  return postes.filter(p => p.months.includes(idx)).reduce((s, p) => s + p.budget, 0);
+}
+
+// Non-monthly bills landing in `idx` (used for pressure strip projections).
+export function nonMonthlyBills(postes: Poste[], idx: number) {
+  return postes
+    .filter(p => p.recurrence !== "Mensuelle" && p.months.includes(idx))
+    .map(p => ({ label: p.label, amount: p.amount }));
+}
+
+// Monthly annualisation provision = (sum of all non-monthly amounts over the year) / 12.
+export function annualisationProvision(postes: Poste[]): number {
+  const total = postes
+    .filter(p => p.recurrence !== "Mensuelle")
+    .reduce((s, p) => s + p.amount * p.months.length, 0);
+  return Math.round(total / 12);
+}
+
+// Real "actual" for past + part of current month — reuses the existing categories actuals
+// (scaled to "en cours" partial progression for current month).
+export function actualForMonth(idx: number, state: TemporalState): number {
+  const fullMonth = categories.reduce((s, c) => s + c.actual, 0);
+  if (state === "passe") return Math.round(fullMonth * (0.92 + (idx % 5) * 0.03));
+  if (state === "en-cours") {
+    const day = _now.getDate();
+    const total = new Date(currentYear, currentMonthIdx + 1, 0).getDate();
+    return Math.round(fullMonth * (day / total));
+  }
+  return 0;
+}
+
