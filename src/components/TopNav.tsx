@@ -31,10 +31,10 @@ const domains: NavItem[] = [
 ];
 
 const budgetTabs: NavItem[] = [
-  { to: "/budget/mensuel",     label: "Mensuel",      icon: <CalendarDays className="h-3.5 w-3.5" /> },
-  { to: "/budget/annuel",      label: "Annuel",       icon: <BarChart3 className="h-3.5 w-3.5" /> },
-  { to: "/budget/transactions", label: "Transactions", icon: <Table2 className="h-3.5 w-3.5" /> },
-  { to: "/budget/import",      label: "Import",       icon: <FileUp className="h-3.5 w-3.5" /> },
+  { to: "/budget/vue",          label: "Vue d'ensemble", icon: <LayoutDashboard className="h-3.5 w-3.5" /> },
+  { to: "/budget/transactions", label: "Transactions",   icon: <Table2 className="h-3.5 w-3.5" /> },
+  { to: "/budget/planification",label: "Planification",  icon: <CalendarRange className="h-3.5 w-3.5" /> },
+  { to: "/budget/import",       label: "Import",         icon: <FileUp className="h-3.5 w-3.5" /> },
 ];
 
 type ExternalItem = { href: string; label: string; icon: ReactNode };
