@@ -20,6 +20,7 @@ import { Route as AppRoomRoomKeyRouteImport } from './routes/_app.room.$roomKey'
 import { Route as AppEnergieSaisieRouteImport } from './routes/_app.energie.saisie'
 import { Route as AppBudgetVueRouteImport } from './routes/_app.budget.vue'
 import { Route as AppBudgetTransactionsRouteImport } from './routes/_app.budget.transactions'
+import { Route as AppBudgetPlanificationRouteImport } from './routes/_app.budget.planification'
 import { Route as AppBudgetMensuelRouteImport } from './routes/_app.budget.mensuel'
 import { Route as AppBudgetImportRouteImport } from './routes/_app.budget.import'
 import { Route as AppBudgetAnnuelRouteImport } from './routes/_app.budget.annuel'
@@ -78,6 +79,11 @@ const AppBudgetTransactionsRoute = AppBudgetTransactionsRouteImport.update({
   path: '/transactions',
   getParentRoute: () => AppBudgetRoute,
 } as any)
+const AppBudgetPlanificationRoute = AppBudgetPlanificationRouteImport.update({
+  id: '/planification',
+  path: '/planification',
+  getParentRoute: () => AppBudgetRoute,
+} as any)
 const AppBudgetMensuelRoute = AppBudgetMensuelRouteImport.update({
   id: '/mensuel',
   path: '/mensuel',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/budget/annuel': typeof AppBudgetAnnuelRoute
   '/budget/import': typeof AppBudgetImportRoute
   '/budget/mensuel': typeof AppBudgetMensuelRoute
+  '/budget/planification': typeof AppBudgetPlanificationRoute
   '/budget/transactions': typeof AppBudgetTransactionsRoute
   '/budget/vue': typeof AppBudgetVueRoute
   '/energie/saisie': typeof AppEnergieSaisieRoute
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/budget/annuel': typeof AppBudgetAnnuelRoute
   '/budget/import': typeof AppBudgetImportRoute
   '/budget/mensuel': typeof AppBudgetMensuelRoute
+  '/budget/planification': typeof AppBudgetPlanificationRoute
   '/budget/transactions': typeof AppBudgetTransactionsRoute
   '/budget/vue': typeof AppBudgetVueRoute
   '/energie/saisie': typeof AppEnergieSaisieRoute
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/_app/budget/annuel': typeof AppBudgetAnnuelRoute
   '/_app/budget/import': typeof AppBudgetImportRoute
   '/_app/budget/mensuel': typeof AppBudgetMensuelRoute
+  '/_app/budget/planification': typeof AppBudgetPlanificationRoute
   '/_app/budget/transactions': typeof AppBudgetTransactionsRoute
   '/_app/budget/vue': typeof AppBudgetVueRoute
   '/_app/energie/saisie': typeof AppEnergieSaisieRoute
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/budget/annuel'
     | '/budget/import'
     | '/budget/mensuel'
+    | '/budget/planification'
     | '/budget/transactions'
     | '/budget/vue'
     | '/energie/saisie'
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/budget/annuel'
     | '/budget/import'
     | '/budget/mensuel'
+    | '/budget/planification'
     | '/budget/transactions'
     | '/budget/vue'
     | '/energie/saisie'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/_app/budget/annuel'
     | '/_app/budget/import'
     | '/_app/budget/mensuel'
+    | '/_app/budget/planification'
     | '/_app/budget/transactions'
     | '/_app/budget/vue'
     | '/_app/energie/saisie'
@@ -271,6 +283,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBudgetTransactionsRouteImport
       parentRoute: typeof AppBudgetRoute
     }
+    '/_app/budget/planification': {
+      id: '/_app/budget/planification'
+      path: '/planification'
+      fullPath: '/budget/planification'
+      preLoaderRoute: typeof AppBudgetPlanificationRouteImport
+      parentRoute: typeof AppBudgetRoute
+    }
     '/_app/budget/mensuel': {
       id: '/_app/budget/mensuel'
       path: '/mensuel'
@@ -299,6 +318,7 @@ interface AppBudgetRouteChildren {
   AppBudgetAnnuelRoute: typeof AppBudgetAnnuelRoute
   AppBudgetImportRoute: typeof AppBudgetImportRoute
   AppBudgetMensuelRoute: typeof AppBudgetMensuelRoute
+  AppBudgetPlanificationRoute: typeof AppBudgetPlanificationRoute
   AppBudgetTransactionsRoute: typeof AppBudgetTransactionsRoute
   AppBudgetVueRoute: typeof AppBudgetVueRoute
   AppBudgetIndexRoute: typeof AppBudgetIndexRoute
@@ -308,6 +328,7 @@ const AppBudgetRouteChildren: AppBudgetRouteChildren = {
   AppBudgetAnnuelRoute: AppBudgetAnnuelRoute,
   AppBudgetImportRoute: AppBudgetImportRoute,
   AppBudgetMensuelRoute: AppBudgetMensuelRoute,
+  AppBudgetPlanificationRoute: AppBudgetPlanificationRoute,
   AppBudgetTransactionsRoute: AppBudgetTransactionsRoute,
   AppBudgetVueRoute: AppBudgetVueRoute,
   AppBudgetIndexRoute: AppBudgetIndexRoute,
