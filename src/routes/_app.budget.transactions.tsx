@@ -66,15 +66,15 @@ function TransactionsPage() {
 
   return (
     <div className="space-y-6 anim-slide-up">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:flex sm:flex-wrap sm:justify-between sm:gap-4">
+        <div className="min-w-0">
           <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Budget · Transactions</p>
-          <h1 className="mt-1 font-serif text-3xl tracking-tight sm:text-4xl">Le journal</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Recherchez, recatégorisez, éditez. Vos modifications restent protégées à l'import.</p>
+          <h1 className="mt-1 truncate font-serif text-2xl tracking-tight sm:text-4xl">Le journal</h1>
+          <p className="mt-1 hidden text-sm text-muted-foreground sm:block">Recherchez, recatégorisez, éditez. Vos modifications restent protégées à l'import.</p>
         </div>
         <div className="text-right">
           <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Total filtré</p>
-          <p className={"font-serif text-2xl tabular-nums " + (runningTotal >= 0 ? "text-success" : "text-warm")}>
+          <p className={"font-serif text-xl tabular-nums sm:text-2xl " + (runningTotal >= 0 ? "text-success" : "text-warm")}>
             {runningTotal >= 0 ? "+" : ""}{eur2(runningTotal)}
           </p>
         </div>
@@ -82,8 +82,8 @@ function TransactionsPage() {
 
       {/* Toolbar */}
       <div className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative min-w-[200px] flex-1">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+          <div className="relative min-w-0 flex-1 sm:min-w-[200px]">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <input
               value={query}
@@ -97,20 +97,23 @@ function TransactionsPage() {
               </button>
             )}
           </div>
-          <select value={catFilter} onChange={(e) => setCatFilter(e.target.value as CatKey | "all")}
-            className="rounded-full border border-border/60 bg-background px-3 py-2 text-sm outline-none focus:border-ring">
-            <option value="all">Toutes catégories</option>
-            {categories.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
-          </select>
-          <select value={recFilter} onChange={(e) => setRecFilter(e.target.value as Recurrence | "all")}
-            className="rounded-full border border-border/60 bg-background px-3 py-2 text-sm outline-none focus:border-ring">
-            <option value="all">Toute récurrence</option>
-            {RECURRENCES.map((r) => <option key={r} value={r}>{r}</option>)}
-          </select>
-          <Chip on={onlyUncat} onClick={() => setOnlyUncat((v) => !v)}>Non catégorisées</Chip>
-          <Chip on={onlyEdited} onClick={() => setOnlyEdited((v) => !v)}>Modifiées localement</Chip>
+          <div className="-mx-1 flex gap-2 overflow-x-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+            <select value={catFilter} onChange={(e) => setCatFilter(e.target.value as CatKey | "all")}
+              className="shrink-0 rounded-full border border-border/60 bg-background px-3 py-2 text-sm outline-none focus:border-ring">
+              <option value="all">Toutes catégories</option>
+              {categories.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+            </select>
+            <select value={recFilter} onChange={(e) => setRecFilter(e.target.value as Recurrence | "all")}
+              className="shrink-0 rounded-full border border-border/60 bg-background px-3 py-2 text-sm outline-none focus:border-ring">
+              <option value="all">Toute récurrence</option>
+              {RECURRENCES.map((r) => <option key={r} value={r}>{r}</option>)}
+            </select>
+            <Chip on={onlyUncat} onClick={() => setOnlyUncat((v) => !v)}>Non catégorisées</Chip>
+            <Chip on={onlyEdited} onClick={() => setOnlyEdited((v) => !v)}>Modifiées localement</Chip>
+          </div>
         </div>
       </div>
+
 
       {/* Bulk action bar */}
       {selected.size > 0 && (

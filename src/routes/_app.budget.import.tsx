@@ -39,11 +39,12 @@ function ImportPage() {
     <div className="space-y-6 anim-slide-up">
       <div>
         <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Budget · Import</p>
-        <h1 className="mt-1 font-serif text-3xl tracking-tight sm:text-4xl">Importer un export iSaveMoney</h1>
+        <h1 className="mt-1 font-serif text-2xl tracking-tight sm:text-4xl">Importer un export iSaveMoney</h1>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
           Déposez le fichier. Vous verrez exactement ce qui sera ajouté, ce qui change, et ce qui reste protégé — avant de valider.
         </p>
       </div>
+
 
       {stage === "idle" && (
         <DropZone dragOver={dragOver} setDragOver={setDragOver} onDrop={onDrop} />
@@ -65,7 +66,7 @@ function ImportPage() {
           </div>
 
           {/* Summary banner */}
-          <div className="grid gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <StatBadge icon={Plus} tone="success" n={t.nouvelles} label="Nouvelles" />
             <StatBadge icon={Equal} tone="muted" n={t.inchangees} label="Inchangées" />
             <StatBadge icon={RefreshCw} tone="warm" n={t.modifiees} label="Modifiées" />
@@ -76,8 +77,8 @@ function ImportPage() {
           <DiffSection title="Modifiées — choisir ligne par ligne" subtitle="Le montant a changé dans l'export. Garder votre version ou mettre à jour.">
             <ul className="divide-y divide-border/40">
               {importPreviewMock.modifiees.map((m, i) => (
-                <li key={i} className="flex flex-wrap items-center justify-between gap-3 py-3">
-                  <div className="min-w-0 flex-1">
+                <li key={i} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 py-3 sm:flex sm:flex-wrap sm:justify-between">
+                  <div className="min-w-0 sm:flex-1">
                     <p className="truncate text-sm font-medium">{m.label}</p>
                     <p className="text-xs text-muted-foreground">{m.date} · {m.category}</p>
                   </div>
@@ -86,16 +87,17 @@ function ImportPage() {
                     <span className="text-muted-foreground">→</span>
                     <span className="rounded-md bg-warm/10 px-2 py-1 font-medium text-warm">{eur2(-m.newAmount)}</span>
                   </div>
-                  <div className="inline-flex rounded-full border border-border/60 bg-background p-0.5 text-xs">
+                  <div className="col-span-2 inline-flex rounded-full border border-border/60 bg-background p-0.5 text-xs sm:col-auto">
                     <button onClick={() => setChoices((c) => ({ ...c, [i]: "garder" }))}
-                      className={"rounded-full px-2.5 py-1 transition-colors " + (choices[i] === "garder" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground")}>Garder</button>
+                      className={"flex-1 rounded-full px-2.5 py-1 transition-colors sm:flex-none " + (choices[i] === "garder" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground")}>Garder</button>
                     <button onClick={() => setChoices((c) => ({ ...c, [i]: "maj" }))}
-                      className={"rounded-full px-2.5 py-1 transition-colors " + (choices[i] === "maj" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground")}>Mettre à jour</button>
+                      className={"flex-1 rounded-full px-2.5 py-1 transition-colors sm:flex-none " + (choices[i] === "maj" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground")}>Mettre à jour</button>
                   </div>
                 </li>
               ))}
             </ul>
           </DiffSection>
+
 
           {/* Protegees */}
           <DiffSection title="Protégées — éditions locales conservées" subtitle="Ces lignes ont été éditées dans le cockpit. L'import ne les touchera pas.">

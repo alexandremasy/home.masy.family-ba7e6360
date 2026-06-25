@@ -86,11 +86,11 @@ function PlanificationPage() {
   const doubleCount = postes.some(p => p.recurrence !== "Mensuelle"); // light heuristic
 
   return (
-    <div className="space-y-8 anim-slide-up">
+    <div className="space-y-6 anim-slide-up sm:space-y-8">
       <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
+        <div className="min-w-0">
           <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Budget · Planification</p>
-          <h1 className="mt-1 font-serif text-3xl tracking-tight sm:text-4xl">L'atelier des budgets</h1>
+          <h1 className="mt-1 font-serif text-2xl tracking-tight sm:text-4xl">L'atelier des budgets</h1>
           <p className="mt-2 max-w-xl text-sm text-muted-foreground">
             Définissez vos postes récurrents et leurs échéances. La provision d'annualisation et les projections
             de la <Link to="/budget/vue" className="underline-offset-4 hover:underline">Vue d'ensemble</Link> sont calculées en direct.
@@ -99,12 +99,13 @@ function PlanificationPage() {
       </header>
 
       {/* Live KPIs */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 stagger">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 stagger">
         <StatCard label="Provision mensuelle" value={provision} suffix="€/mois" tone="primary" Icon={Sparkles} />
         <StatCard label="Charges fixes mensuelles" value={totalMonthly} suffix="€/mois" tone="warm" Icon={Repeat} />
         <StatCard label="Total annuel planifié" value={totalAnnual} suffix="€/an" tone="warm" Icon={CalendarCheck} />
         <StatCard label="Postes actifs" value={postes.length} suffix="" tone="success" Icon={Repeat} />
       </div>
+
 
       {doubleCount && (
         <div className="flex items-start gap-3 rounded-2xl border border-warm/30 bg-warm/5 p-4 text-sm">
@@ -194,17 +195,18 @@ function StatCard({ label, value, suffix, tone, Icon }: { label: string; value: 
     : tone === "success" ? "bg-success/15 text-success"
     : "bg-primary/10 text-primary";
   return (
-    <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift">
-      <div className="flex items-center justify-between">
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
-        <span className={"grid h-8 w-8 place-items-center rounded-full " + cls}><Icon className="h-4 w-4" /></span>
+    <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift sm:p-5">
+      <div className="flex items-center justify-between gap-2">
+        <p className="min-w-0 truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:text-xs">{label}</p>
+        <span className={"grid h-7 w-7 shrink-0 place-items-center rounded-full sm:h-8 sm:w-8 " + cls}><Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" /></span>
       </div>
-      <p className="mt-3 font-serif text-3xl tracking-tight tabular-nums">
-        <CountUp to={value} /><span className="ml-1 text-sm text-muted-foreground">{suffix}</span>
+      <p className="mt-2 font-serif text-2xl tracking-tight tabular-nums sm:mt-3 sm:text-3xl">
+        <CountUp to={value} /><span className="ml-1 text-xs text-muted-foreground sm:text-sm">{suffix}</span>
       </p>
     </div>
   );
 }
+
 
 function PosteRow({ poste, highlighted, onUpdate, onRecurrence, onToggleMonth, onRemove }: {
   poste: Poste;
@@ -219,22 +221,31 @@ function PosteRow({ poste, highlighted, onUpdate, onRecurrence, onToggleMonth, o
   return (
     <li className={"group rounded-xl border bg-card/40 px-3 py-3 transition-all duration-300 " +
       (highlighted ? "border-primary/60 bg-primary/5 ring-1 ring-primary/30" : "border-border/40 hover:border-border")}>
-      <div className="flex flex-wrap items-center gap-3">
+      {/* Title row: label + delete */}
+      <div className="flex items-center gap-2">
         <input
           value={poste.label}
           onChange={(e) => onUpdate({ label: e.target.value })}
-          className="min-w-[160px] flex-1 rounded-md border border-transparent bg-transparent px-2 py-1 text-sm font-medium outline-none transition-colors focus:border-border focus:bg-card"
+          className="min-w-0 flex-1 rounded-md border border-transparent bg-transparent px-2 py-1 text-sm font-medium outline-none transition-colors focus:border-border focus:bg-card"
         />
-        <div className="flex items-center gap-1 rounded-full border border-border/60 bg-card p-0.5 text-[11px]">
+        <button onClick={onRemove}
+          className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground/60 transition-colors hover:bg-warm/10 hover:text-warm"
+          aria-label="Supprimer"
+        ><Trash2 className="h-3.5 w-3.5" /></button>
+      </div>
+
+      {/* Recurrence (h-scroll on mobile) + amount */}
+      <div className="mt-2 flex flex-wrap items-center gap-2 sm:gap-3">
+        <div className="-mx-1 flex max-w-full items-center gap-1 overflow-x-auto rounded-full border border-border/60 bg-card p-0.5 text-[11px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {(["Mensuelle","Trimestrielle","Annuelle","Au besoin"] as Recurrence4[]).map(r => (
             <button key={r}
               onClick={() => onRecurrence(r)}
-              className={"rounded-full px-2.5 py-1 transition-colors " +
+              className={"shrink-0 rounded-full px-2.5 py-1 transition-colors " +
                 (poste.recurrence === r ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground")}
             >{r}</button>
           ))}
         </div>
-        <div className="inline-flex items-center gap-1 text-sm">
+        <div className="ml-auto inline-flex items-center gap-1 text-sm">
           <input
             type="number"
             value={poste.amount}
@@ -242,33 +253,30 @@ function PosteRow({ poste, highlighted, onUpdate, onRecurrence, onToggleMonth, o
             className="w-20 rounded-md border border-border/60 bg-card px-2 py-1 text-right tabular-nums outline-none focus:border-foreground/40"
           />
           <span className="text-muted-foreground">€</span>
+          <p className="ml-2 text-[11px] text-muted-foreground tabular-nums">= {eur(yearly)}/an</p>
         </div>
-        <p className="text-[11px] text-muted-foreground tabular-nums">
-          = {eur(yearly)}/an
-        </p>
-        <button onClick={onRemove}
-          className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground/60 transition-colors hover:bg-warm/10 hover:text-warm"
-          aria-label="Supprimer"
-        ><Trash2 className="h-3.5 w-3.5" /></button>
       </div>
 
-      {/* 12-month timeline */}
-      <div className="mt-3 grid grid-cols-12 gap-1">
-        {MONTHS_FR.map((m, i) => {
-          const on = poste.months.includes(i);
-          return (
-            <button key={i}
-              onClick={() => onToggleMonth(i)}
-              className={"group/cell relative flex flex-col items-center rounded-md px-1 py-1 text-[10px] uppercase tracking-[0.1em] transition-all " +
-                (on ? "bg-primary/15 text-primary ring-1 ring-primary/40" : "bg-secondary/60 text-muted-foreground hover:bg-secondary")}
-              title={on ? `Échéance ${eur(poste.amount)}` : "Pas d'échéance"}
-            >
-              <span>{m}</span>
-              <span className={"mt-0.5 inline-block h-1 w-1 rounded-full " + (on ? "bg-primary" : "bg-transparent")} />
-            </button>
-          );
-        })}
+      {/* 12-month timeline — h-scroll on mobile to keep tiles tappable */}
+      <div className="-mx-3 mt-3 px-3 sm:mx-0 sm:px-0">
+        <div className="flex gap-1 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-12 sm:gap-1 sm:overflow-visible sm:pb-0">
+          {MONTHS_FR.map((m, i) => {
+            const on = poste.months.includes(i);
+            return (
+              <button key={i}
+                onClick={() => onToggleMonth(i)}
+                className={"group/cell relative flex w-9 shrink-0 flex-col items-center rounded-md px-1 py-1.5 text-[10px] uppercase tracking-[0.1em] transition-all sm:w-auto " +
+                  (on ? "bg-primary/15 text-primary ring-1 ring-primary/40" : "bg-secondary/60 text-muted-foreground hover:bg-secondary")}
+                title={on ? `Échéance ${eur(poste.amount)}` : "Pas d'échéance"}
+              >
+                <span>{m}</span>
+                <span className={"mt-0.5 inline-block h-1 w-1 rounded-full " + (on ? "bg-primary" : "bg-transparent")} />
+              </button>
+            );
+          })}
+        </div>
       </div>
     </li>
   );
 }
+
