@@ -31,21 +31,21 @@ function VuePage() {
   const [zoomMonth, setZoomMonth] = useState<number | null>(null);
 
   return (
-    <div className="space-y-8 anim-slide-up">
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex items-center gap-3">
+    <div className="space-y-6 anim-slide-up sm:space-y-8">
+      <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:flex sm:flex-wrap sm:justify-between sm:gap-4">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           {zoomMonth !== null && (
             <button
               onClick={() => setZoomMonth(null)}
-              className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border/60 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               aria-label="Retour à l'année"
             ><ArrowLeft className="h-4 w-4" /></button>
           )}
-          <div>
+          <div className="min-w-0">
             <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
               Budget · {zoomMonth === null ? "Année" : "Mois"}
             </p>
-            <h1 className="mt-1 font-serif text-3xl tracking-tight sm:text-4xl">
+            <h1 className="mt-1 truncate font-serif text-2xl tracking-tight sm:text-4xl">
               {zoomMonth === null
                 ? `Année ${year}`
                 : <>
@@ -57,7 +57,7 @@ function VuePage() {
           </div>
         </div>
         {zoomMonth === null && (
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <button onClick={() => setYear(y => y - 1)}
               className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
             ><ChevronLeft className="h-4 w-4" /></button>
@@ -68,6 +68,7 @@ function VuePage() {
           </div>
         )}
       </header>
+
 
       <div className="relative">
         <div className={(zoomMonth === null ? "opacity-100" : "pointer-events-none hidden") + " transition-opacity duration-300"}>
@@ -112,9 +113,9 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
   const provision = annualisationProvision(postesSeed);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* KPIs */}
-      <div className="grid gap-3 stagger sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 stagger lg:grid-cols-4">
         <Kpi label="Réalisé YTD" value={realisedYTD} icon={CheckCircle2} tone="primary" hint={`${monthly.filter(x => x.state !== "futur").length} mois`} />
         <Kpi label="Projeté restant" value={projectedRest} icon={CalendarClock} tone="warm" hint={`${monthly.filter(x => x.state === "futur").length} mois`} />
         <Kpi label="Net projeté" value={net} icon={net >= 0 ? TrendingUp : TrendingDown} tone={net >= 0 ? "success" : "warm"} />
@@ -122,11 +123,11 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
       </div>
 
       {/* Big combined: flow chart + pressure strip — one block */}
-      <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up">
-        <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="font-serif text-2xl tracking-tight">L'année en continu</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
+      <section className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7 anim-slide-up">
+        <header className="mb-4 flex flex-wrap items-end justify-between gap-3 sm:mb-5">
+          <div className="min-w-0">
+            <h2 className="font-serif text-xl tracking-tight sm:text-2xl">L'année en continu</h2>
+            <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
               Flux mensuels et pression — <span className="text-foreground/70">réalisé</span> à gauche,
               <span className="text-foreground/70"> projeté</span> à droite.
             </p>
@@ -134,13 +135,13 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
           <Legend />
         </header>
 
-        <div className="h-64 w-full">
+        <div className="h-56 w-full sm:h-64">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={monthly} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
+            <BarChart data={monthly} margin={{ top: 8, right: 4, left: -18, bottom: 0 }}>
               <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="m" stroke="var(--muted-foreground)" fontSize={11} tickLine={false} axisLine={false} />
-              <YAxis stroke="var(--muted-foreground)" fontSize={11} tickLine={false} axisLine={false}
-                tickFormatter={(v) => `${Math.round(v / 1000)}k`} />
+              <XAxis dataKey="m" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} interval={0} />
+              <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false}
+                tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={36} />
               <RTooltip
                 contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12, color: "var(--popover-foreground)" }}
                 formatter={(v: number, n) => [eur(v), n]}
@@ -160,15 +161,31 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
           </ResponsiveContainer>
         </div>
 
-        {/* Pressure strip — trimester-grouped, past + future, clickable */}
+        {/* Pressure strip — horizontal scroll on mobile, trimester grid on sm+ */}
         <div className="mt-6 border-t border-border/40 pt-5">
-          <div className="mb-3 flex items-center justify-between">
+          <div className="mb-3 flex items-center justify-between gap-3">
             <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Pression de l'année</p>
             <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              <Flame className="h-3 w-3 anim-breathe" /> Cliquez un mois pour zoomer
+              <Flame className="h-3 w-3 anim-breathe" />
+              <span className="hidden sm:inline">Cliquez un mois pour zoomer</span>
+              <span className="sm:hidden">Tap un mois</span>
+
             </span>
           </div>
-          <div className="grid grid-cols-4 gap-3 sm:gap-4">
+
+          {/* Mobile: horizontal scroll, 12 tiles in a row */}
+          <div className="-mx-4 px-4 sm:hidden">
+            <div className="flex gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
+              {monthly.map((d) => (
+                <div key={d.idx} className="w-[104px] shrink-0 snap-start">
+                  <MonthTile data={d} onClick={() => onPickMonth(d.idx)} year={year} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop: trimester grid */}
+          <div className="hidden grid-cols-4 gap-3 sm:grid sm:gap-4">
             {[0,1,2,3].map(q => (
               <div key={q} className="space-y-1">
                 <p className="text-[9px] uppercase tracking-[0.22em] text-muted-foreground/70">T{q+1}</p>
@@ -183,17 +200,18 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
         </div>
       </section>
 
+
       {/* Annualisation + envelopes */}
-      <section className="grid gap-5 lg:grid-cols-3">
-        <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7">
-          <header className="mb-3 flex items-start justify-between">
-            <div>
+      <section className="grid gap-4 sm:gap-5 lg:grid-cols-3">
+        <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7">
+          <header className="mb-3 flex items-start justify-between gap-3">
+            <div className="min-w-0">
               <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Provision d'annualisation</p>
-              <p className="mt-2 font-serif text-3xl tracking-tight tabular-nums">
+              <p className="mt-2 font-serif text-2xl tracking-tight tabular-nums sm:text-3xl">
                 <CountUp to={provision} /><span className="ml-1 text-sm text-muted-foreground">€/mois</span>
               </p>
             </div>
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/10 text-primary">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
               <Sparkles className="h-4 w-4" />
             </span>
           </header>
@@ -206,9 +224,9 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
         </div>
         <div className="lg:col-span-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {envelopes.map(env => (
-            <div key={env.key} className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift">
-              <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{env.label}</p>
-              <p className="mt-2 font-serif text-xl tabular-nums">
+            <div key={env.key} className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift sm:p-4">
+              <p className="truncate text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{env.label}</p>
+              <p className="mt-2 font-serif text-lg tabular-nums sm:text-xl">
                 <CountUp to={env.balance} /><span className="ml-1 text-xs text-muted-foreground">€</span>
               </p>
               <p className="mt-0.5 text-[11px] text-muted-foreground tabular-nums">+ {eur(env.contrib)} / mois</p>
@@ -216,6 +234,7 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
           ))}
         </div>
       </section>
+
     </div>
   );
 }
@@ -292,20 +311,21 @@ function Kpi({ label, value, suffix, icon: Icon, tone, hint }: {
     : tone === "success" ? "bg-success/15 text-success"
     : "bg-primary/10 text-primary";
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card p-5 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
-      <div className="flex items-center justify-between">
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
-        <span className={"grid h-8 w-8 place-items-center rounded-full " + toneCls}>
-          <Icon className="h-4 w-4" />
+    <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card p-4 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift sm:p-5">
+      <div className="flex items-center justify-between gap-2">
+        <p className="min-w-0 truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:text-xs">{label}</p>
+        <span className={"grid h-7 w-7 shrink-0 place-items-center rounded-full sm:h-8 sm:w-8 " + toneCls}>
+          <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         </span>
       </div>
-      <p className="mt-3 font-serif text-3xl tracking-tight tabular-nums">
-        <CountUp to={value} /><span className="ml-1 text-base text-muted-foreground">{suffix ?? "€"}</span>
+      <p className="mt-2 font-serif text-2xl tracking-tight tabular-nums sm:mt-3 sm:text-3xl">
+        <CountUp to={value} /><span className="ml-1 text-sm text-muted-foreground sm:text-base">{suffix ?? "€"}</span>
       </p>
       {hint && <p className="mt-1 text-[11px] text-muted-foreground">{hint}</p>}
     </div>
   );
 }
+
 
 /* ============================ MONTH VIEW ============================ */
 
