@@ -167,8 +167,9 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
             <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Pression de l'année</p>
             <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
               <Flame className="h-3 w-3 anim-breathe" />
-              <span className="hidden xs:inline">Cliquez un mois pour zoomer</span>
-              <span className="xs:hidden">Tap mois</span>
+              <span className="hidden sm:inline">Cliquez un mois pour zoomer</span>
+              <span className="sm:hidden">Tap un mois</span>
+
             </span>
           </div>
 
