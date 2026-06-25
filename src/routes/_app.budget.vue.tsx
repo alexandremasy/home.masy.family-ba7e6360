@@ -201,16 +201,16 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
 
 
       {/* Annualisation + envelopes */}
-      <section className="grid gap-5 lg:grid-cols-3">
-        <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7">
-          <header className="mb-3 flex items-start justify-between">
-            <div>
+      <section className="grid gap-4 sm:gap-5 lg:grid-cols-3">
+        <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7">
+          <header className="mb-3 flex items-start justify-between gap-3">
+            <div className="min-w-0">
               <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Provision d'annualisation</p>
-              <p className="mt-2 font-serif text-3xl tracking-tight tabular-nums">
+              <p className="mt-2 font-serif text-2xl tracking-tight tabular-nums sm:text-3xl">
                 <CountUp to={provision} /><span className="ml-1 text-sm text-muted-foreground">€/mois</span>
               </p>
             </div>
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/10 text-primary">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
               <Sparkles className="h-4 w-4" />
             </span>
           </header>
@@ -223,9 +223,9 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
         </div>
         <div className="lg:col-span-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {envelopes.map(env => (
-            <div key={env.key} className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift">
-              <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{env.label}</p>
-              <p className="mt-2 font-serif text-xl tabular-nums">
+            <div key={env.key} className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift sm:p-4">
+              <p className="truncate text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{env.label}</p>
+              <p className="mt-2 font-serif text-lg tabular-nums sm:text-xl">
                 <CountUp to={env.balance} /><span className="ml-1 text-xs text-muted-foreground">€</span>
               </p>
               <p className="mt-0.5 text-[11px] text-muted-foreground tabular-nums">+ {eur(env.contrib)} / mois</p>
@@ -233,6 +233,7 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
           ))}
         </div>
       </section>
+
     </div>
   );
 }
@@ -309,20 +310,21 @@ function Kpi({ label, value, suffix, icon: Icon, tone, hint }: {
     : tone === "success" ? "bg-success/15 text-success"
     : "bg-primary/10 text-primary";
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card p-5 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
-      <div className="flex items-center justify-between">
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
-        <span className={"grid h-8 w-8 place-items-center rounded-full " + toneCls}>
-          <Icon className="h-4 w-4" />
+    <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card p-4 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift sm:p-5">
+      <div className="flex items-center justify-between gap-2">
+        <p className="min-w-0 truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:text-xs">{label}</p>
+        <span className={"grid h-7 w-7 shrink-0 place-items-center rounded-full sm:h-8 sm:w-8 " + toneCls}>
+          <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         </span>
       </div>
-      <p className="mt-3 font-serif text-3xl tracking-tight tabular-nums">
-        <CountUp to={value} /><span className="ml-1 text-base text-muted-foreground">{suffix ?? "€"}</span>
+      <p className="mt-2 font-serif text-2xl tracking-tight tabular-nums sm:mt-3 sm:text-3xl">
+        <CountUp to={value} /><span className="ml-1 text-sm text-muted-foreground sm:text-base">{suffix ?? "€"}</span>
       </p>
       {hint && <p className="mt-1 text-[11px] text-muted-foreground">{hint}</p>}
     </div>
   );
 }
+
 
 /* ============================ MONTH VIEW ============================ */
 
