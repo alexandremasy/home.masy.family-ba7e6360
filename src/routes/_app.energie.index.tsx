@@ -589,12 +589,14 @@ function ReleveList() {
             <tr className="border-b border-border/60 bg-secondary/40 text-left text-xs uppercase tracking-[0.12em] text-muted-foreground">
               <th className="px-2 py-2 sm:px-5 sm:py-2.5 font-medium">Date</th>
               {visibleCols.map((c) => (
-                <th key={c} className="px-3 py-2.5 font-medium text-right whitespace-nowrap">
-                  <span className={"inline-flex items-center gap-1.5 " + typeMeta[c].tone}>
-                    {typeMeta[c].icon}
-                    {typeMeta[c].label}
-                    <span className="text-muted-foreground/70 font-normal">({typeMeta[c].unit})</span>
-                  </span>
+                <th key={c} className="px-2 py-2 sm:px-3 sm:py-2.5 font-medium text-right">
+                  <div className={"flex flex-col items-end sm:flex-row sm:items-center sm:justify-end gap-0.5 sm:gap-1.5 leading-tight " + typeMeta[c].tone}>
+                    <span className="inline-flex items-center gap-1 text-[11px] sm:text-sm">
+                      {typeMeta[c].icon}
+                      {typeMeta[c].label}
+                    </span>
+                    <span className="text-[10px] sm:text-xs text-muted-foreground/70 font-normal">{typeMeta[c].unit}</span>
+                  </div>
                 </th>
               ))}
               <th className="px-3 py-2.5 w-16"></th>
