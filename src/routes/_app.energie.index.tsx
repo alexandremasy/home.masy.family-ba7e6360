@@ -603,7 +603,7 @@ function ReleveList() {
             </tr>
           </thead>
           <tbody>
-            {rows.map((row) => {
+            {displayRows.map((row) => {
               const d = new Date(row.date);
               const covered = new Date(d.getFullYear(), d.getMonth() - 1, 1);
               const isEditing = editing === row.id;
