@@ -621,7 +621,7 @@ function ReleveList() {
                           step="0.1"
                           value={String((draft as any)[c] ?? row[c])}
                           onChange={(e) => setDraft((dr) => ({ ...dr, [c]: Number(e.target.value) }))}
-                          className="h-8 w-24 ml-auto text-right"
+                          className="h-8 w-16 sm:w-24 ml-auto text-right"
                         />
                       ) : (
                         <span>{row[c]}</span>
