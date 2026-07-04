@@ -515,7 +515,7 @@ const typeMeta: Record<Exclude<ReleveType, "all">, { label: string; unit: string
   jour: { label: "Élec. jour", unit: "kWh", icon: <Sun className="h-3.5 w-3.5" />, tone: "text-warm" },
   nuit: { label: "Élec. nuit", unit: "kWh", icon: <Moon className="h-3.5 w-3.5" />, tone: "text-foreground/70" },
   mazout: { label: "Mazout", unit: "L", icon: <Flame className="h-3.5 w-3.5" />, tone: "text-warm" },
-  solar: { label: "Solaire injecté", unit: "kWh", icon: <SunMedium className="h-3.5 w-3.5" />, tone: "text-success" },
+  solar: { label: "Solaire", unit: "kWh", icon: <SunMedium className="h-3.5 w-3.5" />, tone: "text-success" },
 };
 
 function buildInitialReleves(): ReleveRow[] {
