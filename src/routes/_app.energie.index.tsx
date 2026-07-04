@@ -614,7 +614,7 @@ function ReleveList() {
                     <p className="text-[11px] text-muted-foreground">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}</p>
                   </td>
                   {visibleCols.map((c) => (
-                    <td key={c} className="px-3 py-3 text-right tabular-nums">
+                    <td key={c} className="px-2 py-2 sm:px-3 sm:py-3 text-right tabular-nums">
                       {isEditing ? (
                         <Input
                           type="number"
