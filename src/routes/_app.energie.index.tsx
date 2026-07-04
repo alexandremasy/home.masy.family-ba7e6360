@@ -515,7 +515,7 @@ const typeMeta: Record<Exclude<ReleveType, "all">, { label: string; unit: string
   jour: { label: "Élec. jour", unit: "kWh", icon: <Sun className="h-3.5 w-3.5" />, tone: "text-warm" },
   nuit: { label: "Élec. nuit", unit: "kWh", icon: <Moon className="h-3.5 w-3.5" />, tone: "text-foreground/70" },
   mazout: { label: "Mazout", unit: "L", icon: <Flame className="h-3.5 w-3.5" />, tone: "text-warm" },
-  solar: { label: "Solaire injecté", unit: "kWh", icon: <SunMedium className="h-3.5 w-3.5" />, tone: "text-success" },
+  solar: { label: "Solaire", unit: "kWh", icon: <SunMedium className="h-3.5 w-3.5" />, tone: "text-success" },
 };
 
 function buildInitialReleves(): ReleveRow[] {
@@ -547,6 +547,8 @@ function ReleveList() {
     () => (filter === "all" ? ["eau", "jour", "nuit", "mazout", "solar"] : [filter]),
     [filter],
   );
+
+  const displayRows = useMemo(() => [...rows].sort((a, b) => b.date.localeCompare(a.date)), [rows]);
 
   const startEdit = (row: ReleveRow) => {
     setEditing(row.id);
@@ -582,49 +584,58 @@ function ReleveList() {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-xs sm:text-sm">
           <thead>
             <tr className="border-b border-border/60 bg-secondary/40 text-left text-xs uppercase tracking-[0.12em] text-muted-foreground">
-              <th className="px-5 py-2.5 font-medium">Date</th>
+              <th className="px-1.5 py-1.5 sm:px-5 sm:py-2.5 font-medium">Date</th>
               {visibleCols.map((c) => (
-                <th key={c} className="px-3 py-2.5 font-medium text-right whitespace-nowrap">
-                  <span className={"inline-flex items-center gap-1.5 " + typeMeta[c].tone}>
-                    {typeMeta[c].icon}
-                    {typeMeta[c].label}
-                    <span className="text-muted-foreground/70 font-normal">({typeMeta[c].unit})</span>
-                  </span>
+                <th key={c} className="px-1.5 py-1.5 sm:px-3 sm:py-2.5 font-medium text-right">
+                  <div className={"flex flex-col items-end sm:flex-row sm:items-center sm:justify-end gap-0.5 sm:gap-1.5 leading-tight " + typeMeta[c].tone}>
+                    <span className="hidden sm:inline-flex sm:items-center sm:gap-1 text-sm">
+                      {typeMeta[c].icon}
+                      {typeMeta[c].label}
+                    </span>
+                    <span className="sm:hidden text-[11px]">{typeMeta[c].label}</span>
+                    <span className="text-[10px] sm:text-xs text-muted-foreground/70 font-normal">{typeMeta[c].unit}</span>
+                  </div>
                 </th>
               ))}
-              <th className="px-3 py-2.5 w-16"></th>
+              <th className="px-1.5 py-1.5 sm:px-3 sm:py-2.5 w-10 sm:w-16"></th>
             </tr>
           </thead>
           <tbody>
-            {rows.map((row) => {
+            {displayRows.map((row) => {
               const d = new Date(row.date);
               const covered = new Date(d.getFullYear(), d.getMonth() - 1, 1);
               const isEditing = editing === row.id;
               return (
                 <tr key={row.id} className="border-b border-border/40 last:border-0 hover:bg-secondary/30 transition-colors">
-                  <td className="px-5 py-3 whitespace-nowrap">
-                    <p className="font-medium">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}</p>
-                    <p className="text-xs text-muted-foreground capitalize">{monthNames[covered.getMonth()]} {covered.getFullYear()}</p>
+                  <td className="px-1.5 py-1.5 sm:px-5 sm:py-3">
+                    <p className="font-medium text-xs sm:text-sm capitalize">
+                      <span className="hidden sm:inline">{monthNames[covered.getMonth()]} {covered.getFullYear()}</span>
+                      <span className="sm:hidden">{covered.toLocaleDateString("fr-BE", { month: "short", year: "numeric" })}</span>
+                    </p>
+                    <p className="text-[11px] text-muted-foreground">
+                      <span className="hidden sm:inline">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}</span>
+                      <span className="sm:hidden">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short" })}</span>
+                    </p>
                   </td>
                   {visibleCols.map((c) => (
-                    <td key={c} className="px-3 py-3 text-right tabular-nums">
+                    <td key={c} className="px-2 py-2 sm:px-3 sm:py-3 text-right tabular-nums">
                       {isEditing ? (
                         <Input
                           type="number"
                           step="0.1"
                           value={String((draft as any)[c] ?? row[c])}
                           onChange={(e) => setDraft((dr) => ({ ...dr, [c]: Number(e.target.value) }))}
-                          className="h-8 w-24 ml-auto text-right"
+                          className="h-8 w-16 sm:w-24 ml-auto text-right"
                         />
                       ) : (
                         <span>{row[c]}</span>
                       )}
                     </td>
                   ))}
-                  <td className="px-3 py-3 text-right">
+                  <td className="px-2 py-2 sm:px-3 sm:py-3 text-right">
                     {isEditing ? (
                       <div className="inline-flex gap-1">
                         <button onClick={save} className="grid h-7 w-7 place-items-center rounded-md bg-foreground text-background hover:opacity-90" aria-label="Enregistrer">
