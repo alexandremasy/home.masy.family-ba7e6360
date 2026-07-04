@@ -584,7 +584,7 @@ function ReleveList() {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-xs sm:text-sm">
           <thead>
             <tr className="border-b border-border/60 bg-secondary/40 text-left text-xs uppercase tracking-[0.12em] text-muted-foreground">
               <th className="px-5 py-2.5 font-medium">Date</th>
