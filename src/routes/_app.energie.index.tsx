@@ -609,9 +609,9 @@ function ReleveList() {
               const isEditing = editing === row.id;
               return (
                 <tr key={row.id} className="border-b border-border/40 last:border-0 hover:bg-secondary/30 transition-colors">
-                  <td className="px-5 py-3 whitespace-nowrap">
-                    <p className="font-medium">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}</p>
-                    <p className="text-xs text-muted-foreground capitalize">{monthNames[covered.getMonth()]} {covered.getFullYear()}</p>
+                  <td className="px-2 py-2 sm:px-5 sm:py-3">
+                    <p className="font-medium text-xs sm:text-sm capitalize">{monthNames[covered.getMonth()]} {covered.getFullYear()}</p>
+                    <p className="text-[11px] text-muted-foreground">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}</p>
                   </td>
                   {visibleCols.map((c) => (
                     <td key={c} className="px-3 py-3 text-right tabular-nums">
