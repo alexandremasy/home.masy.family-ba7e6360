@@ -484,6 +484,168 @@ function EnergiePage() {
           Les barres en pointillés sont des estimations basées sur la moyenne récente, en l'absence de relevé.
         </p>
       </div>
+        </TabsContent>
+
+        <TabsContent value="relevés" className="mt-0">
+          <ReleveList />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+// ---------- Relevés (editable list) ----------
+
+type ReleveType = "all" | "eau" | "jour" | "nuit" | "mazout" | "solar";
+
+type ReleveRow = {
+  id: string;
+  date: string; // ISO yyyy-mm-dd
+  eau: number;
+  jour: number;
+  nuit: number;
+  mazout: number;
+  solar: number;
+};
+
+const monthNames = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+
+const typeMeta: Record<Exclude<ReleveType, "all">, { label: string; unit: string; icon: React.ReactNode; tone: string }> = {
+  eau: { label: "Eau", unit: "m³", icon: <Droplet className="h-3.5 w-3.5" />, tone: "text-primary" },
+  jour: { label: "Élec. jour", unit: "kWh", icon: <Sun className="h-3.5 w-3.5" />, tone: "text-warm" },
+  nuit: { label: "Élec. nuit", unit: "kWh", icon: <Moon className="h-3.5 w-3.5" />, tone: "text-foreground/70" },
+  mazout: { label: "Mazout", unit: "L", icon: <Flame className="h-3.5 w-3.5" />, tone: "text-warm" },
+  solar: { label: "Solaire injecté", unit: "kWh", icon: <SunMedium className="h-3.5 w-3.5" />, tone: "text-success" },
+};
+
+function buildInitialReleves(): ReleveRow[] {
+  const last = new Date(energie.lastReadingDate);
+  const rows: ReleveRow[] = energie.history.map((h, i) => {
+    const offset = energie.history.length - 1 - i;
+    const d = new Date(last.getFullYear(), last.getMonth() - offset, 1);
+    const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`;
+    return {
+      id: iso,
+      date: iso,
+      eau: h.eau,
+      jour: h.jour,
+      nuit: h.nuit,
+      mazout: h.mazout,
+      solar: h.solar,
+    };
+  });
+  return rows.reverse(); // newest first
+}
+
+function ReleveList() {
+  const [rows, setRows] = useState<ReleveRow[]>(() => buildInitialReleves());
+  const [filter, setFilter] = useState<ReleveType>("all");
+  const [editing, setEditing] = useState<string | null>(null);
+  const [draft, setDraft] = useState<Partial<ReleveRow>>({});
+
+  const visibleCols = useMemo<Array<Exclude<ReleveType, "all">>>(
+    () => (filter === "all" ? ["eau", "jour", "nuit", "mazout", "solar"] : [filter]),
+    [filter],
+  );
+
+  const startEdit = (row: ReleveRow) => {
+    setEditing(row.id);
+    setDraft({ ...row });
+  };
+  const cancel = () => { setEditing(null); setDraft({}); };
+  const save = () => {
+    setRows((rs) => rs.map((r) => (r.id === editing ? { ...r, ...draft } as ReleveRow : r)));
+    cancel();
+  };
+
+  return (
+    <div className="rounded-2xl border border-border/60 bg-card shadow-soft overflow-hidden">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-5 py-4">
+        <div>
+          <h2 className="font-serif text-xl tracking-tight">Historique des relevés</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">{rows.length} entrées — modifiables</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">Type</span>
+          <Select value={filter} onValueChange={(v) => setFilter(v as ReleveType)}>
+            <SelectTrigger className="h-9 w-[170px]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tous les types</SelectItem>
+              <SelectItem value="eau">Eau</SelectItem>
+              <SelectItem value="jour">Électricité jour</SelectItem>
+              <SelectItem value="nuit">Électricité nuit</SelectItem>
+              <SelectItem value="mazout">Mazout</SelectItem>
+              <SelectItem value="solar">Solaire injecté</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border/60 bg-secondary/40 text-left text-xs uppercase tracking-[0.12em] text-muted-foreground">
+              <th className="px-5 py-2.5 font-medium">Date</th>
+              {visibleCols.map((c) => (
+                <th key={c} className="px-3 py-2.5 font-medium text-right whitespace-nowrap">
+                  <span className={"inline-flex items-center gap-1.5 " + typeMeta[c].tone}>
+                    {typeMeta[c].icon}
+                    {typeMeta[c].label}
+                    <span className="text-muted-foreground/70 font-normal">({typeMeta[c].unit})</span>
+                  </span>
+                </th>
+              ))}
+              <th className="px-3 py-2.5 w-16"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => {
+              const d = new Date(row.date);
+              const covered = new Date(d.getFullYear(), d.getMonth() - 1, 1);
+              const isEditing = editing === row.id;
+              return (
+                <tr key={row.id} className="border-b border-border/40 last:border-0 hover:bg-secondary/30 transition-colors">
+                  <td className="px-5 py-3 whitespace-nowrap">
+                    <p className="font-medium">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}</p>
+                    <p className="text-xs text-muted-foreground capitalize">{monthNames[covered.getMonth()]} {covered.getFullYear()}</p>
+                  </td>
+                  {visibleCols.map((c) => (
+                    <td key={c} className="px-3 py-3 text-right tabular-nums">
+                      {isEditing ? (
+                        <Input
+                          type="number"
+                          step="0.1"
+                          value={String((draft as any)[c] ?? row[c])}
+                          onChange={(e) => setDraft((dr) => ({ ...dr, [c]: Number(e.target.value) }))}
+                          className="h-8 w-24 ml-auto text-right"
+                        />
+                      ) : (
+                        <span>{row[c]}</span>
+                      )}
+                    </td>
+                  ))}
+                  <td className="px-3 py-3 text-right">
+                    {isEditing ? (
+                      <div className="inline-flex gap-1">
+                        <button onClick={save} className="grid h-7 w-7 place-items-center rounded-md bg-foreground text-background hover:opacity-90" aria-label="Enregistrer">
+                          <Check className="h-3.5 w-3.5" />
+                        </button>
+                        <button onClick={cancel} className="grid h-7 w-7 place-items-center rounded-md border border-border hover:bg-secondary" aria-label="Annuler">
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <button onClick={() => startEdit(row)} className="grid h-7 w-7 place-items-center rounded-md border border-border/60 text-muted-foreground hover:text-foreground hover:bg-secondary ml-auto" aria-label="Modifier">
+                        <Pencil className="h-3.5 w-3.5" />
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
