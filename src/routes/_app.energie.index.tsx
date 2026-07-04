@@ -548,6 +548,8 @@ function ReleveList() {
     [filter],
   );
 
+  const displayRows = useMemo(() => [...rows].sort((a, b) => b.date.localeCompare(a.date)), [rows]);
+
   const startEdit = (row: ReleveRow) => {
     setEditing(row.id);
     setDraft({ ...row });
