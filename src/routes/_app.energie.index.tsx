@@ -600,7 +600,7 @@ function ReleveList() {
                   </div>
                 </th>
               ))}
-              <th className="px-2 py-2 sm:px-3 sm:py-2.5 w-12 sm:w-16"></th>
+              <th className="px-1.5 py-1.5 sm:px-3 sm:py-2.5 w-10 sm:w-16"></th>
             </tr>
           </thead>
           <tbody>
