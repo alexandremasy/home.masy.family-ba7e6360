@@ -225,18 +225,7 @@ function EnergiePage() {
     <div className="space-y-6">
       <PageHeader title="Énergie" subtitle="Vue d'ensemble de la consommation" />
 
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card px-5 py-3 text-sm shadow-soft">
-        <span className="inline-flex items-center gap-2 text-muted-foreground">
-          <CalendarDays className="h-4 w-4" />
-          Relevé du <strong className="text-foreground">{lastReadingFmt}</strong>
-          <span className="hidden sm:inline">— consommation de <strong className="text-foreground capitalize">{coveredMonthLabel}</strong></span>
-        </span>
-        <Link to="/energie/saisie" className="group inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-1.5 text-xs font-medium text-background">
-          Nouveau relevé <ArrowRight className="h-3.5 w-3.5 icon-hover-x transition-transform" />
-        </Link>
-      </div>
-
-      {energie.monthlyDue && (
+      {energie.monthlyDue ? (
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-warm p-6 text-warm-foreground sm:p-8 anim-pop-in">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] opacity-70">À faire</p>
@@ -246,7 +235,26 @@ function EnergiePage() {
             Saisir <ArrowRight className="h-4 w-4 icon-hover-x transition-transform" />
           </Link>
         </div>
+      ) : (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card px-5 py-3 text-sm shadow-soft">
+          <span className="inline-flex items-center gap-2 text-muted-foreground">
+            <CalendarDays className="h-4 w-4" />
+            Relevé du <strong className="text-foreground">{lastReadingFmt}</strong>
+            <span className="hidden sm:inline">— consommation de <strong className="text-foreground capitalize">{coveredMonthLabel}</strong></span>
+          </span>
+          <Link to="/energie/saisie" className="group inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-1.5 text-xs font-medium text-background">
+            Nouveau relevé <ArrowRight className="h-3.5 w-3.5 icon-hover-x transition-transform" />
+          </Link>
+        </div>
       )}
+
+      <Tabs defaultValue="dashboard" className="space-y-6">
+        <TabsList className="h-10 bg-secondary/70 p-1">
+          <TabsTrigger value="dashboard" className="px-4">Vue d'ensemble</TabsTrigger>
+          <TabsTrigger value="relevés" className="px-4">Relevés</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="dashboard" className="space-y-6 mt-0">
 
       <div className="grid gap-5 stagger lg:grid-cols-3">
         {/* ELECTRICITY */}
