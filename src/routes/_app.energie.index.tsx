@@ -610,9 +610,15 @@ function ReleveList() {
               const isEditing = editing === row.id;
               return (
                 <tr key={row.id} className="border-b border-border/40 last:border-0 hover:bg-secondary/30 transition-colors">
-                  <td className="px-2 py-2 sm:px-5 sm:py-3">
-                    <p className="font-medium text-xs sm:text-sm capitalize">{monthNames[covered.getMonth()]} {covered.getFullYear()}</p>
-                    <p className="text-[11px] text-muted-foreground">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}</p>
+                  <td className="px-1.5 py-1.5 sm:px-5 sm:py-3">
+                    <p className="font-medium text-xs sm:text-sm capitalize">
+                      <span className="hidden sm:inline">{monthNames[covered.getMonth()]} {covered.getFullYear()}</span>
+                      <span className="sm:hidden">{covered.toLocaleDateString("fr-BE", { month: "short", year: "numeric" })}</span>
+                    </p>
+                    <p className="text-[11px] text-muted-foreground">
+                      <span className="hidden sm:inline">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}</span>
+                      <span className="sm:hidden">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short" })}</span>
+                    </p>
                   </td>
                   {visibleCols.map((c) => (
                     <td key={c} className="px-2 py-2 sm:px-3 sm:py-3 text-right tabular-nums">
