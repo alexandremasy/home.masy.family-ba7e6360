@@ -587,7 +587,7 @@ function ReleveList() {
         <table className="w-full text-xs sm:text-sm">
           <thead>
             <tr className="border-b border-border/60 bg-secondary/40 text-left text-xs uppercase tracking-[0.12em] text-muted-foreground">
-              <th className="px-5 py-2.5 font-medium">Date</th>
+              <th className="px-2 py-2 sm:px-5 sm:py-2.5 font-medium">Date</th>
               {visibleCols.map((c) => (
                 <th key={c} className="px-3 py-2.5 font-medium text-right whitespace-nowrap">
                   <span className={"inline-flex items-center gap-1.5 " + typeMeta[c].tone}>
