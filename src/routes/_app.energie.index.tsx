@@ -628,7 +628,7 @@ function ReleveList() {
                       )}
                     </td>
                   ))}
-                  <td className="px-3 py-3 text-right">
+                  <td className="px-2 py-2 sm:px-3 sm:py-3 text-right">
                     {isEditing ? (
                       <div className="inline-flex gap-1">
                         <button onClick={save} className="grid h-7 w-7 place-items-center rounded-md bg-foreground text-background hover:opacity-90" aria-label="Enregistrer">
