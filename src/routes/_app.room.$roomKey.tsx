@@ -137,8 +137,9 @@ function RoomPage() {
                 <span className="relative inline-flex h-3 w-3 rounded-full bg-success" />
               </span>
             )}
-            <button
-              onClick={() => setRoomOn(!roomOn)}
+            <CommandButton
+              onCommand={() => setRoomOn(!roomOn)}
+              commandLabel={roomOn ? "Tout éteindre" : "Tout allumer"}
               aria-pressed={roomOn}
               aria-label={roomOn ? "Tout éteindre" : "Tout allumer"}
               className={"ml-auto inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs uppercase tracking-[0.18em] transition-all " + (roomOn
@@ -147,7 +148,7 @@ function RoomPage() {
             >
               <Power className={"h-3.5 w-3.5 " + (roomOn ? "anim-breathe" : "")} />
               {roomOn ? "On" : "Off"}
-            </button>
+            </CommandButton>
           </div>
           {typeof room.temperature === "number" && (
             <p className="mt-1 text-sm text-muted-foreground">Actuellement {room.temperature.toFixed(1)}°C</p>
@@ -180,9 +181,10 @@ function RoomPage() {
                 const active = scene === s;
                 const Icon = sceneIcon(s);
                 return (
-                  <button
+                  <CommandButton
                     key={s}
-                    onClick={() => setScene(s)}
+                    onCommand={() => setScene(s)}
+                    commandLabel={`Scène ${s}`}
                     className={
                       "group relative flex flex-col items-center gap-1.5 overflow-hidden rounded-xl border px-3 py-4 transition-all duration-300 " +
                       (active
@@ -192,7 +194,7 @@ function RoomPage() {
                   >
                     <Icon className={"h-5 w-5 " + (active ? "anim-breathe" : "opacity-60")} />
                     <span className="font-serif text-lg leading-none">{s}</span>
-                  </button>
+                  </CommandButton>
                 );
               })}
             </div>
@@ -220,14 +222,15 @@ function RoomPage() {
                 {zones.map((z, i) => {
                   const Icon = zoneIcon(z.name);
                   return (
-                    <button
+                    <CommandButton
                       key={z.name}
-                      onClick={() => setZones(zones.map((zz, idx) => idx === i ? { ...zz, on: !zz.on } : zz))}
+                      onCommand={() => setZones(zones.map((zz, idx) => idx === i ? { ...zz, on: !zz.on } : zz))}
+                      commandLabel={`Zone ${z.name}`}
                       className={"inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all " + (z.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card text-muted-foreground hover:border-border hover:text-foreground")}
                     >
                       <Icon className={"h-3 w-3 " + (z.on ? "anim-breathe" : "opacity-50")} />
                       {z.name}
-                    </button>
+                    </CommandButton>
                   );
                 })}
               </div>
@@ -262,9 +265,10 @@ function RoomPage() {
                 const label = m === "auto" ? "Auto" : `${m}°`;
                 const sub = m === "auto" ? "off" : "on";
                 return (
-                  <button
+                  <CommandButton
                     key={String(m)}
-                    onClick={() => setMode(m)}
+                    onCommand={() => setMode(m)}
+                    commandLabel={`Climatisation ${label}`}
                     className={
                       "flex flex-col items-center gap-1 rounded-xl border px-3 py-4 transition-all duration-300 " +
                       (active
@@ -276,7 +280,7 @@ function RoomPage() {
                     <span className={"text-[10px] uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
                       {sub}
                     </span>
-                  </button>
+                  </CommandButton>
                 );
               })}
             </div>
