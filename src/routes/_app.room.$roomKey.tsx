@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
+import { CommandButton } from "@/components/CommandButton";
 import { rooms, roomDetails, type RoomKey } from "@/lib/mock-data";
 import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunDim, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, Flower2, Snowflake, type LucideIcon } from "lucide-react";
 
@@ -136,8 +137,9 @@ function RoomPage() {
                 <span className="relative inline-flex h-3 w-3 rounded-full bg-success" />
               </span>
             )}
-            <button
-              onClick={() => setRoomOn(!roomOn)}
+            <CommandButton
+              onCommand={() => setRoomOn(!roomOn)}
+              commandLabel={roomOn ? "Tout éteindre" : "Tout allumer"}
               aria-pressed={roomOn}
               aria-label={roomOn ? "Tout éteindre" : "Tout allumer"}
               className={"ml-auto inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs uppercase tracking-[0.18em] transition-all " + (roomOn
@@ -146,7 +148,7 @@ function RoomPage() {
             >
               <Power className={"h-3.5 w-3.5 " + (roomOn ? "anim-breathe" : "")} />
               {roomOn ? "On" : "Off"}
-            </button>
+            </CommandButton>
           </div>
           {typeof room.temperature === "number" && (
             <p className="mt-1 text-sm text-muted-foreground">Actuellement {room.temperature.toFixed(1)}°C</p>
@@ -179,9 +181,10 @@ function RoomPage() {
                 const active = scene === s;
                 const Icon = sceneIcon(s);
                 return (
-                  <button
+                  <CommandButton
                     key={s}
-                    onClick={() => setScene(s)}
+                    onCommand={() => setScene(s)}
+                    commandLabel={`Scène ${s}`}
                     className={
                       "group relative flex flex-col items-center gap-1.5 overflow-hidden rounded-xl border px-3 py-4 transition-all duration-300 " +
                       (active
@@ -191,7 +194,7 @@ function RoomPage() {
                   >
                     <Icon className={"h-5 w-5 " + (active ? "anim-breathe" : "opacity-60")} />
                     <span className="font-serif text-lg leading-none">{s}</span>
-                  </button>
+                  </CommandButton>
                 );
               })}
             </div>
@@ -219,14 +222,15 @@ function RoomPage() {
                 {zones.map((z, i) => {
                   const Icon = zoneIcon(z.name);
                   return (
-                    <button
+                    <CommandButton
                       key={z.name}
-                      onClick={() => setZones(zones.map((zz, idx) => idx === i ? { ...zz, on: !zz.on } : zz))}
+                      onCommand={() => setZones(zones.map((zz, idx) => idx === i ? { ...zz, on: !zz.on } : zz))}
+                      commandLabel={`Zone ${z.name}`}
                       className={"inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all " + (z.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card text-muted-foreground hover:border-border hover:text-foreground")}
                     >
                       <Icon className={"h-3 w-3 " + (z.on ? "anim-breathe" : "opacity-50")} />
                       {z.name}
-                    </button>
+                    </CommandButton>
                   );
                 })}
               </div>
@@ -261,9 +265,10 @@ function RoomPage() {
                 const label = m === "auto" ? "Auto" : `${m}°`;
                 const sub = m === "auto" ? "off" : "on";
                 return (
-                  <button
+                  <CommandButton
                     key={String(m)}
-                    onClick={() => setMode(m)}
+                    onCommand={() => setMode(m)}
+                    commandLabel={`Climatisation ${label}`}
                     className={
                       "flex flex-col items-center gap-1 rounded-xl border px-3 py-4 transition-all duration-300 " +
                       (active
@@ -275,7 +280,7 @@ function RoomPage() {
                     <span className={"text-[10px] uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
                       {sub}
                     </span>
-                  </button>
+                  </CommandButton>
                 );
               })}
             </div>
@@ -356,14 +361,15 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span>{active.label}</span>
           {source !== "off" && (
-            <button
-              onClick={() => { setSource("off"); setPlaying(false); }}
+            <CommandButton
+              onCommand={() => { setSource("off"); setPlaying(false); }}
+              commandLabel="Couper le média"
               className="grid h-7 w-7 place-items-center rounded-full border border-border/60 bg-card text-muted-foreground transition-colors hover:text-foreground hover:border-border"
               aria-label="Couper le média"
               title="Couper"
             >
               <Power className="h-3 w-3" />
-            </button>
+            </CommandButton>
           )}
         </div>
       }
@@ -393,11 +399,12 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
                 ))}
               </div>
             </div>
-            <button onClick={() => setPlaying(!playing)}
+            <CommandButton onCommand={() => setPlaying(!playing)}
+                    commandLabel={playing ? "Pause Spotify" : "Lecture Spotify"}
                     className="grid h-11 w-11 place-items-center rounded-full bg-foreground text-background transition-transform hover:scale-105 active:scale-95"
                     aria-label={playing ? "Pause" : "Lecture"}>
               {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-            </button>
+            </CommandButton>
           </div>
         )}
         {source === "netflix" && (
@@ -411,11 +418,12 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
               <p className="mt-0.5 truncate font-serif text-xl">Téléviseur allumé</p>
               <p className="truncate text-sm text-muted-foreground">Source HDMI · Apple TV</p>
             </div>
-            <button onClick={() => setPlaying(!playing)}
+            <CommandButton onCommand={() => setPlaying(!playing)}
+                    commandLabel={playing ? "Pause Netflix" : "Lecture Netflix"}
                     className="grid h-11 w-11 place-items-center rounded-full bg-foreground text-background transition-transform hover:scale-105 active:scale-95"
                     aria-label={playing ? "Pause" : "Lecture"}>
               {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-            </button>
+            </CommandButton>
           </div>
         )}
         {source === "off" && (
@@ -449,9 +457,10 @@ function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
       {state.map((a, i) => {
         const Icon = applianceIcon(a.name);
         return (
-          <button
+          <CommandButton
             key={a.name}
-            onClick={() => setState(state.map((s, idx) => idx === i ? { ...s, on: !s.on } : s))}
+            onCommand={() => setState(state.map((s, idx) => idx === i ? { ...s, on: !s.on } : s))}
+            commandLabel={a.name}
             className={"flex items-center justify-between rounded-xl border px-3 py-3 text-sm transition-all " + (a.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card hover:border-border")}
           >
             <span className="flex items-center gap-2">
@@ -459,7 +468,7 @@ function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
               {a.name}
             </span>
             <span className={"text-[10px] uppercase tracking-wider " + (a.on ? "opacity-70" : "text-muted-foreground")}>{a.on ? "On" : "Off"}</span>
-          </button>
+          </CommandButton>
         );
       })}
     </div>
@@ -469,13 +478,14 @@ function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
 function ActionButton({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick?: () => void }) {
   const [triggered, setTriggered] = useState(false);
   return (
-    <button
-      onClick={() => { onClick?.(); setTriggered(true); setTimeout(() => setTriggered(false), 800); }}
+    <CommandButton
+      onCommand={() => { onClick?.(); setTriggered(true); setTimeout(() => setTriggered(false), 800); }}
+      commandLabel={label}
       className={"flex flex-col items-center gap-1.5 rounded-xl border border-border/60 p-3 text-sm transition-all duration-300 " + (triggered ? "bg-primary text-primary-foreground -translate-y-0.5" : "bg-card hover:-translate-y-0.5 hover:border-border")}
     >
       {icon}
       <span>{label}</span>
-    </button>
+    </CommandButton>
   );
 }
 
@@ -525,11 +535,12 @@ function DualClimate({
         ]).map(({ key, label, Icon }) => {
           const active = system === key;
           return (
-            <button
+            <CommandButton
               key={key}
               role="tab"
               aria-selected={active}
-              onClick={() => setSystem(key)}
+              onCommand={() => setSystem(key)}
+              commandLabel={`Climatisation ${label}`}
               className={
                 "relative z-10 flex items-center justify-center gap-2 rounded-full px-3 py-2.5 text-sm font-medium transition-colors duration-300 " +
                 (active ? "text-background" : "text-muted-foreground hover:text-foreground")
@@ -537,7 +548,7 @@ function DualClimate({
             >
               <Icon className={"h-4 w-4 " + (active ? "anim-breathe" : "opacity-60")} />
               <span className="font-serif text-base leading-none">{label}</span>
-            </button>
+            </CommandButton>
           );
         })}
       </div>
@@ -555,9 +566,10 @@ function DualClimate({
             const active = activePreset === p;
             const isOff = p === "off";
             return (
-              <button
+              <CommandButton
                 key={String(p)}
-                onClick={() => setPreset(p)}
+                onCommand={() => setPreset(p)}
+                commandLabel={isOff ? (system === "heat" ? "Chauffage auto" : "Froid off") : `Consigne ${p}°`}
                 className={
                   "flex flex-col items-center gap-1 rounded-xl border px-3 py-4 transition-all duration-300 " +
                   (active
@@ -569,7 +581,7 @@ function DualClimate({
                 <span className={"text-[10px] uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
                   {isOff ? "éteint" : "on"}
                 </span>
-              </button>
+              </CommandButton>
             );
           })}
         </div>
