@@ -9,11 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTeslaRouteImport } from './routes/_app.tesla'
 import { Route as AppReseauRouteImport } from './routes/_app.reseau'
 import { Route as AppBudgetRouteImport } from './routes/_app.budget'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AppEnergieIndexRouteImport } from './routes/_app.energie.index'
 import { Route as AppBudgetIndexRouteImport } from './routes/_app.budget.index'
 import { Route as AppRoomRoomKeyRouteImport } from './routes/_app.room.$roomKey'
@@ -24,7 +27,13 @@ import { Route as AppBudgetPlanificationRouteImport } from './routes/_app.budget
 import { Route as AppBudgetMensuelRouteImport } from './routes/_app.budget.mensuel'
 import { Route as AppBudgetImportRouteImport } from './routes/_app.budget.import'
 import { Route as AppBudgetAnnuelRouteImport } from './routes/_app.budget.annuel'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -49,6 +58,18 @@ const AppBudgetRoute = AppBudgetRouteImport.update({
   path: '/budget',
   getParentRoute: () => AppRoute,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AppEnergieIndexRoute = AppEnergieIndexRouteImport.update({
   id: '/energie/',
   path: '/energie/',
@@ -99,12 +120,22 @@ const AppBudgetAnnuelRoute = AppBudgetAnnuelRouteImport.update({
   path: '/annuel',
   getParentRoute: () => AppBudgetRoute,
 } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/mcp': typeof McpRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/budget': typeof AppBudgetRouteWithChildren
   '/reseau': typeof AppReseauRoute
   '/tesla': typeof AppTeslaRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/budget/annuel': typeof AppBudgetAnnuelRoute
   '/budget/import': typeof AppBudgetImportRoute
   '/budget/mensuel': typeof AppBudgetMensuelRoute
@@ -117,9 +148,13 @@ export interface FileRoutesByFullPath {
   '/energie/': typeof AppEnergieIndexRoute
 }
 export interface FileRoutesByTo {
+  '/mcp': typeof McpRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/reseau': typeof AppReseauRoute
   '/tesla': typeof AppTeslaRoute
   '/': typeof AppIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/budget/annuel': typeof AppBudgetAnnuelRoute
   '/budget/import': typeof AppBudgetImportRoute
   '/budget/mensuel': typeof AppBudgetMensuelRoute
@@ -134,10 +169,14 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/mcp': typeof McpRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_app/budget': typeof AppBudgetRouteWithChildren
   '/_app/reseau': typeof AppReseauRoute
   '/_app/tesla': typeof AppTeslaRoute
   '/_app/': typeof AppIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_app/budget/annuel': typeof AppBudgetAnnuelRoute
   '/_app/budget/import': typeof AppBudgetImportRoute
   '/_app/budget/mensuel': typeof AppBudgetMensuelRoute
@@ -153,9 +192,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/mcp'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/budget'
     | '/reseau'
     | '/tesla'
+    | '/.mcp/invoke-tool/$tool'
     | '/budget/annuel'
     | '/budget/import'
     | '/budget/mensuel'
@@ -168,9 +211,13 @@ export interface FileRouteTypes {
     | '/energie/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/mcp'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/reseau'
     | '/tesla'
     | '/'
+    | '/.mcp/invoke-tool/$tool'
     | '/budget/annuel'
     | '/budget/import'
     | '/budget/mensuel'
@@ -184,10 +231,14 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
+    | '/mcp'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/_app/budget'
     | '/_app/reseau'
     | '/_app/tesla'
     | '/_app/'
+    | '/.mcp/invoke-tool/$tool'
     | '/_app/budget/annuel'
     | '/_app/budget/import'
     | '/_app/budget/mensuel'
@@ -202,10 +253,21 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  McpRoute: typeof McpRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -240,6 +302,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/budget'
       preLoaderRoute: typeof AppBudgetRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/energie/': {
       id: '/_app/energie/'
@@ -311,6 +387,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBudgetAnnuelRouteImport
       parentRoute: typeof AppBudgetRoute
     }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -362,7 +445,22 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  McpRoute: McpRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
