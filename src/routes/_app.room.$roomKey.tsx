@@ -478,13 +478,14 @@ function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
 function ActionButton({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick?: () => void }) {
   const [triggered, setTriggered] = useState(false);
   return (
-    <button
-      onClick={() => { onClick?.(); setTriggered(true); setTimeout(() => setTriggered(false), 800); }}
+    <CommandButton
+      onCommand={() => { onClick?.(); setTriggered(true); setTimeout(() => setTriggered(false), 800); }}
+      commandLabel={label}
       className={"flex flex-col items-center gap-1.5 rounded-xl border border-border/60 p-3 text-sm transition-all duration-300 " + (triggered ? "bg-primary text-primary-foreground -translate-y-0.5" : "bg-card hover:-translate-y-0.5 hover:border-border")}
     >
       {icon}
       <span>{label}</span>
-    </button>
+    </CommandButton>
   );
 }
 
@@ -534,11 +535,12 @@ function DualClimate({
         ]).map(({ key, label, Icon }) => {
           const active = system === key;
           return (
-            <button
+            <CommandButton
               key={key}
               role="tab"
               aria-selected={active}
-              onClick={() => setSystem(key)}
+              onCommand={() => setSystem(key)}
+              commandLabel={`Climatisation ${label}`}
               className={
                 "relative z-10 flex items-center justify-center gap-2 rounded-full px-3 py-2.5 text-sm font-medium transition-colors duration-300 " +
                 (active ? "text-background" : "text-muted-foreground hover:text-foreground")
@@ -546,7 +548,7 @@ function DualClimate({
             >
               <Icon className={"h-4 w-4 " + (active ? "anim-breathe" : "opacity-60")} />
               <span className="font-serif text-base leading-none">{label}</span>
-            </button>
+            </CommandButton>
           );
         })}
       </div>
@@ -564,9 +566,10 @@ function DualClimate({
             const active = activePreset === p;
             const isOff = p === "off";
             return (
-              <button
+              <CommandButton
                 key={String(p)}
-                onClick={() => setPreset(p)}
+                onCommand={() => setPreset(p)}
+                commandLabel={isOff ? (system === "heat" ? "Chauffage auto" : "Froid off") : `Consigne ${p}°`}
                 className={
                   "flex flex-col items-center gap-1 rounded-xl border px-3 py-4 transition-all duration-300 " +
                   (active
@@ -578,7 +581,7 @@ function DualClimate({
                 <span className={"text-[10px] uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
                   {isOff ? "éteint" : "on"}
                 </span>
-              </button>
+              </CommandButton>
             );
           })}
         </div>
