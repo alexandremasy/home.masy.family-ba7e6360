@@ -361,14 +361,15 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span>{active.label}</span>
           {source !== "off" && (
-            <button
-              onClick={() => { setSource("off"); setPlaying(false); }}
+            <CommandButton
+              onCommand={() => { setSource("off"); setPlaying(false); }}
+              commandLabel="Couper le média"
               className="grid h-7 w-7 place-items-center rounded-full border border-border/60 bg-card text-muted-foreground transition-colors hover:text-foreground hover:border-border"
               aria-label="Couper le média"
               title="Couper"
             >
               <Power className="h-3 w-3" />
-            </button>
+            </CommandButton>
           )}
         </div>
       }
@@ -398,11 +399,12 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
                 ))}
               </div>
             </div>
-            <button onClick={() => setPlaying(!playing)}
+            <CommandButton onCommand={() => setPlaying(!playing)}
+                    commandLabel={playing ? "Pause Spotify" : "Lecture Spotify"}
                     className="grid h-11 w-11 place-items-center rounded-full bg-foreground text-background transition-transform hover:scale-105 active:scale-95"
                     aria-label={playing ? "Pause" : "Lecture"}>
               {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-            </button>
+            </CommandButton>
           </div>
         )}
         {source === "netflix" && (
@@ -416,11 +418,12 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
               <p className="mt-0.5 truncate font-serif text-xl">Téléviseur allumé</p>
               <p className="truncate text-sm text-muted-foreground">Source HDMI · Apple TV</p>
             </div>
-            <button onClick={() => setPlaying(!playing)}
+            <CommandButton onCommand={() => setPlaying(!playing)}
+                    commandLabel={playing ? "Pause Netflix" : "Lecture Netflix"}
                     className="grid h-11 w-11 place-items-center rounded-full bg-foreground text-background transition-transform hover:scale-105 active:scale-95"
                     aria-label={playing ? "Pause" : "Lecture"}>
               {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-            </button>
+            </CommandButton>
           </div>
         )}
         {source === "off" && (
@@ -454,9 +457,10 @@ function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
       {state.map((a, i) => {
         const Icon = applianceIcon(a.name);
         return (
-          <button
+          <CommandButton
             key={a.name}
-            onClick={() => setState(state.map((s, idx) => idx === i ? { ...s, on: !s.on } : s))}
+            onCommand={() => setState(state.map((s, idx) => idx === i ? { ...s, on: !s.on } : s))}
+            commandLabel={a.name}
             className={"flex items-center justify-between rounded-xl border px-3 py-3 text-sm transition-all " + (a.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card hover:border-border")}
           >
             <span className="flex items-center gap-2">
@@ -464,7 +468,7 @@ function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
               {a.name}
             </span>
             <span className={"text-[10px] uppercase tracking-wider " + (a.on ? "opacity-70" : "text-muted-foreground")}>{a.on ? "On" : "Off"}</span>
-          </button>
+          </CommandButton>
         );
       })}
     </div>
