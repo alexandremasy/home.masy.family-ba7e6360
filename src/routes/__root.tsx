@@ -8,6 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 import { CursorFollower } from "@/components/CursorFollower";
@@ -124,6 +125,7 @@ function RootComponent() {
       <TooltipProvider delayDuration={150}>
         <CursorFollower />
         <Outlet />
+        <Toaster richColors closeButton position="top-center" />
       </TooltipProvider>
     </QueryClientProvider>
   );

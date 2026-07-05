@@ -415,3 +415,14 @@
     .cursor-follower { display: none; }
   }
 }
+
+@layer utilities {
+  @keyframes shake-x {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-3px); }
+    40% { transform: translateX(3px); }
+    60% { transform: translateX(-2px); }
+    80% { transform: translateX(2px); }
+  }
+  .anim-shake { animation: shake-x 0.35s cubic-bezier(.36,.07,.19,.97) both; }
+}
