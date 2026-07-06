@@ -116,7 +116,7 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
     <div className="space-y-6 sm:space-y-8">
       {/* KPIs */}
       <div className="grid grid-cols-2 gap-3 stagger lg:grid-cols-4">
-        <Kpi label="Réalisé YTD" value={realisedYTD} icon={CheckCircle2} tone="primary" hint={`${monthly.filter(x => x.state !== "futur").length} mois`} />
+        <Kpi label="Réalisé cette année" value={realisedYTD} icon={CheckCircle2} tone="primary" hint={`${monthly.filter(x => x.state !== "futur").length} mois`} />
         <Kpi label="Projeté restant" value={projectedRest} icon={CalendarClock} tone="warm" hint={`${monthly.filter(x => x.state === "futur").length} mois`} />
         <Kpi label="Net projeté" value={net} icon={net >= 0 ? TrendingUp : TrendingDown} tone={net >= 0 ? "success" : "warm"} />
         <Kpi label="Taux d'épargne" value={tauxEpargne} suffix="%" icon={PiggyBank} tone="success" />
