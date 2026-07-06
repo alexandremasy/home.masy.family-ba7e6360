@@ -232,7 +232,7 @@ function ContinuousYearChart({ series, isCurrentYear, onPickMonth, year }: {
               tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={36} />
             <RTooltip
               contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12, color: "var(--popover-foreground)" }}
-              formatter={(v: number | null, n) => v == null ? ["—", n] : [eur(v), n]}
+              formatter={(v: unknown, n) => (typeof v === "number" ? [eur(v), n as string] : ["—", n as string])}
             />
             {/* Tolerance band around budget */}
             <ReferenceArea y1={0} y2={0} fill="transparent" />
