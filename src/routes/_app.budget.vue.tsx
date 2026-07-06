@@ -1,19 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
-  Area, AreaChart, Bar, BarChart, CartesianGrid, ReferenceLine,
-  ResponsiveContainer, Tooltip as RTooltip, XAxis, YAxis, Cell,
+  Area, AreaChart, CartesianGrid, Line, LineChart, ReferenceArea, ReferenceLine,
+  ResponsiveContainer, Tooltip as RTooltip, XAxis, YAxis,
 } from "recharts";
+import { toast } from "sonner";
 import {
-  ArrowLeft, ChevronLeft, ChevronRight, Flame, PiggyBank, Sparkles,
-  TrendingUp, TrendingDown, Clock, CheckCircle2, CalendarClock,
+  ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, PiggyBank, Sparkles,
+  TrendingUp, TrendingDown, Clock, CheckCircle2, CalendarClock, AlertTriangle,
+  ShieldCheck, ShieldAlert, Pencil, Check, X,
 } from "lucide-react";
 import { CountUp } from "@/components/CountUp";
 import {
-  categories, rolling12, envelopes, postesSeed, MONTHS_FR, MONTHS_FR_LONG, eur,
-  temporalState, currentMonthIdx, currentYear, projectedForMonth, budgetForMonth,
-  nonMonthlyBills, annualisationProvision, actualForMonth, incomeSources,
-  type TemporalState,
+  categories, envelopes, postesSeed, MONTHS_FR, MONTHS_FR_LONG, eur,
+  temporalState, currentMonthIdx, currentYear, incomeSources,
+  annualisationProvision, annualVerdict, cumulativeSeries, upcomingBigBills,
+  envelopeSeries, categoryTrend, nextBillForCategory, nonMonthlyBills,
+  type TemporalState, type UpcomingBill,
 } from "@/lib/budget-data";
 
 export const Route = createFileRoute("/_app/budget/vue")({
@@ -21,7 +24,7 @@ export const Route = createFileRoute("/_app/budget/vue")({
   head: () => ({
     meta: [
       { title: "Vue d'ensemble — Budget" },
-      { name: "description", content: "Année zoomable, rapport du passé et projection du futur." },
+      { name: "description", content: "Trajectoire de l'année, échéances à venir et épargne — d'un coup d'œil." },
     ],
   }),
 });
@@ -43,7 +46,7 @@ function VuePage() {
           )}
           <div className="min-w-0">
             <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-              Budget · {zoomMonth === null ? "Année" : "Mois"}
+              Budget · {zoomMonth === null ? "Vue d'ensemble" : "Mois"}
             </p>
             <h1 className="mt-1 truncate font-serif text-2xl tracking-tight sm:text-4xl">
               {zoomMonth === null
@@ -69,7 +72,6 @@ function VuePage() {
         )}
       </header>
 
-
       <div className="relative">
         <div className={(zoomMonth === null ? "opacity-100" : "pointer-events-none hidden") + " transition-opacity duration-300"}>
           <YearView year={year} onPickMonth={setZoomMonth} />
@@ -94,237 +96,465 @@ function VuePage() {
 
 function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number) => void }) {
   const isCurrentYear = year === currentYear;
-
-  // Per-month numbers: past/current use rolling12 actuals, future uses projections.
-  const monthly = useMemo(() => MONTHS_FR.map((m, idx) => {
-    const state = temporalState(idx, year);
-    const projected = projectedForMonth(postesSeed, idx);
-    const actual = state === "futur" ? 0 : (rolling12[idx]?.spend ?? actualForMonth(idx, state));
-    const income = state === "futur" ? 5200 : (rolling12[idx]?.income ?? 5200);
-    return { m, idx, state, projected, actual, income, spend: state === "futur" ? projected : actual };
-  }), [year]);
-
-  const realisedYTD = monthly.filter(x => x.state !== "futur").reduce((s, x) => s + x.actual, 0);
-  const projectedRest = monthly.filter(x => x.state === "futur").reduce((s, x) => s + x.projected, 0);
-  const totalIncome = monthly.reduce((s, x) => s + x.income, 0);
-  const totalSpend = realisedYTD + projectedRest;
-  const net = totalIncome - totalSpend;
-  const tauxEpargne = Math.max(0, Math.round((net / totalIncome) * 100));
+  const verdict = useMemo(() => annualVerdict(), []);
+  const series = useMemo(() => cumulativeSeries(), []);
+  const upcoming = useMemo(() => upcomingBigBills(5), []);
   const provision = annualisationProvision(postesSeed);
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* KPIs */}
-      <div className="grid grid-cols-2 gap-3 stagger lg:grid-cols-4">
-        <Kpi label="Réalisé cette année" value={realisedYTD} icon={CheckCircle2} tone="primary" hint={`${monthly.filter(x => x.state !== "futur").length} mois`} />
-        <Kpi label="Projeté restant" value={projectedRest} icon={CalendarClock} tone="warm" hint={`${monthly.filter(x => x.state === "futur").length} mois`} />
-        <Kpi label="Net projeté" value={net} icon={net >= 0 ? TrendingUp : TrendingDown} tone={net >= 0 ? "success" : "warm"} />
-        <Kpi label="Taux d'épargne" value={tauxEpargne} suffix="%" icon={PiggyBank} tone="success" />
+      <VerdictBanner verdict={verdict} />
+      <ContinuousYearChart series={series} isCurrentYear={isCurrentYear} onPickMonth={onPickMonth} year={year} />
+      <UpcomingBillsBlock bills={upcoming} provision={provision} />
+      <SavingsBlock />
+      <CategoriesGrid />
+    </div>
+  );
+}
+
+/* ---- 1. Verdict banner (R1) ---- */
+
+function VerdictBanner({ verdict }: { verdict: ReturnType<typeof annualVerdict> }) {
+  const { status, label, hint, budgetYear, realisedYTD, projectedRest, projectedTotal,
+          deltaEur, deltaPct, expectedByNow, netProjected, savingsRate } = verdict;
+  const tone = status === "ok"
+    ? { ring: "ring-success/30", bg: "bg-success/10", fg: "text-success", Icon: ShieldCheck, bar: "bg-success" }
+    : status === "warn"
+    ? { ring: "ring-warm/40", bg: "bg-warm/15", fg: "text-warm", Icon: AlertTriangle, bar: "bg-warm" }
+    : { ring: "ring-destructive/40", bg: "bg-destructive/10", fg: "text-destructive", Icon: ShieldAlert, bar: "bg-destructive" };
+
+  const realisedPct = Math.min(100, (realisedYTD / budgetYear) * 100);
+  const projectedPct = Math.min(100, (projectedTotal / budgetYear) * 100);
+  const expectedPct = Math.min(100, (expectedByNow / budgetYear) * 100);
+
+  return (
+    <section className={"relative overflow-hidden rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 ring-1 " + tone.ring}>
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
+        <div className="min-w-0">
+          <div className="flex items-center gap-3">
+            <span className={"grid h-10 w-10 shrink-0 place-items-center rounded-full " + tone.bg + " " + tone.fg}>
+              <tone.Icon className="h-5 w-5" />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Trajectoire annuelle</p>
+              <h2 className={"mt-0.5 font-serif text-2xl tracking-tight sm:text-3xl " + tone.fg}>{label}</h2>
+            </div>
+          </div>
+          <p className="mt-3 max-w-prose text-sm text-muted-foreground">{hint}</p>
+
+          {/* Gauge */}
+          <div className="mt-5">
+            <div className="relative h-3 w-full overflow-hidden rounded-full bg-secondary">
+              {/* projected extension (soft) */}
+              <div className={"absolute inset-y-0 left-0 rounded-full opacity-40 transition-[width] duration-700 " + tone.bar}
+                   style={{ width: `${projectedPct}%` }} />
+              {/* realised (solid) */}
+              <div className="absolute inset-y-0 left-0 rounded-full bg-foreground/80 transition-[width] duration-700"
+                   style={{ width: `${realisedPct}%` }} />
+              {/* expected-by-now marker */}
+              <div className="absolute inset-y-[-4px] w-0.5 bg-foreground" style={{ left: `${expectedPct}%` }} />
+            </div>
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-sm bg-foreground/80" /> Réalisé <span className="tabular-nums text-foreground">{eur(realisedYTD)}</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className={"h-2 w-2 rounded-sm opacity-40 " + tone.bar} /> + projeté <span className="tabular-nums text-foreground">{eur(projectedRest)}</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-3 border-l-2 border-foreground" /> Attendu à ce jour
+              </span>
+              <span className="tabular-nums">Budget {eur(budgetYear)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right rail */}
+        <div className="grid grid-cols-3 gap-3 lg:grid-cols-1 lg:gap-2 lg:border-l lg:border-border/40 lg:pl-8">
+          <MicroStat label="Écart" primary={(deltaEur >= 0 ? "+" : "") + eur(deltaEur)}
+                     secondary={(deltaPct >= 0 ? "+" : "") + deltaPct.toFixed(1) + " %"}
+                     tone={status === "ok" ? "success" : status === "warn" ? "warm" : "destructive"} />
+          <MicroStat label="Net projeté" primary={eur(netProjected)} tone={netProjected >= 0 ? "success" : "warm"} />
+          <MicroStat label="Épargne" primary={savingsRate + " %"} tone="primary" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MicroStat({ label, primary, secondary, tone }: {
+  label: string; primary: string; secondary?: string;
+  tone: "primary" | "warm" | "success" | "destructive";
+}) {
+  const cls = tone === "warm" ? "text-warm"
+    : tone === "success" ? "text-success"
+    : tone === "destructive" ? "text-destructive"
+    : "text-foreground";
+  return (
+    <div className="rounded-xl bg-secondary/40 p-2.5 lg:bg-transparent lg:p-0">
+      <p className="text-[9px] uppercase tracking-[0.16em] text-muted-foreground sm:text-[10px]">{label}</p>
+      <p className={"mt-1 font-serif text-lg leading-none tabular-nums sm:text-xl " + cls}>{primary}</p>
+      {secondary && <p className="mt-1 text-[10px] tabular-nums text-muted-foreground">{secondary}</p>}
+    </div>
+  );
+}
+
+/* ---- 2. Continuous year chart (R2) ---- */
+
+function ContinuousYearChart({ series, isCurrentYear, onPickMonth, year }: {
+  series: ReturnType<typeof cumulativeSeries>;
+  isCurrentYear: boolean;
+  onPickMonth: (i: number) => void;
+  year: number;
+}) {
+  return (
+    <section className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7 anim-slide-up">
+      <header className="mb-4 flex flex-wrap items-end justify-between gap-3 sm:mb-5">
+        <div className="min-w-0">
+          <h2 className="font-serif text-xl tracking-tight sm:text-2xl">L'année en continu</h2>
+          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+            Dépenses cumulées vs budget — la marche de l'année, sans rupture.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 bg-foreground" /> Réalisé</span>
+          <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 border-t border-dashed border-warm" /> Projeté</span>
+          <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 bg-muted-foreground/50" /> Budget</span>
+        </div>
+      </header>
+
+      <div className="h-56 w-full sm:h-72">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={series} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
+            <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="m" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} interval={0} />
+            <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false}
+              tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={36} />
+            <RTooltip
+              contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12, color: "var(--popover-foreground)" }}
+              formatter={(v: number | null, n) => v == null ? ["—", n] : [eur(v), n]}
+            />
+            {/* Tolerance band around budget */}
+            <ReferenceArea y1={0} y2={0} fill="transparent" />
+            <Line type="monotone" dataKey="tolMax" stroke="var(--muted-foreground)" strokeOpacity={0.15} strokeWidth={1} dot={false} name="Tolérance +5%" />
+            <Line type="monotone" dataKey="tolMin" stroke="var(--muted-foreground)" strokeOpacity={0.15} strokeWidth={1} dot={false} name="Tolérance -5%" />
+            <Line type="monotone" dataKey="budget" stroke="var(--muted-foreground)" strokeWidth={1.5} strokeDasharray="4 4" dot={false} name="Budget cumulé" />
+            <Line type="monotone" dataKey="reel" stroke="var(--foreground)" strokeWidth={2.5} dot={false} name="Réalisé cumulé" connectNulls={false} />
+            <Line type="monotone" dataKey="projete" stroke="var(--warm)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Projeté cumulé" connectNulls={false} />
+            {isCurrentYear && (
+              <ReferenceLine x={MONTHS_FR[currentMonthIdx]} stroke="var(--foreground)" strokeOpacity={0.35} strokeDasharray="2 4" />
+            )}
+          </LineChart>
+        </ResponsiveContainer>
       </div>
 
-      {/* Big combined: flow chart + pressure strip — one block */}
-      <section className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7 anim-slide-up">
-        <header className="mb-4 flex flex-wrap items-end justify-between gap-3 sm:mb-5">
-          <div className="min-w-0">
-            <h2 className="font-serif text-xl tracking-tight sm:text-2xl">L'année en continu</h2>
-            <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-              Flux mensuels et pression — <span className="text-foreground/70">réalisé</span> à gauche,
-              <span className="text-foreground/70"> projeté</span> à droite.
+      {/* Mini month strip */}
+      <div className="mt-4 border-t border-border/40 pt-4">
+        <div className="mb-2 flex items-center justify-between text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+          <span>Zoom mois</span>
+          <span className="hidden sm:inline">Cliquez un mois pour l'ouvrir</span>
+        </div>
+        <div className="-mx-1 flex gap-1 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {MONTHS_FR.map((m, idx) => {
+            const st = temporalState(idx, year);
+            const isCur = year === currentYear && idx === currentMonthIdx;
+            return (
+              <button key={m} onClick={() => onPickMonth(idx)}
+                className={"group min-w-[56px] flex-1 rounded-lg border px-2 py-1.5 text-[11px] transition-all hover:-translate-y-0.5 hover:shadow-lift " +
+                  (isCur ? "border-foreground/60 bg-primary/5 " : "border-border/40 bg-card ") +
+                  (st === "futur" ? "opacity-70" : "")}>
+                <span className="block text-muted-foreground">{m}</span>
+                <span className={"mx-auto mt-1 block h-1 w-1 rounded-full " +
+                  (st === "passe" ? "bg-foreground/40" : st === "en-cours" ? "bg-primary" : "bg-muted-foreground/30")} />
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---- 3. Upcoming bills + coverage (R3 + R4) ---- */
+
+function UpcomingBillsBlock({ bills, provision }: { bills: UpcomingBill[]; provision: number }) {
+  const total6m = bills.filter(b => b.monthsAway < 6).reduce((s, b) => s + b.amount, 0);
+  const provisionIn6m = provision * 6;
+
+  return (
+    <section className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7 anim-slide-up">
+      <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Grosses échéances à venir</h2>
+          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+            Ce qui arrive, et si c'est couvert par la provision d'annualisation.
+          </p>
+        </div>
+        <Link to="/budget/planification" className="text-xs text-primary underline-offset-4 hover:underline">
+          Modifier la planification →
+        </Link>
+      </header>
+
+      <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="flex gap-3 overflow-x-auto pb-2 [scrollbar-width:thin] sm:grid sm:grid-cols-2 sm:overflow-visible lg:grid-cols-5">
+          {bills.map(b => <BillCard key={b.id} bill={b} />)}
+        </div>
+      </div>
+
+      <div className="mt-6 grid gap-4 border-t border-border/40 pt-5 sm:grid-cols-3">
+        <FootStat label="À venir · 6 mois" value={eur(total6m)} tone="warm" />
+        <FootStat label="Provision cumulée" value={eur(provisionIn6m)} sub={`${eur(provision)}/mois`} tone="primary" />
+        <FootStat label="Marge" value={eur(provisionIn6m - total6m)}
+          tone={provisionIn6m - total6m >= 0 ? "success" : "destructive"} />
+      </div>
+    </section>
+  );
+}
+
+function BillCard({ bill }: { bill: UpcomingBill }) {
+  const cat = categories.find(c => c.key === bill.category)!;
+  const Icon = cat.icon;
+  const cov = bill.coverage === "covered"
+    ? { label: "Couverte", cls: "bg-success/15 text-success", bar: "bg-success" }
+    : bill.coverage === "partial"
+    ? { label: "Partielle", cls: "bg-warm/15 text-warm", bar: "bg-warm" }
+    : { label: "À combler", cls: "bg-destructive/10 text-destructive", bar: "bg-destructive" };
+  const when = bill.monthsAway === 0 ? "Ce mois" : bill.monthsAway === 1 ? "Le mois prochain" : `Dans ${bill.monthsAway} mois`;
+
+  return (
+    <article className="w-[240px] shrink-0 rounded-xl border border-border/50 bg-card/60 p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift sm:w-auto">
+      <div className="flex items-center justify-between gap-2">
+        <span className="grid h-8 w-8 place-items-center rounded-full bg-secondary text-foreground/70">
+          <Icon className="h-4 w-4" />
+        </span>
+        <span className={"inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide " + cov.cls}>
+          {cov.label}
+        </span>
+      </div>
+      <p className="mt-3 truncate text-sm font-medium">{bill.label}</p>
+      <p className="mt-0.5 text-[11px] text-muted-foreground">
+        <span className="capitalize">{bill.monthLabel}</span> · {when}
+      </p>
+      <p className="mt-2 font-serif text-xl tabular-nums text-warm">−{eur(bill.amount)}</p>
+      <div className="mt-2">
+        <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+          <div className={"absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 " + cov.bar}
+               style={{ width: `${bill.coveragePct}%` }} />
+        </div>
+        <p className="mt-1 text-[10px] tabular-nums text-muted-foreground">
+          Provision {eur(bill.provisionAvailable)} · {bill.coveragePct}%
+        </p>
+      </div>
+    </article>
+  );
+}
+
+function FootStat({ label, value, sub, tone }: { label: string; value: string; sub?: string; tone: "primary"|"warm"|"success"|"destructive" }) {
+  const cls = tone === "warm" ? "text-warm"
+    : tone === "success" ? "text-success"
+    : tone === "destructive" ? "text-destructive"
+    : "text-foreground";
+  return (
+    <div>
+      <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{label}</p>
+      <p className={"mt-1 font-serif text-2xl tabular-nums " + cls}>{value}</p>
+      {sub && <p className="mt-0.5 text-[11px] text-muted-foreground">{sub}</p>}
+    </div>
+  );
+}
+
+/* ---- 4. Savings — transparent + editable (R5 + R6) ---- */
+
+function SavingsBlock() {
+  const [overrides, setOverrides] = useState<Record<string, number>>({});
+  const [editKey, setEditKey] = useState<string | null>(null);
+  const [draft, setDraft] = useState<string>("");
+
+  const displayed = envelopes.map(e => ({ ...e, balance: overrides[e.key] ?? e.balance }));
+  const total = displayed.reduce((s, e) => s + e.balance, 0);
+  const contribTotal = displayed.reduce((s, e) => s + e.contrib, 0);
+
+  const startEdit = (key: string, current: number) => {
+    setEditKey(key);
+    setDraft(String(current));
+  };
+  const commitEdit = (key: string) => {
+    const v = Number(draft.replace(",", "."));
+    if (!Number.isFinite(v) || v < 0) {
+      toast.error("Montant invalide");
+      return;
+    }
+    setOverrides(o => ({ ...o, [key]: Math.round(v) }));
+    setEditKey(null);
+    toast.success("Épargne mise à jour");
+  };
+
+  return (
+    <section className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7 anim-slide-up">
+      <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Épargne</h2>
+          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+            État réel des enveloppes — ajustez à la main pour refléter la banque.
+          </p>
+        </div>
+        <div className="flex items-baseline gap-3 text-right">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Total</p>
+            <p className="mt-0.5 font-serif text-2xl tabular-nums text-foreground">
+              <CountUp to={total} /><span className="ml-1 text-sm text-muted-foreground">€</span>
             </p>
           </div>
-          <Legend />
-        </header>
-
-        <div className="h-56 w-full sm:h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={monthly} margin={{ top: 8, right: 4, left: -18, bottom: 0 }}>
-              <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="m" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} interval={0} />
-              <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false}
-                tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={36} />
-              <RTooltip
-                contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12, color: "var(--popover-foreground)" }}
-                formatter={(v: number, n) => [eur(v), n]}
-              />
-              {isCurrentYear && <ReferenceLine x={MONTHS_FR[currentMonthIdx]} stroke="var(--foreground)" strokeOpacity={0.3} strokeDasharray="2 4" />}
-              <Bar dataKey="income" name="Entrées" radius={[4,4,0,0]} maxBarSize={14}>
-                {monthly.map((d) => (
-                  <Cell key={d.idx} fill="var(--primary)" fillOpacity={d.state === "futur" ? 0.35 : 1} />
-                ))}
-              </Bar>
-              <Bar dataKey="spend" name="Dépenses" radius={[4,4,0,0]} maxBarSize={14}>
-                {monthly.map((d) => (
-                  <Cell key={d.idx} fill="var(--warm)" fillOpacity={d.state === "futur" ? 0.35 : 1} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+          <p className="text-[11px] tabular-nums text-muted-foreground">+ {eur(contribTotal)}/mois</p>
         </div>
+      </header>
 
-        {/* Pressure strip — horizontal scroll on mobile, trimester grid on sm+ */}
-        <div className="mt-6 border-t border-border/40 pt-5">
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Pression de l'année</p>
-            <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              <Flame className="h-3 w-3 anim-breathe" />
-              <span className="hidden sm:inline">Cliquez un mois pour zoomer</span>
-              <span className="sm:hidden">Tap un mois</span>
-
-            </span>
-          </div>
-
-          {/* Mobile: horizontal scroll, 12 tiles in a row */}
-          <div className="-mx-4 px-4 sm:hidden">
-            <div className="flex gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
-              {monthly.map((d) => (
-                <div key={d.idx} className="w-[104px] shrink-0 snap-start">
-                  <MonthTile data={d} onClick={() => onPickMonth(d.idx)} year={year} />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Desktop: trimester grid */}
-          <div className="hidden grid-cols-4 gap-3 sm:grid sm:gap-4">
-            {[0,1,2,3].map(q => (
-              <div key={q} className="space-y-1">
-                <p className="text-[9px] uppercase tracking-[0.22em] text-muted-foreground/70">T{q+1}</p>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {monthly.slice(q*3, q*3+3).map((d) => (
-                    <MonthTile key={d.idx} data={d} onClick={() => onPickMonth(d.idx)} year={year} />
-                  ))}
-                </div>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {displayed.map(env => {
+          const data = envelopeSeries(env);
+          const stroke = env.tone === "warm" ? "var(--warm)" : env.tone === "accent" ? "var(--accent)" : "var(--primary)";
+          const editing = editKey === env.key;
+          return (
+            <div key={env.key} className="group relative rounded-xl border border-border/50 bg-card/60 p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift">
+              <div className="flex items-start justify-between">
+                <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{env.label}</p>
+                {!editing && (
+                  <button onClick={() => startEdit(env.key, env.balance)}
+                    aria-label="Ajuster le solde"
+                    className="opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100">
+                    <Pencil className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
+                  </button>
+                )}
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* Annualisation + envelopes */}
-      <section className="grid gap-4 sm:gap-5 lg:grid-cols-3">
-        <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7">
-          <header className="mb-3 flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Provision d'annualisation</p>
-              <p className="mt-2 font-serif text-2xl tracking-tight tabular-nums sm:text-3xl">
-                <CountUp to={provision} /><span className="ml-1 text-sm text-muted-foreground">€/mois</span>
-              </p>
-            </div>
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-              <Sparkles className="h-4 w-4" />
-            </span>
-          </header>
-          <p className="text-xs text-muted-foreground">
-            Lisse les grosses échéances (mazout, assurance, mutuelle, vacances, impôts). Calculée à partir de la Planification.
-          </p>
-          <Link to="/budget/planification" className="mt-4 inline-flex items-center gap-1 text-xs text-primary underline-offset-4 hover:underline">
-            Modifier la planification →
-          </Link>
-        </div>
-        <div className="lg:col-span-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {envelopes.map(env => (
-            <div key={env.key} className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift sm:p-4">
-              <p className="truncate text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{env.label}</p>
-              <p className="mt-2 font-serif text-lg tabular-nums sm:text-xl">
-                <CountUp to={env.balance} /><span className="ml-1 text-xs text-muted-foreground">€</span>
-              </p>
+              {editing ? (
+                <div className="mt-2 flex items-center gap-1">
+                  <input
+                    autoFocus
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") commitEdit(env.key);
+                      if (e.key === "Escape") setEditKey(null);
+                    }}
+                    inputMode="decimal"
+                    className="min-w-0 flex-1 rounded-md border border-border bg-background px-2 py-1 font-serif text-lg tabular-nums focus:border-primary focus:outline-none"
+                  />
+                  <button onClick={() => commitEdit(env.key)} className="grid h-7 w-7 place-items-center rounded-md bg-primary text-primary-foreground hover:opacity-90">
+                    <Check className="h-3.5 w-3.5" />
+                  </button>
+                  <button onClick={() => setEditKey(null)} className="grid h-7 w-7 place-items-center rounded-md border border-border text-muted-foreground hover:bg-secondary">
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ) : (
+                <p className="mt-2 font-serif text-xl tabular-nums">
+                  <CountUp to={env.balance} /><span className="ml-1 text-xs text-muted-foreground">€</span>
+                </p>
+              )}
               <p className="mt-0.5 text-[11px] text-muted-foreground tabular-nums">+ {eur(env.contrib)} / mois</p>
+              <div className="-mx-2 mt-3 h-10">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={data} margin={{ top: 4, right: 4, left: 4, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id={`sav-${env.key}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={stroke} stopOpacity={0.35} />
+                        <stop offset="100%" stopColor={stroke} stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <Area type="monotone" dataKey="v" stroke={stroke} strokeWidth={1.5} fill={`url(#sav-${env.key})`} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
             </div>
-          ))}
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+/* ---- 5. Categories grid — the "why" (R7) ---- */
+
+function CategoriesGrid() {
+  return (
+    <section className="anim-slide-up">
+      <header className="mb-4 flex items-end justify-between gap-3">
+        <div>
+          <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Catégories</h2>
+          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">Où va l'argent — clic pour ouvrir le détail.</p>
         </div>
-      </section>
-
-    </div>
-  );
-}
-
-function MonthTile({ data, onClick, year }: { data: { m: string; idx: number; state: TemporalState; actual: number; projected: number; spend: number }; onClick: () => void; year: number }) {
-  const bills = nonMonthlyBills(postesSeed, data.idx);
-  const isCurrent = year === currentYear && data.idx === currentMonthIdx;
-  const stateBg =
-    data.state === "passe"   ? "bg-card"
-    : data.state === "en-cours" ? "bg-primary/5 ring-1 ring-primary/30"
-    : "bg-card";
-  const stateLabel =
-    data.state === "passe" ? "clos" : data.state === "en-cours" ? "en cours" : "à venir";
-  const stateDot =
-    data.state === "passe" ? "bg-foreground/40" : data.state === "en-cours" ? "bg-primary" : "bg-muted-foreground/30";
-
-  // Heat intensity from bills total
-  const pressure = bills.reduce((s, b) => s + b.amount, 0);
-  const intensity = Math.min(1, pressure / 1500);
-
-  return (
-    <button
-      onClick={onClick}
-      className={
-        "group relative flex min-h-[88px] flex-col rounded-xl border p-2 text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift " +
-        (isCurrent ? "border-foreground/60 " : "border-border/40 ") + stateBg
-      }
-      style={{
-        background: data.state === "futur"
-          ? `repeating-linear-gradient(135deg, color-mix(in oklab, var(--warm) ${Math.round(intensity*14)}%, var(--card)) 0 6px, var(--card) 6px 12px)`
-          : `linear-gradient(180deg, color-mix(in oklab, var(--warm) ${Math.round(intensity * 22)}%, var(--card)) 0%, var(--card) 100%)`,
-      }}
-    >
-      <div className="flex items-center justify-between">
-        <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{data.m}</span>
-        <span className={"inline-flex items-center gap-1 rounded-full bg-secondary/70 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.1em] text-muted-foreground"}>
-          <span className={"h-1 w-1 rounded-full " + stateDot} />
-          {stateLabel}
-        </span>
+        <Link to="/budget/mensuel" className="text-xs text-primary underline-offset-4 hover:underline">
+          Vue mensuelle →
+        </Link>
+      </header>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        {categories.map(c => <CategoryMiniCard key={c.key} cat={c} />)}
       </div>
-      <div className="mt-1.5 flex flex-1 flex-col gap-1">
-        {bills.length === 0 ? (
-          <span className="text-[10px] text-muted-foreground/40">—</span>
-        ) : bills.slice(0, 2).map((b, i) => (
-          <span key={i} className="truncate rounded-md bg-warm/15 px-1.5 py-0.5 text-[10px] font-medium leading-tight text-warm"
-            title={`${b.label} · ${eur(b.amount)}`}>{b.label}</span>
-        ))}
-        {bills.length > 2 && <span className="text-[10px] text-muted-foreground">+{bills.length - 2}</span>}
-      </div>
-      <p className="mt-1 text-[10px] tabular-nums text-muted-foreground">
-        {data.state === "futur" ? "prévu " : ""}{eur(data.spend)}
-      </p>
-    </button>
+    </section>
   );
 }
 
-function Legend() {
-  return (
-    <div className="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-      <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-primary" /> Entrées</span>
-      <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-warm" /> Dépenses</span>
-      <span className="inline-flex items-center gap-1.5 opacity-60"><span className="h-2 w-2 rounded-sm bg-warm/40" /> Projeté</span>
-    </div>
-  );
-}
+function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
+  const Icon = cat.icon;
+  const over = cat.actual > cat.budget;
+  const pct = Math.min(100, (cat.actual / cat.budget) * 100);
+  const trend = categoryTrend(cat);
+  const nextBill = nextBillForCategory(cat.key);
+  const first = trend[0].v, last = trend[trend.length - 1].v;
+  const trendUp = last > first;
 
-function Kpi({ label, value, suffix, icon: Icon, tone, hint }: {
-  label: string; value: number; suffix?: string;
-  icon: typeof TrendingUp;
-  tone: "primary" | "warm" | "success"; hint?: string;
-}) {
-  const toneCls =
-    tone === "warm" ? "bg-warm/15 text-warm"
-    : tone === "success" ? "bg-success/15 text-success"
-    : "bg-primary/10 text-primary";
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card p-4 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift sm:p-5">
+    <Link to="/budget/mensuel"
+      className="group flex flex-col rounded-xl border border-border/50 bg-card p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift">
       <div className="flex items-center justify-between gap-2">
-        <p className="min-w-0 truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:text-xs">{label}</p>
-        <span className={"grid h-7 w-7 shrink-0 place-items-center rounded-full sm:h-8 sm:w-8 " + toneCls}>
-          <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+        <div className="flex min-w-0 items-center gap-2">
+          <span className={"grid h-8 w-8 shrink-0 place-items-center rounded-full " + (over ? "bg-warm/15 text-warm" : "bg-secondary text-foreground/70")}>
+            <Icon className="h-4 w-4" />
+          </span>
+          <p className="truncate text-sm font-medium">{cat.label}</p>
+        </div>
+        <span className={"inline-flex items-center gap-0.5 text-[10px] tabular-nums " + (trendUp ? "text-warm" : "text-success")}>
+          {trendUp ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
         </span>
       </div>
-      <p className="mt-2 font-serif text-2xl tracking-tight tabular-nums sm:mt-3 sm:text-3xl">
-        <CountUp to={value} /><span className="ml-1 text-sm text-muted-foreground sm:text-base">{suffix ?? "€"}</span>
-      </p>
-      {hint && <p className="mt-1 text-[11px] text-muted-foreground">{hint}</p>}
-    </div>
+
+      <div className="mt-2 flex items-baseline justify-between gap-2 text-xs">
+        <span className={"tabular-nums " + (over ? "font-semibold text-warm" : "text-foreground")}>{eur(cat.actual)}</span>
+        <span className="tabular-nums text-muted-foreground">/ {eur(cat.budget)}</span>
+      </div>
+      <div className="relative mt-1.5 h-1 w-full overflow-hidden rounded-full bg-secondary">
+        <div className={"absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 " + (over ? "bg-warm" : "bg-primary")}
+             style={{ width: `${pct}%` }} />
+      </div>
+
+      <div className="-mx-1 mt-2 h-8">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={trend} margin={{ top: 2, right: 2, left: 2, bottom: 0 }}>
+            <defs>
+              <linearGradient id={`cat-${cat.key}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={cat.color} stopOpacity={0.35} />
+                <stop offset="100%" stopColor={cat.color} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <Area type="monotone" dataKey="v" stroke={cat.color} strokeWidth={1.5} fill={`url(#cat-${cat.key})`} />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+
+      {nextBill && (
+        <p className="mt-2 inline-flex items-center gap-1 truncate text-[10px] text-muted-foreground">
+          <CalendarClock className="h-3 w-3" />
+          <span className="truncate capitalize">{MONTHS_FR_LONG[nextBill.monthIdx]} · {nextBill.label}</span>
+        </p>
+      )}
+    </Link>
   );
 }
+
+/* keep unused-import guards happy */
+void incomeSources; void nonMonthlyBills; void ArrowRight; void Sparkles; void PiggyBank; void CheckCircle2; void Clock;
+
+
 
 
 /* ============================ MONTH VIEW ============================ */
