@@ -299,3 +299,174 @@ export function actualForMonth(idx: number, state: TemporalState): number {
   return 0;
 }
 
+/* ---------- Home helpers (Vue d'ensemble) ---------- */
+
+export type VerdictStatus = "ok" | "warn" | "over";
+export type AnnualVerdict = {
+  status: VerdictStatus;
+  label: string;
+  hint: string;
+  budgetYear: number;
+  realisedYTD: number;
+  projectedRest: number;
+  projectedTotal: number;
+  deltaEur: number;
+  deltaPct: number;
+  expectedByNow: number;
+  netProjected: number;
+  savingsRate: number;
+};
+
+export function annualVerdict(): AnnualVerdict {
+  const monthlyBudget = categories.reduce((s, c) => s + c.budget, 0);
+  const budgetYear = monthlyBudget * 12;
+  let realisedYTD = 0;
+  for (let i = 0; i <= currentMonthIdx; i++) {
+    const st = temporalState(i);
+    realisedYTD += rolling12[i]?.spend ?? actualForMonth(i, st);
+  }
+  let projectedRest = 0;
+  for (let i = currentMonthIdx + 1; i < 12; i++) {
+    projectedRest += projectedForMonth(postesSeed, i);
+  }
+  // If en-cours, add remainder of current month projection
+  const day = _now.getDate();
+  const daysInMonth = new Date(currentYear, currentMonthIdx + 1, 0).getDate();
+  const remainingOfCurrent = Math.round(monthlyBudget * (1 - day / daysInMonth));
+  const projectedTotal = realisedYTD + remainingOfCurrent + projectedRest;
+
+  const deltaEur = projectedTotal - budgetYear;
+  const deltaPct = (deltaEur / budgetYear) * 100;
+  const expectedByNow = Math.round(budgetYear * ((currentMonthIdx + day / daysInMonth) / 12));
+
+  let status: VerdictStatus = "ok";
+  let label = "Dans les clous";
+  let hint = "La trajectoire tient le budget annuel.";
+  if (deltaPct > 6) {
+    status = "over";
+    label = "Dépassement projeté";
+    hint = "Sur la tendance actuelle, l'année dépassera le budget.";
+  } else if (deltaPct > 2) {
+    status = "warn";
+    label = "Serré cette année";
+    hint = "Marge fine — surveiller les prochains mois.";
+  }
+
+  const totalIncome = rolling12.reduce((s, r) => s + r.income, 0);
+  const netProjected = totalIncome - projectedTotal;
+  const savingsRate = Math.max(0, Math.round((netProjected / totalIncome) * 100));
+
+  return {
+    status, label, hint,
+    budgetYear, realisedYTD, projectedRest: projectedRest + remainingOfCurrent,
+    projectedTotal, deltaEur, deltaPct, expectedByNow,
+    netProjected, savingsRate,
+  };
+}
+
+export function cumulativeSeries() {
+  const monthlyBudget = categories.reduce((s, c) => s + c.budget, 0);
+  let cumReal = 0;
+  let cumProj = 0;
+  let cumBudget = 0;
+  return MONTHS_FR.map((m, i) => {
+    cumBudget += monthlyBudget;
+    const st = temporalState(i);
+    const spend = rolling12[i]?.spend ?? actualForMonth(i, st);
+    if (st === "passe") {
+      cumReal += spend;
+      cumProj = cumReal;
+    } else if (st === "en-cours") {
+      cumReal += spend;
+      cumProj = cumReal;
+    } else {
+      cumProj += projectedForMonth(postesSeed, i);
+    }
+    const isFuture = st === "futur";
+    return {
+      m,
+      idx: i,
+      reel: st === "futur" ? null : cumReal,
+      projete: isFuture ? cumProj : null,
+      budget: cumBudget,
+      tolMin: Math.round(cumBudget * 0.95),
+      tolMax: Math.round(cumBudget * 1.05),
+    };
+  });
+}
+
+export type UpcomingBill = {
+  id: string;
+  monthIdx: number;
+  monthLabel: string;
+  label: string;
+  category: CatKey;
+  amount: number;
+  monthsAway: number;
+  provisionAvailable: number;
+  coverage: "covered" | "partial" | "uncovered";
+  coveragePct: number;
+};
+
+export function upcomingBigBills(n = 5): UpcomingBill[] {
+  const provisionPerMonth = annualisationProvision(postesSeed);
+  const results: UpcomingBill[] = [];
+  const startBalance = annualBalance;
+  for (let step = 0; step < 12 && results.length < n; step++) {
+    const idx = (currentMonthIdx + step) % 12;
+    const bills = postesSeed.filter(
+      (p) => p.recurrence !== "Mensuelle" && p.months.includes(idx),
+    );
+    for (const b of bills) {
+      const provisionAvailable = startBalance + provisionPerMonth * step;
+      const coveragePct = Math.min(100, Math.round((provisionAvailable / b.amount) * 100));
+      const coverage: UpcomingBill["coverage"] =
+        coveragePct >= 100 ? "covered" : coveragePct >= 60 ? "partial" : "uncovered";
+      results.push({
+        id: b.id,
+        monthIdx: idx,
+        monthLabel: MONTHS_FR_LONG[idx],
+        label: b.label,
+        category: b.category,
+        amount: b.amount,
+        monthsAway: step,
+        provisionAvailable,
+        coverage,
+        coveragePct,
+      });
+      if (results.length >= n) break;
+    }
+  }
+  return results;
+}
+
+export function envelopeSeries(env: { key: string; balance: number; contrib: number }) {
+  const seed = env.key.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
+  return Array.from({ length: 12 }, (_, i) => {
+    const wobble = Math.sin((i + seed) * 0.9) * env.contrib * 0.35;
+    const drain = i === 3 || i === 9 ? -env.contrib * 2.2 : 0;
+    const base = Math.max(0, env.balance - env.contrib * (11 - i)) + wobble + drain;
+    return { i, v: Math.max(0, Math.round(base)) };
+  });
+}
+
+export function categoryTrend(cat: Category) {
+  const seed = cat.key.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
+  return Array.from({ length: 6 }, (_, i) => ({
+    i,
+    v: Math.round(cat.actual * (0.82 + Math.sin((i + seed) * 0.7) * 0.16 + i * 0.02)),
+  }));
+}
+
+export function nextBillForCategory(catKey: CatKey): { monthIdx: number; label: string; amount: number } | null {
+  for (let step = 0; step < 12; step++) {
+    const idx = (currentMonthIdx + step) % 12;
+    const b = postesSeed.find(
+      (p) => p.category === catKey && p.recurrence !== "Mensuelle" && p.months.includes(idx),
+    );
+    if (b) return { monthIdx: idx, label: b.label, amount: b.amount };
+  }
+  return null;
+}
+
+
