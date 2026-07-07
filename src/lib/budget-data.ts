@@ -427,7 +427,7 @@ export function upcomingBigBills(n = 5, minAmount = 300): UpcomingBill[] {
   for (let step = 0; step < 12 && results.length < n; step++) {
     const idx = (currentMonthIdx + step) % 12;
     const bills = postesSeed.filter(
-      (p) => p.recurrence !== "Mensuelle" && p.months.includes(idx),
+      (p) => p.recurrence !== "Mensuelle" && p.months.includes(idx) && p.amount >= minAmount,
     );
     for (const b of bills) {
       const provisionAvailable = startBalance + provisionPerMonth * step;
