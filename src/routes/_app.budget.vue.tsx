@@ -117,7 +117,7 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
 
 function VerdictBanner({ verdict }: { verdict: ReturnType<typeof annualVerdict> }) {
   const { status, label, hint, budgetYear, realisedYTD, projectedRest, projectedTotal,
-          deltaEur, deltaPct, expectedByNow, netProjected, savingsRate } = verdict;
+          expectedByNow } = verdict;
   const tone = status === "ok"
     ? { ring: "ring-success/30", bg: "bg-success/10", fg: "text-success", Icon: ShieldCheck, bar: "bg-success" }
     : status === "warn"
