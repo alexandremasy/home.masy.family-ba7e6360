@@ -497,8 +497,9 @@ function CategoriesGrid() {
 
 function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
   const Icon = cat.icon;
-  const over = cat.actual > cat.budget;
-  const pct = Math.min(100, (cat.actual / cat.budget) * 100);
+  const { ytdActual, annualBudget } = annualForCategory(cat);
+  const over = ytdActual > annualBudget;
+  const pct = Math.min(100, (ytdActual / annualBudget) * 100);
   const trend = categoryTrend(cat);
   const nextBill = nextBillForCategory(cat.key);
   const first = trend[0].v, last = trend[trend.length - 1].v;
@@ -520,13 +521,15 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
       </div>
 
       <div className="mt-2 flex items-baseline justify-between gap-2 text-xs">
-        <span className={"tabular-nums " + (over ? "font-semibold text-warm" : "text-foreground")}>{eur(cat.actual)}</span>
-        <span className="tabular-nums text-muted-foreground">/ {eur(cat.budget)}</span>
+        <span className={"tabular-nums " + (over ? "font-semibold text-warm" : "text-foreground")}>{eur(ytdActual)}</span>
+        <span className="tabular-nums text-muted-foreground">/ {eur(annualBudget)}</span>
       </div>
+      <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Cumul à date · budget annuel</p>
       <div className="relative mt-1.5 h-1 w-full overflow-hidden rounded-full bg-secondary">
         <div className={"absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 " + (over ? "bg-warm" : "bg-primary")}
              style={{ width: `${pct}%` }} />
       </div>
+
 
       <div className="-mx-1 mt-2 h-8">
         <ResponsiveContainer width="100%" height="100%">
