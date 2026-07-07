@@ -481,4 +481,18 @@ export function nextBillForCategory(catKey: CatKey): { monthIdx: number; label: 
   return null;
 }
 
+// Annual figures for a category, used by the year overview.
+// ytdActual = cumul réalisé à date (mock : actual mensuel × mois écoulés + fraction du mois courant)
+// annualBudget = budget mensuel × 12.
+export function annualForCategory(cat: Category): { ytdActual: number; annualBudget: number } {
+  const day = _now.getDate();
+  const daysInMonth = new Date(currentYear, currentMonthIdx + 1, 0).getDate();
+  const monthsFactor = currentMonthIdx + day / daysInMonth;
+  return {
+    ytdActual: Math.round(cat.actual * monthsFactor),
+    annualBudget: cat.budget * 12,
+  };
+}
+
+
 
