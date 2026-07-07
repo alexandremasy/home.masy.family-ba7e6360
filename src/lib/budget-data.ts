@@ -315,6 +315,10 @@ export type AnnualVerdict = {
   expectedByNow: number;
   netProjected: number;
   savingsRate: number;
+  spendDeltaYTD: number;
+  spendDeltaPct: number;
+  savingsTarget: number;
+  savingsOnTrack: boolean;
 };
 
 export function annualVerdict(): AnnualVerdict {
@@ -329,7 +333,6 @@ export function annualVerdict(): AnnualVerdict {
   for (let i = currentMonthIdx + 1; i < 12; i++) {
     projectedRest += projectedForMonth(postesSeed, i);
   }
-  // If en-cours, add remainder of current month projection
   const day = _now.getDate();
   const daysInMonth = new Date(currentYear, currentMonthIdx + 1, 0).getDate();
   const remainingOfCurrent = Math.round(monthlyBudget * (1 - day / daysInMonth));
@@ -339,28 +342,37 @@ export function annualVerdict(): AnnualVerdict {
   const deltaPct = (deltaEur / budgetYear) * 100;
   const expectedByNow = Math.round(budgetYear * ((currentMonthIdx + day / daysInMonth) / 12));
 
-  let status: VerdictStatus = "ok";
-  let label = "Dans les clous";
-  let hint = "La trajectoire tient le budget annuel.";
-  if (deltaPct > 6) {
-    status = "over";
-    label = "Dépassement projeté";
-    hint = "Sur la tendance actuelle, l'année dépassera le budget.";
-  } else if (deltaPct > 2) {
-    status = "warn";
-    label = "Serré cette année";
-    hint = "Marge fine — surveiller les prochains mois.";
-  }
+  const spendDeltaYTD = realisedYTD - expectedByNow;
+  const spendDeltaPct = expectedByNow > 0 ? (spendDeltaYTD / expectedByNow) * 100 : 0;
 
   const totalIncome = rolling12.reduce((s, r) => s + r.income, 0);
   const netProjected = totalIncome - projectedTotal;
   const savingsRate = Math.max(0, Math.round((netProjected / totalIncome) * 100));
+
+  const savingsTarget = envelopes.reduce((s, e) => s + e.contrib * 12, 0);
+  const savingsOnTrack = netProjected >= savingsTarget * 0.7;
+
+  // Hero verdict answers "are we in control on the year?" — net annual projected, savings inclus.
+  let status: VerdictStatus = "ok";
+  let label = `En maîtrise — atterrissage projeté ${netProjected >= 0 ? "+" : ""}${eur(netProjected)}`;
+  let hint = "Le net annuel projeté couvre les dépenses et laisse de la marge pour l'épargne.";
+  if (netProjected < 0) {
+    status = "over";
+    label = `Année en déficit projeté — ${eur(netProjected)}`;
+    hint = "Les dépenses projetées dépassent les revenus de l'année.";
+  } else if (!savingsOnTrack) {
+    status = "warn";
+    label = "Épargne sous pression";
+    hint = "Le net reste positif mais l'objectif d'épargne annuel n'est pas tenu.";
+  }
 
   return {
     status, label, hint,
     budgetYear, realisedYTD, projectedRest: projectedRest + remainingOfCurrent,
     projectedTotal, deltaEur, deltaPct, expectedByNow,
     netProjected, savingsRate,
+    spendDeltaYTD, spendDeltaPct,
+    savingsTarget, savingsOnTrack,
   };
 }
 
