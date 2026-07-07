@@ -420,7 +420,7 @@ export type UpcomingBill = {
   coveragePct: number;
 };
 
-export function upcomingBigBills(n = 5): UpcomingBill[] {
+export function upcomingBigBills(n = 5, minAmount = 300): UpcomingBill[] {
   const provisionPerMonth = annualisationProvision(postesSeed);
   const results: UpcomingBill[] = [];
   const startBalance = annualBalance;
