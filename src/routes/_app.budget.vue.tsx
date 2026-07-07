@@ -16,6 +16,7 @@ import {
   temporalState, currentMonthIdx, currentYear, incomeSources,
   annualisationProvision, annualVerdict, cumulativeSeries, upcomingBigBills,
   envelopeSeries, categoryTrend, nextBillForCategory, nonMonthlyBills,
+  annualForCategory,
   type TemporalState, type UpcomingBill,
 } from "@/lib/budget-data";
 
@@ -116,7 +117,7 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
 
 function VerdictBanner({ verdict }: { verdict: ReturnType<typeof annualVerdict> }) {
   const { status, label, hint, budgetYear, realisedYTD, projectedRest, projectedTotal,
-          deltaEur, deltaPct, expectedByNow, netProjected, savingsRate } = verdict;
+          expectedByNow } = verdict;
   const tone = status === "ok"
     ? { ring: "ring-success/30", bg: "bg-success/10", fg: "text-success", Icon: ShieldCheck, bar: "bg-success" }
     : status === "warn"
@@ -169,16 +170,40 @@ function VerdictBanner({ verdict }: { verdict: ReturnType<typeof annualVerdict> 
           </div>
         </div>
 
-        {/* Right rail */}
-        <div className="grid grid-cols-3 gap-3 lg:grid-cols-1 lg:gap-2 lg:border-l lg:border-border/40 lg:pl-8">
-          <MicroStat label="Écart" primary={(deltaEur >= 0 ? "+" : "") + eur(deltaEur)}
-                     secondary={(deltaPct >= 0 ? "+" : "") + deltaPct.toFixed(1) + " %"}
-                     tone={status === "ok" ? "success" : status === "warn" ? "warm" : "destructive"} />
-          <MicroStat label="Net projeté" primary={eur(netProjected)} tone={netProjected >= 0 ? "success" : "warm"} />
-          <MicroStat label="Épargne" primary={savingsRate + " %"} tone="primary" />
+        {/* Right rail: secondary readings */}
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-1 lg:gap-3 lg:border-l lg:border-border/40 lg:pl-8">
+          <SecondaryReading
+            label="Dépenses vs plan"
+            primary={(verdict.spendDeltaYTD >= 0 ? "+" : "") + eur(verdict.spendDeltaYTD)}
+            secondary={(verdict.spendDeltaPct >= 0 ? "+" : "") + verdict.spendDeltaPct.toFixed(1) + " % à date"}
+            tone={verdict.spendDeltaYTD > 0 ? "warm" : "success"}
+          />
+          <SecondaryReading
+            label="Épargne"
+            primary={verdict.savingsRate + " %"}
+            secondary={`Objectif ${eur(verdict.savingsTarget)} · net ${eur(verdict.netProjected)}`}
+            tone={verdict.savingsOnTrack ? "success" : "warm"}
+          />
         </div>
       </div>
     </section>
+  );
+}
+
+function SecondaryReading({ label, primary, secondary, tone }: {
+  label: string; primary: string; secondary?: string;
+  tone: "primary" | "warm" | "success" | "destructive";
+}) {
+  const cls = tone === "warm" ? "text-warm"
+    : tone === "success" ? "text-success"
+    : tone === "destructive" ? "text-destructive"
+    : "text-foreground";
+  return (
+    <div className="rounded-xl bg-secondary/40 p-3 lg:bg-transparent lg:p-0">
+      <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{label}</p>
+      <p className={"mt-1 font-serif text-xl leading-none tabular-nums sm:text-2xl " + cls}>{primary}</p>
+      {secondary && <p className="mt-1.5 text-[11px] tabular-nums text-muted-foreground">{secondary}</p>}
+    </div>
   );
 }
 
@@ -496,8 +521,9 @@ function CategoriesGrid() {
 
 function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
   const Icon = cat.icon;
-  const over = cat.actual > cat.budget;
-  const pct = Math.min(100, (cat.actual / cat.budget) * 100);
+  const { ytdActual, annualBudget } = annualForCategory(cat);
+  const over = ytdActual > annualBudget;
+  const pct = Math.min(100, (ytdActual / annualBudget) * 100);
   const trend = categoryTrend(cat);
   const nextBill = nextBillForCategory(cat.key);
   const first = trend[0].v, last = trend[trend.length - 1].v;
@@ -519,13 +545,15 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
       </div>
 
       <div className="mt-2 flex items-baseline justify-between gap-2 text-xs">
-        <span className={"tabular-nums " + (over ? "font-semibold text-warm" : "text-foreground")}>{eur(cat.actual)}</span>
-        <span className="tabular-nums text-muted-foreground">/ {eur(cat.budget)}</span>
+        <span className={"tabular-nums " + (over ? "font-semibold text-warm" : "text-foreground")}>{eur(ytdActual)}</span>
+        <span className="tabular-nums text-muted-foreground">/ {eur(annualBudget)}</span>
       </div>
+      <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Cumul à date · budget annuel</p>
       <div className="relative mt-1.5 h-1 w-full overflow-hidden rounded-full bg-secondary">
         <div className={"absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 " + (over ? "bg-warm" : "bg-primary")}
              style={{ width: `${pct}%` }} />
       </div>
+
 
       <div className="-mx-1 mt-2 h-8">
         <ResponsiveContainer width="100%" height="100%">
