@@ -16,6 +16,7 @@ import {
   temporalState, currentMonthIdx, currentYear, incomeSources,
   annualisationProvision, annualVerdict, cumulativeSeries, upcomingBigBills,
   envelopeSeries, categoryTrend, nextBillForCategory, nonMonthlyBills,
+  annualForCategory,
   type TemporalState, type UpcomingBill,
 } from "@/lib/budget-data";
 
