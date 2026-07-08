@@ -409,12 +409,12 @@ export function annualVerdict(view: BudgetView = "rolling"): AnnualVerdict {
   const gravityTone: "ok" | "warn" | "over" = status === "over" ? "over" : status === "warn" ? "warn" : "ok";
   const gravityExplain =
     status === "over"
-      ? (draining ? "Le dépassement entame la réserve — à corriger." : "Les dépenses passent devant les revenus — à corriger.")
+      ? (draining ? "Le dépassement fait reculer la réserve — on désépargne." : "Les dépenses passent devant les revenus — à corriger.")
       : status === "warn"
-      ? "Le dépassement fragilise la réserve — à surveiller."
+      ? "Le dépassement fait tomber la réserve sous le seuil sain — à surveiller."
       : status === "absorbed"
-      ? "Dépassement encaissé par l'épargne — rien de grave."
-      : "Dépenses dans le budget, épargne saine — rien à signaler.";
+      ? "Dépassement couvert par les revenus : on épargne moins, mais la réserve tient."
+      : "Dépenses dans le budget, réserve saine — rien à signaler.";
 
   const axes: AnnualVerdict["axes"] = [
     {
@@ -589,16 +589,23 @@ export function monthlyOverview(rolling = false) {
 // floor. Pressure = how close the curve dips toward / below the floor.
 // floorMonths = healthy reserve expressed in months of average spend (placeholder = 3,
 // pending Alex's real threshold).
+// The reserve is DRIVEN by the flows: reserve = accumulated net (income − spend). It is
+// anchored to the known balance at the last import (the envelopes total), then grows or
+// shrinks with the projected net — so overspending visibly slows/erodes it, and the
+// number is consistent with the flux curve (no independent mock).
 export function savingsStockSeries(view: BudgetView = "rolling", floorMonths = 3) {
   const cells = horizonMonths(view);
   const flows = monthlyFlows();
   const avgSpend = flows.reduce((s, f) => s + f.spend, 0) / 12;
   const floor = Math.round(avgSpend * floorMonths);
-  const perEnv = envelopes.map((e) => envelopeSeries(e));
+  const anchor = envelopes.reduce((s, e) => s + e.balance, 0); // known reserve at the last import
   let lastRealIdx = -1;
   cells.forEach((c, i) => { if (c.isReal) lastRealIdx = i; });
+  let cum = 0;
+  const cums = cells.map((c) => (cum += c.income - c.spend));
+  const cumAtAnchor = lastRealIdx >= 0 ? cums[lastRealIdx] : 0;
   const series = cells.map((c, i) => {
-    const stock = perEnv.reduce((s, arr) => s + (arr[i]?.v ?? 0), 0);
+    const stock = Math.max(0, Math.round(anchor + cums[i] - cumAtAnchor));
     const projected = !c.isReal;
     const bridge = projected || i === lastRealIdx;
     return { m: c.label, idx: i, reel: projected ? null : stock, proj: bridge ? stock : null, floor };
