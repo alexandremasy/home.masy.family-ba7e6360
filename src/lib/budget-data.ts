@@ -538,32 +538,32 @@ export function horizonMonths(view: BudgetView): HorizonCell[] {
   });
 }
 
-// Cumulative TRIPLE flow (entrées / dépenses / épargne) over a view's horizon. Réel
-// (solid) through the last import; projeté (dashed) after, bridged at the junction so
-// there is no rupture. épargne = the gap (income − spend).
+// PER-MONTH TRIPLE flow (entrées / dépenses / épargne) over a view's horizon. NOT
+// cumulative: a cumulative curve only ever rises, so épargne looks like it grows even in
+// months that overspend — the reading Alex flagged as false. Monthly, a heavy month makes
+// dépenses climb toward entrées and épargne dip, telling the same story as the month strip.
+// The cumulative accumulation lives in the Réserve chart (savingsStockSeries) instead.
+// Réel (solid) through the last import; projeté (dashed) after, bridged at the junction so
+// the line reads as one continuous walk. épargne = the month's gap (income − spend).
 export function flowsSeries(view: BudgetView = "rolling") {
   const cells = horizonMonths(view);
   let lastRealIdx = -1;
   cells.forEach((c, i) => { if (c.isReal) lastRealIdx = i; });
-  let cumIn = 0;
-  let cumDep = 0;
   return cells.map((c, i) => {
-    cumIn += c.income;
-    cumDep += c.spend;
-    const cumEp = Math.max(0, cumIn - cumDep);
+    const ep = Math.max(0, c.income - c.spend);
     const projected = !c.isReal;
-    const bridge = projected || i === lastRealIdx;
+    const bridge = projected || i === lastRealIdx; // projeté line starts at the last real point
     return {
       m: c.label, idx: i,
       calIdx: c.calIdx, year: Math.floor(c.abs / 12),
       isReal: c.isReal, isToday: c.isToday, isLastImport: c.isLastImport,
       spend: c.spend, income: c.income,
-      inReel: projected ? null : cumIn,
-      inProj: bridge ? cumIn : null,
-      depReel: projected ? null : cumDep,
-      depProj: bridge ? cumDep : null,
-      epReel: projected ? null : cumEp,
-      epProj: bridge ? cumEp : null,
+      inReel: projected ? null : c.income,
+      inProj: bridge ? c.income : null,
+      depReel: projected ? null : c.spend,
+      depProj: bridge ? c.spend : null,
+      epReel: projected ? null : ep,
+      epProj: bridge ? ep : null,
     };
   });
 }

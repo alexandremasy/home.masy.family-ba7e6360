@@ -111,7 +111,7 @@ function YearView({ view, onPickMonth }: { view: BudgetView; onPickMonth: (year:
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* FLUX — verdict integrated on top, then the glissant curve; + categories drill-down */}
-      <FluxBlock verdict={verdict} flows={flows} onPickMonth={onPickMonth} />
+      <FluxBlock verdict={verdict} flows={flows} upcoming={upcoming} onPickMonth={onPickMonth} />
       <CategoriesGrid />
       {/* ÉPARGNE / RÉSERVE — stock vs floor, then what the annualisation pot covers */}
       <SavingsBlock savings={savings} />
@@ -246,12 +246,13 @@ function useYAxis(values: number[], step = 15000) {
   }, [values.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-function FluxBlock({ verdict, flows, onPickMonth }: {
+function FluxBlock({ verdict, flows, upcoming, onPickMonth }: {
   verdict: ReturnType<typeof annualVerdict>;
   flows: ReturnType<typeof flowsSeries>;
+  upcoming: UpcomingBill[];
   onPickMonth: (year: number, monthIdx: number) => void;
 }) {
-  const flowAxis = useYAxis(flows.flatMap(f => [f.inReel ?? 0, f.inProj ?? 0, f.depReel ?? 0, f.depProj ?? 0]));
+  const flowAxis = useYAxis(flows.flatMap(f => [f.inReel ?? 0, f.inProj ?? 0, f.depReel ?? 0, f.depProj ?? 0]), 2000);
   const tone = verdictTone(verdict.status);
   const monthlyBudget = categories.reduce((s, c) => s + c.budget, 0);
   const lastImportX = flows.find((f) => f.isLastImport)?.m;
@@ -264,7 +265,7 @@ function FluxBlock({ verdict, flows, onPickMonth }: {
       {/* One glissant view: past réel (solid) + futur projeté (dashed), présent marqué */}
       <div className="mt-6">
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-          <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Entrées · Dépenses · Épargne — cumul de l'année</p>
+          <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Entrées · Dépenses · Épargne — par mois</p>
           <div className="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
             <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--success)" }} /> Entrées</span>
             <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--warm)" }} /> Dépenses</span>
@@ -329,6 +330,35 @@ function FluxBlock({ verdict, flows, onPickMonth }: {
           })}
         </div>
       </div>
+
+      {/* Échéances strip — same compact language as the months: what's coming + coverage */}
+      {upcoming.length > 0 && (
+        <div className="mt-4 border-t border-border/40 pt-4">
+          <div className="mb-2 flex items-center justify-between text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+            <span>Échéances à venir · couverture</span>
+            <span className="hidden sm:inline">Cliquez pour ouvrir</span>
+          </div>
+          <div className="-mx-1 flex gap-1 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {upcoming.map((b) => {
+              const dot = b.coverage === "covered" ? "bg-success" : b.coverage === "partial" ? "bg-warm" : "bg-destructive";
+              const year = Math.floor((currentMonthIdx + b.monthsAway) / 12) + currentYear;
+              return (
+                <button key={b.id} onClick={() => onPickMonth(year, b.monthIdx)}
+                  title={`${b.label} · couverture ${b.coveragePct}%`}
+                  className="group flex min-w-[128px] shrink-0 items-center gap-2 rounded-lg border border-border/60 bg-card px-2.5 py-2 text-left transition-all hover:-translate-y-0.5 hover:shadow-lift">
+                  <span className={"h-1.5 w-1.5 shrink-0 rounded-full " + dot} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[11px] font-medium leading-tight">{b.label}</span>
+                    <span className="block text-[10px] uppercase tracking-wide text-muted-foreground">
+                      {MONTHS_FR[b.monthIdx]} · <span className="tabular-nums text-warm">−{eur(b.amount)}</span>
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
