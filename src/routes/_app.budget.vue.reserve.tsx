@@ -66,7 +66,7 @@ function ReserveOverlay() {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[60] overflow-y-auto overflow-x-hidden overlay-enter [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="fixed inset-0 z-40 overflow-y-auto overflow-x-hidden overlay-enter [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       role="dialog"
       aria-modal="true"
     >
