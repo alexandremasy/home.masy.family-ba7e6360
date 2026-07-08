@@ -301,7 +301,16 @@ export function actualForMonth(idx: number, state: TemporalState): number {
 
 /* ---------- Home helpers (Vue d'ensemble) ---------- */
 
-export type VerdictStatus = "ok" | "warn" | "over";
+// Verdict grammar — two axes, hierarchical (cause → consequence):
+//   axis A (cause):       trajectory vs the spending budget (projectedTotal vs budgetYear)
+//   axis B (consequence): does the projected net still cover the planned savings?
+// Severity (color) is driven by the CONSEQUENCE; the label names the CAUSE.
+// Overspending only matters to the extent it eats the épargne.
+//   ok       → on budget AND savings covered            (green)
+//   absorbed → over budget BUT savings still covered    (mustard — named, not alarming)
+//   warn     → net positive but planned savings not met (terracotta — the overshoot bites)
+//   over     → projected net negative — dissaving       (red — the only true alarm)
+export type VerdictStatus = "ok" | "absorbed" | "warn" | "over";
 export type AnnualVerdict = {
   status: VerdictStatus;
   label: string;
@@ -320,6 +329,9 @@ export type AnnualVerdict = {
   savingsTarget: number;
   savingsOnTrack: boolean;
 };
+
+// Tolerance on the trajectory axis before an overshoot is "named" (plan: ±2 %).
+const TRAJECTORY_TOLERANCE_PCT = 2;
 
 export function annualVerdict(): AnnualVerdict {
   const monthlyBudget = categories.reduce((s, c) => s + c.budget, 0);
@@ -350,20 +362,34 @@ export function annualVerdict(): AnnualVerdict {
   const savingsRate = Math.max(0, Math.round((netProjected / totalIncome) * 100));
 
   const savingsTarget = envelopes.reduce((s, e) => s + e.contrib * 12, 0);
-  const savingsOnTrack = netProjected >= savingsTarget * 0.7;
+  const savingsOnTrack = netProjected >= savingsTarget;
 
-  // Hero verdict answers "are we in control on the year?" — net annual projected, savings inclus.
-  let status: VerdictStatus = "ok";
-  let label = `En maîtrise — atterrissage projeté ${netProjected >= 0 ? "+" : ""}${eur(netProjected)}`;
-  let hint = "Le net annuel projeté couvre les dépenses et laisse de la marge pour l'épargne.";
+  // Axis A — cause: is the spending trajectory over budget (beyond tolerance)?
+  const overBudget = deltaPct > TRAJECTORY_TOLERANCE_PCT;
+  // Axis B — consequence: deficit < 0 ≤ eating-into-savings < savingsTarget ≤ covered.
+  const savingsGap = savingsTarget - netProjected;
+
+  let status: VerdictStatus;
+  let label: string;
+  let hint: string;
   if (netProjected < 0) {
     status = "over";
-    label = `Année en déficit projeté — ${eur(netProjected)}`;
-    hint = "Les dépenses projetées dépassent les revenus de l'année.";
+    label = "Déficit projeté — on puise dans les réserves";
+    hint = `Les dépenses projetées dépassent les revenus de l'année : net ${eur(netProjected)}. L'épargne recule.`;
   } else if (!savingsOnTrack) {
     status = "warn";
-    label = "Épargne sous pression";
-    hint = "Le net reste positif mais l'objectif d'épargne annuel n'est pas tenu.";
+    label = overBudget ? "Le dépassement entame l'épargne" : "Épargne sous l'objectif";
+    hint = overBudget
+      ? `${deltaEur >= 0 ? "+" : ""}${eur(deltaEur)} vs budget dépenses : le net projeté (${eur(netProjected)}) ne couvre plus l'objectif d'épargne de ${eur(savingsTarget)} — il manque ${eur(savingsGap)}.`
+      : `Dépenses dans le budget, mais le net projeté (${eur(netProjected)}) reste sous l'objectif d'épargne de ${eur(savingsTarget)} — il manque ${eur(savingsGap)}.`;
+  } else if (overBudget) {
+    status = "absorbed";
+    label = "Dépassement absorbé — l'épargne tient";
+    hint = `${eur(deltaEur)} au-dessus du budget dépenses, mais le net projeté (${eur(netProjected)}) couvre l'objectif d'épargne de ${eur(savingsTarget)}.`;
+  } else {
+    status = "ok";
+    label = "Dans les clous";
+    hint = `Trajectoire dans le budget et épargne sur objectif — net projeté ${eur(netProjected)}, objectif ${eur(savingsTarget)} couvert.`;
   }
 
   return {
@@ -374,6 +400,14 @@ export function annualVerdict(): AnnualVerdict {
     spendDeltaYTD, spendDeltaPct,
     savingsTarget, savingsOnTrack,
   };
+}
+
+// Freshness stamp — a verdict is only as good as its last import ("no import → no
+// monitoring"). Mock: last complete import = previous month. Real app: from /budget/imports.
+export function dataFreshness(): { asOfLabel: string; lastImportLabel: string } {
+  const asOfLabel = _now.toLocaleDateString("fr-BE", { day: "numeric", month: "long" });
+  const lastIdx = (currentMonthIdx + 11) % 12;
+  return { asOfLabel, lastImportLabel: `${MONTHS_FR_LONG[lastIdx].toLowerCase()} importé` };
 }
 
 export function cumulativeSeries() {

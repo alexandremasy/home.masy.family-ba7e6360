@@ -14,7 +14,7 @@ import { CountUp } from "@/components/CountUp";
 import {
   categories, envelopes, postesSeed, MONTHS_FR, MONTHS_FR_LONG, eur,
   temporalState, currentMonthIdx, currentYear, incomeSources,
-  annualisationProvision, annualVerdict, cumulativeSeries, upcomingBigBills,
+  annualisationProvision, annualVerdict, cumulativeSeries, dataFreshness, upcomingBigBills,
   envelopeSeries, categoryTrend, nextBillForCategory, nonMonthlyBills,
   annualForCategory,
   type TemporalState, type UpcomingBill,
@@ -120,9 +120,12 @@ function VerdictBanner({ verdict }: { verdict: ReturnType<typeof annualVerdict> 
           expectedByNow } = verdict;
   const tone = status === "ok"
     ? { ring: "ring-success/30", bg: "bg-success/10", fg: "text-success", Icon: ShieldCheck, bar: "bg-success" }
+    : status === "absorbed"
+    ? { ring: "ring-accent/40", bg: "bg-accent/15", fg: "text-accent", Icon: ShieldCheck, bar: "bg-accent" }
     : status === "warn"
     ? { ring: "ring-warm/40", bg: "bg-warm/15", fg: "text-warm", Icon: AlertTriangle, bar: "bg-warm" }
     : { ring: "ring-destructive/40", bg: "bg-destructive/10", fg: "text-destructive", Icon: ShieldAlert, bar: "bg-destructive" };
+  const freshness = dataFreshness();
 
   const realisedPct = Math.min(100, (realisedYTD / budgetYear) * 100);
   const projectedPct = Math.min(100, (projectedTotal / budgetYear) * 100);
@@ -137,7 +140,12 @@ function VerdictBanner({ verdict }: { verdict: ReturnType<typeof annualVerdict> 
               <tone.Icon className="h-5 w-5" />
             </span>
             <div className="min-w-0">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Trajectoire annuelle</p>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                Trajectoire annuelle
+                <span className="ml-2 normal-case tracking-normal text-muted-foreground/70">
+                  · à jour au {freshness.asOfLabel} · {freshness.lastImportLabel}
+                </span>
+              </p>
               <h2 className={"mt-0.5 font-serif text-2xl tracking-tight sm:text-3xl " + tone.fg}>{label}</h2>
             </div>
           </div>
