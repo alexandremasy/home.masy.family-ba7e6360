@@ -128,44 +128,45 @@ function verdictTone(status: ReturnType<typeof annualVerdict>["status"]) {
     : { ring: "ring-destructive/40", bg: "bg-destructive/10", fg: "text-destructive", Icon: ShieldAlert };
 }
 
-function VerdictHeader({ verdict }: { verdict: ReturnType<typeof annualVerdict> }) {
-  const { status, label, hint } = verdict;
-  const tone = verdictTone(status);
-  const freshness = dataFreshness();
-  return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
-      <div className="min-w-0">
-        <div className="flex items-center gap-3">
-          <span className={"grid h-10 w-10 shrink-0 place-items-center rounded-full " + tone.bg + " " + tone.fg}>
-            <tone.Icon className="h-5 w-5" />
-          </span>
-          <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-              Trajectoire annuelle
-              <span className="ml-2 normal-case tracking-normal text-muted-foreground/70">
-                · à jour au {freshness.asOfLabel} · {freshness.lastImportLabel}
-              </span>
-            </p>
-            <h2 className={"mt-0.5 font-serif text-2xl tracking-tight sm:text-3xl " + tone.fg}>{label}</h2>
-          </div>
-        </div>
-        <p className="mt-3 max-w-prose text-sm text-muted-foreground">{hint}</p>
-      </div>
+const axisCls = {
+  ok: { fg: "text-success", dot: "bg-success" },
+  warn: { fg: "text-warm", dot: "bg-warm" },
+  over: { fg: "text-destructive", dot: "bg-destructive" },
+} as const;
 
-      {/* Right rail: the two health axes — dépenses vs plan, réserve vs seuil */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-1 lg:gap-3 lg:border-l lg:border-border/40 lg:pl-8">
-        <SecondaryReading
-          label="Dépenses vs plan"
-          primary={(verdict.deltaEur >= 0 ? "+" : "") + eur(verdict.deltaEur)}
-          secondary={(verdict.deltaPct >= 0 ? "+" : "") + verdict.deltaPct.toFixed(1) + " % sur l'année"}
-          tone={verdict.deltaEur > 0 ? "warm" : "success"}
-        />
-        <SecondaryReading
-          label="Réserve"
-          primary={eur(verdict.reserveEnd)}
-          secondary={`seuil sain ${eur(verdict.reserveFloor)}`}
-          tone={verdict.savingsOnTrack ? "success" : "warm"}
-        />
+function AxisStatus({ axis }: { axis: ReturnType<typeof annualVerdict>["axes"][number] }) {
+  const c = axisCls[axis.tone];
+  return (
+    <div className="rounded-xl border border-border/50 bg-secondary/25 px-4 py-3">
+      <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+        <span className={"h-1.5 w-1.5 rounded-full " + c.dot} /> {axis.label}
+      </p>
+      <p className={"mt-1 font-serif text-2xl leading-none tabular-nums sm:text-3xl " + c.fg}>{axis.value}</p>
+      <p className="mt-1.5 text-[11px] text-muted-foreground">{axis.sub}</p>
+    </div>
+  );
+}
+
+function VerdictHeader({ verdict }: { verdict: ReturnType<typeof annualVerdict> }) {
+  const tone = verdictTone(verdict.status);
+  const freshness = dataFreshness();
+  const word = verdict.status === "over" ? "Sous tension" : verdict.status === "warn" ? "À surveiller" : "Sous contrôle";
+  return (
+    <div>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+          Santé de l'année
+          <span className="ml-2 normal-case tracking-normal text-muted-foreground/70">
+            · à jour au {freshness.asOfLabel} · {freshness.lastImportLabel}
+          </span>
+        </p>
+        <span className={"inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium " + tone.bg + " " + tone.fg}>
+          <tone.Icon className="h-3.5 w-3.5" /> {word}
+        </span>
+      </div>
+      {/* Two independent statuses — each a value + its reasoning */}
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        {verdict.axes.map((a) => <AxisStatus key={a.label} axis={a} />)}
       </div>
     </div>
   );

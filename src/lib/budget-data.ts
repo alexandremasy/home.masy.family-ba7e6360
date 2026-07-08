@@ -315,6 +315,7 @@ export type AnnualVerdict = {
   status: VerdictStatus;
   label: string;
   hint: string;
+  axes: { label: string; tone: "ok" | "warn" | "over"; value: string; sub: string }[];
   budgetYear: number;
   realisedYTD: number;
   projectedRest: number;
@@ -342,17 +343,23 @@ export function annualVerdict(): AnnualVerdict {
   const flows = monthlyFlows();
   const { avgIncome, avgSpend } = projectionBasis();
 
-  // Realised so far + run-rate projection for the rest of the year.
+  // Realised = imported months only; projection = run-rate + scheduled lumpy events.
   let realisedYTD = 0;
   let realisedIncome = 0;
-  for (let i = 0; i <= currentMonthIdx; i++) {
+  for (let i = 0; i <= lastImportedMonthIdx; i++) {
     realisedYTD += flows[i].spend;
     realisedIncome += flows[i].income;
   }
-  const futureMonths = 11 - currentMonthIdx;
-  const projectedTotal = realisedYTD + avgSpend * futureMonths;
-  const projectedIncome = realisedIncome + avgIncome * futureMonths;
-  const projectedRest = projectedTotal - realisedYTD;
+  let projSpend = 0;
+  let projIncome = 0;
+  for (let i = lastImportedMonthIdx + 1; i < 12; i++) {
+    const lump = lumpFor(i);
+    projSpend += avgSpend + lump.charge;
+    projIncome += avgIncome + lump.income;
+  }
+  const projectedTotal = realisedYTD + projSpend;
+  const projectedIncome = realisedIncome + projIncome;
+  const projectedRest = projSpend;
 
   const deltaEur = projectedTotal - budgetYear;
   const deltaPct = budgetYear > 0 ? (deltaEur / budgetYear) * 100 : 0;
@@ -401,8 +408,24 @@ export function annualVerdict(): AnnualVerdict {
     hint = `Trajectoire dans le budget et réserve saine — atterrissage ${eur(reserveEnd)}, seuil ${eur(reserveFloor)}.`;
   }
 
+  // Two independent status axes — each a value + its reasoning (not a section title).
+  const axes: AnnualVerdict["axes"] = [
+    {
+      label: "Trajectoire dépenses",
+      tone: overBudget ? "warn" : "ok",
+      value: (deltaEur >= 0 ? "+" : "") + eur(deltaEur),
+      sub: overBudget ? `${deltaPct >= 0 ? "+" : ""}${deltaPct.toFixed(0)} % vs budget annuel` : "dans le budget annuel",
+    },
+    {
+      label: "Réserve",
+      tone: draining ? "over" : belowFloor ? "warn" : "ok",
+      value: eur(reserveEnd),
+      sub: draining ? `en recul vs ${eur(reserveStart)}` : belowFloor ? `sous le seuil sain ${eur(reserveFloor)}` : `au-dessus du seuil sain ${eur(reserveFloor)}`,
+    },
+  ];
+
   return {
-    status, label, hint,
+    status, label, hint, axes,
     budgetYear, realisedYTD, projectedRest,
     projectedTotal, deltaEur, deltaPct, expectedByNow,
     netProjected, savingsRate,
@@ -429,14 +452,30 @@ function monthlyFlows(): { income: number; spend: number }[] {
   });
 }
 
-// Projection basis — the run-rate from the months we actually have (realised).
-// The projection is RECALCULATED from this every render, so it moves as imports land.
+// The last month we actually have data for. The current month is NOT imported yet
+// ("en cours de mois tu n'as pas d'info"), and we may skip months → réel stops here,
+// everything after is projection until the next files arrive. Mock: previous month.
+export const lastImportedMonthIdx = Math.max(-1, currentMonthIdx - 1);
+
+// Scheduled non-monthly events for a month (from calendarBills) split income / charge.
+// These are what make the projection lumpy — some months charges > entrées → annualisation.
+function lumpFor(i: number): { income: number; charge: number } {
+  const bills = calendarBills[i] ?? [];
+  return {
+    income: bills.filter((b) => b.kind === "income").reduce((s, b) => s + b.amount, 0),
+    charge: bills.filter((b) => b.kind !== "income").reduce((s, b) => s + b.amount, 0),
+  };
+}
+
+// Projection basis — the recurring run-rate from the IMPORTED months only. Lumpy
+// non-monthly events are added on top per month (lumpFor), so the projection is
+// bumpy, not a smooth line. Recalculated every render → moves as imports land.
 export function projectionBasis() {
   const flows = monthlyFlows();
   let inSum = 0;
   let depSum = 0;
   let n = 0;
-  for (let i = 0; i <= currentMonthIdx; i++) {
+  for (let i = 0; i <= lastImportedMonthIdx; i++) {
     inSum += flows[i].income;
     depSum += flows[i].spend;
     n++;
@@ -444,30 +483,32 @@ export function projectionBasis() {
   return { avgIncome: n ? Math.round(inSum / n) : 0, avgSpend: n ? Math.round(depSum / n) : 0, realizedMonths: n };
 }
 
-// Graph A — cumulative TRIPLE flow: entrées / dépenses / épargne, réalisé (solid)
-// then projeté (dashed, from the run-rate). Identity: Entrées = Dépenses + Épargne, so
-// épargne = the gap. Glissant: past = real, future = projected, present = the "en-cours"
-// month (carries both series so solid → dashed is seamless).
-export function flowsSeries() {
+// Graph A — cumulative TRIPLE flow: entrées / dépenses / épargne. Réel (solid) up to
+// the LAST IMPORTED month; everything after is projeté (dashed) = run-rate + the lumpy
+// non-monthly events scheduled that month (so it's bumpy, not smooth). Glissant: past
+// réel + futur projeté; the last imported month is the junction (carries both so the
+// dashed starts exactly on the solid). `year`: past year → all réel, future → all projeté.
+export function flowsSeries(year = currentYear) {
   const flows = monthlyFlows();
   const { avgIncome, avgSpend } = projectionBasis();
+  const lastReal = year < currentYear ? 11 : year > currentYear ? -1 : lastImportedMonthIdx;
   let cumIn = 0;
   let cumDep = 0;
   return MONTHS_FR.map((m, i) => {
-    const st = temporalState(i);
-    const future = st === "futur";
-    cumIn += future ? avgIncome : flows[i].income;
-    cumDep += future ? avgSpend : flows[i].spend;
+    const projected = i > lastReal;
+    const lump = lumpFor(i);
+    cumIn += projected ? avgIncome + lump.income : flows[i].income;
+    cumDep += projected ? avgSpend + lump.charge : flows[i].spend;
     const cumEp = Math.max(0, cumIn - cumDep); // épargne = l'écart
-    const bridge = future || st === "en-cours";
+    const junction = i === lastReal; // last imported month → dashed starts here
     return {
       m, idx: i,
-      inReel: future ? null : cumIn,
-      inProj: bridge ? cumIn : null,
-      depReel: future ? null : cumDep,
-      depProj: bridge ? cumDep : null,
-      epReel: future ? null : cumEp,
-      epProj: bridge ? cumEp : null,
+      inReel: projected ? null : cumIn,
+      inProj: projected || junction ? cumIn : null,
+      depReel: projected ? null : cumDep,
+      depProj: projected || junction ? cumDep : null,
+      epReel: projected ? null : cumEp,
+      epProj: projected || junction ? cumEp : null,
     };
   });
 }
