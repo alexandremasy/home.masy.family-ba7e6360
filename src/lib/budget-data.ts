@@ -410,6 +410,58 @@ export function dataFreshness(): { asOfLabel: string; lastImportLabel: string } 
   return { asOfLabel, lastImportLabel: `${MONTHS_FR_LONG[lastIdx].toLowerCase()} importé` };
 }
 
+// rolling12 is stored current-month-first; realign to calendar order (Jan..Déc).
+function monthlyFlows(): { income: number; spend: number }[] {
+  const byName = new Map(rolling12.map((r) => [r.m, r]));
+  return MONTHS_FR.map((m) => {
+    const r = byName.get(m);
+    return { income: r?.income ?? 0, spend: r?.spend ?? 0 };
+  });
+}
+
+// Graph A — cumulative income vs expense across the year, réalisé (solid) then
+// projeté (dashed). The gap between the two curves = the year's savings capacity.
+// Projection = the "en-cours" month carries both series so solid → dashed is seamless.
+export function flowsSeries() {
+  const flows = monthlyFlows();
+  let cumIn = 0;
+  let cumDep = 0;
+  return MONTHS_FR.map((m, i) => {
+    const st = temporalState(i);
+    cumIn += flows[i].income;
+    cumDep += flows[i].spend;
+    const future = st === "futur";
+    const bridge = future || st === "en-cours";
+    return {
+      m, idx: i,
+      inReel: future ? null : cumIn,
+      inProj: bridge ? cumIn : null,
+      depReel: future ? null : cumDep,
+      depProj: bridge ? cumDep : null,
+    };
+  });
+}
+
+// Graph B — the "bas de laine" (accumulated savings) across the year + its healthy
+// floor. Pressure = how close the curve dips toward / below the floor.
+// floorMonths = healthy reserve expressed in months of average spend (placeholder = 3,
+// pending Alex's real threshold).
+export function savingsStockSeries(floorMonths = 3) {
+  const flows = monthlyFlows();
+  const avgSpend = flows.reduce((s, f) => s + f.spend, 0) / 12;
+  const floor = Math.round(avgSpend * floorMonths);
+  const perEnv = envelopes.map((e) => envelopeSeries(e));
+  const series = MONTHS_FR.map((m, i) => {
+    const st = temporalState(i);
+    const stock = perEnv.reduce((s, arr) => s + (arr[i]?.v ?? 0), 0);
+    const future = st === "futur";
+    const bridge = future || st === "en-cours";
+    return { m, idx: i, reel: future ? null : stock, proj: bridge ? stock : null, floor };
+  });
+  const projectedEnd = series[11].proj ?? series[11].reel ?? 0;
+  return { series, floor, projectedEnd, floorMonths };
+}
+
 export function cumulativeSeries() {
   const monthlyBudget = categories.reduce((s, c) => s + c.budget, 0);
   let cumReal = 0;
