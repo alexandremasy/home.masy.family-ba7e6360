@@ -14,11 +14,11 @@ import { CountUp } from "@/components/CountUp";
 import {
   categories, envelopes, postesSeed, MONTHS_FR, MONTHS_FR_LONG, eur,
   temporalState, currentMonthIdx, currentYear, incomeSources,
-  annualisationProvision, annualVerdict, dataFreshness,
+  annualisationProvision, annualVerdict, dataFreshness, viewTitle,
   flowsSeries, savingsStockSeries, upcomingBigBills,
   envelopeSeries, categoryTrend, nextBillForCategory, nonMonthlyBills,
   annualForCategory,
-  type TemporalState, type UpcomingBill,
+  type TemporalState, type UpcomingBill, type BudgetView,
 } from "@/lib/budget-data";
 
 export const Route = createFileRoute("/_app/budget/vue")({
@@ -31,43 +31,48 @@ export const Route = createFileRoute("/_app/budget/vue")({
   }),
 });
 
+// Navigator: rolling budget first (default), then calendar years going back.
+const NAV_VIEWS: BudgetView[] = ["rolling", currentYear, currentYear - 1, currentYear - 2, currentYear - 3];
+
 function VuePage() {
-  const [year, setYear] = useState(currentYear);
-  const [zoomMonth, setZoomMonth] = useState<number | null>(null);
+  const [navIdx, setNavIdx] = useState(0);
+  const [zoom, setZoom] = useState<{ year: number; monthIdx: number } | null>(null);
+  const view = NAV_VIEWS[navIdx];
 
   return (
     <div className="space-y-6 anim-slide-up sm:space-y-8">
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:flex sm:flex-wrap sm:justify-between sm:gap-4">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-          {zoomMonth !== null && (
+          {zoom !== null && (
             <button
-              onClick={() => setZoomMonth(null)}
+              onClick={() => setZoom(null)}
               className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border/60 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-              aria-label="Retour à l'année"
+              aria-label="Retour à la vue d'ensemble"
             ><ArrowLeft className="h-4 w-4" /></button>
           )}
           <div className="min-w-0">
             <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-              Budget · {zoomMonth === null ? "Vue d'ensemble" : "Mois"}
+              Budget · {zoom === null ? "Vue d'ensemble" : "Mois"}
             </p>
             <h1 className="mt-1 truncate font-serif text-2xl tracking-tight sm:text-4xl">
-              {zoomMonth === null
-                ? `Année ${year}`
+              {zoom === null
+                ? viewTitle(view)
                 : <>
-                    <button onClick={() => setZoomMonth(null)} className="text-muted-foreground hover:text-foreground transition-colors">{year}</button>
+                    <button onClick={() => setZoom(null)} className="text-muted-foreground hover:text-foreground transition-colors">{viewTitle(view)}</button>
                     <span className="mx-2 text-muted-foreground/50">/</span>
-                    <span className="capitalize">{MONTHS_FR_LONG[zoomMonth]}</span>
+                    <span className="capitalize">{MONTHS_FR_LONG[zoom.monthIdx]} {zoom.year}</span>
                   </>}
             </h1>
           </div>
         </div>
-        {zoomMonth === null && (
+        {zoom === null && (
           <div className="flex shrink-0 items-center gap-2">
-            <button onClick={() => setYear(y => y - 1)}
-              className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
+            <button onClick={() => setNavIdx((i) => Math.max(0, i - 1))} disabled={navIdx === 0}
+              aria-label="Vers le glissant"
+              className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-30"
             ><ChevronLeft className="h-4 w-4" /></button>
-            <button onClick={() => setYear(y => Math.min(currentYear + 1, y + 1))}
-              disabled={year >= currentYear + 1}
+            <button onClick={() => setNavIdx((i) => Math.min(NAV_VIEWS.length - 1, i + 1))} disabled={navIdx === NAV_VIEWS.length - 1}
+              aria-label="Vers les années passées"
               className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-30"
             ><ChevronRight className="h-4 w-4" /></button>
           </div>
@@ -75,17 +80,17 @@ function VuePage() {
       </header>
 
       <div className="relative">
-        <div className={(zoomMonth === null ? "opacity-100" : "pointer-events-none hidden") + " transition-opacity duration-300"}>
-          <YearView year={year} onPickMonth={setZoomMonth} />
+        <div className={(zoom === null ? "opacity-100" : "pointer-events-none hidden") + " transition-opacity duration-300"}>
+          <YearView view={view} onPickMonth={(year, monthIdx) => setZoom({ year, monthIdx })} />
         </div>
-        <div className={(zoomMonth !== null ? "opacity-100 block" : "hidden") + " transition-opacity duration-300"}>
-          {zoomMonth !== null && (
+        <div className={(zoom !== null ? "opacity-100 block" : "hidden") + " transition-opacity duration-300"}>
+          {zoom !== null && (
             <MonthView
-              key={zoomMonth}
-              year={year}
-              monthIdx={zoomMonth}
-              onPrev={() => setZoomMonth((m) => (m! > 0 ? m! - 1 : m))}
-              onNext={() => setZoomMonth((m) => (m! < 11 ? m! + 1 : m))}
+              key={`${zoom.year}-${zoom.monthIdx}`}
+              year={zoom.year}
+              monthIdx={zoom.monthIdx}
+              onPrev={() => setZoom((z) => z && (z.monthIdx > 0 ? { ...z, monthIdx: z.monthIdx - 1 } : { year: z.year - 1, monthIdx: 11 }))}
+              onNext={() => setZoom((z) => z && (z.monthIdx < 11 ? { ...z, monthIdx: z.monthIdx + 1 } : { year: z.year + 1, monthIdx: 0 }))}
             />
           )}
         </div>
@@ -96,21 +101,20 @@ function VuePage() {
 
 /* ============================ YEAR VIEW ============================ */
 
-function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number) => void }) {
-  const isCurrentYear = year === currentYear;
-  const verdict = useMemo(() => annualVerdict(), []);
-  const flows = useMemo(() => flowsSeries(), []);
-  const savings = useMemo(() => savingsStockSeries(), []);
+function YearView({ view, onPickMonth }: { view: BudgetView; onPickMonth: (year: number, monthIdx: number) => void }) {
+  const verdict = useMemo(() => annualVerdict(view), [view]);
+  const flows = useMemo(() => flowsSeries(view), [view]);
+  const savings = useMemo(() => savingsStockSeries(view), [view]);
   const upcoming = useMemo(() => upcomingBigBills(5), []);
   const provision = annualisationProvision(postesSeed);
 
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* FLUX — verdict integrated on top, then the glissant curve; + categories drill-down */}
-      <FluxBlock verdict={verdict} flows={flows} isCurrentYear={isCurrentYear} onPickMonth={onPickMonth} year={year} />
+      <FluxBlock verdict={verdict} flows={flows} onPickMonth={onPickMonth} />
       <CategoriesGrid />
       {/* ÉPARGNE / RÉSERVE — stock vs floor, then what the annualisation pot covers */}
-      <SavingsBlock savings={savings} isCurrentYear={isCurrentYear} />
+      <SavingsBlock savings={savings} />
       <UpcomingBillsBlock bills={upcoming} provision={provision} />
     </div>
   );
@@ -241,16 +245,15 @@ function useYAxis(values: number[], step = 15000) {
   }, [values.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-function FluxBlock({ verdict, flows, isCurrentYear, onPickMonth, year }: {
+function FluxBlock({ verdict, flows, onPickMonth }: {
   verdict: ReturnType<typeof annualVerdict>;
   flows: ReturnType<typeof flowsSeries>;
-  isCurrentYear: boolean;
-  onPickMonth: (i: number) => void;
-  year: number;
+  onPickMonth: (year: number, monthIdx: number) => void;
 }) {
   const flowAxis = useYAxis(flows.flatMap(f => [f.inReel ?? 0, f.inProj ?? 0, f.depReel ?? 0, f.depProj ?? 0]));
-  const curX = MONTHS_FR[currentMonthIdx];
   const tone = verdictTone(verdict.status);
+  const lastImportX = flows.find((f) => f.isLastImport)?.m;
+  const todayX = flows.find((f) => f.isToday)?.m;
   return (
     <section className={"rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up ring-1 " + tone.ring}>
       {/* Verdict integrated at the top — the curve below is its gauge */}
@@ -275,8 +278,12 @@ function FluxBlock({ verdict, flows, isCurrentYear, onPickMonth, year }: {
               <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false}
                 domain={[0, flowAxis.yTop]} ticks={flowAxis.yTicks} tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={42} />
               <RTooltip content={<FlowTip />} />
-              {isCurrentYear && (
-                <ReferenceLine x={curX} stroke="var(--foreground)" strokeOpacity={0.35} strokeDasharray="2 4"
+              {lastImportX && (
+                <ReferenceLine x={lastImportX} stroke="var(--foreground)" strokeOpacity={0.28} strokeDasharray="3 3"
+                  label={{ value: "dernier import", position: "insideTopLeft", fontSize: 10, fill: "var(--muted-foreground)" }} />
+              )}
+              {todayX && todayX !== lastImportX && (
+                <ReferenceLine x={todayX} stroke="var(--foreground)" strokeOpacity={0.4} strokeDasharray="2 4"
                   label={{ value: "aujourd'hui", position: "top", fontSize: 10, fill: "var(--muted-foreground)" }} />
               )}
               <Line type="monotone" dataKey="inReel" stroke="var(--success)" strokeWidth={2.5} dot={false} name="Entrées" connectNulls={false} />
@@ -297,20 +304,16 @@ function FluxBlock({ verdict, flows, isCurrentYear, onPickMonth, year }: {
           <span className="hidden sm:inline">Cliquez un mois pour l'ouvrir</span>
         </div>
         <div className="-mx-1 flex gap-1 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {MONTHS_FR.map((m, idx) => {
-            const st = temporalState(idx, year);
-            const isCur = year === currentYear && idx === currentMonthIdx;
-            return (
-              <button key={m} onClick={() => onPickMonth(idx)}
-                className={"group min-w-[56px] flex-1 rounded-lg border px-2 py-1.5 text-[11px] transition-all hover:-translate-y-0.5 hover:shadow-lift " +
-                  (isCur ? "border-foreground/60 bg-primary/5 " : "border-border/40 bg-card ") +
-                  (st === "futur" ? "opacity-70" : "")}>
-                <span className="block text-muted-foreground">{m}</span>
-                <span className={"mx-auto mt-1 block h-1 w-1 rounded-full " +
-                  (st === "passe" ? "bg-foreground/40" : st === "en-cours" ? "bg-primary" : "bg-muted-foreground/30")} />
-              </button>
-            );
-          })}
+          {flows.map((f) => (
+            <button key={f.idx} onClick={() => onPickMonth(f.year, f.calIdx)}
+              className={"group min-w-[56px] flex-1 rounded-lg border px-2 py-1.5 text-[11px] transition-all hover:-translate-y-0.5 hover:shadow-lift " +
+                (f.isToday ? "border-foreground/60 bg-primary/5 " : "border-border/40 bg-card ") +
+                (!f.isReal ? "opacity-70" : "")}>
+              <span className="block text-muted-foreground">{f.m}</span>
+              <span className={"mx-auto mt-1 block h-1 w-1 rounded-full " +
+                (f.isLastImport ? "bg-foreground" : f.isReal ? "bg-foreground/40" : f.isToday ? "bg-primary" : "bg-muted-foreground/30")} />
+            </button>
+          ))}
         </div>
       </div>
     </section>
@@ -407,9 +410,8 @@ function FootStat({ label, value, sub, tone }: { label: string; value: string; s
 
 /* ---- 4. Savings — transparent + editable (R5 + R6) ---- */
 
-function SavingsBlock({ savings, isCurrentYear }: {
+function SavingsBlock({ savings }: {
   savings: ReturnType<typeof savingsStockSeries>;
-  isCurrentYear: boolean;
 }) {
   const [overrides, setOverrides] = useState<Record<string, number>>({});
   const [editKey, setEditKey] = useState<string | null>(null);
@@ -477,7 +479,6 @@ function SavingsBlock({ savings, isCurrentYear }: {
                 label={{ value: `Seuil sain · ${eur(savings.floor)}`, position: "insideTopRight", fontSize: 10, fill: "var(--destructive)" }} />
               <Area type="monotone" dataKey="reel" stroke="var(--primary)" strokeWidth={2.5} fill="var(--primary)" fillOpacity={0.1} name="Réserve" connectNulls={false} />
               <Line type="monotone" dataKey="proj" stroke="var(--primary)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Projeté" connectNulls={false} />
-              {isCurrentYear && <ReferenceLine x={MONTHS_FR[currentMonthIdx]} stroke="var(--foreground)" strokeOpacity={0.3} strokeDasharray="2 4" />}
             </ComposedChart>
           </ResponsiveContainer>
         </div>

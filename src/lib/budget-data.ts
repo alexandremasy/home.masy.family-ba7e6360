@@ -337,25 +337,20 @@ export type AnnualVerdict = {
 // Tolerance on the trajectory axis before an overshoot is "named" (plan: ±2 %).
 const TRAJECTORY_TOLERANCE_PCT = 2;
 
-export function annualVerdict(): AnnualVerdict {
+export function annualVerdict(view: BudgetView = "rolling"): AnnualVerdict {
+  const cells = horizonMonths(view);
+  const horizonWord = view === "rolling" ? "sur les 12 mois" : "fin d'année";
   const monthlyBudget = categories.reduce((s, c) => s + c.budget, 0);
-  const budgetYear = monthlyBudget * 12;
-  const flows = monthlyFlows();
-  const { avgIncome, avgSpend } = projectionBasis();
+  const budgetYear = monthlyBudget * cells.length;
 
-  // Realised = imported months only; projection = run-rate + scheduled lumpy events.
+  // Realised = cells up to the last import; projection = the rest of the horizon.
   let realisedYTD = 0;
   let realisedIncome = 0;
-  for (let i = 0; i <= lastImportedMonthIdx; i++) {
-    realisedYTD += flows[i].spend;
-    realisedIncome += flows[i].income;
-  }
   let projSpend = 0;
   let projIncome = 0;
-  for (let i = lastImportedMonthIdx + 1; i < 12; i++) {
-    const lump = lumpFor(i);
-    projSpend += avgSpend + lump.charge;
-    projIncome += avgIncome + lump.income;
+  for (const c of cells) {
+    if (c.isReal) { realisedYTD += c.spend; realisedIncome += c.income; }
+    else { projSpend += c.spend; projIncome += c.income; }
   }
   const projectedTotal = realisedYTD + projSpend;
   const projectedIncome = realisedIncome + projIncome;
@@ -363,9 +358,8 @@ export function annualVerdict(): AnnualVerdict {
 
   const deltaEur = projectedTotal - budgetYear;
   const deltaPct = budgetYear > 0 ? (deltaEur / budgetYear) * 100 : 0;
-  const day = _now.getDate();
-  const daysInMonth = new Date(currentYear, currentMonthIdx + 1, 0).getDate();
-  const expectedByNow = Math.round(budgetYear * ((currentMonthIdx + day / daysInMonth) / 12));
+  const realShare = cells.filter((c) => c.isReal).length / cells.length;
+  const expectedByNow = Math.round(budgetYear * realShare);
   const spendDeltaYTD = realisedYTD - expectedByNow;
   const spendDeltaPct = expectedByNow > 0 ? (spendDeltaYTD / expectedByNow) * 100 : 0;
 
@@ -373,7 +367,7 @@ export function annualVerdict(): AnnualVerdict {
   const savingsRate = projectedIncome > 0 ? Math.max(0, Math.round((netProjected / projectedIncome) * 100)) : 0;
 
   // Reserve health — same trajectory as the Réserve chart (stock vs healthy floor).
-  const stock = savingsStockSeries();
+  const stock = savingsStockSeries(view);
   const reserveStart = stock.series[0]?.reel ?? 0;
   const reserveEnd = stock.projectedEnd;
   const reserveFloor = stock.floor;
@@ -416,8 +410,8 @@ export function annualVerdict(): AnnualVerdict {
       value: (deltaEur >= 0 ? "+" : "") + eur(deltaEur),
       tag: overBudget ? "Dépassement" : "Dans le budget",
       explain: overBudget
-        ? `${eur(deltaEur)} de dépenses de PLUS que prévu : ${eur(projectedTotal)} projetés sur l'année pour un budget de ${eur(budgetYear)} (+${Math.abs(deltaPct).toFixed(0)} %).`
-        : `${eur(Math.abs(deltaEur))} de MOINS que le budget : ${eur(projectedTotal)} projetés pour un budget de ${eur(budgetYear)}.`,
+        ? `${eur(deltaEur)} de dépenses de plus que prévu : ${eur(projectedTotal)} projetés ${horizonWord} pour un budget de ${eur(budgetYear)} (+${Math.abs(deltaPct).toFixed(0)} %).`
+        : `${eur(Math.abs(deltaEur))} de moins que le budget : ${eur(projectedTotal)} projetés ${horizonWord} pour un budget de ${eur(budgetYear)}.`,
     },
     {
       label: "Réserve (épargne)",
@@ -425,10 +419,10 @@ export function annualVerdict(): AnnualVerdict {
       value: eur(reserveEnd),
       tag: draining ? "En recul" : belowFloor ? "Sous le seuil" : "Saine",
       explain: draining
-        ? `Fin d'année, la réserve serait retombée sous son point de départ (${eur(reserveStart)}).`
+        ? `À l'arrivée, la réserve serait retombée sous son point de départ (${eur(reserveStart)}).`
         : belowFloor
-        ? `Fin d'année, la réserve passerait sous le seuil sain de ${eur(reserveFloor)}.`
-        : `Fin d'année, la réserve reste au-dessus du seuil sain de ${eur(reserveFloor)}.`,
+        ? `À l'arrivée, la réserve passerait sous le seuil sain de ${eur(reserveFloor)}.`
+        : `À l'arrivée, la réserve reste au-dessus du seuil sain de ${eur(reserveFloor)}.`,
     },
   ];
 
@@ -460,10 +454,13 @@ function monthlyFlows(): { income: number; spend: number }[] {
   });
 }
 
-// The last month we actually have data for. The current month is NOT imported yet
-// ("en cours de mois tu n'as pas d'info"), and we may skip months → réel stops here,
-// everything after is projection until the next files arrive. Mock: previous month.
-export const lastImportedMonthIdx = Math.max(-1, currentMonthIdx - 1);
+// The projection boundary is the LAST IMPORT, NOT "now" — and imports may lag several
+// months. Absolute-month arithmetic so a window can cross the year boundary.
+export const IMPORT_LAG = 2; // mock: last import lags 'now' by N months (May when it's July)
+export const currentAbs = currentYear * 12 + currentMonthIdx;
+export const lastImportAbs = currentAbs - IMPORT_LAG;
+// Same, as a 0..11 index in the current year (freshness / projection basis).
+export const lastImportedMonthIdx = Math.max(-1, currentMonthIdx - IMPORT_LAG);
 
 // Scheduled non-monthly events for a month (from calendarBills) split income / charge.
 // These are what make the projection lumpy — some months charges > entrées → annualisation.
@@ -491,29 +488,63 @@ export function projectionBasis() {
   return { avgIncome: n ? Math.round(inSum / n) : 0, avgSpend: n ? Math.round(depSum / n) : 0, realizedMonths: n };
 }
 
-// Graph A — cumulative TRIPLE flow: entrées / dépenses / épargne. Réel (solid) up to
-// the LAST IMPORTED month; everything after is projeté (dashed) = run-rate + the lumpy
-// non-monthly events scheduled that month (so it's bumpy, not smooth). Glissant: past
-// réel + futur projeté; the last imported month is the junction (carries both so the
-// dashed starts exactly on the solid). `year`: past year → all réel, future → all projeté.
-export function flowsSeries(year = currentYear) {
+export type BudgetView = "rolling" | number; // 'rolling' window, or a calendar year
+
+export const viewTitle = (view: BudgetView): string =>
+  view === "rolling" ? "Budget glissant" : `Année ${view}`;
+
+export interface HorizonCell {
+  label: string; calIdx: number; abs: number;
+  isReal: boolean; isToday: boolean; isLastImport: boolean;
+  income: number; spend: number;
+}
+
+// The ordered months for a view. Rolling = a 12-month window around now (5 back → 6
+// ahead); a year = its 12 calendar months. Réel = up to the LAST IMPORT (which may lag
+// 'now' by several months → those extra months are speculative). Projected months carry
+// the run-rate + scheduled lumpy events (bumpy, not smooth).
+export function horizonMonths(view: BudgetView): HorizonCell[] {
   const flows = monthlyFlows();
   const { avgIncome, avgSpend } = projectionBasis();
-  const lastReal = year < currentYear ? 11 : year > currentYear ? -1 : lastImportedMonthIdx;
+  const absList: number[] = [];
+  if (view === "rolling") {
+    for (let o = -5; o <= 6; o++) absList.push(currentAbs + o);
+  } else {
+    for (let i = 0; i < 12; i++) absList.push(view * 12 + i);
+  }
+  return absList.map((abs) => {
+    const calIdx = ((abs % 12) + 12) % 12;
+    const isReal = abs <= lastImportAbs;
+    const lump = lumpFor(calIdx);
+    return {
+      label: MONTHS_FR[calIdx], calIdx, abs, isReal,
+      isToday: abs === currentAbs,
+      isLastImport: abs === lastImportAbs,
+      income: isReal ? flows[calIdx].income : avgIncome + lump.income,
+      spend: isReal ? flows[calIdx].spend : avgSpend + lump.charge,
+    };
+  });
+}
+
+// Cumulative TRIPLE flow (entrées / dépenses / épargne) over a view's horizon. Réel
+// (solid) through the last import; projeté (dashed) after, bridged at the junction so
+// there is no rupture. épargne = the gap (income − spend).
+export function flowsSeries(view: BudgetView = "rolling") {
+  const cells = horizonMonths(view);
+  let lastRealIdx = -1;
+  cells.forEach((c, i) => { if (c.isReal) lastRealIdx = i; });
   let cumIn = 0;
   let cumDep = 0;
-  return MONTHS_FR.map((m, i) => {
-    const projected = i > lastReal;
-    const lump = lumpFor(i);
-    cumIn += projected ? avgIncome + lump.income : flows[i].income;
-    cumDep += projected ? avgSpend + lump.charge : flows[i].spend;
-    const cumEp = Math.max(0, cumIn - cumDep); // épargne = l'écart
-    // Réel (solid) through the last imported month; projeté (dashed) continues from it
-    // (junction carried in both → no rupture). The tooltip formatter hides the projeté
-    // duplicate at the junction so that month still shows one value per metric.
-    const bridge = projected || i === lastReal;
+  return cells.map((c, i) => {
+    cumIn += c.income;
+    cumDep += c.spend;
+    const cumEp = Math.max(0, cumIn - cumDep);
+    const projected = !c.isReal;
+    const bridge = projected || i === lastRealIdx;
     return {
-      m, idx: i,
+      m: c.label, idx: i,
+      calIdx: c.calIdx, year: Math.floor(c.abs / 12),
+      isReal: c.isReal, isToday: c.isToday, isLastImport: c.isLastImport,
       inReel: projected ? null : cumIn,
       inProj: bridge ? cumIn : null,
       depReel: projected ? null : cumDep,
@@ -546,19 +577,22 @@ export function monthlyOverview(rolling = false) {
 // floor. Pressure = how close the curve dips toward / below the floor.
 // floorMonths = healthy reserve expressed in months of average spend (placeholder = 3,
 // pending Alex's real threshold).
-export function savingsStockSeries(floorMonths = 3) {
+export function savingsStockSeries(view: BudgetView = "rolling", floorMonths = 3) {
+  const cells = horizonMonths(view);
   const flows = monthlyFlows();
   const avgSpend = flows.reduce((s, f) => s + f.spend, 0) / 12;
   const floor = Math.round(avgSpend * floorMonths);
   const perEnv = envelopes.map((e) => envelopeSeries(e));
-  const series = MONTHS_FR.map((m, i) => {
-    const st = temporalState(i);
+  let lastRealIdx = -1;
+  cells.forEach((c, i) => { if (c.isReal) lastRealIdx = i; });
+  const series = cells.map((c, i) => {
     const stock = perEnv.reduce((s, arr) => s + (arr[i]?.v ?? 0), 0);
-    const future = st === "futur";
-    const bridge = future || st === "en-cours";
-    return { m, idx: i, reel: future ? null : stock, proj: bridge ? stock : null, floor };
+    const projected = !c.isReal;
+    const bridge = projected || i === lastRealIdx;
+    return { m: c.label, idx: i, reel: projected ? null : stock, proj: bridge ? stock : null, floor };
   });
-  const projectedEnd = series[11].proj ?? series[11].reel ?? 0;
+  const last = series[series.length - 1];
+  const projectedEnd = last.proj ?? last.reel ?? 0;
   return { series, floor, projectedEnd, floorMonths };
 }
 
