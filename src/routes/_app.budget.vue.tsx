@@ -309,20 +309,20 @@ function FluxBlock({ verdict, flows, onPickMonth }: {
           {flows.map((f) => {
             const ecart = Math.round(f.spend - monthlyBudget);
             const over = ecart > 0;
-            const ecartCls = Math.abs(ecart) < 25
-              ? "text-muted-foreground"
-              : over ? "text-warm" : "text-success";
+            const flat = Math.abs(ecart) < 25;
+            const ecartCls = flat ? "text-muted-foreground" : over ? "text-warm" : "text-success";
             return (
               <button key={f.idx} onClick={() => onPickMonth(f.year, f.calIdx)}
-                className={"group flex min-w-[58px] flex-1 flex-col items-center gap-0.5 rounded-lg border px-1.5 py-1.5 transition-all hover:-translate-y-0.5 hover:shadow-lift " +
-                  (f.isToday ? "border-foreground/60 bg-primary/5 " : f.isLastImport ? "border-foreground/40 bg-card " : "border-border/40 bg-card ") +
-                  (!f.isReal ? "opacity-70" : "")}>
-                <span className="text-[10px] uppercase tracking-wide text-muted-foreground">{f.m}</span>
-                <span className={"text-[11px] font-medium tabular-nums " + ecartCls}>
-                  {Math.abs(ecart) < 25 ? "≈" : (over ? "+" : "−") + eur(Math.abs(ecart))}
+                title={f.isReal ? "Réel" : "Projeté"}
+                className={"group flex min-w-[58px] flex-1 flex-col items-center gap-1 rounded-lg border bg-card px-1.5 py-2 transition-all hover:-translate-y-0.5 hover:shadow-lift " +
+                  (f.isReal ? "border-solid border-border " : "border-dashed border-border/70 ") +
+                  (f.isToday ? "ring-1 ring-primary/50 bg-primary/5 " : "")}>
+                <span className="flex items-center gap-1 text-[10px] uppercase tracking-wide text-muted-foreground">
+                  {f.isLastImport && <span className="h-1.5 w-1.5 rounded-full bg-foreground" title="dernier import" />}
+                  {f.m}
                 </span>
-                <span className="text-[8px] uppercase tracking-[0.1em] text-muted-foreground/70">
-                  {f.isToday ? "auj." : f.isLastImport ? "import" : f.isReal ? "réel" : "proj."}
+                <span className={"text-xs font-semibold tabular-nums " + ecartCls}>
+                  {flat ? "≈" : (over ? "+" : "−") + eur(Math.abs(ecart))}
                 </span>
               </button>
             );
@@ -359,11 +359,12 @@ function UpcomingBillsBlock({ bills, provision }: { bills: UpcomingBill[]; provi
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 border-t border-border/40 pt-5 sm:grid-cols-3">
-        <FootStat label="À venir · 6 mois" value={eur(total6m)} tone="warm" />
-        <FootStat label="Provision cumulée" value={eur(provisionIn6m)} sub={`${eur(provision)}/mois`} tone="primary" />
-        <FootStat label="Marge" value={eur(provisionIn6m - total6m)}
-          tone={provisionIn6m - total6m >= 0 ? "success" : "destructive"} />
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border/40 pt-3 text-xs text-muted-foreground">
+        <span>À venir · 6 mois <span className="tabular-nums font-medium text-foreground">{eur(total6m)}</span></span>
+        <span className="text-muted-foreground/40">·</span>
+        <span>Provision <span className="tabular-nums font-medium text-foreground">{eur(provisionIn6m)}</span></span>
+        <span className="text-muted-foreground/40">·</span>
+        <span>Marge <span className={"tabular-nums font-medium " + (provisionIn6m - total6m >= 0 ? "text-success" : "text-destructive")}>{eur(provisionIn6m - total6m)}</span></span>
       </div>
     </section>
   );
