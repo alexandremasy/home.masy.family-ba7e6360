@@ -4,20 +4,18 @@ import {
   Area, AreaChart, CartesianGrid, ComposedChart, Line, ReferenceLine,
   ResponsiveContainer, Tooltip as RTooltip, XAxis, YAxis,
 } from "recharts";
-import { toast } from "sonner";
 import {
   ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, PiggyBank, Sparkles,
   TrendingUp, TrendingDown, Clock, CheckCircle2, CalendarClock, AlertTriangle,
-  ShieldCheck, ShieldAlert, Pencil, Check, X,
+  ShieldCheck, ShieldAlert,
 } from "lucide-react";
 import { CountUp } from "@/components/CountUp";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
-  categories, envelopes, postesSeed, MONTHS_FR, MONTHS_FR_LONG, eur,
+  categories, postesSeed, MONTHS_FR, MONTHS_FR_LONG, eur,
   temporalState, currentMonthIdx, currentYear, incomeSources,
   annualisationProvision, annualVerdict, dataFreshness, viewTitle,
-  flowsSeries, savingsStockSeries, upcomingBills,
-  envelopeSeries, categoryTrend, nextBillForCategory, nonMonthlyBills,
+  flowsSeries, upcomingBills,
+  categoryTrend, nextBillForCategory, nonMonthlyBills,
   annualForCategory,
   type TemporalState, type UpcomingBill, type BudgetView,
 } from "@/lib/budget-data";
@@ -105,25 +103,15 @@ function VuePage() {
 function YearView({ view, onPickMonth }: { view: BudgetView; onPickMonth: (year: number, monthIdx: number) => void }) {
   const verdict = useMemo(() => annualVerdict(view), [view]);
   const flows = useMemo(() => flowsSeries(view), [view]);
-  const savings = useMemo(() => savingsStockSeries(view), [view]);
   const upcoming = useMemo(() => upcomingBills(12), []);
   const provision = annualisationProvision(postesSeed);
-  const [reserveOpen, setReserveOpen] = useState(false);
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* FLUX — verdict integrated on top, then the glissant curve; + categories drill-down */}
-      <FluxBlock verdict={verdict} flows={flows} upcoming={upcoming} provision={provision}
-        onPickMonth={onPickMonth} onOpenReserve={() => setReserveOpen(true)} />
+      {/* FLUX — verdict integrated on top, then the glissant curve; + categories drill-down.
+          The Réserve verdict box links to its own page (/budget/reserve), room-page style. */}
+      <FluxBlock verdict={verdict} flows={flows} upcoming={upcoming} provision={provision} view={view} onPickMonth={onPickMonth} />
       <CategoriesGrid />
-
-      {/* RÉSERVE — behind its verdict box: the stock/floor detail + editable envelopes live in a modal */}
-      <Dialog open={reserveOpen} onOpenChange={setReserveOpen}>
-        <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
-          <DialogTitle className="sr-only">Réserve</DialogTitle>
-          <SavingsBlock savings={savings} bare />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
@@ -146,14 +134,14 @@ const axisCls = {
   over: { fg: "text-destructive", dot: "bg-destructive", bg: "bg-destructive/15" },
 } as const;
 
-function AxisStatus({ axis, onClick }: { axis: ReturnType<typeof annualVerdict>["axes"][number]; onClick?: () => void }) {
+function AxisStatus({ axis, to }: { axis: ReturnType<typeof annualVerdict>["axes"][number]; to?: { view: BudgetView } }) {
   const c = axisCls[axis.tone];
-  const base = "block w-full rounded-xl border border-border/50 bg-secondary/25 px-4 py-3.5 text-left";
+  const base = "block h-full w-full rounded-xl border border-border/50 bg-secondary/25 px-4 py-3.5 text-left";
   const inner = (
     <>
       <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
         <span className={"h-1.5 w-1.5 rounded-full " + c.dot} /> {axis.label}
-        {onClick && <ChevronRight className="ml-auto h-3.5 w-3.5 text-muted-foreground/60 transition-transform group-hover/axis:translate-x-0.5" />}
+        {to && <ChevronRight className="ml-auto h-3.5 w-3.5 text-muted-foreground/60 transition-transform group-hover/axis:translate-x-0.5" />}
       </p>
       <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
         <span className="font-serif text-2xl leading-none tabular-nums text-foreground sm:text-3xl">{axis.value}</span>
@@ -163,11 +151,11 @@ function AxisStatus({ axis, onClick }: { axis: ReturnType<typeof annualVerdict>[
       <p className="mt-2 text-[13px] leading-snug text-muted-foreground">{axis.explain}</p>
     </>
   );
-  if (onClick) {
+  if (to) {
     return (
-      <button onClick={onClick} className={"group/axis transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-lift " + base}>
+      <Link to="/budget/reserve" search={to} className={"group/axis transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-lift " + base}>
         {inner}
-      </button>
+      </Link>
     );
   }
   return <div className={base}>{inner}</div>;
@@ -204,7 +192,7 @@ function FlowTip({ active, payload, label }: {
   );
 }
 
-function VerdictHeader({ verdict, onOpenReserve }: { verdict: ReturnType<typeof annualVerdict>; onOpenReserve: () => void }) {
+function VerdictHeader({ verdict, view }: { verdict: ReturnType<typeof annualVerdict>; view: BudgetView }) {
   const freshness = dataFreshness();
   return (
     <div>
@@ -213,10 +201,10 @@ function VerdictHeader({ verdict, onOpenReserve }: { verdict: ReturnType<typeof 
         Sur base des imports jusqu'à {freshness.lastMonth} — la suite est projetée.
       </p>
       {/* Two independent statuses — each: the number (hero) + a status tag + a human line.
-          The Réserve box opens the full reserve detail (stock/floor + envelopes) in a modal. */}
+          The Réserve box links to its own page (/budget/reserve), carrying the current view. */}
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {verdict.axes.map((a) => (
-          <AxisStatus key={a.label} axis={a} onClick={a.label === "Réserve" ? onOpenReserve : undefined} />
+          <AxisStatus key={a.label} axis={a} to={a.label === "Réserve" ? { view } : undefined} />
         ))}
       </div>
     </div>
@@ -267,13 +255,13 @@ function useYAxis(values: number[], step = 15000) {
   }, [values.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-function FluxBlock({ verdict, flows, upcoming, provision, onPickMonth, onOpenReserve }: {
+function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
   verdict: ReturnType<typeof annualVerdict>;
   flows: ReturnType<typeof flowsSeries>;
   upcoming: UpcomingBill[];
   provision: number;
+  view: BudgetView;
   onPickMonth: (year: number, monthIdx: number) => void;
-  onOpenReserve: () => void;
 }) {
   const total6m = upcoming.filter((b) => b.monthsAway < 6).reduce((s, b) => s + b.amount, 0);
   const provisionIn6m = provision * 6;
@@ -285,7 +273,7 @@ function FluxBlock({ verdict, flows, upcoming, provision, onPickMonth, onOpenRes
   return (
     <section className={"rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up ring-1 " + tone.ring}>
       {/* Verdict integrated at the top — the curve below is its gauge */}
-      <VerdictHeader verdict={verdict} onOpenReserve={onOpenReserve} />
+      <VerdictHeader verdict={verdict} view={view} />
 
       {/* One glissant view: past réel (solid) + futur projeté (dashed), présent marqué */}
       <div className="mt-6">
@@ -403,149 +391,6 @@ function FluxBlock({ verdict, flows, upcoming, provision, onPickMonth, onOpenRes
         </div>
       )}
     </section>
-  );
-}
-
-/* ---- 4. Savings — transparent + editable (R5 + R6) ---- */
-
-function SavingsBlock({ savings, bare }: {
-  savings: ReturnType<typeof savingsStockSeries>;
-  bare?: boolean;
-}) {
-  const [overrides, setOverrides] = useState<Record<string, number>>({});
-  const [editKey, setEditKey] = useState<string | null>(null);
-  const [draft, setDraft] = useState<string>("");
-
-  const displayed = envelopes.map(e => ({ ...e, balance: overrides[e.key] ?? e.balance }));
-  const total = displayed.reduce((s, e) => s + e.balance, 0);
-  const contribTotal = displayed.reduce((s, e) => s + e.contrib, 0);
-  const savAxis = useYAxis([...savings.series.flatMap(s => [s.reel ?? 0, s.proj ?? 0]), savings.floor], 5000);
-  const belowFloor = (savings.projectedEnd ?? 0) < savings.floor;
-
-  const startEdit = (key: string, current: number) => {
-    setEditKey(key);
-    setDraft(String(current));
-  };
-  const commitEdit = (key: string) => {
-    const v = Number(draft.replace(",", "."));
-    if (!Number.isFinite(v) || v < 0) {
-      toast.error("Montant invalide");
-      return;
-    }
-    setOverrides(o => ({ ...o, [key]: Math.round(v) }));
-    setEditKey(null);
-    toast.success("Épargne mise à jour");
-  };
-
-  const Wrapper = bare ? "div" : "section";
-  return (
-    <Wrapper className={bare ? "" : "rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7 anim-slide-up"}>
-      <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
-        <div className="min-w-0">
-          <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Réserve</h2>
-          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-            L'épargne accumulée dans le temps, et si elle reste au-dessus du seuil sain.
-          </p>
-        </div>
-        <div className="text-right">
-          <p className="flex items-baseline justify-end gap-3">
-            <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Total</span>
-            <span className="text-[11px] tabular-nums text-muted-foreground">+ {eur(contribTotal)}/mois</span>
-          </p>
-          <p className="mt-0.5 font-serif text-2xl tabular-nums text-foreground">
-            <CountUp to={total} /><span className="ml-1 text-sm text-muted-foreground">€</span>
-          </p>
-        </div>
-      </header>
-
-      {/* Stock evolution vs healthy floor — the safety-net trajectory */}
-      <div className="mb-6">
-        <div className="mb-2 flex items-center justify-between gap-2 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-          <span>Évolution de la réserve</span>
-          <span className={belowFloor ? "text-destructive" : "text-success"}>
-            {belowFloor ? "sous le seuil sain" : "au-dessus du seuil"}
-          </span>
-        </div>
-        <div className="h-44 w-full sm:h-52">
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={savings.series} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
-              <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="m" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} interval={1} />
-              <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false}
-                domain={[0, savAxis.yTop]} ticks={savAxis.yTicks} tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={42} />
-              <RTooltip contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12, color: "var(--popover-foreground)" }}
-                formatter={(v: unknown, n) => (typeof v === "number" ? [eur(v), n as string] : ["—", n as string])} />
-              <ReferenceLine y={savings.floor} stroke="var(--destructive)" strokeOpacity={0.55} strokeDasharray="4 4"
-                label={{ value: `Seuil sain · ${eur(savings.floor)}`, position: "insideTopRight", fontSize: 10, fill: "var(--destructive)" }} />
-              <Area type="monotone" dataKey="reel" stroke="var(--primary)" strokeWidth={2.5} fill="var(--primary)" fillOpacity={0.1} name="Réserve" connectNulls={false} />
-              <Line type="monotone" dataKey="proj" stroke="var(--primary)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Projeté" connectNulls={false} />
-            </ComposedChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <p className="mb-3 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Enveloppes · ajustez à la main pour refléter la banque</p>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {displayed.map(env => {
-          const data = envelopeSeries(env);
-          const stroke = env.tone === "warm" ? "var(--warm)" : env.tone === "accent" ? "var(--accent)" : "var(--primary)";
-          const editing = editKey === env.key;
-          return (
-            <div key={env.key} className="group relative rounded-xl border border-border/50 bg-card/60 p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift">
-              <div className="flex items-start justify-between">
-                <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{env.label}</p>
-                {!editing && (
-                  <button onClick={() => startEdit(env.key, env.balance)}
-                    aria-label="Ajuster le solde"
-                    className="opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100">
-                    <Pencil className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
-                  </button>
-                )}
-              </div>
-              {editing ? (
-                <div className="mt-2 flex items-center gap-1">
-                  <input
-                    autoFocus
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") commitEdit(env.key);
-                      if (e.key === "Escape") setEditKey(null);
-                    }}
-                    inputMode="decimal"
-                    className="min-w-0 flex-1 rounded-md border border-border bg-background px-2 py-1 font-serif text-lg tabular-nums focus:border-primary focus:outline-none"
-                  />
-                  <button onClick={() => commitEdit(env.key)} className="grid h-7 w-7 place-items-center rounded-md bg-primary text-primary-foreground hover:opacity-90">
-                    <Check className="h-3.5 w-3.5" />
-                  </button>
-                  <button onClick={() => setEditKey(null)} className="grid h-7 w-7 place-items-center rounded-md border border-border text-muted-foreground hover:bg-secondary">
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              ) : (
-                <p className="mt-2 font-serif text-xl tabular-nums">
-                  <CountUp to={env.balance} /><span className="ml-1 text-xs text-muted-foreground">€</span>
-                </p>
-              )}
-              <p className="mt-0.5 text-[11px] text-muted-foreground tabular-nums">+ {eur(env.contrib)} / mois</p>
-              <div className="-mx-2 mt-3 h-10">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={data} margin={{ top: 4, right: 4, left: 4, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id={`sav-${env.key}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor={stroke} stopOpacity={0.35} />
-                        <stop offset="100%" stopColor={stroke} stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <Area type="monotone" dataKey="v" stroke={stroke} strokeWidth={1.5} fill={`url(#sav-${env.key})`} />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </Wrapper>
   );
 }
 
