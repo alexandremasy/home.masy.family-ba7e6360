@@ -15,7 +15,7 @@ import {
   temporalState, currentMonthIdx, currentYear, incomeSources,
   annualisationProvision, annualVerdict, dataFreshness, viewTitle,
   flowsSeries, upcomingBills,
-  categoryTrend, nextBillForCategory, nonMonthlyBills,
+  nextBillForCategory, nonMonthlyBills,
   annualForCategory,
   type TemporalState, type UpcomingBill, type BudgetView,
 } from "@/lib/budget-data";
@@ -402,10 +402,12 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
 function CategoriesGrid() {
   return (
     <section className="anim-slide-up">
-      <header className="mb-4 flex items-end justify-between gap-3">
+      <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Catégories</h2>
-          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">Où va l'argent — clic pour ouvrir le détail.</p>
+          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+            Consommé vs budget annuel · le repère <span className="mx-0.5 inline-block h-2.5 w-0.5 translate-y-0.5 rounded bg-foreground/70" /> marque où on devrait être aujourd'hui.
+          </p>
         </div>
         <Link to="/budget/mensuel" className="text-xs text-primary underline-offset-4 hover:underline">
           Vue mensuelle →
@@ -427,7 +429,6 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
   const pacePct = expectedToDate > 0 ? Math.round((ytdActual / expectedToDate - 1) * 100) : 0;
   const fillPct = Math.min(100, (ytdActual / annualBudget) * 100);
   const tickPct = Math.min(100, (expectedToDate / annualBudget) * 100); // « où on devrait être aujourd'hui »
-  const trend = categoryTrend(cat);
   const nextBill = nextBillForCategory(cat.key);
 
   return (
@@ -452,26 +453,13 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
         <span className="tabular-nums text-muted-foreground">/ {eur(annualBudget)}</span>
       </div>
       <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Cumul à date · budget annuel</p>
-      <div className="relative mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+      {/* Jauge de trajectoire : consommé vs budget annuel + repère « aujourd'hui ».
+          La barre dépasse le repère = on dépense plus vite que prévu. */}
+      <div className="relative mt-1.5 h-2 w-full overflow-hidden rounded-full bg-secondary">
         <div className={"absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 " + (overPace ? "bg-warm" : "bg-primary")}
              style={{ width: `${fillPct}%` }} />
-        {/* repère « où on devrait être aujourd'hui » — la barre le dépasse = on dérape */}
-        <span className="absolute inset-y-0 w-px bg-foreground/50" style={{ left: `${tickPct}%` }} title="Où on devrait être aujourd'hui" />
-      </div>
-
-
-      <div className="-mx-1 mt-2 h-8">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={trend} margin={{ top: 2, right: 2, left: 2, bottom: 0 }}>
-            <defs>
-              <linearGradient id={`cat-${cat.key}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={cat.color} stopOpacity={0.35} />
-                <stop offset="100%" stopColor={cat.color} stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <Area type="monotone" dataKey="v" stroke={cat.color} strokeWidth={1.5} fill={`url(#cat-${cat.key})`} />
-          </AreaChart>
-        </ResponsiveContainer>
+        {/* repère « où on devrait être aujourd'hui » */}
+        <span className="absolute inset-y-[-2px] w-0.5 rounded bg-foreground/70" style={{ left: `${tickPct}%` }} title="Où on devrait être aujourd'hui" />
       </div>
 
       {nextBill && (
