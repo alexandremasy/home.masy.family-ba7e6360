@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
-  Area, AreaChart, CartesianGrid, ComposedChart, Line, ReferenceLine,
+  Area, AreaChart, Bar, CartesianGrid, ComposedChart, Line, ReferenceLine,
   ResponsiveContainer, Tooltip as RTooltip, XAxis, YAxis,
 } from "recharts";
 import { toast } from "sonner";
@@ -15,7 +15,7 @@ import {
   categories, envelopes, postesSeed, MONTHS_FR, MONTHS_FR_LONG, eur,
   temporalState, currentMonthIdx, currentYear, incomeSources,
   annualisationProvision, annualVerdict, dataFreshness,
-  flowsSeries, savingsStockSeries, upcomingBigBills,
+  flowsSeries, monthlyOverview, savingsStockSeries, upcomingBigBills,
   envelopeSeries, categoryTrend, nextBillForCategory, nonMonthlyBills,
   annualForCategory,
   type TemporalState, type UpcomingBill,
@@ -107,10 +107,12 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
   return (
     <div className="space-y-6 sm:space-y-8">
       <VerdictBanner verdict={verdict} />
-      <AnnualChartsBlock flows={flows} savings={savings} isCurrentYear={isCurrentYear} onPickMonth={onPickMonth} year={year} />
-      <UpcomingBillsBlock bills={upcoming} provision={provision} />
-      <SavingsBlock />
+      {/* FLUX + its drill-down (categories = where the dépenses go) */}
+      <FluxBlock flows={flows} isCurrentYear={isCurrentYear} onPickMonth={onPickMonth} year={year} />
       <CategoriesGrid />
+      {/* ÉPARGNE / RÉSERVE — stock vs floor, then what the annualisation pot covers */}
+      <SavingsBlock savings={savings} isCurrentYear={isCurrentYear} />
+      <UpcomingBillsBlock bills={upcoming} provision={provision} />
     </div>
   );
 }
@@ -243,15 +245,16 @@ function useYAxis(values: number[], step = 15000) {
   }, [values.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-function AnnualChartsBlock({ flows, savings, isCurrentYear, onPickMonth, year }: {
+function FluxBlock({ flows, isCurrentYear, onPickMonth, year }: {
   flows: ReturnType<typeof flowsSeries>;
-  savings: ReturnType<typeof savingsStockSeries>;
   isCurrentYear: boolean;
   onPickMonth: (i: number) => void;
   year: number;
 }) {
+  const [rolling, setRolling] = useState(false);
+  const overview = useMemo(() => monthlyOverview(rolling), [rolling]);
   const flowAxis = useYAxis(flows.flatMap(f => [f.inReel ?? 0, f.inProj ?? 0, f.depReel ?? 0, f.depProj ?? 0]));
-  const savAxis = useYAxis([...savings.series.flatMap(s => [s.reel ?? 0, s.proj ?? 0]), savings.floor], 5000);
+  const ovAxis = useYAxis(overview.flatMap(o => [o.income, o.spend]), 2000);
   const curX = MONTHS_FR[currentMonthIdx];
   const tip = {
     contentStyle: { background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12, color: "var(--popover-foreground)" },
@@ -260,13 +263,17 @@ function AnnualChartsBlock({ flows, savings, isCurrentYear, onPickMonth, year }:
 
   return (
     <section className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7 anim-slide-up">
-      <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
-        {/* Graph A — flux */}
+      <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div className="min-w-0">
-          <header className="mb-3">
-            <h2 className="font-serif text-lg tracking-tight sm:text-xl">Entrées vs dépenses</h2>
-            <p className="mt-0.5 text-xs text-muted-foreground">Cumul de l'année, réalisé puis projeté — l'écart, c'est ce qu'on met de côté.</p>
-          </header>
+          <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Flux de l'année</h2>
+          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">Entrées, dépenses et épargne — l'écart entrées/dépenses, c'est ce qu'on met de côté.</p>
+        </div>
+      </header>
+
+      <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
+        {/* Cumulative triple curve */}
+        <div className="min-w-0">
+          <p className="mb-2 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Cumulé · la marche de l'année</p>
           <div className="h-52 w-full sm:h-60">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={flows} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
@@ -279,48 +286,47 @@ function AnnualChartsBlock({ flows, savings, isCurrentYear, onPickMonth, year }:
                 <Line type="monotone" dataKey="inProj" stroke="var(--success)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Entrées (proj.)" connectNulls={false} />
                 <Line type="monotone" dataKey="depReel" stroke="var(--warm)" strokeWidth={2.5} dot={false} name="Dépenses" connectNulls={false} />
                 <Line type="monotone" dataKey="depProj" stroke="var(--warm)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Dépenses (proj.)" connectNulls={false} />
+                <Line type="monotone" dataKey="epReel" stroke="var(--primary)" strokeWidth={2.5} dot={false} name="Épargne" connectNulls={false} />
+                <Line type="monotone" dataKey="epProj" stroke="var(--primary)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Épargne (proj.)" connectNulls={false} />
                 {isCurrentYear && <ReferenceLine x={curX} stroke="var(--foreground)" strokeOpacity={0.3} strokeDasharray="2 4" />}
               </ComposedChart>
             </ResponsiveContainer>
-          </div>
-          <div className="mt-2 flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--success)" }} /> Entrées</span>
-            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--warm)" }} /> Dépenses</span>
-            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 border-t border-dashed border-muted-foreground/60" /> Projeté</span>
           </div>
         </div>
 
-        {/* Graph B — épargne + pression */}
+        {/* Monthly overview */}
         <div className="min-w-0">
-          <header className="mb-3 flex items-end justify-between gap-2">
-            <div>
-              <h2 className="font-serif text-lg tracking-tight sm:text-xl">Épargne</h2>
-              <p className="mt-0.5 text-xs text-muted-foreground">Cumul sur l'année — la pression, c'est quand la courbe frôle le seuil sain.</p>
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Mois par mois</p>
+            <div className="inline-flex rounded-full border border-border/60 bg-secondary/40 p-0.5 text-[10px]">
+              <button onClick={() => setRolling(false)}
+                className={"rounded-full px-2 py-0.5 transition-colors " + (!rolling ? "bg-foreground text-background" : "text-muted-foreground")}>Calendrier</button>
+              <button onClick={() => setRolling(true)}
+                className={"rounded-full px-2 py-0.5 transition-colors " + (rolling ? "bg-foreground text-background" : "text-muted-foreground")}>12 mois</button>
             </div>
-          </header>
+          </div>
           <div className="h-52 w-full sm:h-60">
             <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={savings.series} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
+              <ComposedChart data={overview} margin={{ top: 8, right: 8, left: -14, bottom: 0 }} barGap={1} barCategoryGap="20%">
                 <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="m" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} interval={1} />
+                <XAxis dataKey="m" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} interval={0} />
                 <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false}
-                  domain={[0, savAxis.yTop]} ticks={savAxis.yTicks} tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={42} />
+                  domain={[0, ovAxis.yTop]} ticks={ovAxis.yTicks} tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={42} />
                 <RTooltip {...tip} />
-                {/* healthy floor — the line alone carries the pressure (no heavy fill) */}
-                <ReferenceLine y={savings.floor} stroke="var(--destructive)" strokeOpacity={0.55} strokeDasharray="4 4"
-                  label={{ value: `Seuil sain · ${eur(savings.floor)}`, position: "insideTopRight", fontSize: 10, fill: "var(--destructive)" }} />
-                <Area type="monotone" dataKey="reel" stroke="var(--primary)" strokeWidth={2.5} fill="var(--primary)" fillOpacity={0.1} name="Bas de laine" connectNulls={false} />
-                <Line type="monotone" dataKey="proj" stroke="var(--primary)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Projeté" connectNulls={false} />
-                {isCurrentYear && <ReferenceLine x={curX} stroke="var(--foreground)" strokeOpacity={0.3} strokeDasharray="2 4" />}
+                <Bar dataKey="income" fill="var(--success)" name="Entrées" radius={[2, 2, 0, 0]} maxBarSize={9} />
+                <Bar dataKey="spend" fill="var(--warm)" name="Dépenses" radius={[2, 2, 0, 0]} maxBarSize={9} />
+                <Bar dataKey="epargne" fill="var(--primary)" name="Épargne" radius={[2, 2, 0, 0]} maxBarSize={9} />
               </ComposedChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-2 flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--primary)" }} /> Épargne</span>
-            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 border-t border-dashed border-muted-foreground/60" /> Projeté</span>
-            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 border-t border-dashed border-destructive/60" /> Seuil sain</span>
-          </div>
         </div>
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+        <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--success)" }} /> Entrées</span>
+        <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--warm)" }} /> Dépenses</span>
+        <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--primary)" }} /> Épargne</span>
+        <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 border-t border-dashed border-muted-foreground/60" /> Projeté</span>
       </div>
 
       {/* Mini month strip — full width under both charts */}
@@ -440,7 +446,10 @@ function FootStat({ label, value, sub, tone }: { label: string; value: string; s
 
 /* ---- 4. Savings — transparent + editable (R5 + R6) ---- */
 
-function SavingsBlock() {
+function SavingsBlock({ savings, isCurrentYear }: {
+  savings: ReturnType<typeof savingsStockSeries>;
+  isCurrentYear: boolean;
+}) {
   const [overrides, setOverrides] = useState<Record<string, number>>({});
   const [editKey, setEditKey] = useState<string | null>(null);
   const [draft, setDraft] = useState<string>("");
@@ -448,6 +457,8 @@ function SavingsBlock() {
   const displayed = envelopes.map(e => ({ ...e, balance: overrides[e.key] ?? e.balance }));
   const total = displayed.reduce((s, e) => s + e.balance, 0);
   const contribTotal = displayed.reduce((s, e) => s + e.contrib, 0);
+  const savAxis = useYAxis([...savings.series.flatMap(s => [s.reel ?? 0, s.proj ?? 0]), savings.floor], 5000);
+  const belowFloor = (savings.projectedEnd ?? 0) < savings.floor;
 
   const startEdit = (key: string, current: number) => {
     setEditKey(key);
@@ -468,9 +479,9 @@ function SavingsBlock() {
     <section className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7 anim-slide-up">
       <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Épargne</h2>
+          <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Réserve</h2>
           <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-            État réel des enveloppes — ajustez à la main pour refléter la banque.
+            L'épargne accumulée dans le temps, et si elle reste au-dessus du seuil sain.
           </p>
         </div>
         <div className="text-right">
@@ -484,6 +495,34 @@ function SavingsBlock() {
         </div>
       </header>
 
+      {/* Stock evolution vs healthy floor — the safety-net trajectory */}
+      <div className="mb-6">
+        <div className="mb-2 flex items-center justify-between gap-2 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+          <span>Évolution de la réserve</span>
+          <span className={belowFloor ? "text-destructive" : "text-success"}>
+            {belowFloor ? "sous le seuil sain" : "au-dessus du seuil"}
+          </span>
+        </div>
+        <div className="h-44 w-full sm:h-52">
+          <ResponsiveContainer width="100%" height="100%">
+            <ComposedChart data={savings.series} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
+              <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="m" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} interval={1} />
+              <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false}
+                domain={[0, savAxis.yTop]} ticks={savAxis.yTicks} tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={42} />
+              <RTooltip contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12, color: "var(--popover-foreground)" }}
+                formatter={(v: unknown, n) => (typeof v === "number" ? [eur(v), n as string] : ["—", n as string])} />
+              <ReferenceLine y={savings.floor} stroke="var(--destructive)" strokeOpacity={0.55} strokeDasharray="4 4"
+                label={{ value: `Seuil sain · ${eur(savings.floor)}`, position: "insideTopRight", fontSize: 10, fill: "var(--destructive)" }} />
+              <Area type="monotone" dataKey="reel" stroke="var(--primary)" strokeWidth={2.5} fill="var(--primary)" fillOpacity={0.1} name="Réserve" connectNulls={false} />
+              <Line type="monotone" dataKey="proj" stroke="var(--primary)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Projeté" connectNulls={false} />
+              {isCurrentYear && <ReferenceLine x={MONTHS_FR[currentMonthIdx]} stroke="var(--foreground)" strokeOpacity={0.3} strokeDasharray="2 4" />}
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      <p className="mb-3 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Enveloppes · ajustez à la main pour refléter la banque</p>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {displayed.map(env => {
           const data = envelopeSeries(env);

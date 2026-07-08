@@ -419,9 +419,10 @@ function monthlyFlows(): { income: number; spend: number }[] {
   });
 }
 
-// Graph A — cumulative income vs expense across the year, réalisé (solid) then
-// projeté (dashed). The gap between the two curves = the year's savings capacity.
-// Projection = the "en-cours" month carries both series so solid → dashed is seamless.
+// Graph A — cumulative TRIPLE flow: entrées / dépenses / épargne, réalisé (solid)
+// then projeté (dashed). Identity: Entrées = Dépenses + Épargne, so épargne = the gap
+// (what's not spent gets set aside). Projection = the "en-cours" month carries both
+// series so solid → dashed is seamless.
 export function flowsSeries() {
   const flows = monthlyFlows();
   let cumIn = 0;
@@ -430,6 +431,7 @@ export function flowsSeries() {
     const st = temporalState(i);
     cumIn += flows[i].income;
     cumDep += flows[i].spend;
+    const cumEp = Math.max(0, cumIn - cumDep); // épargne réelle = l'écart
     const future = st === "futur";
     const bridge = future || st === "en-cours";
     return {
@@ -438,7 +440,27 @@ export function flowsSeries() {
       inProj: bridge ? cumIn : null,
       depReel: future ? null : cumDep,
       depProj: bridge ? cumDep : null,
+      epReel: future ? null : cumEp,
+      epProj: bridge ? cumEp : null,
     };
+  });
+}
+
+// Monthly overview of the year — entrées / dépenses / épargne per month, calendar
+// order. `rolling=true` returns a 12-month window ending at the current month (the
+// data is already a rolling series, we just relabel). Future months flagged for styling.
+export function monthlyOverview(rolling = false) {
+  const flows = monthlyFlows();
+  const rows = MONTHS_FR.map((m, i) => {
+    const income = flows[i].income;
+    const spend = flows[i].spend;
+    return { m, idx: i, income, spend, epargne: Math.max(0, income - spend), state: temporalState(i) };
+  });
+  if (!rolling) return rows;
+  // Rolling 12: window ending at current month → [current-11 … current].
+  return Array.from({ length: 12 }, (_, k) => {
+    const i = (currentMonthIdx - 11 + k + 12) % 12;
+    return { ...rows[i], state: temporalState(i) };
   });
 }
 
