@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   Area, AreaChart, ComposedChart, CartesianGrid, Line, ReferenceLine,
   ResponsiveContainer, Tooltip as RTooltip, XAxis, YAxis,
@@ -35,10 +36,14 @@ function ReserveOverlay() {
   const [editKey, setEditKey] = useState<string | null>(null);
   const [draft, setDraft] = useState<string>("");
 
-  // Lock body scroll while the overlay is open (same as the Maison room overlay).
+  // Portal to <body>: the budget <main> is transformed (mode-enter animation), which would make a
+  // `fixed` child anchor to main instead of the viewport — leaving the TopNav uncovered and the
+  // close pill mis-placed. Rendering into body (like the Maison root-level overlay) fixes both.
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
+    setMounted(true);
     const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = "hidden"; // lock scroll, same as the room overlay
     return () => { document.body.style.overflow = prev; };
   }, []);
 
@@ -57,9 +62,11 @@ function ReserveOverlay() {
     toast.success("Épargne mise à jour");
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-40 overflow-y-auto overflow-x-hidden overlay-enter [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="fixed inset-0 z-[60] overflow-y-auto overflow-x-hidden overlay-enter [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       role="dialog"
       aria-modal="true"
     >
@@ -191,6 +198,7 @@ function ReserveOverlay() {
       >
         <X className="h-4 w-4" />
       </Link>
-    </div>
+    </div>,
+    document.body,
   );
 }
