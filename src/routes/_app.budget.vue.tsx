@@ -14,9 +14,7 @@ import {
   categories, postesSeed, MONTHS_FR, MONTHS_FR_LONG, eur,
   temporalState, currentMonthIdx, currentYear, incomeSources,
   annualisationProvision, annualVerdict, dataFreshness, viewTitle,
-  flowsSeries, upcomingBills,
-  nextBillForCategory, nonMonthlyBills,
-  annualForCategory,
+  flowsSeries, upcomingBills, nonMonthlyBills,
   type TemporalState, type UpcomingBill, type BudgetView,
 } from "@/lib/budget-data";
 
@@ -406,7 +404,7 @@ function CategoriesGrid() {
         <div>
           <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Catégories</h2>
           <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-            Consommé vs budget annuel · le repère <span className="mx-0.5 inline-block h-2.5 w-0.5 translate-y-0.5 rounded bg-foreground/70" /> marque où on devrait être aujourd'hui.
+            Dépense par mois vs budget — <span className="text-warm">en rouge</span>, au-dessus du budget. Clic pour le détail.
           </p>
         </div>
         <Link to="/budget/mensuel" className="text-xs text-primary underline-offset-4 hover:underline">
@@ -422,52 +420,38 @@ function CategoriesGrid() {
 
 function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
   const Icon = cat.icon;
-  const { ytdActual, annualBudget, expectedToDate } = annualForCategory(cat);
-  // Health = pace, not cumul-vs-annual: are we over where we should be TODAY? (comparing to the
-  // full-year budget would leave everything ~50% mid-year and flag nothing until December.)
-  const overPace = ytdActual > expectedToDate * 1.05; // 5% tolerance — restraint, like the month strip
-  const pacePct = expectedToDate > 0 ? Math.round((ytdActual / expectedToDate - 1) * 100) : 0;
-  const fillPct = Math.min(100, (ytdActual / annualBudget) * 100);
-  const tickPct = Math.min(100, (expectedToDate / annualBudget) * 100); // « où on devrait être aujourd'hui »
-  const nextBill = nextBillForCategory(cat.key);
+  // Monthly reading: dépense / mois vs budget / mois. Frame-agnostic (identique en glissant et en
+  // année), pas de cumul-vs-annuel ambigu, et le budget EST le repère (100 % = à budget, la barre
+  // pleine + warm = au-dessus). Au-delà d'une petite tolérance → warm + chip +X %.
+  const over = cat.actual > cat.budget * 1.05;
+  const overPct = cat.budget > 0 ? Math.round((cat.actual / cat.budget - 1) * 100) : 0;
+  const fillPct = Math.min(100, (cat.actual / cat.budget) * 100);
 
   return (
     <Link to="/budget/mensuel"
       className="group flex flex-col rounded-xl border border-border/50 bg-card p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift">
       <div className="flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
-          <span className={"grid h-8 w-8 shrink-0 place-items-center rounded-full " + (overPace ? "bg-warm/15 text-warm" : "bg-secondary text-foreground/70")}>
+          <span className={"grid h-8 w-8 shrink-0 place-items-center rounded-full " + (over ? "bg-warm/15 text-warm" : "bg-secondary text-foreground/70")}>
             <Icon className="h-4 w-4" />
           </span>
           <p className="truncate text-sm font-medium">{cat.label}</p>
         </div>
-        {overPace && (
+        {over && (
           <span className="shrink-0 rounded-full bg-warm/15 px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-warm">
-            +{pacePct}%
+            +{overPct}%
           </span>
         )}
       </div>
 
       <div className="mt-2 flex items-baseline justify-between gap-2 text-xs">
-        <span className={"tabular-nums " + (overPace ? "font-semibold text-warm" : "text-foreground")}>{eur(ytdActual)}</span>
-        <span className="tabular-nums text-muted-foreground">/ {eur(annualBudget)}</span>
+        <span className={"tabular-nums " + (over ? "font-semibold text-warm" : "text-foreground")}>{eur(cat.actual)}</span>
+        <span className="tabular-nums text-muted-foreground">/ {eur(cat.budget)}</span>
       </div>
-      <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Cumul à date · budget annuel</p>
-      {/* Jauge de trajectoire : consommé vs budget annuel + repère « aujourd'hui ».
-          La barre dépasse le repère = on dépense plus vite que prévu. */}
       <div className="relative mt-1.5 h-2 w-full overflow-hidden rounded-full bg-secondary">
-        <div className={"absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 " + (overPace ? "bg-warm" : "bg-primary")}
+        <div className={"absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 " + (over ? "bg-warm" : "bg-primary")}
              style={{ width: `${fillPct}%` }} />
-        {/* repère « où on devrait être aujourd'hui » */}
-        <span className="absolute inset-y-[-2px] w-0.5 rounded bg-foreground/70" style={{ left: `${tickPct}%` }} title="Où on devrait être aujourd'hui" />
       </div>
-
-      {nextBill && (
-        <p className="mt-2 inline-flex items-center gap-1 truncate text-[10px] text-muted-foreground">
-          <CalendarClock className="h-3 w-3" />
-          <span className="truncate capitalize">{MONTHS_FR_LONG[nextBill.monthIdx]} · {nextBill.label}</span>
-        </p>
-      )}
     </Link>
   );
 }
