@@ -129,9 +129,9 @@ function verdictTone(status: ReturnType<typeof annualVerdict>["status"]) {
 }
 
 const axisCls = {
-  ok: { fg: "text-success", dot: "bg-success" },
-  warn: { fg: "text-warm", dot: "bg-warm" },
-  over: { fg: "text-destructive", dot: "bg-destructive" },
+  ok: { fg: "text-success", dot: "bg-success", bg: "bg-success/15" },
+  warn: { fg: "text-warm", dot: "bg-warm", bg: "bg-warm/15" },
+  over: { fg: "text-destructive", dot: "bg-destructive", bg: "bg-destructive/15" },
 } as const;
 
 function AxisStatus({ axis }: { axis: ReturnType<typeof annualVerdict>["axes"][number] }) {
@@ -141,10 +141,11 @@ function AxisStatus({ axis }: { axis: ReturnType<typeof annualVerdict>["axes"][n
       <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
         <span className={"h-1.5 w-1.5 rounded-full " + c.dot} /> {axis.label}
       </p>
-      <p className={"mt-1.5 font-serif text-lg leading-tight sm:text-xl " + c.fg}>{axis.verdict}</p>
-      <p className="mt-1 text-sm text-muted-foreground">
-        <span className="tabular-nums font-medium text-foreground">{axis.value}</span> · {axis.sub}
-      </p>
+      <div className="mt-1.5 flex flex-wrap items-center gap-2">
+        <span className="font-serif text-2xl leading-none tabular-nums text-foreground sm:text-3xl">{axis.value}</span>
+        <span className={"inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium " + c.bg + " " + c.fg}>{axis.tag}</span>
+      </div>
+      <p className="mt-2 text-[13px] leading-snug text-muted-foreground">{axis.explain}</p>
     </div>
   );
 }
@@ -181,23 +182,14 @@ function FlowTip({ active, payload, label }: {
 }
 
 function VerdictHeader({ verdict }: { verdict: ReturnType<typeof annualVerdict> }) {
-  const tone = verdictTone(verdict.status);
   const freshness = dataFreshness();
-  const word = verdict.status === "over" ? "Sous tension" : verdict.status === "warn" ? "À surveiller" : "Sous contrôle";
   return (
     <div>
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <div className="min-w-0">
-          <h2 className="font-serif text-2xl tracking-tight sm:text-3xl">Santé de l'année</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            À jour au {freshness.asOfLabel} · {freshness.lastImportLabel}
-          </p>
-        </div>
-        <span className={"inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium " + tone.bg + " " + tone.fg}>
-          <tone.Icon className="h-4 w-4" /> {word}
-        </span>
-      </div>
-      {/* Two independent statuses — each: a verdict + the number that backs it */}
+      <h2 className="font-serif text-2xl tracking-tight sm:text-3xl">Santé de l'année</h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Sur base des imports jusqu'à {freshness.lastMonth} — la suite est projetée.
+      </p>
+      {/* Two independent statuses — each: the number (hero) + a status tag + a human line */}
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {verdict.axes.map((a) => <AxisStatus key={a.label} axis={a} />)}
       </div>

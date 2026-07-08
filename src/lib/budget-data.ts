@@ -315,7 +315,7 @@ export type AnnualVerdict = {
   status: VerdictStatus;
   label: string;
   hint: string;
-  axes: { label: string; tone: "ok" | "warn" | "over"; verdict: string; value: string; sub: string }[];
+  axes: { label: string; tone: "ok" | "warn" | "over"; value: string; tag: string; explain: string }[];
   budgetYear: number;
   realisedYTD: number;
   projectedRest: number;
@@ -413,18 +413,22 @@ export function annualVerdict(): AnnualVerdict {
     {
       label: "Dépenses vs budget",
       tone: overBudget ? "warn" : "ok",
-      verdict: overBudget ? "Dépassement projeté" : "Dans le budget",
       value: (deltaEur >= 0 ? "+" : "") + eur(deltaEur),
-      sub: `${deltaPct >= 0 ? "+" : ""}${deltaPct.toFixed(0)} % vs budget annuel · projeté fin d'année`,
+      tag: overBudget ? "Dépassement" : "Dans le budget",
+      explain: overBudget
+        ? `Sur la tendance actuelle, l'année finira ${Math.abs(deltaPct).toFixed(0)} % au-dessus du budget prévu.`
+        : `Les dépenses projetées tiennent dans le budget de l'année.`,
     },
     {
       label: "Réserve (épargne)",
       tone: draining ? "over" : belowFloor ? "warn" : "ok",
-      verdict: draining ? "En recul" : belowFloor ? "Sous le seuil" : "Saine",
       value: eur(reserveEnd),
-      sub: draining
-        ? `fin d'année, en recul vs ${eur(reserveStart)} au départ`
-        : `fin d'année · seuil sain ${eur(reserveFloor)}`,
+      tag: draining ? "En recul" : belowFloor ? "Sous le seuil" : "Saine",
+      explain: draining
+        ? `Fin d'année, la réserve serait retombée sous son point de départ (${eur(reserveStart)}).`
+        : belowFloor
+        ? `Fin d'année, la réserve passerait sous le seuil sain de ${eur(reserveFloor)}.`
+        : `Fin d'année, la réserve reste au-dessus du seuil sain de ${eur(reserveFloor)}.`,
     },
   ];
 
@@ -439,12 +443,12 @@ export function annualVerdict(): AnnualVerdict {
   };
 }
 
-// Freshness stamp — a verdict is only as good as its last import ("no import → no
-// monitoring"). Mock: last complete import = previous month. Real app: from /budget/imports.
-export function dataFreshness(): { asOfLabel: string; lastImportLabel: string } {
-  const asOfLabel = _now.toLocaleDateString("fr-BE", { day: "numeric", month: "long" });
-  const lastIdx = (currentMonthIdx + 11) % 12;
-  return { asOfLabel, lastImportLabel: `${MONTHS_FR_LONG[lastIdx].toLowerCase()} importé` };
+// Freshness — a verdict is only as good as its last import ("no import → no monitoring").
+// Data runs through the last imported month; everything after is projection. Mock: the
+// previous month. Real app: from /budget/imports.
+export function dataFreshness(): { lastMonth: string } {
+  const idx = lastImportedMonthIdx < 0 ? 11 : lastImportedMonthIdx;
+  return { lastMonth: MONTHS_FR_LONG[idx].toLowerCase() };
 }
 
 // rolling12 is stored current-month-first; realign to calendar order (Jan..Déc).
