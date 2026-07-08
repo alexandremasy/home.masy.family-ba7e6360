@@ -557,6 +557,7 @@ export function flowsSeries(view: BudgetView = "rolling") {
       m: c.label, idx: i,
       calIdx: c.calIdx, year: Math.floor(c.abs / 12),
       isReal: c.isReal, isToday: c.isToday, isLastImport: c.isLastImport,
+      spend: c.spend, income: c.income,
       inReel: projected ? null : cumIn,
       inProj: bridge ? cumIn : null,
       depReel: projected ? null : cumDep,

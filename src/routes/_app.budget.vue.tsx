@@ -253,6 +253,7 @@ function FluxBlock({ verdict, flows, onPickMonth }: {
 }) {
   const flowAxis = useYAxis(flows.flatMap(f => [f.inReel ?? 0, f.inProj ?? 0, f.depReel ?? 0, f.depProj ?? 0]));
   const tone = verdictTone(verdict.status);
+  const monthlyBudget = categories.reduce((s, c) => s + c.budget, 0);
   const lastImportX = flows.find((f) => f.isLastImport)?.m;
   const todayX = flows.find((f) => f.isToday)?.m;
   return (
@@ -298,23 +299,34 @@ function FluxBlock({ verdict, flows, onPickMonth }: {
         </div>
       </div>
 
-      {/* Mini month strip — the glissant navigator: past / présent / futur */}
+      {/* Month strip — each box: écart vs budget (réel importé / projeté atténué) */}
       <div className="mt-6 border-t border-border/40 pt-4">
         <div className="mb-2 flex items-center justify-between text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-          <span>Zoom mois</span>
-          <span className="hidden sm:inline">Cliquez un mois pour l'ouvrir</span>
+          <span>Mois · écart au budget</span>
+          <span className="hidden sm:inline">Cliquez pour ouvrir</span>
         </div>
         <div className="-mx-1 flex gap-1 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {flows.map((f) => (
-            <button key={f.idx} onClick={() => onPickMonth(f.year, f.calIdx)}
-              className={"group min-w-[56px] flex-1 rounded-lg border px-2 py-1.5 text-[11px] transition-all hover:-translate-y-0.5 hover:shadow-lift " +
-                (f.isToday ? "border-foreground/60 bg-primary/5 " : "border-border/40 bg-card ") +
-                (!f.isReal ? "opacity-70" : "")}>
-              <span className="block text-muted-foreground">{f.m}</span>
-              <span className={"mx-auto mt-1 block h-1 w-1 rounded-full " +
-                (f.isLastImport ? "bg-foreground" : f.isReal ? "bg-foreground/40" : f.isToday ? "bg-primary" : "bg-muted-foreground/30")} />
-            </button>
-          ))}
+          {flows.map((f) => {
+            const ecart = Math.round(f.spend - monthlyBudget);
+            const over = ecart > 0;
+            const ecartCls = Math.abs(ecart) < 25
+              ? "text-muted-foreground"
+              : over ? "text-warm" : "text-success";
+            return (
+              <button key={f.idx} onClick={() => onPickMonth(f.year, f.calIdx)}
+                className={"group flex min-w-[58px] flex-1 flex-col items-center gap-0.5 rounded-lg border px-1.5 py-1.5 transition-all hover:-translate-y-0.5 hover:shadow-lift " +
+                  (f.isToday ? "border-foreground/60 bg-primary/5 " : f.isLastImport ? "border-foreground/40 bg-card " : "border-border/40 bg-card ") +
+                  (!f.isReal ? "opacity-70" : "")}>
+                <span className="text-[10px] uppercase tracking-wide text-muted-foreground">{f.m}</span>
+                <span className={"text-[11px] font-medium tabular-nums " + ecartCls}>
+                  {Math.abs(ecart) < 25 ? "≈" : (over ? "+" : "−") + eur(Math.abs(ecart))}
+                </span>
+                <span className="text-[8px] uppercase tracking-[0.1em] text-muted-foreground/70">
+                  {f.isToday ? "auj." : f.isLastImport ? "import" : f.isReal ? "réel" : "proj."}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </section>
