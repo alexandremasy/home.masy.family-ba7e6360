@@ -431,13 +431,16 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
   const under = vsBudget < -5;
   const yoy = categoryYoY(cat);
   const budgetChip = over ? "bg-warm/15 text-warm" : under ? "bg-success/15 text-success" : "bg-secondary text-muted-foreground";
+  // Évolution sur la période affichée (début → fin de la fenêtre glissante).
+  const periodDelta = trend[0].v > 0 ? Math.round((trend[trend.length - 1].v / trend[0].v - 1) * 100) : 0;
+  const TrendIcon = periodDelta >= 0 ? TrendingUp : TrendingDown;
 
   return (
     <Link to="/budget/mensuel"
       className="group flex flex-col rounded-xl border border-border/50 bg-card p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
-          <span className={"grid h-8 w-8 shrink-0 place-items-center rounded-full " + (over ? "bg-warm/15 text-warm" : "bg-secondary text-foreground/70")}>
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-secondary text-foreground/70">
             <Icon className="h-4 w-4" />
           </span>
           <div className="min-w-0">
@@ -445,10 +448,15 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
             <p className="truncate text-[10px] tabular-nums text-muted-foreground">Budget {eur(cat.budget)}/mois</p>
           </div>
         </div>
-        <span className={"shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium tabular-nums " + budgetChip}
-          title="Écart au budget, moyenne sur 12 mois">
-          {vsBudget >= 0 ? "+" : "−"}{Math.abs(vsBudget)}%
-        </span>
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <span className={"rounded-full px-1.5 py-0.5 text-[10px] font-medium tabular-nums " + budgetChip}
+            title="Écart au budget, moyenne sur 12 mois">
+            {vsBudget >= 0 ? "+" : "−"}{Math.abs(vsBudget)}%
+          </span>
+          <span className="text-[10px] tabular-nums text-muted-foreground" title={`Vs ${currentYear - 1}`}>
+            vs {currentYear - 1} {yoy >= 0 ? "+" : "−"}{Math.abs(yoy)}%
+          </span>
+        </div>
       </div>
 
       {/* Tendance — 12 mois glissants : réel (plein) jusqu'au dernier import, projeté (pointillé) ensuite */}
@@ -472,15 +480,15 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
         </ResponsiveContainer>
       </div>
 
-      <p className="mt-2 text-right text-[11px] tabular-nums text-muted-foreground" title={`Vs ${currentYear - 1}`}>
-        vs {currentYear - 1} {yoy >= 0 ? "+" : "−"}{Math.abs(yoy)}%
+      <p className="mt-1 flex items-center justify-end gap-1 text-[11px] tabular-nums text-muted-foreground" title="Évolution sur la période affichée">
+        <TrendIcon className="h-3 w-3" /> Période {periodDelta >= 0 ? "+" : "−"}{Math.abs(periodDelta)}%
       </p>
     </Link>
   );
 }
 
 /* keep unused-import guards happy */
-void incomeSources; void nonMonthlyBills; void ArrowRight; void Sparkles; void PiggyBank; void CheckCircle2; void Clock; void TrendingUp; void TrendingDown;
+void incomeSources; void nonMonthlyBills; void ArrowRight; void Sparkles; void PiggyBank; void CheckCircle2; void Clock;
 
 
 
