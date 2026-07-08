@@ -728,6 +728,21 @@ export function upcomingBills(monthsAhead = 12): UpcomingBill[] {
   return results;
 }
 
+// Monthly balance history for an envelope — the reserve sparkline plots these REAL points
+// (1 point = 1 month, coherent with the monthly timeline). Seeded ~8 months back, ending at the
+// current month = `balance`. In the app, each manual reconciliation (or import) appends a month.
+export function envelopeHistory(env: { key: string; balance: number; contrib: number }): { m: string; v: number }[] {
+  const N = 8;
+  const seed = env.key.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
+  return Array.from({ length: N }, (_, i) => {
+    const back = N - 1 - i; // months before the current one
+    const calIdx = ((currentMonthIdx - back) % 12 + 12) % 12;
+    const wobble = Math.sin((i + seed) * 0.9) * env.contrib * 0.3;
+    const v = back === 0 ? env.balance : Math.max(0, Math.round(env.balance - env.contrib * back + wobble));
+    return { m: MONTHS_FR[calIdx], v };
+  });
+}
+
 export function envelopeSeries(env: { key: string; balance: number; contrib: number }) {
   const seed = env.key.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
   return Array.from({ length: 12 }, (_, i) => {
