@@ -11,6 +11,7 @@ import {
   ShieldCheck, ShieldAlert, Pencil, Check, X,
 } from "lucide-react";
 import { CountUp } from "@/components/CountUp";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   categories, envelopes, postesSeed, MONTHS_FR, MONTHS_FR_LONG, eur,
   temporalState, currentMonthIdx, currentYear, incomeSources,
@@ -107,14 +108,22 @@ function YearView({ view, onPickMonth }: { view: BudgetView; onPickMonth: (year:
   const savings = useMemo(() => savingsStockSeries(view), [view]);
   const upcoming = useMemo(() => upcomingBills(12), []);
   const provision = annualisationProvision(postesSeed);
+  const [reserveOpen, setReserveOpen] = useState(false);
 
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* FLUX — verdict integrated on top, then the glissant curve; + categories drill-down */}
-      <FluxBlock verdict={verdict} flows={flows} upcoming={upcoming} provision={provision} onPickMonth={onPickMonth} />
+      <FluxBlock verdict={verdict} flows={flows} upcoming={upcoming} provision={provision}
+        onPickMonth={onPickMonth} onOpenReserve={() => setReserveOpen(true)} />
       <CategoriesGrid />
-      {/* ÉPARGNE / RÉSERVE — stock vs floor, then what the annualisation pot covers */}
-      <SavingsBlock savings={savings} />
+
+      {/* RÉSERVE — behind its verdict box: the stock/floor detail + editable envelopes live in a modal */}
+      <Dialog open={reserveOpen} onOpenChange={setReserveOpen}>
+        <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
+          <DialogTitle className="sr-only">Réserve</DialogTitle>
+          <SavingsBlock savings={savings} bare />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -137,12 +146,14 @@ const axisCls = {
   over: { fg: "text-destructive", dot: "bg-destructive", bg: "bg-destructive/15" },
 } as const;
 
-function AxisStatus({ axis }: { axis: ReturnType<typeof annualVerdict>["axes"][number] }) {
+function AxisStatus({ axis, onClick }: { axis: ReturnType<typeof annualVerdict>["axes"][number]; onClick?: () => void }) {
   const c = axisCls[axis.tone];
-  return (
-    <div className="rounded-xl border border-border/50 bg-secondary/25 px-4 py-3.5">
+  const base = "block w-full rounded-xl border border-border/50 bg-secondary/25 px-4 py-3.5 text-left";
+  const inner = (
+    <>
       <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
         <span className={"h-1.5 w-1.5 rounded-full " + c.dot} /> {axis.label}
+        {onClick && <ChevronRight className="ml-auto h-3.5 w-3.5 text-muted-foreground/60 transition-transform group-hover/axis:translate-x-0.5" />}
       </p>
       <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
         <span className="font-serif text-2xl leading-none tabular-nums text-foreground sm:text-3xl">{axis.value}</span>
@@ -150,8 +161,16 @@ function AxisStatus({ axis }: { axis: ReturnType<typeof annualVerdict>["axes"][n
         <span className={"inline-flex items-center self-center rounded-full px-2.5 py-0.5 text-xs font-medium " + c.bg + " " + c.fg}>{axis.tag}</span>
       </div>
       <p className="mt-2 text-[13px] leading-snug text-muted-foreground">{axis.explain}</p>
-    </div>
+    </>
   );
+  if (onClick) {
+    return (
+      <button onClick={onClick} className={"group/axis transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-lift " + base}>
+        {inner}
+      </button>
+    );
+  }
+  return <div className={base}>{inner}</div>;
 }
 
 // Same look as the default recharts tooltip, but shows each metric once: at the
@@ -185,7 +204,7 @@ function FlowTip({ active, payload, label }: {
   );
 }
 
-function VerdictHeader({ verdict }: { verdict: ReturnType<typeof annualVerdict> }) {
+function VerdictHeader({ verdict, onOpenReserve }: { verdict: ReturnType<typeof annualVerdict>; onOpenReserve: () => void }) {
   const freshness = dataFreshness();
   return (
     <div>
@@ -193,9 +212,12 @@ function VerdictHeader({ verdict }: { verdict: ReturnType<typeof annualVerdict> 
       <p className="mt-1 text-sm text-muted-foreground">
         Sur base des imports jusqu'à {freshness.lastMonth} — la suite est projetée.
       </p>
-      {/* Two independent statuses — each: the number (hero) + a status tag + a human line */}
+      {/* Two independent statuses — each: the number (hero) + a status tag + a human line.
+          The Réserve box opens the full reserve detail (stock/floor + envelopes) in a modal. */}
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        {verdict.axes.map((a) => <AxisStatus key={a.label} axis={a} />)}
+        {verdict.axes.map((a) => (
+          <AxisStatus key={a.label} axis={a} onClick={a.label === "Réserve" ? onOpenReserve : undefined} />
+        ))}
       </div>
     </div>
   );
@@ -245,12 +267,13 @@ function useYAxis(values: number[], step = 15000) {
   }, [values.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-function FluxBlock({ verdict, flows, upcoming, provision, onPickMonth }: {
+function FluxBlock({ verdict, flows, upcoming, provision, onPickMonth, onOpenReserve }: {
   verdict: ReturnType<typeof annualVerdict>;
   flows: ReturnType<typeof flowsSeries>;
   upcoming: UpcomingBill[];
   provision: number;
   onPickMonth: (year: number, monthIdx: number) => void;
+  onOpenReserve: () => void;
 }) {
   const total6m = upcoming.filter((b) => b.monthsAway < 6).reduce((s, b) => s + b.amount, 0);
   const provisionIn6m = provision * 6;
@@ -262,7 +285,7 @@ function FluxBlock({ verdict, flows, upcoming, provision, onPickMonth }: {
   return (
     <section className={"rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up ring-1 " + tone.ring}>
       {/* Verdict integrated at the top — the curve below is its gauge */}
-      <VerdictHeader verdict={verdict} />
+      <VerdictHeader verdict={verdict} onOpenReserve={onOpenReserve} />
 
       {/* One glissant view: past réel (solid) + futur projeté (dashed), présent marqué */}
       <div className="mt-6">
@@ -385,8 +408,9 @@ function FluxBlock({ verdict, flows, upcoming, provision, onPickMonth }: {
 
 /* ---- 4. Savings — transparent + editable (R5 + R6) ---- */
 
-function SavingsBlock({ savings }: {
+function SavingsBlock({ savings, bare }: {
   savings: ReturnType<typeof savingsStockSeries>;
+  bare?: boolean;
 }) {
   const [overrides, setOverrides] = useState<Record<string, number>>({});
   const [editKey, setEditKey] = useState<string | null>(null);
@@ -413,8 +437,9 @@ function SavingsBlock({ savings }: {
     toast.success("Épargne mise à jour");
   };
 
+  const Wrapper = bare ? "div" : "section";
   return (
-    <section className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7 anim-slide-up">
+    <Wrapper className={bare ? "" : "rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7 anim-slide-up"}>
       <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div className="min-w-0">
           <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Réserve</h2>
@@ -520,7 +545,7 @@ function SavingsBlock({ savings }: {
           );
         })}
       </div>
-    </section>
+    </Wrapper>
   );
 }
 
