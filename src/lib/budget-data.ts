@@ -433,7 +433,9 @@ export function cumulativeSeries() {
       m,
       idx: i,
       reel: st === "futur" ? null : cumReal,
-      projete: isFuture ? cumProj : null,
+      // Junction point: the projection line starts AT the last real point ("en-cours"
+      // month carries both), so réalisé → projeté reads as one continuous walk.
+      projete: isFuture ? cumProj : st === "en-cours" ? cumReal : null,
       budget: cumBudget,
       tolMin: Math.round(cumBudget * 0.95),
       tolMax: Math.round(cumBudget * 1.05),

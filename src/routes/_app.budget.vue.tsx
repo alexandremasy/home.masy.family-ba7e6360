@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
-  Area, AreaChart, CartesianGrid, Line, LineChart, ReferenceArea, ReferenceLine,
+  Area, AreaChart, CartesianGrid, ComposedChart, Line, ReferenceLine,
   ResponsiveContainer, Tooltip as RTooltip, XAxis, YAxis,
 } from "recharts";
 import { toast } from "sonner";
@@ -240,6 +240,13 @@ function ContinuousYearChart({ series, isCurrentYear, onPickMonth, year }: {
   onPickMonth: (i: number) => void;
   year: number;
 }) {
+  // Deterministic Y axis: round the max of every plotted value up to a clean 15k step.
+  const { yTop, yTicks } = useMemo(() => {
+    const max = Math.max(...series.flatMap(s => [s.reel ?? 0, s.projete ?? 0, s.tolMax]));
+    const top = Math.max(15000, Math.ceil(max / 15000) * 15000);
+    return { yTop: top, yTicks: Array.from({ length: top / 15000 + 1 }, (_, i) => i * 15000) };
+  }, [series]);
+
   return (
     <section className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7 anim-slide-up">
       <header className="mb-4 flex flex-wrap items-end justify-between gap-3 sm:mb-5">
@@ -252,32 +259,34 @@ function ContinuousYearChart({ series, isCurrentYear, onPickMonth, year }: {
         <div className="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
           <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 bg-foreground" /> Réalisé</span>
           <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 border-t border-dashed border-warm" /> Projeté</span>
-          <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 bg-muted-foreground/50" /> Budget</span>
+          <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 border-t border-dashed border-muted-foreground/60" /> Budget</span>
+          <span className="inline-flex items-center gap-1.5"><span className="h-2 w-3 rounded-[2px] bg-muted-foreground/15" /> Tolérance ±5 %</span>
         </div>
       </header>
 
       <div className="h-56 w-full sm:h-72">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={series} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
+          <ComposedChart data={series} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
             <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="m" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} interval={0} />
             <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false}
-              tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={36} />
+              domain={[0, yTop]} ticks={yTicks}
+              tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={42} />
             <RTooltip
               contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12, color: "var(--popover-foreground)" }}
               formatter={(v: unknown, n) => (typeof v === "number" ? [eur(v), n as string] : ["—", n as string])}
             />
-            {/* Tolerance band around budget */}
-            <ReferenceArea y1={0} y2={0} fill="transparent" />
-            <Line type="monotone" dataKey="tolMax" stroke="var(--muted-foreground)" strokeOpacity={0.15} strokeWidth={1} dot={false} name="Tolérance +5%" />
-            <Line type="monotone" dataKey="tolMin" stroke="var(--muted-foreground)" strokeOpacity={0.15} strokeWidth={1} dot={false} name="Tolérance -5%" />
+            {/* Tolerance band around budget — a single soft area, not two extra lines */}
+            <Area type="monotone" dataKey={(d: (typeof series)[number]) => [d.tolMin, d.tolMax]}
+              stroke="none" fill="var(--muted-foreground)" fillOpacity={0.08}
+              name="Tolérance ±5%" tooltipType="none" activeDot={false} />
             <Line type="monotone" dataKey="budget" stroke="var(--muted-foreground)" strokeWidth={1.5} strokeDasharray="4 4" dot={false} name="Budget cumulé" />
             <Line type="monotone" dataKey="reel" stroke="var(--foreground)" strokeWidth={2.5} dot={false} name="Réalisé cumulé" connectNulls={false} />
             <Line type="monotone" dataKey="projete" stroke="var(--warm)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Projeté cumulé" connectNulls={false} />
             {isCurrentYear && (
               <ReferenceLine x={MONTHS_FR[currentMonthIdx]} stroke="var(--foreground)" strokeOpacity={0.35} strokeDasharray="2 4" />
             )}
-          </LineChart>
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
 
