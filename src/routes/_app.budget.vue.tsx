@@ -15,6 +15,7 @@ import {
   temporalState, currentMonthIdx, currentYear, incomeSources,
   annualisationProvision, annualVerdict, dataFreshness, viewTitle,
   flowsSeries, upcomingBills, nonMonthlyBills,
+  categoryTrend12, categoryYoY,
   type TemporalState, type UpcomingBill, type BudgetView,
 } from "@/lib/budget-data";
 
@@ -404,7 +405,7 @@ function CategoriesGrid() {
         <div>
           <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Catégories</h2>
           <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-            Dépense par mois vs budget — <span className="text-warm">en rouge</span>, au-dessus du budget. Clic pour le détail.
+            Tendance sur 12 mois glissants · le chip = écart au budget, et vs l'an dernier. Clic pour le détail.
           </p>
         </div>
         <Link to="/budget/mensuel" className="text-xs text-primary underline-offset-4 hover:underline">
@@ -420,12 +421,16 @@ function CategoriesGrid() {
 
 function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
   const Icon = cat.icon;
-  // Monthly reading: dépense / mois vs budget / mois. Frame-agnostic (identique en glissant et en
-  // année), pas de cumul-vs-annuel ambigu, et le budget EST le repère (100 % = à budget, la barre
-  // pleine + warm = au-dessus). Au-delà d'une petite tolérance → warm + chip +X %.
-  const over = cat.actual > cat.budget * 1.05;
-  const overPct = cat.budget > 0 ? Math.round((cat.actual / cat.budget - 1) * 100) : 0;
-  const fillPct = Math.min(100, (cat.actual / cat.budget) * 100);
+  // Glissant reading — this is NOT a single month: a trailing-12-month TREND (où dépense-t-on plus ?)
+  // + how the average sits vs the budget (au-dessus / en-dessous des prévisions) + a year-over-year
+  // delta (vs l'an dernier). No progress bar (meaningless without a fixed-year cumul).
+  const trend = categoryTrend12(cat);
+  const avg = Math.round(trend.reduce((s, p) => s + p.v, 0) / trend.length);
+  const vsBudget = cat.budget > 0 ? Math.round((avg / cat.budget - 1) * 100) : 0;
+  const over = vsBudget > 5;
+  const under = vsBudget < -5;
+  const yoy = categoryYoY(cat);
+  const budgetChip = over ? "bg-warm/15 text-warm" : under ? "bg-success/15 text-success" : "bg-secondary text-muted-foreground";
 
   return (
     <Link to="/budget/mensuel"
@@ -437,20 +442,38 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
           </span>
           <p className="truncate text-sm font-medium">{cat.label}</p>
         </div>
-        {over && (
-          <span className="shrink-0 rounded-full bg-warm/15 px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-warm">
-            +{overPct}%
-          </span>
-        )}
+        <span className={"shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium tabular-nums " + budgetChip}
+          title="Écart au budget, moyenne sur 12 mois">
+          {vsBudget >= 0 ? "+" : "−"}{Math.abs(vsBudget)}%
+        </span>
       </div>
 
-      <div className="mt-2 flex items-baseline justify-between gap-2 text-xs">
-        <span className={"tabular-nums " + (over ? "font-semibold text-warm" : "text-foreground")}>{eur(cat.actual)}</span>
-        <span className="tabular-nums text-muted-foreground">/ {eur(cat.budget)}</span>
+      {/* Tendance — 12 mois glissants : la relativité qui compte ici (où ça dépense plus) */}
+      <div className="-mx-1 mt-3 h-12">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={trend} margin={{ top: 2, right: 2, left: 2, bottom: 0 }}>
+            <defs>
+              <linearGradient id={`cat-${cat.key}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={cat.color} stopOpacity={0.35} />
+                <stop offset="100%" stopColor={cat.color} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <XAxis dataKey="m" hide />
+            <RTooltip cursor={{ stroke: "var(--border)" }}
+              contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 10, fontSize: 11, color: "var(--popover-foreground)", padding: "4px 8px" }}
+              formatter={(val: unknown) => [typeof val === "number" ? eur(val) : "—", ""]}
+              labelFormatter={(l) => l as string} />
+            <Area type="monotone" dataKey="v" stroke={cat.color} strokeWidth={1.5} fill={`url(#cat-${cat.key})`} />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
-      <div className="relative mt-1.5 h-2 w-full overflow-hidden rounded-full bg-secondary">
-        <div className={"absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 " + (over ? "bg-warm" : "bg-primary")}
-             style={{ width: `${fillPct}%` }} />
+
+      <div className="mt-2 flex items-center justify-between gap-2 text-[11px]">
+        <span className="tabular-nums text-muted-foreground">Budget {eur(cat.budget)}/mois</span>
+        <span className={"tabular-nums " + (yoy > 0 ? "text-warm" : yoy < 0 ? "text-success" : "text-muted-foreground")}
+          title={`Vs ${currentYear - 1}`}>
+          vs {currentYear - 1} {yoy >= 0 ? "+" : "−"}{Math.abs(yoy)}%
+        </span>
       </div>
     </Link>
   );

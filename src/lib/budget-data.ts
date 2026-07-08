@@ -753,12 +753,28 @@ export function envelopeSeries(env: { key: string; balance: number; contrib: num
   });
 }
 
-export function categoryTrend(cat: Category) {
+// Trailing 12-month spend for a category (rolling window) — the trend the overview cares about:
+// "où dépense-t-on plus ?". Deterministic, centered on the category's typical monthly `actual`
+// with a per-category drift (some rising, some falling) so the direction reads. Labeled by month.
+export function categoryTrend12(cat: Category): { m: string; v: number }[] {
   const seed = cat.key.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
-  return Array.from({ length: 6 }, (_, i) => ({
-    i,
-    v: Math.round(cat.actual * (0.82 + Math.sin((i + seed) * 0.7) * 0.16 + i * 0.02)),
-  }));
+  const slope = (((seed % 7) - 3) / 3) * cat.actual * 0.04; // per-month drift ≈ ±4% of actual
+  return Array.from({ length: 12 }, (_, i) => {
+    const calIdx = ((currentMonthIdx - 11 + i) % 12 + 12) % 12;
+    const wobble = Math.sin((i + seed) * 0.8) * cat.actual * 0.06;
+    // centre on (i - 5.5) so the 12-month MEAN stays ≈ actual (→ the "vs budget" chip is credible),
+    // while the slope still tilts the curve up/down as a visible trend.
+    const v = Math.max(0, Math.round(cat.actual + slope * (i - 5.5) + wobble));
+    return { m: MONTHS_FR[calIdx], v };
+  });
+}
+
+// Year-over-year change for a category (this year vs last), deterministic mock. +% = on dépense
+// plus que l'an dernier dans cette catégorie.
+export function categoryYoY(cat: Category): number {
+  const seed = cat.key.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
+  const factor = 0.85 + (seed % 28) / 100; // prior year = 0.85..1.12 × this year
+  return Math.round((1 / factor - 1) * 100);
 }
 
 export function nextBillForCategory(catKey: CatKey): { monthIdx: number; label: string; amount: number } | null {
