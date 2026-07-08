@@ -313,13 +313,24 @@ function FluxBlock({ verdict, flows, upcoming, provision, onPickMonth }: {
             const ecart = Math.round(f.spend - monthlyBudget);
             const over = ecart > 0;
             const flat = Math.abs(ecart) < 25;
-            const ecartCls = flat ? "text-muted-foreground" : over ? "text-warm" : "text-success";
+            // Spend sits structurally above the monthly category budget (which excludes the
+            // annualised lumpy charges), so painting every overshoot red is noise — the number
+            // stays neutral, colour is reserved for months that materially break the budget.
+            const notable = ecart > monthlyBudget * 0.3;
+            const under = ecart < -monthlyBudget * 0.1;
+            const ecartCls = notable ? "text-warm" : under ? "text-success" : "text-muted-foreground";
             return (
               <button key={f.idx} onClick={() => onPickMonth(f.year, f.calIdx)}
                 title={f.isReal ? "Réel" : "Projeté"}
-                className={"group flex min-w-[58px] flex-1 flex-col items-center gap-1 rounded-lg border bg-card px-1.5 py-2 transition-all hover:-translate-y-0.5 hover:shadow-lift " +
-                  (f.isReal ? "border-solid border-border " : "border-dashed border-border/70 ") +
+                className={"group relative flex min-w-[58px] flex-1 flex-col items-center gap-1 rounded-lg border bg-card px-1.5 py-2 transition-all hover:-translate-y-0.5 hover:shadow-lift " +
+                  (f.isReal ? "border-solid border-border " : "border-transparent ") +
                   (f.isToday ? "ring-1 ring-primary/50 bg-primary/5 " : "")}>
+                {!f.isReal && (
+                  <svg className="pointer-events-none absolute inset-[0.5px] h-[calc(100%-1px)] w-[calc(100%-1px)]" aria-hidden>
+                    <rect width="100%" height="100%" rx="7.5" ry="7.5" fill="none"
+                      stroke="var(--border)" strokeOpacity={0.7} strokeWidth={1} strokeDasharray="5 4" />
+                  </svg>
+                )}
                 <span className="flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground">
                   {f.isLastImport && <span className="h-1.5 w-1.5 rounded-full bg-foreground" title="dernier import" />}
                   {f.m}
