@@ -145,9 +145,10 @@ function AxisStatus({ axis }: { axis: ReturnType<typeof annualVerdict>["axes"][n
       <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
         <span className={"h-1.5 w-1.5 rounded-full " + c.dot} /> {axis.label}
       </p>
-      <div className="mt-1.5 flex flex-wrap items-center gap-2">
+      <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
         <span className="font-serif text-2xl leading-none tabular-nums text-foreground sm:text-3xl">{axis.value}</span>
-        <span className={"inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium " + c.bg + " " + c.fg}>{axis.tag}</span>
+        {axis.pct && <span className="text-sm tabular-nums text-muted-foreground">· {axis.pct}</span>}
+        <span className={"inline-flex items-center self-center rounded-full px-2.5 py-0.5 text-xs font-medium " + c.bg + " " + c.fg}>{axis.tag}</span>
       </div>
       <p className="mt-2 text-[13px] leading-snug text-muted-foreground">{axis.explain}</p>
     </div>

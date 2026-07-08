@@ -315,7 +315,7 @@ export type AnnualVerdict = {
   status: VerdictStatus;
   label: string;
   hint: string;
-  axes: { label: string; tone: "ok" | "warn" | "over"; value: string; tag: string; explain: string }[];
+  axes: { label: string; tone: "ok" | "warn" | "over"; value: string; pct?: string; tag: string; explain: string }[];
   budgetYear: number;
   realisedYTD: number;
   projectedRest: number;
@@ -402,27 +402,39 @@ export function annualVerdict(view: BudgetView = "rolling"): AnnualVerdict {
     hint = `Trajectoire dans le budget et réserve saine — atterrissage ${eur(reserveEnd)}, seuil ${eur(reserveFloor)}.`;
   }
 
-  // Two independent status axes — each a value + its reasoning (not a section title).
+  // Two boxes. LEFT = the year's finances: how far off budget (combien) + how GRAVE it
+  // is (gravity = the consequence on the reserve, not the size). RIGHT = the reserve:
+  // where it lands at the current pace + is it healthy.
+  const gravityWord = status === "over" ? "Critique" : status === "warn" ? "À surveiller" : status === "absorbed" ? "Absorbé" : "Sain";
+  const gravityTone: "ok" | "warn" | "over" = status === "over" ? "over" : status === "warn" ? "warn" : "ok";
+  const gravityExplain =
+    status === "over"
+      ? (draining ? "Le dépassement entame la réserve — à corriger." : "Les dépenses passent devant les revenus — à corriger.")
+      : status === "warn"
+      ? "Le dépassement fragilise la réserve — à surveiller."
+      : status === "absorbed"
+      ? "Dépassement encaissé par l'épargne — rien de grave."
+      : "Dépenses dans le budget, épargne saine — rien à signaler.";
+
   const axes: AnnualVerdict["axes"] = [
     {
-      label: "Dépenses vs budget",
-      tone: overBudget ? "warn" : "ok",
-      value: (deltaEur >= 0 ? "+" : "") + eur(deltaEur),
-      tag: overBudget ? "Dépassement" : "Dans le budget",
-      explain: overBudget
-        ? `${eur(deltaEur)} de dépenses de plus que prévu : ${eur(projectedTotal)} projetés ${horizonWord} pour un budget de ${eur(budgetYear)} (+${Math.abs(deltaPct).toFixed(0)} %).`
-        : `${eur(Math.abs(deltaEur))} de moins que le budget : ${eur(projectedTotal)} projetés ${horizonWord} pour un budget de ${eur(budgetYear)}.`,
+      label: "Finances",
+      tone: gravityTone,
+      value: (deltaEur >= 0 ? "+" : "−") + eur(Math.abs(deltaEur)),
+      pct: `${deltaPct >= 0 ? "+" : "−"}${Math.abs(deltaPct).toFixed(0)} %`,
+      tag: gravityWord,
+      explain: gravityExplain,
     },
     {
-      label: "Réserve (épargne)",
+      label: "Réserve",
       tone: draining ? "over" : belowFloor ? "warn" : "ok",
       value: eur(reserveEnd),
-      tag: draining ? "En recul" : belowFloor ? "Sous le seuil" : "Saine",
+      tag: draining ? "À risque" : belowFloor ? "À renforcer" : "Saine",
       explain: draining
-        ? `À l'arrivée, la réserve serait retombée sous son point de départ (${eur(reserveStart)}).`
+        ? `Au rythme actuel, la réserve recule vers ${eur(reserveEnd)} ${horizonWord}, sous son point de départ (${eur(reserveStart)}).`
         : belowFloor
-        ? `À l'arrivée, la réserve passerait sous le seuil sain de ${eur(reserveFloor)}.`
-        : `À l'arrivée, la réserve reste au-dessus du seuil sain de ${eur(reserveFloor)}.`,
+        ? `Au rythme actuel, la réserve atterrit à ${eur(reserveEnd)} ${horizonWord}, sous le seuil sain de ${eur(reserveFloor)}.`
+        : `Au rythme actuel, la réserve atterrit à ${eur(reserveEnd)} ${horizonWord}, au-dessus du seuil sain de ${eur(reserveFloor)}.`,
     },
   ];
 
