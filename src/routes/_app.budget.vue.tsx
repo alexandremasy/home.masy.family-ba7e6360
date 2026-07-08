@@ -137,12 +137,45 @@ const axisCls = {
 function AxisStatus({ axis }: { axis: ReturnType<typeof annualVerdict>["axes"][number] }) {
   const c = axisCls[axis.tone];
   return (
-    <div className="rounded-xl border border-border/50 bg-secondary/25 px-4 py-3">
+    <div className="rounded-xl border border-border/50 bg-secondary/25 px-4 py-3.5">
       <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
         <span className={"h-1.5 w-1.5 rounded-full " + c.dot} /> {axis.label}
       </p>
-      <p className={"mt-1 font-serif text-2xl leading-none tabular-nums sm:text-3xl " + c.fg}>{axis.value}</p>
-      <p className="mt-1.5 text-[11px] text-muted-foreground">{axis.sub}</p>
+      <p className={"mt-1.5 font-serif text-lg leading-tight sm:text-xl " + c.fg}>{axis.verdict}</p>
+      <p className="mt-1 text-sm text-muted-foreground">
+        <span className="tabular-nums font-medium text-foreground">{axis.value}</span> · {axis.sub}
+      </p>
+    </div>
+  );
+}
+
+// Same look as the default recharts tooltip, but shows each metric once: at the
+// junction month both réel and projeté carry a value (for line continuity) — we pick
+// réel when present, else projeté. Recharts' default can't drop the duplicate row.
+function FlowTip({ active, payload, label }: {
+  active?: boolean; label?: string;
+  payload?: { dataKey?: string | number; value?: number | null }[];
+}) {
+  if (!active || !payload?.length) return null;
+  const v = (k: string) => {
+    const hit = payload.find((p) => p.dataKey === k && p.value != null);
+    return typeof hit?.value === "number" ? hit.value : null;
+  };
+  const rows = [
+    { name: "Entrées", val: v("inReel") ?? v("inProj"), reel: v("inReel") != null, color: "var(--success)" },
+    { name: "Dépenses", val: v("depReel") ?? v("depProj"), reel: v("depReel") != null, color: "var(--warm)" },
+    { name: "Épargne", val: v("epReel") ?? v("epProj"), reel: v("epReel") != null, color: "var(--primary)" },
+  ].filter((r) => r.val != null);
+  const projected = rows.length > 0 && rows.every((r) => !r.reel);
+  return (
+    <div style={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12 }}
+      className="px-3 py-2 text-xs shadow-lift">
+      <p className="mb-1 font-medium text-popover-foreground">
+        {label}{projected && <span className="font-normal text-muted-foreground"> · projeté</span>}
+      </p>
+      {rows.map((r) => (
+        <p key={r.name} className="tabular-nums" style={{ color: r.color }}>{r.name} : {eur(r.val!)}</p>
+      ))}
     </div>
   );
 }
@@ -153,24 +186,25 @@ function VerdictHeader({ verdict }: { verdict: ReturnType<typeof annualVerdict> 
   const word = verdict.status === "over" ? "Sous tension" : verdict.status === "warn" ? "À surveiller" : "Sous contrôle";
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-          Santé de l'année
-          <span className="ml-2 normal-case tracking-normal text-muted-foreground/70">
-            · à jour au {freshness.asOfLabel} · {freshness.lastImportLabel}
-          </span>
-        </p>
-        <span className={"inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium " + tone.bg + " " + tone.fg}>
-          <tone.Icon className="h-3.5 w-3.5" /> {word}
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="min-w-0">
+          <h2 className="font-serif text-2xl tracking-tight sm:text-3xl">Santé de l'année</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            À jour au {freshness.asOfLabel} · {freshness.lastImportLabel}
+          </p>
+        </div>
+        <span className={"inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium " + tone.bg + " " + tone.fg}>
+          <tone.Icon className="h-4 w-4" /> {word}
         </span>
       </div>
-      {/* Two independent statuses — each a value + its reasoning */}
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+      {/* Two independent statuses — each: a verdict + the number that backs it */}
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {verdict.axes.map((a) => <AxisStatus key={a.label} axis={a} />)}
       </div>
     </div>
   );
 }
+
 
 function SecondaryReading({ label, primary, secondary, tone }: {
   label: string; primary: string; secondary?: string;
@@ -225,11 +259,6 @@ function FluxBlock({ verdict, flows, isCurrentYear, onPickMonth, year }: {
   const flowAxis = useYAxis(flows.flatMap(f => [f.inReel ?? 0, f.inProj ?? 0, f.depReel ?? 0, f.depProj ?? 0]));
   const curX = MONTHS_FR[currentMonthIdx];
   const tone = verdictTone(verdict.status);
-  const tip = {
-    contentStyle: { background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12, color: "var(--popover-foreground)" },
-    formatter: (v: unknown, n: unknown) => (typeof v === "number" ? [eur(v), n as string] : ["—", n as string]),
-  };
-
   return (
     <section className={"rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up ring-1 " + tone.ring}>
       {/* Verdict integrated at the top — the curve below is its gauge */}
@@ -253,7 +282,7 @@ function FluxBlock({ verdict, flows, isCurrentYear, onPickMonth, year }: {
               <XAxis dataKey="m" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} interval={0} />
               <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false}
                 domain={[0, flowAxis.yTop]} ticks={flowAxis.yTicks} tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={42} />
-              <RTooltip {...tip} />
+              <RTooltip content={<FlowTip />} />
               {isCurrentYear && (
                 <ReferenceLine x={curX} stroke="var(--foreground)" strokeOpacity={0.35} strokeDasharray="2 4"
                   label={{ value: "aujourd'hui", position: "top", fontSize: 10, fill: "var(--muted-foreground)" }} />

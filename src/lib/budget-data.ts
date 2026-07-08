@@ -315,7 +315,7 @@ export type AnnualVerdict = {
   status: VerdictStatus;
   label: string;
   hint: string;
-  axes: { label: string; tone: "ok" | "warn" | "over"; value: string; sub: string }[];
+  axes: { label: string; tone: "ok" | "warn" | "over"; verdict: string; value: string; sub: string }[];
   budgetYear: number;
   realisedYTD: number;
   projectedRest: number;
@@ -411,16 +411,20 @@ export function annualVerdict(): AnnualVerdict {
   // Two independent status axes — each a value + its reasoning (not a section title).
   const axes: AnnualVerdict["axes"] = [
     {
-      label: "Trajectoire dépenses",
+      label: "Dépenses vs budget",
       tone: overBudget ? "warn" : "ok",
+      verdict: overBudget ? "Dépassement projeté" : "Dans le budget",
       value: (deltaEur >= 0 ? "+" : "") + eur(deltaEur),
-      sub: overBudget ? `${deltaPct >= 0 ? "+" : ""}${deltaPct.toFixed(0)} % vs budget annuel` : "dans le budget annuel",
+      sub: `${deltaPct >= 0 ? "+" : ""}${deltaPct.toFixed(0)} % vs budget annuel · projeté fin d'année`,
     },
     {
-      label: "Réserve",
+      label: "Réserve (épargne)",
       tone: draining ? "over" : belowFloor ? "warn" : "ok",
+      verdict: draining ? "En recul" : belowFloor ? "Sous le seuil" : "Saine",
       value: eur(reserveEnd),
-      sub: draining ? `en recul vs ${eur(reserveStart)}` : belowFloor ? `sous le seuil sain ${eur(reserveFloor)}` : `au-dessus du seuil sain ${eur(reserveFloor)}`,
+      sub: draining
+        ? `fin d'année, en recul vs ${eur(reserveStart)} au départ`
+        : `fin d'année · seuil sain ${eur(reserveFloor)}`,
     },
   ];
 
@@ -500,15 +504,18 @@ export function flowsSeries(year = currentYear) {
     cumIn += projected ? avgIncome + lump.income : flows[i].income;
     cumDep += projected ? avgSpend + lump.charge : flows[i].spend;
     const cumEp = Math.max(0, cumIn - cumDep); // épargne = l'écart
-    const junction = i === lastReal; // last imported month → dashed starts here
+    // Réel (solid) through the last imported month; projeté (dashed) continues from it
+    // (junction carried in both → no rupture). The tooltip formatter hides the projeté
+    // duplicate at the junction so that month still shows one value per metric.
+    const bridge = projected || i === lastReal;
     return {
       m, idx: i,
       inReel: projected ? null : cumIn,
-      inProj: projected || junction ? cumIn : null,
+      inProj: bridge ? cumIn : null,
       depReel: projected ? null : cumDep,
-      depProj: projected || junction ? cumDep : null,
+      depProj: bridge ? cumDep : null,
       epReel: projected ? null : cumEp,
-      epProj: projected || junction ? cumEp : null,
+      epProj: bridge ? cumEp : null,
     };
   });
 }
