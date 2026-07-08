@@ -440,14 +440,14 @@ function SavingsBlock() {
             État réel des enveloppes — ajustez à la main pour refléter la banque.
           </p>
         </div>
-        <div className="flex items-baseline gap-3 text-right">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Total</p>
-            <p className="mt-0.5 font-serif text-2xl tabular-nums text-foreground">
-              <CountUp to={total} /><span className="ml-1 text-sm text-muted-foreground">€</span>
-            </p>
-          </div>
-          <p className="text-[11px] tabular-nums text-muted-foreground">+ {eur(contribTotal)}/mois</p>
+        <div className="text-right">
+          <p className="flex items-baseline justify-end gap-3">
+            <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Total</span>
+            <span className="text-[11px] tabular-nums text-muted-foreground">+ {eur(contribTotal)}/mois</span>
+          </p>
+          <p className="mt-0.5 font-serif text-2xl tabular-nums text-foreground">
+            <CountUp to={total} /><span className="ml-1 text-sm text-muted-foreground">€</span>
+          </p>
         </div>
       </header>
 
