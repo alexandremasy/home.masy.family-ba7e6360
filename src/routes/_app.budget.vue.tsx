@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
-  Area, AreaChart, CartesianGrid, ComposedChart, Line, ReferenceArea, ReferenceLine,
+  Area, AreaChart, CartesianGrid, ComposedChart, Line, ReferenceLine,
   ResponsiveContainer, Tooltip as RTooltip, XAxis, YAxis,
 } from "recharts";
 import { toast } from "sonner";
@@ -294,8 +294,8 @@ function AnnualChartsBlock({ flows, savings, isCurrentYear, onPickMonth, year }:
         <div className="min-w-0">
           <header className="mb-3 flex items-end justify-between gap-2">
             <div>
-              <h2 className="font-serif text-lg tracking-tight sm:text-xl">Le bas de laine</h2>
-              <p className="mt-0.5 text-xs text-muted-foreground">Épargne cumulée sur l'année — la pression, c'est quand la courbe frôle le seuil sain.</p>
+              <h2 className="font-serif text-lg tracking-tight sm:text-xl">Épargne</h2>
+              <p className="mt-0.5 text-xs text-muted-foreground">Cumul sur l'année — la pression, c'est quand la courbe frôle le seuil sain.</p>
             </div>
           </header>
           <div className="h-52 w-full sm:h-60">
@@ -306,8 +306,7 @@ function AnnualChartsBlock({ flows, savings, isCurrentYear, onPickMonth, year }:
                 <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false}
                   domain={[0, savAxis.yTop]} ticks={savAxis.yTicks} tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={42} />
                 <RTooltip {...tip} />
-                {/* danger zone: below the healthy floor */}
-                <ReferenceArea y1={0} y2={savings.floor} fill="var(--destructive)" fillOpacity={0.06} />
+                {/* healthy floor — the line alone carries the pressure (no heavy fill) */}
                 <ReferenceLine y={savings.floor} stroke="var(--destructive)" strokeOpacity={0.55} strokeDasharray="4 4"
                   label={{ value: `Seuil sain · ${eur(savings.floor)}`, position: "insideTopRight", fontSize: 10, fill: "var(--destructive)" }} />
                 <Area type="monotone" dataKey="reel" stroke="var(--primary)" strokeWidth={2.5} fill="var(--primary)" fillOpacity={0.1} name="Bas de laine" connectNulls={false} />
@@ -319,7 +318,7 @@ function AnnualChartsBlock({ flows, savings, isCurrentYear, onPickMonth, year }:
           <div className="mt-2 flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
             <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--primary)" }} /> Épargne</span>
             <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 border-t border-dashed border-muted-foreground/60" /> Projeté</span>
-            <span className="inline-flex items-center gap-1.5"><span className="h-2 w-3 rounded-[2px]" style={{ background: "var(--destructive)", opacity: 0.12 }} /> Sous le seuil</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 border-t border-dashed border-destructive/60" /> Seuil sain</span>
           </div>
         </div>
       </div>
