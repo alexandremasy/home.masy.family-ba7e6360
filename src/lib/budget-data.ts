@@ -416,8 +416,8 @@ export function annualVerdict(): AnnualVerdict {
       value: (deltaEur >= 0 ? "+" : "") + eur(deltaEur),
       tag: overBudget ? "Dépassement" : "Dans le budget",
       explain: overBudget
-        ? `Sur la tendance actuelle, l'année finira ${Math.abs(deltaPct).toFixed(0)} % au-dessus du budget prévu.`
-        : `Les dépenses projetées tiennent dans le budget de l'année.`,
+        ? `${eur(deltaEur)} de dépenses de PLUS que prévu : ${eur(projectedTotal)} projetés sur l'année pour un budget de ${eur(budgetYear)} (+${Math.abs(deltaPct).toFixed(0)} %).`
+        : `${eur(Math.abs(deltaEur))} de MOINS que le budget : ${eur(projectedTotal)} projetés pour un budget de ${eur(budgetYear)}.`,
     },
     {
       label: "Réserve (épargne)",
