@@ -547,37 +547,43 @@ function CategoriesGrid() {
 
 function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
   const Icon = cat.icon;
-  const { ytdActual, annualBudget } = annualForCategory(cat);
-  const over = ytdActual > annualBudget;
-  const pct = Math.min(100, (ytdActual / annualBudget) * 100);
+  const { ytdActual, annualBudget, expectedToDate } = annualForCategory(cat);
+  // Health = pace, not cumul-vs-annual: are we over where we should be TODAY? (comparing to the
+  // full-year budget would leave everything ~50% mid-year and flag nothing until December.)
+  const overPace = ytdActual > expectedToDate * 1.05; // 5% tolerance — restraint, like the month strip
+  const pacePct = expectedToDate > 0 ? Math.round((ytdActual / expectedToDate - 1) * 100) : 0;
+  const fillPct = Math.min(100, (ytdActual / annualBudget) * 100);
+  const tickPct = Math.min(100, (expectedToDate / annualBudget) * 100); // « où on devrait être aujourd'hui »
   const trend = categoryTrend(cat);
   const nextBill = nextBillForCategory(cat.key);
-  const first = trend[0].v, last = trend[trend.length - 1].v;
-  const trendUp = last > first;
 
   return (
     <Link to="/budget/mensuel"
       className="group flex flex-col rounded-xl border border-border/50 bg-card p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift">
       <div className="flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
-          <span className={"grid h-8 w-8 shrink-0 place-items-center rounded-full " + (over ? "bg-warm/15 text-warm" : "bg-secondary text-foreground/70")}>
+          <span className={"grid h-8 w-8 shrink-0 place-items-center rounded-full " + (overPace ? "bg-warm/15 text-warm" : "bg-secondary text-foreground/70")}>
             <Icon className="h-4 w-4" />
           </span>
           <p className="truncate text-sm font-medium">{cat.label}</p>
         </div>
-        <span className={"inline-flex items-center gap-0.5 text-[10px] tabular-nums " + (trendUp ? "text-warm" : "text-success")}>
-          {trendUp ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-        </span>
+        {overPace && (
+          <span className="shrink-0 rounded-full bg-warm/15 px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-warm">
+            +{pacePct}%
+          </span>
+        )}
       </div>
 
       <div className="mt-2 flex items-baseline justify-between gap-2 text-xs">
-        <span className={"tabular-nums " + (over ? "font-semibold text-warm" : "text-foreground")}>{eur(ytdActual)}</span>
+        <span className={"tabular-nums " + (overPace ? "font-semibold text-warm" : "text-foreground")}>{eur(ytdActual)}</span>
         <span className="tabular-nums text-muted-foreground">/ {eur(annualBudget)}</span>
       </div>
       <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Cumul à date · budget annuel</p>
-      <div className="relative mt-1.5 h-1 w-full overflow-hidden rounded-full bg-secondary">
-        <div className={"absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 " + (over ? "bg-warm" : "bg-primary")}
-             style={{ width: `${pct}%` }} />
+      <div className="relative mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+        <div className={"absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 " + (overPace ? "bg-warm" : "bg-primary")}
+             style={{ width: `${fillPct}%` }} />
+        {/* repère « où on devrait être aujourd'hui » — la barre le dépasse = on dérape */}
+        <span className="absolute inset-y-0 w-px bg-foreground/50" style={{ left: `${tickPct}%` }} title="Où on devrait être aujourd'hui" />
       </div>
 
 
@@ -606,7 +612,7 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
 }
 
 /* keep unused-import guards happy */
-void incomeSources; void nonMonthlyBills; void ArrowRight; void Sparkles; void PiggyBank; void CheckCircle2; void Clock;
+void incomeSources; void nonMonthlyBills; void ArrowRight; void Sparkles; void PiggyBank; void CheckCircle2; void Clock; void TrendingUp; void TrendingDown;
 
 
 
