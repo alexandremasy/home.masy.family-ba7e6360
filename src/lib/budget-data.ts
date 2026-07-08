@@ -328,6 +328,9 @@ export type AnnualVerdict = {
   spendDeltaPct: number;
   savingsTarget: number;
   savingsOnTrack: boolean;
+  reserveStart: number;
+  reserveEnd: number;
+  reserveFloor: number;
 };
 
 // Tolerance on the trajectory axis before an overshoot is "named" (plan: ±2 %).
@@ -336,69 +339,76 @@ const TRAJECTORY_TOLERANCE_PCT = 2;
 export function annualVerdict(): AnnualVerdict {
   const monthlyBudget = categories.reduce((s, c) => s + c.budget, 0);
   const budgetYear = monthlyBudget * 12;
+  const flows = monthlyFlows();
+  const { avgIncome, avgSpend } = projectionBasis();
+
+  // Realised so far + run-rate projection for the rest of the year.
   let realisedYTD = 0;
+  let realisedIncome = 0;
   for (let i = 0; i <= currentMonthIdx; i++) {
-    const st = temporalState(i);
-    realisedYTD += rolling12[i]?.spend ?? actualForMonth(i, st);
+    realisedYTD += flows[i].spend;
+    realisedIncome += flows[i].income;
   }
-  let projectedRest = 0;
-  for (let i = currentMonthIdx + 1; i < 12; i++) {
-    projectedRest += projectedForMonth(postesSeed, i);
-  }
-  const day = _now.getDate();
-  const daysInMonth = new Date(currentYear, currentMonthIdx + 1, 0).getDate();
-  const remainingOfCurrent = Math.round(monthlyBudget * (1 - day / daysInMonth));
-  const projectedTotal = realisedYTD + remainingOfCurrent + projectedRest;
+  const futureMonths = 11 - currentMonthIdx;
+  const projectedTotal = realisedYTD + avgSpend * futureMonths;
+  const projectedIncome = realisedIncome + avgIncome * futureMonths;
+  const projectedRest = projectedTotal - realisedYTD;
 
   const deltaEur = projectedTotal - budgetYear;
-  const deltaPct = (deltaEur / budgetYear) * 100;
+  const deltaPct = budgetYear > 0 ? (deltaEur / budgetYear) * 100 : 0;
+  const day = _now.getDate();
+  const daysInMonth = new Date(currentYear, currentMonthIdx + 1, 0).getDate();
   const expectedByNow = Math.round(budgetYear * ((currentMonthIdx + day / daysInMonth) / 12));
-
   const spendDeltaYTD = realisedYTD - expectedByNow;
   const spendDeltaPct = expectedByNow > 0 ? (spendDeltaYTD / expectedByNow) * 100 : 0;
 
-  const totalIncome = rolling12.reduce((s, r) => s + r.income, 0);
-  const netProjected = totalIncome - projectedTotal;
-  const savingsRate = Math.max(0, Math.round((netProjected / totalIncome) * 100));
+  const netProjected = projectedIncome - projectedTotal;
+  const savingsRate = projectedIncome > 0 ? Math.max(0, Math.round((netProjected / projectedIncome) * 100)) : 0;
 
+  // Reserve health — same trajectory as the Réserve chart (stock vs healthy floor).
+  const stock = savingsStockSeries();
+  const reserveStart = stock.series[0]?.reel ?? 0;
+  const reserveEnd = stock.projectedEnd;
+  const reserveFloor = stock.floor;
   const savingsTarget = envelopes.reduce((s, e) => s + e.contrib * 12, 0);
-  const savingsOnTrack = netProjected >= savingsTarget;
+  const savingsOnTrack = reserveEnd >= reserveFloor;
 
-  // Axis A — cause: is the spending trajectory over budget (beyond tolerance)?
+  // Grammar: severity from the CONSEQUENCE (the reserve), label names the CAUSE (budget).
   const overBudget = deltaPct > TRAJECTORY_TOLERANCE_PCT;
-  // Axis B — consequence: deficit < 0 ≤ eating-into-savings < savingsTarget ≤ covered.
-  const savingsGap = savingsTarget - netProjected;
+  const draining = reserveEnd < reserveStart;      // year ends with less than it started
+  const belowFloor = reserveEnd < reserveFloor;    // reserve too thin to be safe
 
   let status: VerdictStatus;
   let label: string;
   let hint: string;
-  if (netProjected < 0) {
+  if (netProjected < 0 || draining) {
     status = "over";
-    label = "Déficit projeté — on puise dans les réserves";
-    hint = `Les dépenses projetées dépassent les revenus de l'année : net ${eur(netProjected)}. L'épargne recule.`;
-  } else if (!savingsOnTrack) {
+    label = "On puise dans la réserve";
+    hint = draining
+      ? `La réserve finit l'année à ${eur(reserveEnd)}, sous son point de départ (${eur(reserveStart)}) — on désépargne.`
+      : `Net annuel projeté négatif (${eur(netProjected)}) : les dépenses passent devant les revenus.`;
+  } else if (belowFloor) {
     status = "warn";
-    label = overBudget ? "Le dépassement entame l'épargne" : "Épargne sous l'objectif";
-    hint = overBudget
-      ? `${deltaEur >= 0 ? "+" : ""}${eur(deltaEur)} vs budget dépenses : le net projeté (${eur(netProjected)}) ne couvre plus l'objectif d'épargne de ${eur(savingsTarget)} — il manque ${eur(savingsGap)}.`
-      : `Dépenses dans le budget, mais le net projeté (${eur(netProjected)}) reste sous l'objectif d'épargne de ${eur(savingsTarget)} — il manque ${eur(savingsGap)}.`;
+    label = "Réserve sous le seuil sain";
+    hint = `La réserve atterrit à ${eur(reserveEnd)}, sous le seuil sain de ${eur(reserveFloor)} — il manque ${eur(reserveFloor - reserveEnd)}.`;
   } else if (overBudget) {
     status = "absorbed";
-    label = "Dépassement absorbé — l'épargne tient";
-    hint = `${eur(deltaEur)} au-dessus du budget dépenses, mais le net projeté (${eur(netProjected)}) couvre l'objectif d'épargne de ${eur(savingsTarget)}.`;
+    label = "Dépassement absorbé — réserve saine";
+    hint = `${eur(deltaEur)} au-dessus du budget dépenses, mais la réserve tient au-dessus du seuil (${eur(reserveEnd)} ≥ ${eur(reserveFloor)}).`;
   } else {
     status = "ok";
     label = "Dans les clous";
-    hint = `Trajectoire dans le budget et épargne sur objectif — net projeté ${eur(netProjected)}, objectif ${eur(savingsTarget)} couvert.`;
+    hint = `Trajectoire dans le budget et réserve saine — atterrissage ${eur(reserveEnd)}, seuil ${eur(reserveFloor)}.`;
   }
 
   return {
     status, label, hint,
-    budgetYear, realisedYTD, projectedRest: projectedRest + remainingOfCurrent,
+    budgetYear, realisedYTD, projectedRest,
     projectedTotal, deltaEur, deltaPct, expectedByNow,
     netProjected, savingsRate,
     spendDeltaYTD, spendDeltaPct,
     savingsTarget, savingsOnTrack,
+    reserveStart, reserveEnd, reserveFloor,
   };
 }
 
@@ -419,20 +429,36 @@ function monthlyFlows(): { income: number; spend: number }[] {
   });
 }
 
+// Projection basis — the run-rate from the months we actually have (realised).
+// The projection is RECALCULATED from this every render, so it moves as imports land.
+export function projectionBasis() {
+  const flows = monthlyFlows();
+  let inSum = 0;
+  let depSum = 0;
+  let n = 0;
+  for (let i = 0; i <= currentMonthIdx; i++) {
+    inSum += flows[i].income;
+    depSum += flows[i].spend;
+    n++;
+  }
+  return { avgIncome: n ? Math.round(inSum / n) : 0, avgSpend: n ? Math.round(depSum / n) : 0, realizedMonths: n };
+}
+
 // Graph A — cumulative TRIPLE flow: entrées / dépenses / épargne, réalisé (solid)
-// then projeté (dashed). Identity: Entrées = Dépenses + Épargne, so épargne = the gap
-// (what's not spent gets set aside). Projection = the "en-cours" month carries both
-// series so solid → dashed is seamless.
+// then projeté (dashed, from the run-rate). Identity: Entrées = Dépenses + Épargne, so
+// épargne = the gap. Glissant: past = real, future = projected, present = the "en-cours"
+// month (carries both series so solid → dashed is seamless).
 export function flowsSeries() {
   const flows = monthlyFlows();
+  const { avgIncome, avgSpend } = projectionBasis();
   let cumIn = 0;
   let cumDep = 0;
   return MONTHS_FR.map((m, i) => {
     const st = temporalState(i);
-    cumIn += flows[i].income;
-    cumDep += flows[i].spend;
-    const cumEp = Math.max(0, cumIn - cumDep); // épargne réelle = l'écart
     const future = st === "futur";
+    cumIn += future ? avgIncome : flows[i].income;
+    cumDep += future ? avgSpend : flows[i].spend;
+    const cumEp = Math.max(0, cumIn - cumDep); // épargne = l'écart
     const bridge = future || st === "en-cours";
     return {
       m, idx: i,

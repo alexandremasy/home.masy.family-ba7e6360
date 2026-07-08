@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
-  Area, AreaChart, Bar, CartesianGrid, ComposedChart, Line, ReferenceLine,
+  Area, AreaChart, CartesianGrid, ComposedChart, Line, ReferenceLine,
   ResponsiveContainer, Tooltip as RTooltip, XAxis, YAxis,
 } from "recharts";
 import { toast } from "sonner";
@@ -15,7 +15,7 @@ import {
   categories, envelopes, postesSeed, MONTHS_FR, MONTHS_FR_LONG, eur,
   temporalState, currentMonthIdx, currentYear, incomeSources,
   annualisationProvision, annualVerdict, dataFreshness,
-  flowsSeries, monthlyOverview, savingsStockSeries, upcomingBigBills,
+  flowsSeries, savingsStockSeries, upcomingBigBills,
   envelopeSeries, categoryTrend, nextBillForCategory, nonMonthlyBills,
   annualForCategory,
   type TemporalState, type UpcomingBill,
@@ -106,9 +106,8 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      <VerdictBanner verdict={verdict} />
-      {/* FLUX + its drill-down (categories = where the dépenses go) */}
-      <FluxBlock flows={flows} isCurrentYear={isCurrentYear} onPickMonth={onPickMonth} year={year} />
+      {/* FLUX — verdict integrated on top, then the glissant curve; + categories drill-down */}
+      <FluxBlock verdict={verdict} flows={flows} isCurrentYear={isCurrentYear} onPickMonth={onPickMonth} year={year} />
       <CategoriesGrid />
       {/* ÉPARGNE / RÉSERVE — stock vs floor, then what the annualisation pot covers */}
       <SavingsBlock savings={savings} isCurrentYear={isCurrentYear} />
@@ -117,88 +116,58 @@ function YearView({ year, onPickMonth }: { year: number; onPickMonth: (i: number
   );
 }
 
-/* ---- 1. Verdict banner (R1) ---- */
+/* ---- 1. Verdict header — integrated into the Flux block; the curve is its gauge ---- */
 
-function VerdictBanner({ verdict }: { verdict: ReturnType<typeof annualVerdict> }) {
-  const { status, label, hint, budgetYear, realisedYTD, projectedRest, projectedTotal,
-          expectedByNow } = verdict;
-  const tone = status === "ok"
-    ? { ring: "ring-success/30", bg: "bg-success/10", fg: "text-success", Icon: ShieldCheck, bar: "bg-success" }
+function verdictTone(status: ReturnType<typeof annualVerdict>["status"]) {
+  return status === "ok"
+    ? { ring: "ring-success/30", bg: "bg-success/10", fg: "text-success", Icon: ShieldCheck }
     : status === "absorbed"
-    ? { ring: "ring-accent/40", bg: "bg-accent/15", fg: "text-accent", Icon: ShieldCheck, bar: "bg-accent" }
+    ? { ring: "ring-accent/40", bg: "bg-accent/15", fg: "text-accent", Icon: ShieldCheck }
     : status === "warn"
-    ? { ring: "ring-warm/40", bg: "bg-warm/15", fg: "text-warm", Icon: AlertTriangle, bar: "bg-warm" }
-    : { ring: "ring-destructive/40", bg: "bg-destructive/10", fg: "text-destructive", Icon: ShieldAlert, bar: "bg-destructive" };
+    ? { ring: "ring-warm/40", bg: "bg-warm/15", fg: "text-warm", Icon: AlertTriangle }
+    : { ring: "ring-destructive/40", bg: "bg-destructive/10", fg: "text-destructive", Icon: ShieldAlert };
+}
+
+function VerdictHeader({ verdict }: { verdict: ReturnType<typeof annualVerdict> }) {
+  const { status, label, hint } = verdict;
+  const tone = verdictTone(status);
   const freshness = dataFreshness();
-
-  const realisedPct = Math.min(100, (realisedYTD / budgetYear) * 100);
-  const projectedPct = Math.min(100, (projectedTotal / budgetYear) * 100);
-  const expectedPct = Math.min(100, (expectedByNow / budgetYear) * 100);
-
   return (
-    <section className={"relative overflow-hidden rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 ring-1 " + tone.ring}>
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
-        <div className="min-w-0">
-          <div className="flex items-center gap-3">
-            <span className={"grid h-10 w-10 shrink-0 place-items-center rounded-full " + tone.bg + " " + tone.fg}>
-              <tone.Icon className="h-5 w-5" />
-            </span>
-            <div className="min-w-0">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                Trajectoire annuelle
-                <span className="ml-2 normal-case tracking-normal text-muted-foreground/70">
-                  · à jour au {freshness.asOfLabel} · {freshness.lastImportLabel}
-                </span>
-              </p>
-              <h2 className={"mt-0.5 font-serif text-2xl tracking-tight sm:text-3xl " + tone.fg}>{label}</h2>
-            </div>
-          </div>
-          <p className="mt-3 max-w-prose text-sm text-muted-foreground">{hint}</p>
-
-          {/* Gauge */}
-          <div className="mt-5">
-            <div className="relative h-3 w-full overflow-hidden rounded-full bg-secondary">
-              {/* projected extension (soft) */}
-              <div className={"absolute inset-y-0 left-0 rounded-full opacity-40 transition-[width] duration-700 " + tone.bar}
-                   style={{ width: `${projectedPct}%` }} />
-              {/* realised (solid) */}
-              <div className="absolute inset-y-0 left-0 rounded-full bg-foreground/80 transition-[width] duration-700"
-                   style={{ width: `${realisedPct}%` }} />
-              {/* expected-by-now marker */}
-              <div className="absolute inset-y-[-4px] w-0.5 bg-foreground" style={{ left: `${expectedPct}%` }} />
-            </div>
-            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-muted-foreground">
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-sm bg-foreground/80" /> Réalisé <span className="tabular-nums text-foreground">{eur(realisedYTD)}</span>
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
+      <div className="min-w-0">
+        <div className="flex items-center gap-3">
+          <span className={"grid h-10 w-10 shrink-0 place-items-center rounded-full " + tone.bg + " " + tone.fg}>
+            <tone.Icon className="h-5 w-5" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              Trajectoire annuelle
+              <span className="ml-2 normal-case tracking-normal text-muted-foreground/70">
+                · à jour au {freshness.asOfLabel} · {freshness.lastImportLabel}
               </span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className={"h-2 w-2 rounded-sm opacity-40 " + tone.bar} /> + projeté <span className="tabular-nums text-foreground">{eur(projectedRest)}</span>
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-2 w-3 border-l-2 border-foreground" /> Attendu à ce jour
-              </span>
-              <span className="tabular-nums">Budget {eur(budgetYear)}</span>
-            </div>
+            </p>
+            <h2 className={"mt-0.5 font-serif text-2xl tracking-tight sm:text-3xl " + tone.fg}>{label}</h2>
           </div>
         </div>
-
-        {/* Right rail: secondary readings */}
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-1 lg:gap-3 lg:border-l lg:border-border/40 lg:pl-8">
-          <SecondaryReading
-            label="Dépenses vs plan"
-            primary={(verdict.spendDeltaYTD >= 0 ? "+" : "") + eur(verdict.spendDeltaYTD)}
-            secondary={(verdict.spendDeltaPct >= 0 ? "+" : "") + verdict.spendDeltaPct.toFixed(1) + " % à date"}
-            tone={verdict.spendDeltaYTD > 0 ? "warm" : "success"}
-          />
-          <SecondaryReading
-            label="Épargne"
-            primary={verdict.savingsRate + " %"}
-            secondary={`Objectif ${eur(verdict.savingsTarget)} · net ${eur(verdict.netProjected)}`}
-            tone={verdict.savingsOnTrack ? "success" : "warm"}
-          />
-        </div>
+        <p className="mt-3 max-w-prose text-sm text-muted-foreground">{hint}</p>
       </div>
-    </section>
+
+      {/* Right rail: the two health axes — dépenses vs plan, réserve vs seuil */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-1 lg:gap-3 lg:border-l lg:border-border/40 lg:pl-8">
+        <SecondaryReading
+          label="Dépenses vs plan"
+          primary={(verdict.deltaEur >= 0 ? "+" : "") + eur(verdict.deltaEur)}
+          secondary={(verdict.deltaPct >= 0 ? "+" : "") + verdict.deltaPct.toFixed(1) + " % sur l'année"}
+          tone={verdict.deltaEur > 0 ? "warm" : "success"}
+        />
+        <SecondaryReading
+          label="Réserve"
+          primary={eur(verdict.reserveEnd)}
+          secondary={`seuil sain ${eur(verdict.reserveFloor)}`}
+          tone={verdict.savingsOnTrack ? "success" : "warm"}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -245,91 +214,61 @@ function useYAxis(values: number[], step = 15000) {
   }, [values.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-function FluxBlock({ flows, isCurrentYear, onPickMonth, year }: {
+function FluxBlock({ verdict, flows, isCurrentYear, onPickMonth, year }: {
+  verdict: ReturnType<typeof annualVerdict>;
   flows: ReturnType<typeof flowsSeries>;
   isCurrentYear: boolean;
   onPickMonth: (i: number) => void;
   year: number;
 }) {
-  const [rolling, setRolling] = useState(false);
-  const overview = useMemo(() => monthlyOverview(rolling), [rolling]);
   const flowAxis = useYAxis(flows.flatMap(f => [f.inReel ?? 0, f.inProj ?? 0, f.depReel ?? 0, f.depProj ?? 0]));
-  const ovAxis = useYAxis(overview.flatMap(o => [o.income, o.spend]), 2000);
   const curX = MONTHS_FR[currentMonthIdx];
+  const tone = verdictTone(verdict.status);
   const tip = {
     contentStyle: { background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12, color: "var(--popover-foreground)" },
     formatter: (v: unknown, n: unknown) => (typeof v === "number" ? [eur(v), n as string] : ["—", n as string]),
   };
 
   return (
-    <section className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7 anim-slide-up">
-      <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
-        <div className="min-w-0">
-          <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Flux de l'année</h2>
-          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">Entrées, dépenses et épargne — l'écart entrées/dépenses, c'est ce qu'on met de côté.</p>
-        </div>
-      </header>
+    <section className={"rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up ring-1 " + tone.ring}>
+      {/* Verdict integrated at the top — the curve below is its gauge */}
+      <VerdictHeader verdict={verdict} />
 
-      <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
-        {/* Cumulative triple curve */}
-        <div className="min-w-0">
-          <p className="mb-2 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Cumulé · la marche de l'année</p>
-          <div className="h-52 w-full sm:h-60">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={flows} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
-                <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="m" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} interval={1} />
-                <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false}
-                  domain={[0, flowAxis.yTop]} ticks={flowAxis.yTicks} tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={42} />
-                <RTooltip {...tip} />
-                <Line type="monotone" dataKey="inReel" stroke="var(--success)" strokeWidth={2.5} dot={false} name="Entrées" connectNulls={false} />
-                <Line type="monotone" dataKey="inProj" stroke="var(--success)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Entrées (proj.)" connectNulls={false} />
-                <Line type="monotone" dataKey="depReel" stroke="var(--warm)" strokeWidth={2.5} dot={false} name="Dépenses" connectNulls={false} />
-                <Line type="monotone" dataKey="depProj" stroke="var(--warm)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Dépenses (proj.)" connectNulls={false} />
-                <Line type="monotone" dataKey="epReel" stroke="var(--primary)" strokeWidth={2.5} dot={false} name="Épargne" connectNulls={false} />
-                <Line type="monotone" dataKey="epProj" stroke="var(--primary)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Épargne (proj.)" connectNulls={false} />
-                {isCurrentYear && <ReferenceLine x={curX} stroke="var(--foreground)" strokeOpacity={0.3} strokeDasharray="2 4" />}
-              </ComposedChart>
-            </ResponsiveContainer>
+      {/* One glissant view: past réel (solid) + futur projeté (dashed), présent marqué */}
+      <div className="mt-6">
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+          <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Entrées · Dépenses · Épargne — cumul de l'année</p>
+          <div className="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--success)" }} /> Entrées</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--warm)" }} /> Dépenses</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--primary)" }} /> Épargne</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 border-t border-dashed border-muted-foreground/60" /> Projeté</span>
           </div>
         </div>
-
-        {/* Monthly overview */}
-        <div className="min-w-0">
-          <div className="mb-2 flex items-center justify-between gap-2">
-            <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Mois par mois</p>
-            <div className="inline-flex rounded-full border border-border/60 bg-secondary/40 p-0.5 text-[10px]">
-              <button onClick={() => setRolling(false)}
-                className={"rounded-full px-2 py-0.5 transition-colors " + (!rolling ? "bg-foreground text-background" : "text-muted-foreground")}>Calendrier</button>
-              <button onClick={() => setRolling(true)}
-                className={"rounded-full px-2 py-0.5 transition-colors " + (rolling ? "bg-foreground text-background" : "text-muted-foreground")}>12 mois</button>
-            </div>
-          </div>
-          <div className="h-52 w-full sm:h-60">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={overview} margin={{ top: 8, right: 8, left: -14, bottom: 0 }} barGap={1} barCategoryGap="20%">
-                <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="m" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} interval={0} />
-                <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false}
-                  domain={[0, ovAxis.yTop]} ticks={ovAxis.yTicks} tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={42} />
-                <RTooltip {...tip} />
-                <Bar dataKey="income" fill="var(--success)" name="Entrées" radius={[2, 2, 0, 0]} maxBarSize={9} />
-                <Bar dataKey="spend" fill="var(--warm)" name="Dépenses" radius={[2, 2, 0, 0]} maxBarSize={9} />
-                <Bar dataKey="epargne" fill="var(--primary)" name="Épargne" radius={[2, 2, 0, 0]} maxBarSize={9} />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="h-56 w-full sm:h-72">
+          <ResponsiveContainer width="100%" height="100%">
+            <ComposedChart data={flows} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
+              <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="m" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} interval={0} />
+              <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false}
+                domain={[0, flowAxis.yTop]} ticks={flowAxis.yTicks} tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={42} />
+              <RTooltip {...tip} />
+              {isCurrentYear && (
+                <ReferenceLine x={curX} stroke="var(--foreground)" strokeOpacity={0.35} strokeDasharray="2 4"
+                  label={{ value: "aujourd'hui", position: "top", fontSize: 10, fill: "var(--muted-foreground)" }} />
+              )}
+              <Line type="monotone" dataKey="inReel" stroke="var(--success)" strokeWidth={2.5} dot={false} name="Entrées" connectNulls={false} />
+              <Line type="monotone" dataKey="inProj" stroke="var(--success)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Entrées (proj.)" connectNulls={false} />
+              <Line type="monotone" dataKey="depReel" stroke="var(--warm)" strokeWidth={2.5} dot={false} name="Dépenses" connectNulls={false} />
+              <Line type="monotone" dataKey="depProj" stroke="var(--warm)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Dépenses (proj.)" connectNulls={false} />
+              <Line type="monotone" dataKey="epReel" stroke="var(--primary)" strokeWidth={2.5} dot={false} name="Épargne" connectNulls={false} />
+              <Line type="monotone" dataKey="epProj" stroke="var(--primary)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Épargne (proj.)" connectNulls={false} />
+            </ComposedChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-        <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--success)" }} /> Entrées</span>
-        <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--warm)" }} /> Dépenses</span>
-        <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--primary)" }} /> Épargne</span>
-        <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 border-t border-dashed border-muted-foreground/60" /> Projeté</span>
-      </div>
-
-      {/* Mini month strip — full width under both charts */}
+      {/* Mini month strip — the glissant navigator: past / présent / futur */}
       <div className="mt-6 border-t border-border/40 pt-4">
         <div className="mb-2 flex items-center justify-between text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
           <span>Zoom mois</span>
