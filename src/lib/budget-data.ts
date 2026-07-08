@@ -694,6 +694,40 @@ export function upcomingBigBills(n = 5, minAmount = 300): UpcomingBill[] {
   return results;
 }
 
+// Every non-monthly occurrence in the next `monthsAhead` months (all that the
+// Planification defines beyond the monthly run-rate) — no amount floor, no count cap.
+// Trimestrielle/annuelle postes appear once per occurrence inside the window.
+export function upcomingBills(monthsAhead = 12): UpcomingBill[] {
+  const provisionPerMonth = annualisationProvision(postesSeed);
+  const startBalance = annualBalance;
+  const results: UpcomingBill[] = [];
+  for (let step = 0; step < monthsAhead; step++) {
+    const idx = (currentMonthIdx + step) % 12;
+    const bills = postesSeed.filter(
+      (p) => p.recurrence !== "Mensuelle" && p.months.includes(idx),
+    );
+    for (const b of bills) {
+      const provisionAvailable = startBalance + provisionPerMonth * step;
+      const coveragePct = Math.min(100, Math.round((provisionAvailable / b.amount) * 100));
+      const coverage: UpcomingBill["coverage"] =
+        coveragePct >= 100 ? "covered" : coveragePct >= 60 ? "partial" : "uncovered";
+      results.push({
+        id: `${b.id}-${step}`,
+        monthIdx: idx,
+        monthLabel: MONTHS_FR_LONG[idx],
+        label: b.label,
+        category: b.category,
+        amount: b.amount,
+        monthsAway: step,
+        provisionAvailable,
+        coverage,
+        coveragePct,
+      });
+    }
+  }
+  return results;
+}
+
 export function envelopeSeries(env: { key: string; balance: number; contrib: number }) {
   const seed = env.key.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
   return Array.from({ length: 12 }, (_, i) => {

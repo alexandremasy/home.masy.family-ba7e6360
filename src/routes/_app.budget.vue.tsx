@@ -15,7 +15,7 @@ import {
   categories, envelopes, postesSeed, MONTHS_FR, MONTHS_FR_LONG, eur,
   temporalState, currentMonthIdx, currentYear, incomeSources,
   annualisationProvision, annualVerdict, dataFreshness, viewTitle,
-  flowsSeries, savingsStockSeries, upcomingBigBills,
+  flowsSeries, savingsStockSeries, upcomingBills,
   envelopeSeries, categoryTrend, nextBillForCategory, nonMonthlyBills,
   annualForCategory,
   type TemporalState, type UpcomingBill, type BudgetView,
@@ -105,17 +105,16 @@ function YearView({ view, onPickMonth }: { view: BudgetView; onPickMonth: (year:
   const verdict = useMemo(() => annualVerdict(view), [view]);
   const flows = useMemo(() => flowsSeries(view), [view]);
   const savings = useMemo(() => savingsStockSeries(view), [view]);
-  const upcoming = useMemo(() => upcomingBigBills(5), []);
+  const upcoming = useMemo(() => upcomingBills(12), []);
   const provision = annualisationProvision(postesSeed);
 
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* FLUX — verdict integrated on top, then the glissant curve; + categories drill-down */}
-      <FluxBlock verdict={verdict} flows={flows} upcoming={upcoming} onPickMonth={onPickMonth} />
+      <FluxBlock verdict={verdict} flows={flows} upcoming={upcoming} provision={provision} onPickMonth={onPickMonth} />
       <CategoriesGrid />
       {/* ÉPARGNE / RÉSERVE — stock vs floor, then what the annualisation pot covers */}
       <SavingsBlock savings={savings} />
-      <UpcomingBillsBlock bills={upcoming} provision={provision} />
     </div>
   );
 }
@@ -246,12 +245,15 @@ function useYAxis(values: number[], step = 15000) {
   }, [values.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-function FluxBlock({ verdict, flows, upcoming, onPickMonth }: {
+function FluxBlock({ verdict, flows, upcoming, provision, onPickMonth }: {
   verdict: ReturnType<typeof annualVerdict>;
   flows: ReturnType<typeof flowsSeries>;
   upcoming: UpcomingBill[];
+  provision: number;
   onPickMonth: (year: number, monthIdx: number) => void;
 }) {
+  const total6m = upcoming.filter((b) => b.monthsAway < 6).reduce((s, b) => s + b.amount, 0);
+  const provisionIn6m = provision * 6;
   const flowAxis = useYAxis(flows.flatMap(f => [f.inReel ?? 0, f.inProj ?? 0, f.depReel ?? 0, f.depProj ?? 0]), 2000);
   const tone = verdictTone(verdict.status);
   const monthlyBudget = categories.reduce((s, c) => s + c.budget, 0);
@@ -318,11 +320,11 @@ function FluxBlock({ verdict, flows, upcoming, onPickMonth }: {
                 className={"group flex min-w-[58px] flex-1 flex-col items-center gap-1 rounded-lg border bg-card px-1.5 py-2 transition-all hover:-translate-y-0.5 hover:shadow-lift " +
                   (f.isReal ? "border-solid border-border " : "border-dashed border-border/70 ") +
                   (f.isToday ? "ring-1 ring-primary/50 bg-primary/5 " : "")}>
-                <span className="flex items-center gap-1 text-[10px] uppercase tracking-wide text-muted-foreground">
+                <span className="flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground">
                   {f.isLastImport && <span className="h-1.5 w-1.5 rounded-full bg-foreground" title="dernier import" />}
                   {f.m}
                 </span>
-                <span className={"text-xs font-semibold tabular-nums " + ecartCls}>
+                <span className={"text-sm font-semibold tabular-nums " + ecartCls}>
                   {flat ? "≈" : (over ? "+" : "−") + eur(Math.abs(ecart))}
                 </span>
               </button>
@@ -345,11 +347,11 @@ function FluxBlock({ verdict, flows, upcoming, onPickMonth }: {
               return (
                 <button key={b.id} onClick={() => onPickMonth(year, b.monthIdx)}
                   title={`${b.label} · couverture ${b.coveragePct}%`}
-                  className="group flex min-w-[128px] shrink-0 items-center gap-2 rounded-lg border border-border/60 bg-card px-2.5 py-2 text-left transition-all hover:-translate-y-0.5 hover:shadow-lift">
+                  className="group flex min-w-[140px] shrink-0 items-center gap-2 rounded-lg border border-border/60 bg-card px-2.5 py-2 text-left transition-all hover:-translate-y-0.5 hover:shadow-lift">
                   <span className={"h-1.5 w-1.5 shrink-0 rounded-full " + dot} />
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[11px] font-medium leading-tight">{b.label}</span>
-                    <span className="block text-[10px] uppercase tracking-wide text-muted-foreground">
+                    <span className="block truncate text-[13px] font-medium leading-tight">{b.label}</span>
+                    <span className="block text-[11px] uppercase tracking-wide text-muted-foreground">
                       {MONTHS_FR[b.monthIdx]} · <span className="tabular-nums text-warm">−{eur(b.amount)}</span>
                     </span>
                   </span>
@@ -357,98 +359,16 @@ function FluxBlock({ verdict, flows, upcoming, onPickMonth }: {
               );
             })}
           </div>
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+            <span>6 mois <span className="tabular-nums font-medium text-foreground">{eur(total6m)}</span></span>
+            <span className="text-muted-foreground/40">·</span>
+            <span>Provision <span className="tabular-nums font-medium text-foreground">{eur(provisionIn6m)}</span></span>
+            <span className="text-muted-foreground/40">·</span>
+            <span>Marge <span className={"tabular-nums font-medium " + (provisionIn6m - total6m >= 0 ? "text-success" : "text-destructive")}>{eur(provisionIn6m - total6m)}</span></span>
+          </div>
         </div>
       )}
     </section>
-  );
-}
-
-/* ---- 3. Upcoming bills + coverage (R3 + R4) ---- */
-
-function UpcomingBillsBlock({ bills, provision }: { bills: UpcomingBill[]; provision: number }) {
-  const total6m = bills.filter(b => b.monthsAway < 6).reduce((s, b) => s + b.amount, 0);
-  const provisionIn6m = provision * 6;
-
-  return (
-    <section className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-7 anim-slide-up">
-      <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
-        <div className="min-w-0">
-          <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Grosses échéances à venir</h2>
-          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-            Ce qui arrive, et si c'est couvert par la provision d'annualisation.
-          </p>
-        </div>
-        <Link to="/budget/planification" className="text-xs text-primary underline-offset-4 hover:underline">
-          Modifier la planification →
-        </Link>
-      </header>
-
-      <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
-        <div className="flex gap-3 overflow-x-auto pb-2 [scrollbar-width:thin] sm:grid sm:grid-cols-2 sm:overflow-visible lg:grid-cols-5">
-          {bills.map(b => <BillCard key={b.id} bill={b} />)}
-        </div>
-      </div>
-
-      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border/40 pt-3 text-xs text-muted-foreground">
-        <span>À venir · 6 mois <span className="tabular-nums font-medium text-foreground">{eur(total6m)}</span></span>
-        <span className="text-muted-foreground/40">·</span>
-        <span>Provision <span className="tabular-nums font-medium text-foreground">{eur(provisionIn6m)}</span></span>
-        <span className="text-muted-foreground/40">·</span>
-        <span>Marge <span className={"tabular-nums font-medium " + (provisionIn6m - total6m >= 0 ? "text-success" : "text-destructive")}>{eur(provisionIn6m - total6m)}</span></span>
-      </div>
-    </section>
-  );
-}
-
-function BillCard({ bill }: { bill: UpcomingBill }) {
-  const cat = categories.find(c => c.key === bill.category)!;
-  const Icon = cat.icon;
-  const cov = bill.coverage === "covered"
-    ? { label: "Couverte", cls: "bg-success/15 text-success", bar: "bg-success" }
-    : bill.coverage === "partial"
-    ? { label: "Partielle", cls: "bg-warm/15 text-warm", bar: "bg-warm" }
-    : { label: "À combler", cls: "bg-destructive/10 text-destructive", bar: "bg-destructive" };
-  const when = bill.monthsAway === 0 ? "Ce mois" : bill.monthsAway === 1 ? "Le mois prochain" : `Dans ${bill.monthsAway} mois`;
-
-  return (
-    <article className="w-[240px] shrink-0 rounded-xl border border-border/50 bg-card/60 p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift sm:w-auto">
-      <div className="flex items-center justify-between gap-2">
-        <span className="grid h-8 w-8 place-items-center rounded-full bg-secondary text-foreground/70">
-          <Icon className="h-4 w-4" />
-        </span>
-        <span className={"inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide " + cov.cls}>
-          {cov.label}
-        </span>
-      </div>
-      <p className="mt-3 truncate text-sm font-medium">{bill.label}</p>
-      <p className="mt-0.5 text-[11px] text-muted-foreground">
-        <span className="capitalize">{bill.monthLabel}</span> · {when}
-      </p>
-      <p className="mt-2 font-serif text-xl tabular-nums text-warm">−{eur(bill.amount)}</p>
-      <div className="mt-2">
-        <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-          <div className={"absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 " + cov.bar}
-               style={{ width: `${bill.coveragePct}%` }} />
-        </div>
-        <p className="mt-1 text-[10px] tabular-nums text-muted-foreground">
-          Provision {eur(bill.provisionAvailable)} · {bill.coveragePct}%
-        </p>
-      </div>
-    </article>
-  );
-}
-
-function FootStat({ label, value, sub, tone }: { label: string; value: string; sub?: string; tone: "primary"|"warm"|"success"|"destructive" }) {
-  const cls = tone === "warm" ? "text-warm"
-    : tone === "success" ? "text-success"
-    : tone === "destructive" ? "text-destructive"
-    : "text-foreground";
-  return (
-    <div>
-      <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{label}</p>
-      <p className={"mt-1 font-serif text-2xl tabular-nums " + cls}>{value}</p>
-      {sub && <p className="mt-0.5 text-[11px] text-muted-foreground">{sub}</p>}
-    </div>
   );
 }
 
