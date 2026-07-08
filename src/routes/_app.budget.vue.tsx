@@ -405,7 +405,7 @@ function CategoriesGrid() {
         <div>
           <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Catégories</h2>
           <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-            Tendance sur 12 mois glissants · le chip = écart au budget, et vs l'an dernier. Clic pour le détail.
+            Tendance sur 12 mois glissants (plein = réel, pointillé = anticipé) · le chip = écart au budget. Clic pour le détail.
           </p>
         </div>
         <Link to="/budget/mensuel" className="text-xs text-primary underline-offset-4 hover:underline">
@@ -440,7 +440,10 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
           <span className={"grid h-8 w-8 shrink-0 place-items-center rounded-full " + (over ? "bg-warm/15 text-warm" : "bg-secondary text-foreground/70")}>
             <Icon className="h-4 w-4" />
           </span>
-          <p className="truncate text-sm font-medium">{cat.label}</p>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium">{cat.label}</p>
+            <p className="truncate text-[10px] tabular-nums text-muted-foreground">Budget {eur(cat.budget)}/mois</p>
+          </div>
         </div>
         <span className={"shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium tabular-nums " + budgetChip}
           title="Écart au budget, moyenne sur 12 mois">
@@ -448,10 +451,10 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
         </span>
       </div>
 
-      {/* Tendance — 12 mois glissants : la relativité qui compte ici (où ça dépense plus) */}
+      {/* Tendance — 12 mois glissants : réel (plein) jusqu'au dernier import, projeté (pointillé) ensuite */}
       <div className="-mx-1 mt-3 h-12">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={trend} margin={{ top: 2, right: 2, left: 2, bottom: 0 }}>
+          <ComposedChart data={trend} margin={{ top: 2, right: 2, left: 2, bottom: 0 }}>
             <defs>
               <linearGradient id={`cat-${cat.key}`} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={cat.color} stopOpacity={0.35} />
@@ -461,20 +464,17 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
             <XAxis dataKey="m" hide />
             <RTooltip cursor={{ stroke: "var(--border)" }}
               contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 10, fontSize: 11, color: "var(--popover-foreground)", padding: "4px 8px" }}
-              formatter={(val: unknown) => [typeof val === "number" ? eur(val) : "—", ""]}
+              formatter={(val: unknown, name) => [typeof val === "number" ? eur(val) : "—", name as string]}
               labelFormatter={(l) => l as string} />
-            <Area type="monotone" dataKey="v" stroke={cat.color} strokeWidth={1.5} fill={`url(#cat-${cat.key})`} />
-          </AreaChart>
+            <Area type="monotone" dataKey="real" name="Réel" stroke={cat.color} strokeWidth={1.5} fill={`url(#cat-${cat.key})`} connectNulls={false} />
+            <Line type="monotone" dataKey="proj" name="Projeté" stroke={cat.color} strokeWidth={1.5} strokeDasharray="4 3" dot={false} connectNulls={false} />
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
 
-      <div className="mt-2 flex items-center justify-between gap-2 text-[11px]">
-        <span className="tabular-nums text-muted-foreground">Budget {eur(cat.budget)}/mois</span>
-        <span className={"tabular-nums " + (yoy > 0 ? "text-warm" : yoy < 0 ? "text-success" : "text-muted-foreground")}
-          title={`Vs ${currentYear - 1}`}>
-          vs {currentYear - 1} {yoy >= 0 ? "+" : "−"}{Math.abs(yoy)}%
-        </span>
-      </div>
+      <p className="mt-2 text-right text-[11px] tabular-nums text-muted-foreground" title={`Vs ${currentYear - 1}`}>
+        vs {currentYear - 1} {yoy >= 0 ? "+" : "−"}{Math.abs(yoy)}%
+      </p>
     </Link>
   );
 }

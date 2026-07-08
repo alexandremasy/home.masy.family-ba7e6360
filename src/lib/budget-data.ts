@@ -753,19 +753,25 @@ export function envelopeSeries(env: { key: string; balance: number; contrib: num
   });
 }
 
-// Trailing 12-month spend for a category (rolling window) — the trend the overview cares about:
-// "où dépense-t-on plus ?". Deterministic, centered on the category's typical monthly `actual`
-// with a per-category drift (some rising, some falling) so the direction reads. Labeled by month.
-export function categoryTrend12(cat: Category): { m: string; v: number }[] {
+// 12-month glissant spend for a category — the trend the overview cares about ("où dépense-t-on
+// plus ?"), split RÉEL (known, ≤ dernier import) vs PROJETÉ (anticipated, dashed after), same
+// boundary as the flux/reserve. Deterministic, centered on the typical monthly `actual` with a
+// per-category drift so the direction reads; `v` is the raw value (for the vs-budget average).
+export function categoryTrend12(cat: Category): { m: string; v: number; real: number | null; proj: number | null }[] {
   const seed = cat.key.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
   const slope = (((seed % 7) - 3) / 3) * cat.actual * 0.04; // per-month drift ≈ ±4% of actual
-  return Array.from({ length: 12 }, (_, i) => {
-    const calIdx = ((currentMonthIdx - 11 + i) % 12 + 12) % 12;
+  const absList: number[] = [];
+  for (let o = -5; o <= 6; o++) absList.push(currentAbs + o);
+  let lastRealIdx = -1;
+  absList.forEach((abs, i) => { if (abs <= lastImportAbs) lastRealIdx = i; });
+  return absList.map((abs, i) => {
+    const calIdx = ((abs % 12) + 12) % 12;
     const wobble = Math.sin((i + seed) * 0.8) * cat.actual * 0.06;
-    // centre on (i - 5.5) so the 12-month MEAN stays ≈ actual (→ the "vs budget" chip is credible),
-    // while the slope still tilts the curve up/down as a visible trend.
+    // centre on (i - 5.5) so the MEAN stays ≈ actual (→ the "vs budget" chip is credible).
     const v = Math.max(0, Math.round(cat.actual + slope * (i - 5.5) + wobble));
-    return { m: MONTHS_FR[calIdx], v };
+    const projected = abs > lastImportAbs;
+    const bridge = projected || i === lastRealIdx; // projeté line starts at the last real point
+    return { m: MONTHS_FR[calIdx], v, real: projected ? null : v, proj: bridge ? v : null };
   });
 }
 
