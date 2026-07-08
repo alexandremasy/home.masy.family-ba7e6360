@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
   Area, AreaChart, CartesianGrid, ComposedChart, Line, ReferenceLine,
@@ -94,6 +94,9 @@ function VuePage() {
           )}
         </div>
       </div>
+
+      {/* Nested modal routes (e.g. /budget/vue/reserve) render here, over the vue */}
+      <Outlet />
     </div>
   );
 }
@@ -153,7 +156,7 @@ function AxisStatus({ axis, to }: { axis: ReturnType<typeof annualVerdict>["axes
   );
   if (to) {
     return (
-      <Link to="/budget/reserve" search={to} className={"group/axis transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-lift " + base}>
+      <Link to="/budget/vue/reserve" search={to} className={"group/axis transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-lift " + base}>
         {inner}
       </Link>
     );
