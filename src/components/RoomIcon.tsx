@@ -1,4 +1,4 @@
-import { Sofa, Briefcase, UtensilsCrossed, Bed, Footprints, type LucideProps } from "lucide-react";
+import { Sofa, Briefcase, UtensilsCrossed, Bed, Footprints, WashingMachine, type LucideProps } from "lucide-react";
 import type { Room } from "@/lib/mock-data";
 
 const map = {
@@ -7,6 +7,7 @@ const map = {
   utensils: UtensilsCrossed,
   bed: Bed,
   footprints: Footprints,
+  "washing-machine": WashingMachine,
 } as const;
 
 export function RoomIcon({ icon, ...props }: { icon: Room["icon"] } & LucideProps) {
