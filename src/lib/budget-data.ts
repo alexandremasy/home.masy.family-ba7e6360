@@ -1,6 +1,6 @@
 import {
   Home, Zap, Car, ShoppingBasket, Heart, Sparkles, Repeat,
-  Music, PawPrint, Gift, Package, type LucideIcon,
+  Music, PawPrint, Gift, Package, Wallet, PiggyBank, type LucideIcon,
 } from "lucide-react";
 
 export const MONTHS_FR = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
@@ -224,7 +224,7 @@ export const postesSeed: Poste[] = [
   // Énergie
   { id: "p10", category: "energie",     sub: "Électricité",          label: "Électricité",          amount: 140,  budget: 140,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
   { id: "p11", category: "energie",     sub: "Gaz",                  label: "Gaz",                  amount: 100,  budget: 100,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "p12", category: "energie",     sub: "Mazout",               label: "Mazout",               amount: 1500, budget: 1500, recurrence: "Au besoin",     months: [9] },
+  { id: "p12", category: "energie",     sub: "Mazout",               label: "Mazout",               amount: 1500, budget: 1500, recurrence: "Annuelle",      months: [9] },
   // Alimentation
   { id: "p20", category: "alimentation",sub: "Courses",              label: "Courses",              amount: 600,  budget: 650,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
   // Transport
@@ -278,12 +278,176 @@ export function nonMonthlyBills(postes: Poste[], idx: number) {
     .map(p => ({ label: p.label, amount: p.amount }));
 }
 
-// Monthly annualisation provision = (sum of all non-monthly amounts over the year) / 12.
+// Monthly annualisation provision = (Σ annuel + Σ trimestriel) / 12.
+// Alex's model (Budget-2024.xlsx, 🌅 K4): only the predictable-lumpy is smoothed.
+// « Au besoin » is DELIBERATELY excluded — unpredictable, it hits the current flow when it
+// lands, it is never provisioned. Mensuel is excluded too (already a flat flow).
 export function annualisationProvision(postes: Poste[]): number {
   const total = postes
-    .filter(p => p.recurrence !== "Mensuelle")
+    .filter(p => p.recurrence === "Trimestrielle" || p.recurrence === "Annuelle")
     .reduce((s, p) => s + p.amount * p.months.length, 0);
   return Math.round(total / 12);
+}
+
+// Recurring monthly income (the plan's top line).
+export const monthlyIncome = incomeSources.reduce((s, i) => s + i.value, 0);
+
+/* ==========================================================================
+   PLANIFICATION — Alex's real taxonomy (from Budget-2024.xlsx 📅) and the
+   prévu↔réel binding. A poste = a leaf sous-catégorie under a sous-groupe under
+   a catégorie. Its réel is the 12 imported monthly actuals (the "data liées"
+   that let you read cadence and set the payment month). Prévu is hand-set and
+   never derived. NOTE: this is a representative EXTRACT of the real sheet (not
+   all ~100 postes) and lives beside the other screens' `categories` until the
+   whole budget section is unified onto this taxonomy at production time.
+   ========================================================================== */
+
+export type PlanKind = "entree" | "depense" | "epargne";
+
+export type PlanPoste = {
+  id: string;
+  cat: string;        // catégorie (Logement, Famille, …)
+  group: string;      // sous-groupe (Énergies, Voiture, …)
+  label: string;      // poste (Mazout, Carburant, …)
+  amount: number;     // prévu per occurrence (per month for Mensuelle)
+  recurrence: Recurrence4;
+  months: number[];   // planned occurrence months (0..11)
+  sensor?: "mazout";  // physical-state signal surfaced beside the poste
+};
+
+// Ordered category list (drives section order + icons). Family: Entrées first, dépenses
+// in the middle, Épargne last — the plan's equilibrium reads top-to-bottom.
+export const PLAN_CATS: { cat: string; icon: LucideIcon; kind: PlanKind }[] = [
+  { cat: "Entrées", icon: Wallet, kind: "entree" },
+  { cat: "Logement", icon: Home, kind: "depense" },
+  { cat: "Famille", icon: Sparkles, kind: "depense" },
+  { cat: "Déplacements", icon: Car, kind: "depense" },
+  { cat: "Nourriture", icon: ShoppingBasket, kind: "depense" },
+  { cat: "Santé & Soins", icon: Heart, kind: "depense" },
+  { cat: "Cadeaux & Donations", icon: Gift, kind: "depense" },
+  { cat: "Divers", icon: Package, kind: "depense" },
+  { cat: "Épargne", icon: PiggyBank, kind: "epargne" },
+];
+
+const CAT_KIND = new Map<string, PlanKind>(PLAN_CATS.map(c => [c.cat, c.kind]));
+export const planKindOf = (p: PlanPoste): PlanKind => CAT_KIND.get(p.cat) ?? "depense";
+
+export const planPostesSeed: PlanPoste[] = [
+  // ---- Entrées ----
+  { id: "e-sal",   cat: "Entrées", group: "Revenus", label: "Salaires",           amount: 4350, recurrence: "Mensuelle", months: defaultMonthsFor("Mensuelle") },
+  { id: "e-alloc", cat: "Entrées", group: "Revenus", label: "Allocations",         amount: 320,  recurrence: "Mensuelle", months: defaultMonthsFor("Mensuelle") },
+  { id: "e-palim", cat: "Entrées", group: "Revenus", label: "Pension alimentaire", amount: 200,  recurrence: "Mensuelle", months: defaultMonthsFor("Mensuelle") },
+  { id: "e-pec",   cat: "Entrées", group: "Primes",  label: "Pécule de vacances",  amount: 2680, recurrence: "Annuelle",  months: [4] },
+  { id: "e-prime", cat: "Entrées", group: "Primes",  label: "Prime fin d'année",   amount: 1900, recurrence: "Annuelle",  months: [11] },
+  // ---- Logement ----
+  { id: "l-hab",   cat: "Logement", group: "Assurances",     label: "Habitation",          amount: 513,  recurrence: "Annuelle",      months: [7] },
+  { id: "l-dec",   cat: "Logement", group: "Assurances",     label: "Décès",               amount: 526,  recurrence: "Annuelle",      months: [9] },
+  { id: "l-mai",   cat: "Logement", group: "Crédits",        label: "Maison",              amount: 847,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "l-toit",  cat: "Logement", group: "Crédits",        label: "Toit & Bardage",      amount: 89,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "l-elec",  cat: "Logement", group: "Énergies",       label: "Électricité",         amount: 140,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "l-eau",   cat: "Logement", group: "Énergies",       label: "Eau",                 amount: 100,  recurrence: "Trimestrielle", months: defaultMonthsFor("Trimestrielle", 2) },
+  { id: "l-maz",   cat: "Logement", group: "Énergies",       label: "Mazout",              amount: 1000, recurrence: "Annuelle",      months: [9], sensor: "mazout" },
+  { id: "l-pel",   cat: "Logement", group: "Énergies",       label: "Pellet",              amount: 500,  recurrence: "Annuelle",      months: [10] },
+  { id: "l-cad",   cat: "Logement", group: "Taxes & Impôts", label: "Cadastre",            amount: 150,  recurrence: "Annuelle",      months: [8] },
+  { id: "l-pou",   cat: "Logement", group: "Taxes & Impôts", label: "Poubelles",           amount: 100,  recurrence: "Annuelle",      months: [10] },
+  // ---- Famille ----
+  { id: "f-pen",   cat: "Famille", group: "Épargnes",        label: "Pension",             amount: 165,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "f-1pw",   cat: "Famille", group: "Services",        label: "1Password",           amount: 115,  recurrence: "Annuelle",      months: [5] },
+  { id: "f-net",   cat: "Famille", group: "Services",        label: "Internet",            amount: 55,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "f-tel",   cat: "Famille", group: "Services",        label: "Téléphonie",          amount: 40,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "f-coif",  cat: "Famille", group: "Soins",           label: "Coiffeur",            amount: 40,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "f-ong",   cat: "Famille", group: "Soins",           label: "Ongles",              amount: 25,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "f-netf",  cat: "Famille", group: "Loisirs",         label: "Netflix",             amount: 19,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "f-spo",   cat: "Famille", group: "Loisirs",         label: "Spotify",             amount: 15,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "f-spt",   cat: "Famille", group: "Loisirs",         label: "Sport",               amount: 50,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "f-vac",   cat: "Famille", group: "Loisirs",         label: "Vacances",            amount: 1500, recurrence: "Au besoin",     months: [6] },
+  // ---- Déplacements ----
+  { id: "d-ass",   cat: "Déplacements", group: "Voiture",    label: "Assurance",           amount: 127,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "d-car",   cat: "Déplacements", group: "Voiture",    label: "Carburant",           amount: 90,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "d-ent",   cat: "Déplacements", group: "Voiture",    label: "Entretien",           amount: 500,  recurrence: "Annuelle",      months: [3] },
+  { id: "d-tax",   cat: "Déplacements", group: "Voiture",    label: "Taxe de circulation", amount: 340,  recurrence: "Annuelle",      months: [10] },
+  { id: "d-par",   cat: "Déplacements", group: "Voiture",    label: "Parking",             amount: 55,   recurrence: "Au besoin",     months: [0] },
+  // ---- Nourriture ----
+  { id: "n-cou",   cat: "Nourriture", group: "Courses",      label: "Courses",             amount: 750,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "n-res",   cat: "Nourriture", group: "Extérieur",    label: "Restaurant",          amount: 150,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "n-ani",   cat: "Nourriture", group: "Animaux",      label: "Animalerie",          amount: 150,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  // ---- Santé & Soins ----
+  { id: "s-cot",   cat: "Santé & Soins", group: "Mutuelle",  label: "Cotisation",          amount: 300,  recurrence: "Annuelle",      months: [0] },
+  { id: "s-kin",   cat: "Santé & Soins", group: "Services",  label: "Kinésithérapeute",    amount: 280,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "s-ost",   cat: "Santé & Soins", group: "Services",  label: "Ostéopathe",          amount: 400,  recurrence: "Annuelle",      months: [4] },
+  { id: "s-vet",   cat: "Santé & Soins", group: "Services",  label: "Vétérinaire",         amount: 200,  recurrence: "Annuelle",      months: [2] },
+  { id: "s-pha",   cat: "Santé & Soins", group: "Biens",     label: "Pharmacie",           amount: 50,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  // ---- Cadeaux & Donations ----
+  { id: "c-fin",   cat: "Cadeaux & Donations", group: "Occasions", label: "Cadeaux fin d'année", amount: 600, recurrence: "Annuelle", months: [11] },
+  { id: "c-ann",   cat: "Cadeaux & Donations", group: "Occasions", label: "Anniversaires",       amount: 400, recurrence: "Au besoin", months: [3] },
+  // ---- Divers ----
+  { id: "x-vis",   cat: "Divers", group: "Divers",           label: "Visa",                amount: 60,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  // ---- Épargne (cibles) ----
+  { id: "s-proj",  cat: "Épargne", group: "Enveloppes",      label: "Projets",             amount: 500,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "s-lois",  cat: "Épargne", group: "Enveloppes",      label: "Loisirs",             amount: 300,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  { id: "s-pens",  cat: "Épargne", group: "Enveloppes",      label: "Pension (retraite)",  amount: 165,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+];
+
+// The 12 imported monthly actuals for a poste (the "data liées"). Deterministic mock:
+//   Mensuelle → ~flat with a small wobble; Trimestrielle → spikes at its occurrences;
+//   Annuelle → one spike, possibly shifted ±1 month off the plan (things move — that shift
+//   is exactly what you need to SEE to correct the payment month); Au besoin → scattered.
+export function posteMonthly(p: PlanPoste): number[] {
+  const seed = p.id.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
+  const out = new Array(12).fill(0);
+  if (p.recurrence === "Mensuelle") {
+    for (let i = 0; i < 12; i++) out[i] = Math.round(p.amount * (1 + Math.sin((i + seed) * 0.9) * 0.09));
+  } else if (p.recurrence === "Trimestrielle") {
+    p.months.forEach(m => { out[m] = Math.round(p.amount * (1 + ((seed % 9) - 4) / 100)); });
+  } else if (p.recurrence === "Annuelle") {
+    const planned = p.months[0] ?? 0;
+    const shift = (seed % 3) - 1;               // -1, 0, +1 → the real payment may drift
+    const actual = ((planned + shift) % 12 + 12) % 12;
+    out[actual] = Math.round(p.amount * (1 + ((seed % 11) - 4) / 100));
+  } else { // Au besoin — scattered small hits
+    const n = 2 + (seed % 3);
+    for (let k = 0; k < n; k++) {
+      const m = (seed * 7 + k * 5) % 12;
+      out[m] += Math.round((p.amount / n) * (1 + (((seed + k) % 5) - 2) / 100));
+    }
+  }
+  return out;
+}
+
+export const planReelYear = (p: PlanPoste): number => posteMonthly(p).reduce((s, v) => s + v, 0);
+export const planPrevuYear = (p: PlanPoste): number => p.amount * p.months.length;
+// Comparison figure on the poste's own cadence: per-occurrence (avg of hit months) for
+// Mensuelle & Trimestrielle, year total for Annuelle & Au besoin. Like-for-like with prévu.
+export function planReelCadence(p: PlanPoste): number {
+  if (p.recurrence === "Mensuelle" || p.recurrence === "Trimestrielle") {
+    const hits = posteMonthly(p).filter(v => v > 0);
+    return hits.length ? Math.round(hits.reduce((s, v) => s + v, 0) / hits.length) : 0;
+  }
+  return planReelYear(p);
+}
+
+// The PLAN's equilibrium (Budget-2024 🌅, at plan level — targets, not réel). It is an
+// ANNUAL budget: Entrées − Dépenses − Épargne cibles = Marge, all summed over the year
+// (each poste in its own cadence). Marge < 0 → the plan over-commits ("dans le rouge").
+// `provision` (the monthly set-aside for the non-mensuel) and `auBesoin` are informational;
+// au besoin is excluded from the equilibrium (it hits the margin when it lands).
+export type PlanCascade = {
+  entrees: number; depenses: number; epargne: number; marge: number; // annual €
+  provision: number; // monthly set-aside (info)
+  auBesoin: number;  // annual, out of plan (info)
+};
+export function planCascade(postes: PlanPoste[]): PlanCascade {
+  let entrees = 0, depenses = 0, epargne = 0, auBesoin = 0, provBase = 0;
+  for (const p of postes) {
+    const kind = planKindOf(p);
+    const yearly = p.amount * p.months.length;
+    if (kind === "entree") entrees += yearly;
+    else if (kind === "epargne") epargne += yearly;
+    else if (p.recurrence === "Au besoin") auBesoin += yearly;
+    else { depenses += yearly; if (p.recurrence !== "Mensuelle") provBase += yearly; }
+  }
+  const marge = entrees - depenses - epargne;
+  return { entrees, depenses, epargne, marge, provision: Math.round(provBase / 12), auBesoin };
 }
 
 // Real "actual" for past + part of current month — reuses the existing categories actuals

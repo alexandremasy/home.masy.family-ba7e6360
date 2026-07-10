@@ -7,10 +7,11 @@ interface Props {
   className?: string;
   prefix?: string;
   suffix?: string;
+  group?: boolean; // thousands grouping (fr-BE) — opt-in, off by default (years etc.)
 }
 
 /** Subtle animated counter that eases towards `to` once visible. */
-export function CountUp({ to, duration = 900, decimals = 0, className, prefix, suffix }: Props) {
+export function CountUp({ to, duration = 900, decimals = 0, className, prefix, suffix, group }: Props) {
   const [value, setValue] = useState(0);
   const ref = useRef<HTMLSpanElement | null>(null);
   const started = useRef(false);
@@ -40,7 +41,9 @@ export function CountUp({ to, duration = 900, decimals = 0, className, prefix, s
     return () => io.disconnect();
   }, [to, duration]);
 
-  const formatted = value.toFixed(decimals);
+  const formatted = group
+    ? value.toLocaleString("fr-BE", { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+    : value.toFixed(decimals);
   return (
     <span ref={ref} className={className}>
       {prefix}
