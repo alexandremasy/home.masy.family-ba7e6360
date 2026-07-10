@@ -433,9 +433,6 @@ function VacuumTile() {
   );
 }
 
-    </div>
-  );
-}
 
 type SalonVariant = "spotify" | "netflix" | "idle";
 
