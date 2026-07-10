@@ -5,10 +5,11 @@ import { MapPinBg } from "@/components/MapPinBg";
 import { PMCBag } from "@/components/PMCBag";
 import { RoomIcon } from "@/components/RoomIcon";
 
-import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, type WeatherCond } from "@/lib/mock-data";
-import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer, Gauge, Server, Cast } from "lucide-react";
+import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, cameras, motionEvents, dishwasher, vacuum, type WeatherCond } from "@/lib/mock-data";
+import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer, Gauge, Server, Cast, ShieldCheck, Bot, BatteryCharging, Battery } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { CameraFeed } from "@/components/CameraFeed";
 
 export const Route = createFileRoute("/_app/")({
   // Dashboard is rendered by the parent _app layout (so it stays visible
@@ -277,7 +278,160 @@ export function Dashboard() {
             />
           </div>
         </Tile>
+
+        {/* Sécurité — mosaïque caméras */}
+        <SecurityTile />
+
+        {/* Lave-vaisselle */}
+        <DishwasherTile />
+
+        {/* Aspirateur */}
+        <VacuumTile />
       </div>
+
+    </div>
+  );
+}
+
+function SecurityTile() {
+  const installed = cameras.filter((c) => c.installed);
+  const preview = installed.slice(0, 4);
+  const anyMotion = installed.some((c) => c.motion);
+  const anyOffline = installed.some((c) => c.state === "offline");
+  const latest = motionEvents[0];
+
+  return (
+    <Tile span={4} to="/securite" className="flex flex-col">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Sécurité</p>
+          <p className="mt-1 font-serif text-xl">
+            {anyOffline ? "Caméra hors-ligne" : anyMotion ? "Mouvement détecté" : "Tout est calme"}
+          </p>
+        </div>
+        <span className={"inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium " + (
+          anyOffline ? "bg-destructive/15 text-destructive" :
+          anyMotion  ? "bg-warm/15 text-warm" :
+                       "bg-success/15 text-success"
+        )}>
+          {anyOffline ? <AlertTriangle className="h-3 w-3" /> : <ShieldCheck className="h-3 w-3" />}
+          {installed.length} cams
+        </span>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {preview.map((c) => (
+          <div key={c.id} className="[&>div]:h-24">
+            <CameraFeed camera={c} size="sm" />
+          </div>
+        ))}
+      </div>
+
+      {latest && (
+        <div className="mt-3 flex items-center gap-2 rounded-lg bg-secondary/60 px-2.5 py-2 text-xs">
+          <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-card">
+            <Sparkles className="h-3 w-3 text-primary" />
+          </span>
+          <span className="min-w-0 flex-1 truncate">{latest.label} · {cameras.find(c => c.id === latest.cameraId)?.name}</span>
+          <span className="shrink-0 tabular-nums text-muted-foreground">{latest.time}</span>
+        </div>
+      )}
+    </Tile>
+  );
+}
+
+function DishwasherTile() {
+  const d = dishwasher;
+  const running = d.state === "running";
+  const finished = d.state === "finished";
+  const alert = d.saltLow || d.rinseAidLow || d.state === "error" || d.state === "door_open";
+
+  return (
+    <Tile span={2} to="/room/cuisine" className="flex flex-col">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Lave-vaisselle</p>
+          <p className="mt-1 font-serif text-xl">
+            {running ? d.phase : finished ? "Prêt à vider" : d.state === "error" ? "Erreur" : "Au repos"}
+          </p>
+        </div>
+        <span className={"inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium " + (
+          running  ? "bg-primary/15 text-primary" :
+          finished ? "bg-success/15 text-success" :
+          alert    ? "bg-warm/15 text-warm" :
+                     "bg-secondary text-muted-foreground"
+        )}>
+          {running ? `${d.remainingMin} min` : finished ? "Terminé" : alert ? "Rinçage bas" : "Idle"}
+        </span>
+      </div>
+
+      {running ? (
+        <div className="mt-auto pt-5">
+          <div className="flex items-baseline justify-between">
+            <span className="font-serif text-4xl leading-none">{d.progressPct}<span className="text-base text-muted-foreground">%</span></span>
+            <span className="text-xs text-muted-foreground">Fin ~{d.endsAt}</span>
+          </div>
+          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+            <div className="h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${d.progressPct}%` }} />
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">{d.program}</p>
+        </div>
+      ) : (
+        <div className="mt-auto pt-5 text-sm text-muted-foreground">
+          <p>Dernier cycle · {d.lastRun}</p>
+          <p className="mt-1 text-xs">{d.cyclesThisMonth} cycles ce mois · {d.energyKWh} kWh · {d.waterL} L</p>
+        </div>
+      )}
+    </Tile>
+  );
+}
+
+function VacuumTile() {
+  const v = vacuum;
+  const cleaning = v.state === "cleaning";
+  const returning = v.state === "returning";
+  const charging = v.state === "charging" || v.charging;
+  const BatIcon = charging ? BatteryCharging : Battery;
+  const areaPct = Math.round((v.areaCleanedM2 / v.areaTargetM2) * 100);
+
+  return (
+    <Tile span={2} to="/room/buanderie" className="flex flex-col">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Aspirateur</p>
+          <p className="mt-1 font-serif text-xl truncate">
+            {cleaning  ? (v.currentRoom ? `Nettoie · ${v.currentRoom}` : "En nettoyage") :
+             returning ? "Retour à la base" :
+             charging  ? "En charge" :
+                         "À la base"}
+          </p>
+        </div>
+        <span className={"inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium " + (
+          v.batteryPct < 25 ? "bg-warm/15 text-warm" : "bg-secondary text-muted-foreground"
+        )}>
+          <BatIcon className="h-3 w-3" />{v.batteryPct}%
+        </span>
+      </div>
+
+      <div className="mt-auto pt-5">
+        <div className="flex items-baseline justify-between">
+          <span className="inline-flex items-center gap-2">
+            <Bot className={"h-5 w-5 " + (cleaning ? "text-primary anim-breathe" : "text-muted-foreground")} />
+            <span className="font-serif text-2xl leading-none">{cleaning || returning ? `${areaPct}%` : v.name}</span>
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {cleaning || returning ? `~${v.etaMin} min` : v.nextSchedule}
+          </span>
+        </div>
+        {(cleaning || returning) && (
+          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+            <div className="h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${areaPct}%` }} />
+          </div>
+        )}
+      </div>
+    </Tile>
+  );
+}
 
     </div>
   );

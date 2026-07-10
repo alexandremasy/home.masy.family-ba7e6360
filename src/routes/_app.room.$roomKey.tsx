@@ -1,9 +1,12 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
 import { CommandButton } from "@/components/CommandButton";
-import { rooms, roomDetails, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunDim, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, Flower2, Snowflake, type LucideIcon } from "lucide-react";
+import { CameraFeed } from "@/components/CameraFeed";
+import { DishwasherPanel } from "@/components/DishwasherPanel";
+import { VacuumPanel } from "@/components/VacuumPanel";
+import { rooms, roomDetails, cameras, motionEvents, vacuum, type RoomKey } from "@/lib/mock-data";
+import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunDim, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, Flower2, Snowflake, ShieldCheck, Home as HomeIcon, ArrowRight, type LucideIcon } from "lucide-react";
 
 function batteryFor(level: number): { Icon: LucideIcon; tone: string } {
   if (level < 20) return { Icon: BatteryWarning, tone: "text-destructive" };
