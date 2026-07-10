@@ -293,6 +293,83 @@ function RoomPage() {
 
       {detail.media && room.key === "salon" && <MediaSection media={detail.media} />}
 
+      {room.key === "cuisine" && (
+        <Section
+          title="Lave-vaisselle"
+          action={
+            <Link to="/room/cuisine" className="text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground">
+              détails
+            </Link>
+          }
+        >
+          <DishwasherPanel />
+        </Section>
+      )}
+
+      {room.key === "buanderie" && (
+        <Section
+          title="Aspirateur robot"
+          action={<span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground"><HomeIcon className="h-4 w-4" />Base ici</span>}
+        >
+          <VacuumPanel />
+          {vacuum.state === "docked" && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              <CommandButton
+                onCommand={() => {}}
+                commandLabel="Lancer un cycle"
+                className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-transform hover:translate-x-0.5"
+              >
+                Lancer un cycle <ArrowRight className="h-4 w-4" />
+              </CommandButton>
+              <CommandButton
+                onCommand={() => {}}
+                commandLabel="Vider le bac"
+                className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-border hover:text-foreground"
+              >
+                Vider le bac
+              </CommandButton>
+            </div>
+          )}
+        </Section>
+      )}
+
+      {(() => {
+        const roomCams = cameras.filter((c) => c.installed && (
+          (room.key === "salon"     && c.id === "salon") ||
+          (room.key === "buanderie" && c.id === "buanderie")
+        ));
+        if (roomCams.length === 0) return null;
+        const recentEvents = motionEvents.filter((e) => roomCams.some(c => c.id === e.cameraId)).slice(0, 3);
+        return (
+          <Section
+            title="Caméra"
+            action={
+              <Link to="/securite" className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground">
+                <ShieldCheck className="h-3.5 w-3.5" />toutes les caméras
+              </Link>
+            }
+          >
+            <div className="space-y-3">
+              {roomCams.map((c) => (
+                <CameraFeed key={c.id} camera={c} size="lg" />
+              ))}
+              {recentEvents.length > 0 && (
+                <ul className="space-y-1.5">
+                  {recentEvents.map((e) => (
+                    <li key={e.id} className="flex items-center gap-2 rounded-lg bg-secondary/60 px-3 py-2 text-xs">
+                      <Sparkles className="h-3 w-3 text-primary" />
+                      <span className="flex-1 truncate">{e.label}</span>
+                      <span className="tabular-nums text-muted-foreground">{e.time}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </Section>
+        );
+      })()}
+
+
       {detail.devices && (
         <Section title="Périphériques">
           {detail.devices.ink && (
