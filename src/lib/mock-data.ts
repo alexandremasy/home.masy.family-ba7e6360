@@ -1,9 +1,9 @@
-export type RoomKey = "cuisine" | "salon" | "escalier" | "bureau" | "chambre";
+export type RoomKey = "cuisine" | "salon" | "escalier" | "bureau" | "chambre" | "buanderie";
 
 export interface Room {
   key: RoomKey;
   name: string;
-  icon: "sofa" | "briefcase" | "utensils" | "bed" | "footprints";
+  icon: "sofa" | "briefcase" | "utensils" | "bed" | "footprints" | "washing-machine";
   hasSensors: boolean;
   lightsOn?: boolean;
   temperature?: number;
@@ -18,6 +18,7 @@ export const rooms: Room[] = [
   { key: "cuisine", name: "Cuisine", icon: "utensils", hasSensors: true, lightsOn: false, temperature: 22.1, climate: { on: false }, scene: "Off" },
   { key: "chambre", name: "Chambre", icon: "bed", hasSensors: true, lightsOn: false, temperature: 19.6, climate: { on: false }, scene: "Off" },
   { key: "escalier", name: "Escalier", icon: "footprints", hasSensors: false },
+  { key: "buanderie", name: "Buanderie", icon: "washing-machine", hasSensors: true, temperature: 18.2, occupied: false },
 ];
 
 export const tesla = {
