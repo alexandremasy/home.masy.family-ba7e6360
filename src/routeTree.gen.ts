@@ -13,6 +13,7 @@ import { Route as McpRouteImport } from './routes/mcp'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTeslaRouteImport } from './routes/_app.tesla'
+import { Route as AppSecuriteRouteImport } from './routes/_app.securite'
 import { Route as AppReseauRouteImport } from './routes/_app.reseau'
 import { Route as AppBudgetRouteImport } from './routes/_app.budget'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
@@ -47,6 +48,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
 const AppTeslaRoute = AppTeslaRouteImport.update({
   id: '/tesla',
   path: '/tesla',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSecuriteRoute = AppSecuriteRouteImport.update({
+  id: '/securite',
+  path: '/securite',
   getParentRoute: () => AppRoute,
 } as any)
 const AppReseauRoute = AppReseauRouteImport.update({
@@ -140,6 +146,7 @@ export interface FileRoutesByFullPath {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/budget': typeof AppBudgetRouteWithChildren
   '/reseau': typeof AppReseauRoute
+  '/securite': typeof AppSecuriteRoute
   '/tesla': typeof AppTeslaRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/budget/annuel': typeof AppBudgetAnnuelRoute
@@ -159,6 +166,7 @@ export interface FileRoutesByTo {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/reseau': typeof AppReseauRoute
+  '/securite': typeof AppSecuriteRoute
   '/tesla': typeof AppTeslaRoute
   '/': typeof AppIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -182,6 +190,7 @@ export interface FileRoutesById {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_app/budget': typeof AppBudgetRouteWithChildren
   '/_app/reseau': typeof AppReseauRoute
+  '/_app/securite': typeof AppSecuriteRoute
   '/_app/tesla': typeof AppTeslaRoute
   '/_app/': typeof AppIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -206,6 +215,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/budget'
     | '/reseau'
+    | '/securite'
     | '/tesla'
     | '/.mcp/invoke-tool/$tool'
     | '/budget/annuel'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/reseau'
+    | '/securite'
     | '/tesla'
     | '/'
     | '/.mcp/invoke-tool/$tool'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/_app/budget'
     | '/_app/reseau'
+    | '/_app/securite'
     | '/_app/tesla'
     | '/_app/'
     | '/.mcp/invoke-tool/$tool'
@@ -299,6 +311,13 @@ declare module '@tanstack/react-router' {
       path: '/tesla'
       fullPath: '/tesla'
       preLoaderRoute: typeof AppTeslaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/securite': {
+      id: '/_app/securite'
+      path: '/securite'
+      fullPath: '/securite'
+      preLoaderRoute: typeof AppSecuriteRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/reseau': {
@@ -455,6 +474,7 @@ const AppBudgetRouteWithChildren = AppBudgetRoute._addFileChildren(
 interface AppRouteChildren {
   AppBudgetRoute: typeof AppBudgetRouteWithChildren
   AppReseauRoute: typeof AppReseauRoute
+  AppSecuriteRoute: typeof AppSecuriteRoute
   AppTeslaRoute: typeof AppTeslaRoute
   AppIndexRoute: typeof AppIndexRoute
   AppEnergieSaisieRoute: typeof AppEnergieSaisieRoute
@@ -465,6 +485,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppBudgetRoute: AppBudgetRouteWithChildren,
   AppReseauRoute: AppReseauRoute,
+  AppSecuriteRoute: AppSecuriteRoute,
   AppTeslaRoute: AppTeslaRoute,
   AppIndexRoute: AppIndexRoute,
   AppEnergieSaisieRoute: AppEnergieSaisieRoute,

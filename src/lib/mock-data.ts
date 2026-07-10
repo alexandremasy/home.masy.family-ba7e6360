@@ -1,9 +1,9 @@
-export type RoomKey = "cuisine" | "salon" | "escalier" | "bureau" | "chambre";
+export type RoomKey = "cuisine" | "salon" | "escalier" | "bureau" | "chambre" | "buanderie";
 
 export interface Room {
   key: RoomKey;
   name: string;
-  icon: "sofa" | "briefcase" | "utensils" | "bed" | "footprints";
+  icon: "sofa" | "briefcase" | "utensils" | "bed" | "footprints" | "washing-machine";
   hasSensors: boolean;
   lightsOn?: boolean;
   temperature?: number;
@@ -18,6 +18,7 @@ export const rooms: Room[] = [
   { key: "cuisine", name: "Cuisine", icon: "utensils", hasSensors: true, lightsOn: false, temperature: 22.1, climate: { on: false }, scene: "Off" },
   { key: "chambre", name: "Chambre", icon: "bed", hasSensors: true, lightsOn: false, temperature: 19.6, climate: { on: false }, scene: "Off" },
   { key: "escalier", name: "Escalier", icon: "footprints", hasSensors: false },
+  { key: "buanderie", name: "Buanderie", icon: "washing-machine", hasSensors: true, temperature: 18.2, occupied: false },
 ];
 
 export const tesla = {
@@ -271,7 +272,161 @@ export const roomDetails: Record<RoomKey, {
     climate: { mode: "auto", current: 19.6 },
   },
   escalier: {},
+  buanderie: {
+    lights: { zones: [{ name: "Plafond", on: false }], scene: "Off", scenes: [], brightness: 0, hideBrightness: true },
+    devices: {
+      batteries: [{ name: "Détecteur fumée", level: 88 }],
+      appliances: [
+        { name: "Sèche-linge", on: false },
+        { name: "Lave-linge", on: true },
+      ],
+    },
+  },
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sécurité — caméras & sonnette
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type CameraId =
+  | "front-door"
+  | "driveway"
+  | "garden"
+  | "backyard"
+  | "salon"
+  | "buanderie";
+export type CameraKind = "indoor" | "outdoor" | "doorbell";
+export type CameraState = "online" | "offline" | "recording" | "installing";
+export type CameraScene = "front" | "driveway" | "garden" | "backyard" | "living" | "utility";
+
+export interface Camera {
+  id: CameraId;
+  name: string;
+  location: string;
+  kind: CameraKind;
+  state: CameraState;
+  night: boolean;      // night-vision mode
+  motion: boolean;     // motion detected right now
+  lastMotion?: string; // "il y a 12 min"
+  scene: CameraScene;
+  batteryPct?: number; // undefined = wired
+  wired: boolean;
+  installed: boolean;  // false = arrive bientôt
+}
+
+export const cameras: Camera[] = [
+  {
+    id: "front-door", name: "Sonnette", location: "Entrée principale",
+    kind: "doorbell", state: "installing", night: false, motion: false,
+    scene: "front", wired: true, installed: false,
+  },
+  {
+    id: "driveway", name: "Allée", location: "Extérieur — devant",
+    kind: "outdoor", state: "recording", night: false, motion: true,
+    lastMotion: "à l'instant", scene: "driveway", batteryPct: 84, wired: false, installed: true,
+  },
+  {
+    id: "garden", name: "Jardin", location: "Extérieur — côté",
+    kind: "outdoor", state: "online", night: false, motion: false,
+    lastMotion: "il y a 34 min", scene: "garden", batteryPct: 62, wired: false, installed: true,
+  },
+  {
+    id: "backyard", name: "Arrière", location: "Extérieur — arrière",
+    kind: "outdoor", state: "online", night: true, motion: false,
+    lastMotion: "il y a 2 h", scene: "backyard", batteryPct: 41, wired: false, installed: true,
+  },
+  {
+    id: "salon", name: "Salon", location: "Intérieur — salon",
+    kind: "indoor", state: "online", night: false, motion: false,
+    lastMotion: "il y a 12 min", scene: "living", wired: true, installed: true,
+  },
+  {
+    id: "buanderie", name: "Buanderie", location: "Intérieur — buanderie",
+    kind: "indoor", state: "online", night: false, motion: false,
+    lastMotion: "il y a 1 h", scene: "utility", wired: true, installed: true,
+  },
+];
+
+export interface MotionEvent {
+  id: string;
+  cameraId: CameraId;
+  label: string;
+  time: string;    // e.g. "18:42"
+  ago: string;     // e.g. "il y a 6 min"
+  kind: "person" | "vehicle" | "animal" | "package" | "movement";
+}
+
+export const motionEvents: MotionEvent[] = [
+  { id: "e1", cameraId: "driveway", label: "Véhicule détecté", time: "18:46", ago: "à l'instant", kind: "vehicle" },
+  { id: "e2", cameraId: "salon",    label: "Mouvement",         time: "18:34", ago: "il y a 12 min", kind: "movement" },
+  { id: "e3", cameraId: "garden",   label: "Personne détectée", time: "18:12", ago: "il y a 34 min", kind: "person" },
+  { id: "e4", cameraId: "driveway", label: "Colis déposé",      time: "16:22", ago: "il y a 2 h",  kind: "package" },
+  { id: "e5", cameraId: "backyard", label: "Animal (chat)",     time: "15:58", ago: "il y a 2 h",  kind: "animal" },
+  { id: "e6", cameraId: "buanderie",label: "Mouvement",         time: "14:41", ago: "il y a 4 h",  kind: "movement" },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Lave-vaisselle (cuisine)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type DishState = "idle" | "running" | "paused" | "finished" | "error" | "door_open";
+export type DishPhase = "Prélavage" | "Lavage" | "Rinçage" | "Séchage" | "—";
+
+export const dishwasher = {
+  brand: "Bosch Series 6",
+  state: "running" as DishState,
+  program: "Eco 50°",
+  phase: "Rinçage" as DishPhase,
+  progressPct: 62,
+  remainingMin: 48,
+  totalMin: 128,
+  startedAt: "18:12",
+  endsAt: "20:30",
+  door: "closed" as "open" | "closed",
+  saltLow: false,
+  rinseAidLow: true,
+  cyclesThisMonth: 22,
+  energyKWh: 0.92,
+  waterL: 9.5,
+  lastRun: "Hier, 21:14 · Auto 45–65°",
+  errorMsg: null as string | null,
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Aspirateur robot
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type VacState = "docked" | "cleaning" | "returning" | "paused" | "error" | "charging";
+
+export const vacuum = {
+  name: "Roomba j7",
+  state: "cleaning" as VacState,
+  batteryPct: 68,
+  charging: false,
+  currentRoom: "Bureau" as string | null,
+  dockLocation: "Buanderie",
+  areaCleanedM2: 34,
+  areaTargetM2: 72,
+  elapsedMin: 22,
+  etaMin: 28,
+  binFullPct: 40,
+  errorMsg: null as string | null,
+  nextSchedule: "Demain 09:30 · RDC complet",
+  lastRun: {
+    when: "Aujourd'hui 07:15",
+    areaM2: 68,
+    durationMin: 54,
+    rooms: ["Salon", "Cuisine", "Buanderie"],
+  },
+  plan: [
+    { room: "Salon",     status: "done" as const },
+    { room: "Cuisine",   status: "done" as const },
+    { room: "Bureau",    status: "active" as const },
+    { room: "Chambre",   status: "todo" as const },
+    { room: "Buanderie", status: "todo" as const },
+  ],
+};
+
 
 // A pinch of fun for the footer — rotates by day-of-year
 export const footerLines = [

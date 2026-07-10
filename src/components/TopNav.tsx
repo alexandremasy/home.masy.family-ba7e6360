@@ -2,7 +2,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { ThemeToggle } from "./ThemeToggle";
 import { RoomIcon } from "./RoomIcon";
 import { ModeSwitcher } from "./ModeSwitcher";
-import { Car, Wifi, Zap, ChevronDown, MoreHorizontal, Settings, Wrench, ExternalLink, Home, LayoutDashboard, CalendarRange, Table2, FileUp } from "lucide-react";
+import { Car, Wifi, Zap, ChevronDown, MoreHorizontal, Settings, Wrench, ExternalLink, Home, LayoutDashboard, CalendarRange, Table2, FileUp, ShieldCheck } from "lucide-react";
 import type { ReactNode } from "react";
 import type { Room } from "@/lib/mock-data";
 import {
@@ -21,6 +21,7 @@ const rooms: NavItem[] = [
   { to: "/room/bureau", label: "Bureau", icon: <RoomIcon icon={"briefcase" as Room["icon"]} className="h-3.5 w-3.5" /> },
   { to: "/room/cuisine", label: "Cuisine", icon: <RoomIcon icon={"utensils" as Room["icon"]} className="h-3.5 w-3.5" /> },
   { to: "/room/chambre", label: "Chambre", icon: <RoomIcon icon={"bed" as Room["icon"]} className="h-3.5 w-3.5" /> },
+  { to: "/room/buanderie", label: "Buanderie", icon: <RoomIcon icon={"washing-machine" as Room["icon"]} className="h-3.5 w-3.5" /> },
   { to: "/room/escalier", label: "Escalier", icon: <RoomIcon icon={"footprints" as Room["icon"]} className="h-3.5 w-3.5" /> },
 ];
 
@@ -28,6 +29,7 @@ const domains: NavItem[] = [
   { to: "/tesla", label: "Bernard", icon: <Car className="h-3.5 w-3.5" /> },
   { to: "/reseau", label: "Réseau", icon: <Wifi className="h-3.5 w-3.5" /> },
   { to: "/energie", label: "Énergie", icon: <Zap className="h-3.5 w-3.5" /> },
+  { to: "/securite", label: "Sécurité", icon: <ShieldCheck className="h-3.5 w-3.5" /> },
 ];
 
 const budgetTabs: NavItem[] = [
