@@ -30,7 +30,13 @@ Handoff for building the **real** budget Planification. This repo is a **design 
 
 **Cross-domain signal (the one bit of intelligence):** Mazout is `Annuelle` (provisioned). The oil-tank level from the énergie domain is surfaced as a **signal** beside the poste ("cuve 22%, un plein approche"), **never auto-injected** — the user adjusts the échéance. Generalizes to any poste with a physical state.
 
+**The plan is calendar-annual — there is no rolling plan.** Editing the plan is always scoped to a civil year (Jan→Déc): the equilibrium and the annualisation provision (`Σ échéances / 12`) only mean something over a calendar year — you can't smooth échéances over a moving window. So the Planification screen has NO rolling toggle. The **rolling view is a read concept** and lives in the Vue d'ensemble / Mensuel (réel over the last 12 months). Its one coupling to the plan: to show the *expected prévu* over a rolling window (e.g. in July 2026: Aug 2025 → Jul 2026), you reconstruct it month-by-month, each month pulling its échéance from **the plan of the calendar year that month belongs to** (5 months of the 2025 plan + 7 of the 2026 plan). That reconstruction is impossible without per-year persistence (see BUILD #1). The provision stays calendar-annual; in rolling view you compare réel against the expected monthly prévu, not against a "rolling provision" (which would be meaningless).
+
 **Known model limit (why the forecast matters):** the annual equilibrium can be green while you're cash-short in a given month (a big bill lands before its provision accumulated). The plan proves the year balances on average, not month-to-month liquidity. → the **forecast** (coverage of upcoming échéances) is a **modelization on top of this plan, shown in the Vue d'ensemble** — NOT a separate screen.
+
+**Plan lifecycle — autonomous close, four states.** A year's plan moves through: **draft** (next year, editable) → **current** (editable) → **closing** (civil year over) → **archived** (frozen, read-only). The key split: **prévu freezes automatically** the moment the year ends — what you planned for 2026 *was* your 2026 plan, and letting it stay editable would silently rewrite history and corrupt the rolling-prévu reconstruction (see rolling paragraph). **Réel needs a correction window** though: December's transactions land mid-January via the import, and a bad transaction (wrong amount, duplicate, mis-mapped poste) must be fixable before the year freezes. That correction lives in the **transactions/import layer**, not the plan — you fix the transaction (or its mapping) and the poste's réel re-aggregates. So the **closing** state = prévu already frozen, transactions still editable.
+
+The freeze is **autonomous by default** — the system closes the year on its own; no mandatory ritual. It can't detect a bad transaction itself (a wrong amount is still a valid number), so it can't freeze on a pure technical signal — it freezes after a **grace window** (e.g. end of February) unless you close earlier. An optional manual **"boucler {year} maintenant"** just brings the freeze date forward; it's never the *condition* for it. Reopening an archived year is possible but **exceptional and logged** (friction on purpose), never a normal mode — otherwise "archived" means nothing.
 
 ---
 
@@ -47,11 +53,20 @@ Handoff for building the **real** budget Planification. This repo is a **design 
 
 ## What to BUILD for real (the actual work — absent from this mockup)
 
-1. **Persistence** — store the hand-set prévu (montant/périodicité/échéance) per poste. Nothing here persists (local React state). Needs a real store/db.
+1. **Persistence — per calendar year (see "Plan lifecycle" above for the state machine).** Store the hand-set prévu (montant/périodicité/échéance) per poste, **scoped to a calendar year**. Each year's plan is its own snapshot, frozen on close. The states the UI must render:
+   - **Past (archived)** — read-only. Consulted, never rewritten (badge 🔒).
+   - **Closing** — civil year over, prévu frozen, transactions still correctable until the autonomous freeze.
+   - **Current** — editable.
+   - **Next (`currentYear + 1`)** — editable **draft** ("Préparation"): you prepare next year's budget before it starts (e.g. late December). Only ±1 year of future — no far horizon.
+
+   Preparing next year = **seed from the current year's plan, indexed up**, then adjust (reindexed salary, new/dropped échéances). Never a blank sheet. A **future year has no réel** (no imported transactions yet) → hide the Réel/Écart column and the modal's réel strip; only prévu shows. **Bascule is automatic**: since the store is keyed by `(year, poste)`, on Jan 1 the prepared next-year plan simply becomes the current one — no manual copy. Nothing here persists (local React state); the mockup fakes past years by scaling the seed and holds the current + next-year drafts in a `Record<year, PlanPoste[]>` (`planPostesForYear`, `PLAN_MIN_YEAR`/`PLAN_MAX_YEAR`). Needs a real store/db keyed by `(year, poste)`.
+
+   **Open product decision (not locked):** is next year editable *year-round*, or only from Q4 onward (a "prepare next year" affordance that appears late in the current year)? The mockup opens it year-round; a Q4-gated nudge is the alternative.
 2. **Real import** — parse the iSaveMoney xlsx (here `importPreviewMock` is fake), produce transactions.
 3. **Taxonomy mapping** — map each imported transaction into the fixed `(catégorie, sous-catégorie)`. This is the import rules layer.
 4. **Réel aggregation** — sum transactions per poste per month → replace `posteMonthly`'s mock with real data. That drives the 12-month strip, `planReelCadence`, and the écart.
 5. **Canonical taxonomy** — finalize the full ~100-poste list from `Budget-2024.xlsx` 📅, as ONE definition shared by import + transactions + planification. Today the mockup's plan taxonomy (`PLAN_CATS`/`planPostesSeed`, ~35 postes) is a separate duplicate from the other budget screens' `categories`/`CatKey` — reconcile into a single source of truth.
+6. **Autonomous close + notifications** — the year-close state machine (draft→current→closing→archived), the automatic prévu-freeze on Jan 1, the grace-window auto-freeze of transactions, and the optional "boucler {year} maintenant" / logged reopen. Drive it with **actionable notifications** (each deep-links to the right screen): (a) *"réel {year} complet — vérifie"* when the December-covering import lands (opens the closing year); (b) *"{year} se clôture dans N jours"* before the auto-freeze (last correction window + "boucler maintenant"); (c) *"{year} bouclée et archivée"* once frozen. The Jan-1 bascule may notify too (secondary — the on-screen badge already signals it). Channel (push / in-app / mail) is an implementation detail — note there's already a "monitoring maison" in this repo to build on.
 
 ---
 
@@ -64,3 +79,4 @@ Handoff for building the **real** budget Planification. This repo is a **design 
 - **Header** = annual equilibrium (Entrées − Dépenses − Épargne = Marge, marge colored red/green) + **provision promoted** as a prominent callout. No verdict banner (the marge box already carries it).
 - **Mobile** = compact card list per sous-catégorie; the 12-month detail lives in the modal (no horizontal-scroll table).
 - Uniform type scale, € on all amounts, thousands grouping on the annual header.
+- **Year navigator** in the header (‹ year ›, same pattern as the Annuel screen), bounded `PLAN_MIN_YEAR … PLAN_MAX_YEAR`. State is signalled by a badge: past → 🔒 "Archive · lecture seule", next → ✏️ "Préparation". No badge on the current year. Future years render "à venir" in the Réel/Écart zone.

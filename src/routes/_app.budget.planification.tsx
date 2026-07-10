@@ -1,14 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Fuel, ChevronDown, Coins } from "lucide-react";
+import { Fuel, ChevronDown, ChevronLeft, ChevronRight, Coins, Lock, PencilRuler } from "lucide-react";
 import { CountUp } from "@/components/CountUp";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import {
   MONTHS_FR, eur,
-  PLAN_CATS, planPostesSeed, defaultMonthsFor,
+  PLAN_CATS, planPostesSeed, planPostesForYear, defaultMonthsFor,
   planCascade, posteMonthly, planReelCadence, planKindOf,
+  currentYear, PLAN_MIN_YEAR, PLAN_MAX_YEAR,
   type PlanPoste, type Recurrence4, type PlanKind,
 } from "@/lib/budget-data";
 import { energie } from "@/lib/mock-data";
@@ -57,16 +58,29 @@ const Z = {
 };
 
 function PlanificationPage() {
-  const [postes, setPostes] = useState<PlanPoste[]>(planPostesSeed);
+  const [year, setYear] = useState(currentYear);
+  // Editable plans live in state, keyed by year: the current year + next year's draft. Past
+  // years are read-only archives, derived on the fly.
+  const [plans, setPlans] = useState<Record<number, PlanPoste[]>>(() => ({
+    [currentYear]: planPostesSeed,
+    [currentYear + 1]: planPostesForYear(currentYear + 1),
+  }));
   const [editingId, setEditingId] = useState<string | null>(null);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
 
-  const cascade = useMemo(() => planCascade(postes), [postes]);
-  const editing = postes.find(p => p.id === editingId) ?? null;
+  // Three states: past = archive (read-only), current = editable, next = editable draft.
+  const archive = year < currentYear;   // consult, don't rewrite history
+  const draft = year > currentYear;     // next year's plan, prepared before it starts
+  const editable = !archive;
+  const showReal = year <= currentYear; // a future year has no imported réel yet
+  const displayed = editable ? (plans[year] ?? planPostesForYear(year)) : planPostesForYear(year);
+
+  const cascade = useMemo(() => planCascade(displayed), [displayed]);
+  const editing = editable ? (displayed.find(p => p.id === editingId) ?? null) : null;
 
   const tree = useMemo(() => {
     return PLAN_CATS.map(({ cat, icon }) => {
-      const inCat = postes.filter(p => p.cat === cat);
+      const inCat = displayed.filter(p => p.cat === cat);
       const groups: { group: string; items: PlanPoste[] }[] = [];
       for (const p of inCat) {
         let g = groups.find(x => x.group === p.group);
@@ -75,10 +89,10 @@ function PlanificationPage() {
       }
       return { cat, icon, groups };
     }).filter(c => c.groups.length);
-  }, [postes]);
+  }, [displayed]);
 
   function patch(id: string, p: Partial<PlanPoste>) {
-    setPostes(ps => ps.map(x => x.id === id ? { ...x, ...p } : x));
+    setPlans(prev => ({ ...prev, [year]: (prev[year] ?? []).map(x => x.id === id ? { ...x, ...p } : x) }));
   }
   function toggle(cat: string) {
     setCollapsed(s => { const n = new Set(s); n.has(cat) ? n.delete(cat) : n.add(cat); return n; });
@@ -86,9 +100,38 @@ function PlanificationPage() {
 
   return (
     <div className="space-y-6 anim-slide-up sm:space-y-8">
-      <header className="min-w-0">
-        <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Budget · Planification</p>
-        <h1 className="mt-1 font-serif text-2xl tracking-tight sm:text-4xl">L'atelier des budgets</h1>
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Budget · Planification</p>
+          <h1 className="mt-1 font-serif text-2xl tracking-tight sm:text-4xl">L'atelier des budgets</h1>
+        </div>
+        <div className="flex items-center gap-3">
+          {archive && (
+            <span className="flex items-center gap-1.5 rounded-full border border-border/60 bg-secondary/40 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              <Lock className="h-3 w-3" /> Archive · lecture seule
+            </span>
+          )}
+          {draft && (
+            <span className="flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-primary">
+              <PencilRuler className="h-3 w-3" /> Préparation
+            </span>
+          )}
+          <div className="flex items-center gap-2">
+            <button onClick={() => setYear(y => Math.max(PLAN_MIN_YEAR, y - 1))}
+              disabled={year <= PLAN_MIN_YEAR}
+              aria-label="Année précédente"
+              className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-30">
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="w-12 text-center font-serif text-lg tabular-nums">{year}</span>
+            <button onClick={() => setYear(y => Math.min(PLAN_MAX_YEAR, y + 1))}
+              disabled={year >= PLAN_MAX_YEAR}
+              aria-label="Année suivante"
+              className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-30">
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       </header>
 
       <Cascade c={cascade} />
@@ -143,7 +186,7 @@ function PlanificationPage() {
                         {/* Rows */}
                         <div className="divide-y divide-border/30 rounded-b-xl border border-t-0 border-border/50 bg-card">
                           {items.map(p => (
-                            <PosteRow key={p.id} poste={p} onEdit={() => setEditingId(p.id)} />
+                            <PosteRow key={p.id} poste={p} reel={showReal} onEdit={editable ? () => setEditingId(p.id) : undefined} />
                           ))}
                         </div>
                       </div>
@@ -186,7 +229,7 @@ function PlanificationPage() {
                         <p className="border-b border-border/40 bg-secondary/20 px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70">{group}</p>
                         <div className="divide-y divide-border/30">
                           {items.map(p => (
-                            <MobileRow key={p.id} poste={p} onEdit={() => setEditingId(p.id)} />
+                            <MobileRow key={p.id} poste={p} reel={showReal} onEdit={editable ? () => setEditingId(p.id) : undefined} />
                           ))}
                         </div>
                       </div>
@@ -199,7 +242,7 @@ function PlanificationPage() {
         })}
       </div>
 
-      <EditModal poste={editing} onClose={() => setEditingId(null)} onPatch={patch} />
+      <EditModal poste={editing} reel={showReal} onClose={() => setEditingId(null)} onPatch={patch} />
     </div>
   );
 }
@@ -260,7 +303,7 @@ function Op({ sign }: { sign: string }) {
 
 /* ---------- Poste row (read-only, click to edit) ---------- */
 
-function PosteRow({ poste, onEdit }: { poste: PlanPoste; onEdit: () => void }) {
+function PosteRow({ poste, onEdit, reel = true }: { poste: PlanPoste; onEdit?: () => void; reel?: boolean }) {
   const monthly = useMemo(() => posteMonthly(poste), [poste]);
   const real = planReelCadence(poste);
   const ecart = real - poste.amount;
@@ -282,7 +325,8 @@ function PosteRow({ poste, onEdit }: { poste: PlanPoste; onEdit: () => void }) {
     "text-muted-foreground bg-secondary/60";
 
   return (
-    <button onClick={onEdit} className="group flex w-full items-stretch text-left transition-colors hover:bg-secondary/25">
+    <button onClick={onEdit} disabled={!onEdit}
+      className={"group flex w-full items-stretch text-left transition-colors " + (onEdit ? "hover:bg-secondary/25" : "cursor-default")}>
       {/* LEFT — plan */}
       <div className={Z.left + " py-2 pl-3"}>
         <span className={Z.poste + " flex items-center gap-1.5"}>
@@ -299,7 +343,7 @@ function PosteRow({ poste, onEdit }: { poste: PlanPoste; onEdit: () => void }) {
       <div className={Z.center + " py-2"}>
         <div className="grid min-w-0 flex-1 grid-cols-12 gap-x-1">
           {monthly.map((v, i) => {
-            const hit = v > 0;
+            const hit = reel && v > 0; // no imported réel for a future year — dots only
             const planned = plannedSet.has(i);
             return (
               <span key={i}
@@ -313,14 +357,20 @@ function PosteRow({ poste, onEdit }: { poste: PlanPoste; onEdit: () => void }) {
         </div>
       </div>
 
-      {/* RIGHT — status */}
+      {/* RIGHT — status (no réel yet for a future year) */}
       <div className={Z.right + " py-2 pr-3"}>
-        <span className={Z.reel + " text-sm tabular-nums text-foreground/70"}>{eur(real)}</span>
-        <span className={Z.ecart}>
-          <span className={"inline-block rounded-md px-1.5 py-0.5 text-[11px] font-medium tabular-nums " + ecartCls}>
-            {auBesoin ? "—" : (ecart >= 0 ? "+" : "−") + eur(Math.abs(ecart))}
-          </span>
-        </span>
+        {reel ? (
+          <>
+            <span className={Z.reel + " text-sm tabular-nums text-foreground/70"}>{eur(real)}</span>
+            <span className={Z.ecart}>
+              <span className={"inline-block rounded-md px-1.5 py-0.5 text-[11px] font-medium tabular-nums " + ecartCls}>
+                {auBesoin ? "—" : (ecart >= 0 ? "+" : "−") + eur(Math.abs(ecart))}
+              </span>
+            </span>
+          </>
+        ) : (
+          <span className="flex-1 text-right text-[11px] italic text-muted-foreground/50">à venir</span>
+        )}
       </div>
     </button>
   );
@@ -328,7 +378,7 @@ function PosteRow({ poste, onEdit }: { poste: PlanPoste; onEdit: () => void }) {
 
 /* ---------- Mobile row (compact) ---------- */
 
-function MobileRow({ poste, onEdit }: { poste: PlanPoste; onEdit: () => void }) {
+function MobileRow({ poste, onEdit, reel = true }: { poste: PlanPoste; onEdit?: () => void; reel?: boolean }) {
   const real = planReelCadence(poste);
   const ecart = real - poste.amount;
   const pct = poste.amount > 0 ? Math.round((ecart / poste.amount) * 100) : 0;
@@ -346,7 +396,8 @@ function MobileRow({ poste, onEdit }: { poste: PlanPoste; onEdit: () => void }) 
     "text-muted-foreground bg-secondary/60";
 
   return (
-    <button onClick={onEdit} className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left transition-colors active:bg-secondary/30">
+    <button onClick={onEdit} disabled={!onEdit}
+      className={"flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left transition-colors " + (onEdit ? "active:bg-secondary/30" : "cursor-default")}>
       <div className="min-w-0">
         <div className="flex items-center gap-1.5">
           <span className="truncate text-sm">{poste.label}</span>
@@ -359,12 +410,16 @@ function MobileRow({ poste, onEdit }: { poste: PlanPoste; onEdit: () => void }) 
       </div>
       <div className="shrink-0 text-right">
         <div className="text-sm tabular-nums">{eur(poste.amount)}<span className="ml-0.5 text-[10px] text-muted-foreground">prévu</span></div>
-        <div className="mt-1 flex items-center justify-end gap-1.5">
-          <span className="text-[11px] tabular-nums text-muted-foreground">réel {eur(real)}</span>
-          <span className={"rounded-md px-1.5 py-0.5 text-[10px] font-medium tabular-nums " + ecartCls}>
-            {auBesoin ? "—" : (ecart >= 0 ? "+" : "−") + eur(Math.abs(ecart))}
-          </span>
-        </div>
+        {reel ? (
+          <div className="mt-1 flex items-center justify-end gap-1.5">
+            <span className="text-[11px] tabular-nums text-muted-foreground">réel {eur(real)}</span>
+            <span className={"rounded-md px-1.5 py-0.5 text-[10px] font-medium tabular-nums " + ecartCls}>
+              {auBesoin ? "—" : (ecart >= 0 ? "+" : "−") + eur(Math.abs(ecart))}
+            </span>
+          </div>
+        ) : (
+          <div className="mt-1 text-[11px] italic text-muted-foreground/50">à venir</div>
+        )}
       </div>
     </button>
   );
@@ -372,10 +427,11 @@ function MobileRow({ poste, onEdit }: { poste: PlanPoste; onEdit: () => void }) 
 
 /* ---------- Edit modal ---------- */
 
-function EditModal({ poste, onClose, onPatch }: {
+function EditModal({ poste, onClose, onPatch, reel = true }: {
   poste: PlanPoste | null;
   onClose: () => void;
   onPatch: (id: string, p: Partial<PlanPoste>) => void;
+  reel?: boolean;
 }) {
   const nonMensuel = poste ? poste.recurrence !== "Mensuelle" : false;
 
@@ -424,7 +480,8 @@ function EditModal({ poste, onClose, onPatch }: {
                 )}
               </div>
 
-              {/* Réel — 12 mois (graphical) */}
+              {/* Réel — 12 mois (graphical). A future year has no imported réel yet. */}
+              {reel ? (
               <div>
                 <span className="mb-1.5 block text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Réel · 12 mois</span>
                 <div className="overflow-x-auto rounded-xl border border-border/40 bg-card/40 p-2 [scrollbar-width:thin]">
@@ -442,6 +499,11 @@ function EditModal({ poste, onClose, onPatch }: {
                   </div>
                 </div>
               </div>
+              ) : (
+                <p className="rounded-xl border border-dashed border-border/50 bg-card/40 px-3 py-4 text-center text-[11px] italic text-muted-foreground/60">
+                  Aucun réel importé — cette année n'a pas encore commencé.
+                </p>
+              )}
 
               {poste.sensor === "mazout" && (
                 <p className="flex items-start gap-1.5 rounded-lg bg-warm/5 px-3 py-2 text-[11px] text-warm">

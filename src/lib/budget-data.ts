@@ -388,6 +388,22 @@ export const planPostesSeed: PlanPoste[] = [
   { id: "s-pens",  cat: "Épargne", group: "Enveloppes",      label: "Pension (retraite)",  amount: 165,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
 ];
 
+// Per-year plan. The household budget grows ~5%/yr, so past years read leaner and next year
+// is seeded indexed-up from the current one. The year-suffixed id keeps each year's postes
+// distinct and reshuffles the réel seed. Past = read-only archive; next year = editable draft
+// (a "Préparation" you can fill before it starts). Only ±1 year of future — no far horizon.
+export const PLAN_MIN_YEAR = currentYear - 3;
+export const PLAN_MAX_YEAR = currentYear + 1;
+export function planPostesForYear(year: number): PlanPoste[] {
+  if (year === currentYear) return planPostesSeed;
+  const factor = Math.pow(0.95, currentYear - year); // past → <1, next year → indexed up
+  return planPostesSeed.map(p => ({
+    ...p,
+    id: `${p.id}@${year}`,
+    amount: Math.round(p.amount * factor),
+  }));
+}
+
 // The 12 imported monthly actuals for a poste (the "data liées"). Deterministic mock:
 //   Mensuelle → ~flat with a small wobble; Trimestrielle → spikes at its occurrences;
 //   Annuelle → one spike, possibly shifted ±1 month off the plan (things move — that shift
