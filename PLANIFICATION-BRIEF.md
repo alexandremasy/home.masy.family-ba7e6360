@@ -12,7 +12,9 @@ Handoff for building the **real** budget Planification. This repo is a **design 
 ## The model — reproduce exactly
 
 **A poste = a `(catégorie, sous-catégorie)` pair. It has two faces:**
-- **Prévu** — hand-set: `montant` + `périodicité` (Mensuelle/Trimestrielle/Annuelle/Au besoin) + `échéance` (anchor month for non-monthly). **No auto-derivation** — the user types it, a few times a year. Périodicité is manual too.
+- **Prévu** — hand-set: `montant` + `périodicité` (Mensuelle/Trimestrielle/Annuelle/**Ponctuel**/Au besoin) + `échéance` (anchor month for non-monthly). **No auto-derivation** — the user types it, a few times a year. Périodicité is manual too.
+
+**Ponctuel — dated, per-hit amounts (primes).** The 4 smoothable cadences are `montant × even spread`; they can't express a lump that lands on a *specific* month, still less several lumps at different months with different amounts (pécule in May, 13e mois in December). "Ponctuel" replaces the single amount with a list of `occurrences: [{ mois, montant }]`. Model rules: (1) it **enters the annual equilibrium** — it's predictable, unlike Au besoin; (2) it is **never provisioned** — income lumps *fund* the year, they aren't smoothed like outgoing lumps (a Ponctuel *dépense* would be provisioned like Annuelle/Trimestrielle, since it's a predictable outgoing lump); (3) the poste's annual prévu = `Σ occurrence amounts` (its `amount` field is unused); (4) `months` mirrors the occurrence months, driving the strip tinting. **This is the raw material of the liquidity forecast** (see the known-model-limit paragraph): a datable income spike is exactly what the month-to-month coverage view needs.
 - **Réel** — aggregation of imported iSaveMoney transactions matching that `(cat, sous-cat)`, per month (the 12-month strip).
 - **Écart = prévu − réel** is the only signal. The réel never drives the prévu; it sits beside it for comparison.
 
@@ -42,7 +44,8 @@ The freeze is **autonomous by default** — the system closes the year on its ow
 
 ## Functions to port (from `budget-data.ts`)
 
-- `type PlanKind = "entree" | "depense" | "epargne"`, `type PlanPoste` (id, cat, group, label, amount, recurrence, months[], sensor?)
+- `type PlanKind = "entree" | "depense" | "epargne"`, `type PlanRecurrence = Recurrence4 | "Ponctuel"`, `type PlanOccurrence = { m, amount }`, `type PlanPoste` (id, cat, group, label, amount, recurrence, months[], occurrences?, sensor?)
+- `planPosteYear(poste)` — annual prévu: `Σ occurrences` for Ponctuel, else `amount × months.length`. Used by the cascade and the écart (compare réel against this, not against `amount`, for Ponctuel).
 - `planKindOf(poste)` — family of a poste (via the fixed `PLAN_CATS` map)
 - `annualisationProvision(postes)` — `Σ (Trimestrielle|Annuelle) amount×months.length / 12`
 - `planCascade(postes)` — returns `{ entrees, depenses, epargne, marge, provision, auBesoin }` (annual €, provision monthly)
@@ -59,7 +62,9 @@ The freeze is **autonomous by default** — the system closes the year on its ow
    - **Current** — editable.
    - **Next (`currentYear + 1`)** — editable **draft** ("Préparation"): you prepare next year's budget before it starts (e.g. late December). Only ±1 year of future — no far horizon.
 
-   Preparing next year = **seed from the current year's plan, indexed up**, then adjust (reindexed salary, new/dropped échéances). Never a blank sheet. A **future year has no réel** (no imported transactions yet) → hide the Réel/Écart column and the modal's réel strip; only prévu shows. **Bascule is automatic**: since the store is keyed by `(year, poste)`, on Jan 1 the prepared next-year plan simply becomes the current one — no manual copy. Nothing here persists (local React state); the mockup fakes past years by scaling the seed and holds the current + next-year drafts in a `Record<year, PlanPoste[]>` (`planPostesForYear`, `PLAN_MIN_YEAR`/`PLAN_MAX_YEAR`). Needs a real store/db keyed by `(year, poste)`.
+   Preparing next year = **seed from the current year's plan, indexed up**, then adjust (reindexed salary, new/dropped échéances). Never a blank sheet.
+
+   **Kill the year-to-year transcription (design, not yet built in the mock).** You plan N+1 *against what N actually was* (its réel), not against N's prévu — today that means reading the réel on one screen and re-typing it into the prévu on another. Fix: the skeleton stays the indexed prévu (you prepare before N is over, so N's réel is incomplete), but in **Préparation** mode each poste surfaces **N-1's réel beside the N+1 prévu field** with a one-gesture **"reprendre le réel"** (adopt the observed as the plan). It's the écart mechanism shifted one year — prévu N+1 informed by réel N-1 — reusing the same Réel column, showing the *previous* year as reference instead of the (non-existent) current one. One screen, one click, zero re-typing. A **future year has no réel** (no imported transactions yet) → hide the Réel/Écart column and the modal's réel strip; only prévu shows. **Bascule is automatic**: since the store is keyed by `(year, poste)`, on Jan 1 the prepared next-year plan simply becomes the current one — no manual copy. Nothing here persists (local React state); the mockup fakes past years by scaling the seed and holds the current + next-year drafts in a `Record<year, PlanPoste[]>` (`planPostesForYear`, `PLAN_MIN_YEAR`/`PLAN_MAX_YEAR`). Needs a real store/db keyed by `(year, poste)`.
 
    **Open product decision (not locked):** is next year editable *year-round*, or only from Q4 onward (a "prepare next year" affordance that appears late in the current year)? The mockup opens it year-round; a Q4-gated nudge is the alternative.
 2. **Real import** — parse the iSaveMoney xlsx (here `importPreviewMock` is fake), produce transactions.

@@ -304,16 +304,31 @@ export const monthlyIncome = incomeSources.reduce((s, i) => s + i.value, 0);
 
 export type PlanKind = "entree" | "depense" | "epargne";
 
+// "Ponctuel" = irregular dated occurrences with per-hit amounts. Unlike the 4 smoothable
+// cadences (fixed amount × even spread), a ponctuel poste carries a list of {month, amount}:
+// the primes case (pécule in May, 13e mois in December, different amounts). Predictable, so
+// it enters the annual equilibrium — but it is NEVER provisioned (income lumps fund the year,
+// they aren't smoothed like outgoing lumps).
+export type PlanRecurrence = Recurrence4 | "Ponctuel";
+export type PlanOccurrence = { m: number; amount: number }; // m = 0..11
+
 export type PlanPoste = {
   id: string;
   cat: string;        // catégorie (Logement, Famille, …)
   group: string;      // sous-groupe (Énergies, Voiture, …)
   label: string;      // poste (Mazout, Carburant, …)
-  amount: number;     // prévu per occurrence (per month for Mensuelle)
-  recurrence: Recurrence4;
-  months: number[];   // planned occurrence months (0..11)
+  amount: number;     // prévu per occurrence (per month for Mensuelle); ignored for Ponctuel
+  recurrence: PlanRecurrence;
+  months: number[];   // planned occurrence months (0..11) — kept in sync with occurrences for Ponctuel
+  occurrences?: PlanOccurrence[]; // only for Ponctuel — dated, per-hit amounts (primes)
   sensor?: "mazout";  // physical-state signal surfaced beside the poste
 };
+
+// Annual prévu of a poste, in its own cadence. Ponctuel = Σ occurrence amounts; else amount × hits.
+export function planPosteYear(p: PlanPoste): number {
+  if (p.recurrence === "Ponctuel") return (p.occurrences ?? []).reduce((s, o) => s + o.amount, 0);
+  return p.amount * p.months.length;
+}
 
 // Ordered category list (drives section order + icons). Family: Entrées first, dépenses
 // in the middle, Épargne last — the plan's equilibrium reads top-to-bottom.
@@ -337,8 +352,7 @@ export const planPostesSeed: PlanPoste[] = [
   { id: "e-sal",   cat: "Entrées", group: "Revenus", label: "Salaires",           amount: 4350, recurrence: "Mensuelle", months: defaultMonthsFor("Mensuelle") },
   { id: "e-alloc", cat: "Entrées", group: "Revenus", label: "Allocations",         amount: 320,  recurrence: "Mensuelle", months: defaultMonthsFor("Mensuelle") },
   { id: "e-palim", cat: "Entrées", group: "Revenus", label: "Pension alimentaire", amount: 200,  recurrence: "Mensuelle", months: defaultMonthsFor("Mensuelle") },
-  { id: "e-pec",   cat: "Entrées", group: "Primes",  label: "Pécule de vacances",  amount: 2680, recurrence: "Annuelle",  months: [4] },
-  { id: "e-prime", cat: "Entrées", group: "Primes",  label: "Prime fin d'année",   amount: 1900, recurrence: "Annuelle",  months: [11] },
+  { id: "e-prime", cat: "Entrées", group: "Revenus", label: "Primes",              amount: 0,    recurrence: "Ponctuel",  months: [4, 11], occurrences: [{ m: 4, amount: 2680 }, { m: 11, amount: 1900 }] },
   // ---- Logement ----
   { id: "l-hab",   cat: "Logement", group: "Assurances",     label: "Habitation",          amount: 513,  recurrence: "Annuelle",      months: [7] },
   { id: "l-dec",   cat: "Logement", group: "Assurances",     label: "Décès",               amount: 526,  recurrence: "Annuelle",      months: [9] },
@@ -401,6 +415,7 @@ export function planPostesForYear(year: number): PlanPoste[] {
     ...p,
     id: `${p.id}@${year}`,
     amount: Math.round(p.amount * factor),
+    occurrences: p.occurrences?.map(o => ({ ...o, amount: Math.round(o.amount * factor) })),
   }));
 }
 
@@ -420,6 +435,12 @@ export function posteMonthly(p: PlanPoste): number[] {
     const shift = (seed % 3) - 1;               // -1, 0, +1 → the real payment may drift
     const actual = ((planned + shift) % 12 + 12) % 12;
     out[actual] = Math.round(p.amount * (1 + ((seed % 11) - 4) / 100));
+  } else if (p.recurrence === "Ponctuel") {     // each dated occurrence lands at its month, may drift ±1
+    (p.occurrences ?? []).forEach((o, k) => {
+      const shift = ((seed + k) % 3) - 1;
+      const actual = ((o.m + shift) % 12 + 12) % 12;
+      out[actual] += Math.round(o.amount * (1 + (((seed + k) % 11) - 4) / 100));
+    });
   } else { // Au besoin — scattered small hits
     const n = 2 + (seed % 3);
     for (let k = 0; k < n; k++) {
@@ -431,7 +452,7 @@ export function posteMonthly(p: PlanPoste): number[] {
 }
 
 export const planReelYear = (p: PlanPoste): number => posteMonthly(p).reduce((s, v) => s + v, 0);
-export const planPrevuYear = (p: PlanPoste): number => p.amount * p.months.length;
+export const planPrevuYear = (p: PlanPoste): number => planPosteYear(p);
 // Comparison figure on the poste's own cadence: per-occurrence (avg of hit months) for
 // Mensuelle & Trimestrielle, year total for Annuelle & Au besoin. Like-for-like with prévu.
 export function planReelCadence(p: PlanPoste): number {
@@ -456,7 +477,7 @@ export function planCascade(postes: PlanPoste[]): PlanCascade {
   let entrees = 0, depenses = 0, epargne = 0, auBesoin = 0, provBase = 0;
   for (const p of postes) {
     const kind = planKindOf(p);
-    const yearly = p.amount * p.months.length;
+    const yearly = planPosteYear(p);
     if (kind === "entree") entrees += yearly;
     else if (kind === "epargne") epargne += yearly;
     else if (p.recurrence === "Au besoin") auBesoin += yearly;

@@ -1,16 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Fuel, ChevronDown, ChevronLeft, ChevronRight, Coins, Lock, PencilRuler } from "lucide-react";
+import { Fuel, ChevronDown, ChevronLeft, ChevronRight, Coins, Lock, PencilRuler, Plus, X } from "lucide-react";
 import { CountUp } from "@/components/CountUp";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import {
   MONTHS_FR, eur,
-  PLAN_CATS, planPostesSeed, planPostesForYear, defaultMonthsFor,
+  PLAN_CATS, planPostesSeed, planPostesForYear, defaultMonthsFor, planPosteYear,
   planCascade, posteMonthly, planReelCadence, planKindOf,
   currentYear, PLAN_MIN_YEAR, PLAN_MAX_YEAR,
-  type PlanPoste, type Recurrence4, type PlanKind,
+  type PlanPoste, type PlanRecurrence, type PlanOccurrence, type PlanKind, type Recurrence4,
 } from "@/lib/budget-data";
 import { energie } from "@/lib/mock-data";
 
@@ -24,9 +24,9 @@ export const Route = createFileRoute("/_app/budget/planification")({
   }),
 });
 
-const RECS: Recurrence4[] = ["Mensuelle", "Trimestrielle", "Annuelle", "Au besoin"];
-const recShort = (r: Recurrence4) =>
-  r === "Mensuelle" ? "Mensuel" : r === "Trimestrielle" ? "Trimestre" : r === "Annuelle" ? "Annuel" : "Au besoin";
+const RECS: PlanRecurrence[] = ["Mensuelle", "Trimestrielle", "Annuelle", "Ponctuel", "Au besoin"];
+const recShort = (r: PlanRecurrence) =>
+  r === "Mensuelle" ? "Mensuel" : r === "Trimestrielle" ? "Trimestre" : r === "Annuelle" ? "Annuel" : r === "Ponctuel" ? "Ponctuel" : "Au besoin";
 
 // The three plan families — the top-level separation (Entrées · Sorties · Épargne).
 const FAMILIES: { kind: PlanKind; label: string; accent: string }[] = [
@@ -242,7 +242,7 @@ function PlanificationPage() {
         })}
       </div>
 
-      <EditModal poste={editing} reel={showReal} onClose={() => setEditingId(null)} onPatch={patch} />
+      <EditModal poste={editing} reel={showReal} year={year} onClose={() => setEditingId(null)} onPatch={patch} />
     </div>
   );
 }
@@ -306,8 +306,9 @@ function Op({ sign }: { sign: string }) {
 function PosteRow({ poste, onEdit, reel = true }: { poste: PlanPoste; onEdit?: () => void; reel?: boolean }) {
   const monthly = useMemo(() => posteMonthly(poste), [poste]);
   const real = planReelCadence(poste);
-  const ecart = real - poste.amount;
-  const pct = poste.amount > 0 ? Math.round((ecart / poste.amount) * 100) : 0;
+  const prevu = poste.recurrence === "Ponctuel" ? planPosteYear(poste) : poste.amount;
+  const ecart = real - prevu;
+  const pct = prevu > 0 ? Math.round((ecart / prevu) * 100) : 0;
   const auBesoin = poste.recurrence === "Au besoin";
   const mazout = poste.sensor === "mazout";
   // Tint the months the prévision covers: all 12 for Mensuelle, the occurrence months otherwise.
@@ -333,7 +334,7 @@ function PosteRow({ poste, onEdit, reel = true }: { poste: PlanPoste; onEdit?: (
           <span className="truncate text-sm">{poste.label}</span>
           {mazout && <Fuel className="h-3 w-3 shrink-0 text-warm" />}
         </span>
-        <span className={Z.prevu + " text-sm tabular-nums"}>{eur(poste.amount)}</span>
+        <span className={Z.prevu + " text-sm tabular-nums"}>{eur(prevu)}</span>
         <span className={Z.freq}>
           <span className="rounded-full bg-secondary/70 px-1.5 py-0.5 text-[10px] text-muted-foreground">{recShort(poste.recurrence)}</span>
         </span>
@@ -380,9 +381,11 @@ function PosteRow({ poste, onEdit, reel = true }: { poste: PlanPoste; onEdit?: (
 
 function MobileRow({ poste, onEdit, reel = true }: { poste: PlanPoste; onEdit?: () => void; reel?: boolean }) {
   const real = planReelCadence(poste);
-  const ecart = real - poste.amount;
-  const pct = poste.amount > 0 ? Math.round((ecart / poste.amount) * 100) : 0;
+  const prevu = poste.recurrence === "Ponctuel" ? planPosteYear(poste) : poste.amount;
+  const ecart = real - prevu;
+  const pct = prevu > 0 ? Math.round((ecart / prevu) * 100) : 0;
   const auBesoin = poste.recurrence === "Au besoin";
+  const ponctuel = poste.recurrence === "Ponctuel";
   const nonMensuel = poste.recurrence !== "Mensuelle";
   const mazout = poste.sensor === "mazout";
   const goodOver = planKindOf(poste) !== "depense";
@@ -405,11 +408,13 @@ function MobileRow({ poste, onEdit, reel = true }: { poste: PlanPoste; onEdit?: 
         </div>
         <div className="mt-1 flex items-center gap-1.5 text-[11px] text-muted-foreground">
           <span className="rounded-full bg-secondary/70 px-1.5 py-0.5 text-[10px]">{recShort(poste.recurrence)}</span>
-          {nonMensuel && <span>éch. {MONTHS_FR[poste.months[0] ?? 0]}</span>}
+          {ponctuel
+            ? <span>{(poste.occurrences ?? []).map(o => MONTHS_FR[o.m].slice(0, 3).toLowerCase()).join(" · ")}</span>
+            : nonMensuel && <span>éch. {MONTHS_FR[poste.months[0] ?? 0]}</span>}
         </div>
       </div>
       <div className="shrink-0 text-right">
-        <div className="text-sm tabular-nums">{eur(poste.amount)}<span className="ml-0.5 text-[10px] text-muted-foreground">prévu</span></div>
+        <div className="text-sm tabular-nums">{eur(prevu)}<span className="ml-0.5 text-[10px] text-muted-foreground">prévu</span></div>
         {reel ? (
           <div className="mt-1 flex items-center justify-end gap-1.5">
             <span className="text-[11px] tabular-nums text-muted-foreground">réel {eur(real)}</span>
@@ -427,17 +432,26 @@ function MobileRow({ poste, onEdit, reel = true }: { poste: PlanPoste; onEdit?: 
 
 /* ---------- Edit modal ---------- */
 
-function EditModal({ poste, onClose, onPatch, reel = true }: {
+function EditModal({ poste, onClose, onPatch, reel = true, year }: {
   poste: PlanPoste | null;
   onClose: () => void;
   onPatch: (id: string, p: Partial<PlanPoste>) => void;
   reel?: boolean;
+  year: number;
 }) {
-  const nonMensuel = poste ? poste.recurrence !== "Mensuelle" : false;
+  const ponctuel = poste ? poste.recurrence === "Ponctuel" : false;
+  const nonMensuel = poste ? (poste.recurrence !== "Mensuelle" && !ponctuel) : false;
+
+  // Occurrence edits touch both the list and the mirror `months` (drives strip tinting), sorted.
+  function setOccs(occs: PlanOccurrence[]) {
+    if (!poste) return;
+    const sorted = [...occs].sort((a, b) => a.m - b.m);
+    onPatch(poste.id, { occurrences: sorted, months: sorted.map(o => o.m) });
+  }
 
   return (
     <Dialog open={!!poste} onOpenChange={(o) => { if (!o) onClose(); }}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[calc(100dvh-6rem)] overflow-y-auto">
         {poste && (
           <>
             <DialogHeader>
@@ -445,24 +459,32 @@ function EditModal({ poste, onClose, onPatch, reel = true }: {
               <p className="text-xs text-muted-foreground">{poste.cat} › {poste.group}</p>
             </DialogHeader>
 
-            <div className="space-y-4 pt-2">
-              {/* Three uniform fields */}
+            <div className="min-w-0 space-y-4 pt-2">
+              {/* Fields — Ponctuel drops the single amount for a dated occurrence list */}
               <div className="grid grid-cols-2 gap-3">
-                <label className="block">
-                  <span className="mb-1 block text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Montant prévu</span>
-                  <div className="flex items-center rounded-lg border border-border/60 bg-card px-2.5 py-2 focus-within:border-foreground/40">
-                    <input type="number" value={poste.amount} autoFocus
-                      onChange={(e) => onPatch(poste.id, { amount: Math.max(0, Number(e.target.value) || 0) })}
-                      className="w-full bg-transparent text-sm tabular-nums outline-none" />
-                    <span className="text-sm text-muted-foreground">€</span>
-                  </div>
-                </label>
-                <label className="block">
+                {!ponctuel && (
+                  <label className="block">
+                    <span className="mb-1 block text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Montant prévu</span>
+                    <div className="flex items-center rounded-lg border border-border/60 bg-card px-2.5 py-2 focus-within:border-foreground/40">
+                      <input type="number" value={poste.amount} autoFocus
+                        onChange={(e) => onPatch(poste.id, { amount: Math.max(0, Number(e.target.value) || 0) })}
+                        className="w-full bg-transparent text-sm tabular-nums outline-none" />
+                      <span className="text-sm text-muted-foreground">€</span>
+                    </div>
+                  </label>
+                )}
+                <label className={ponctuel ? "col-span-2 block" : "block"}>
                   <span className="mb-1 block text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Fréquence</span>
                   <select value={poste.recurrence}
                     onChange={(e) => {
-                      const rec = e.target.value as Recurrence4;
-                      onPatch(poste.id, { recurrence: rec, months: defaultMonthsFor(rec, poste.months[0] ?? 0) });
+                      const rec = e.target.value as PlanRecurrence;
+                      if (rec === "Ponctuel") {
+                        const seed = poste.occurrences ?? [{ m: poste.months[0] ?? 0, amount: poste.amount || 0 }];
+                        onPatch(poste.id, { recurrence: rec, occurrences: seed, months: seed.map(o => o.m) });
+                      } else {
+                        const amount = ponctuel && poste.occurrences?.length ? poste.occurrences[0].amount : poste.amount;
+                        onPatch(poste.id, { recurrence: rec, months: defaultMonthsFor(rec, poste.months[0] ?? 0), occurrences: undefined, amount });
+                      }
                     }}
                     className="w-full rounded-lg border border-border/60 bg-card px-2.5 py-2 text-sm outline-none focus:border-foreground/40">
                     {RECS.map(r => <option key={r} value={r}>{r}</option>)}
@@ -472,7 +494,7 @@ function EditModal({ poste, onClose, onPatch, reel = true }: {
                   <label className="block">
                     <span className="mb-1 block text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Mois d'échéance</span>
                     <select value={poste.months[0] ?? 0}
-                      onChange={(e) => onPatch(poste.id, { months: defaultMonthsFor(poste.recurrence, Number(e.target.value)) })}
+                      onChange={(e) => onPatch(poste.id, { months: defaultMonthsFor(poste.recurrence as Recurrence4, Number(e.target.value)) })}
                       className="w-full rounded-lg border border-border/60 bg-card px-2.5 py-2 text-sm outline-none focus:border-foreground/40">
                       {MONTHS_FR.map((m, i) => <option key={i} value={i}>{m}</option>)}
                     </select>
@@ -480,10 +502,47 @@ function EditModal({ poste, onClose, onPatch, reel = true }: {
                 )}
               </div>
 
+              {/* Occurrence editor — dated, per-hit amounts (pécule mai · 13e déc) */}
+              {ponctuel && (
+                <div className="rounded-xl border border-border/50 bg-card/40 p-3">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Échéances</span>
+                    <span className="text-[11px] tabular-nums text-muted-foreground">total {eur(planPosteYear(poste))}/an</span>
+                  </div>
+                  <div className="space-y-2">
+                    {(poste.occurrences ?? []).map((o, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <select value={o.m}
+                          onChange={(e) => setOccs((poste.occurrences ?? []).map((x, j) => j === i ? { ...x, m: Number(e.target.value) } : x))}
+                          className="w-32 rounded-lg border border-border/60 bg-card px-2.5 py-2 text-sm outline-none focus:border-foreground/40">
+                          {MONTHS_FR.map((m, k) => <option key={k} value={k}>{m}</option>)}
+                        </select>
+                        <div className="flex min-w-0 flex-1 items-center rounded-lg border border-border/60 bg-card px-2.5 py-2 focus-within:border-foreground/40">
+                          <input type="number" value={o.amount}
+                            onChange={(e) => setOccs((poste.occurrences ?? []).map((x, j) => j === i ? { ...x, amount: Math.max(0, Number(e.target.value) || 0) } : x))}
+                            className="w-full bg-transparent text-sm tabular-nums outline-none" />
+                          <span className="text-sm text-muted-foreground">€</span>
+                        </div>
+                        <button type="button" aria-label="Retirer l'échéance"
+                          onClick={() => setOccs((poste.occurrences ?? []).filter((_, j) => j !== i))}
+                          className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground">
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <button type="button"
+                    onClick={() => setOccs([...(poste.occurrences ?? []), { m: 0, amount: 0 }])}
+                    className="mt-2 flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-[12px] text-primary hover:bg-primary/10">
+                    <Plus className="h-3.5 w-3.5" /> Ajouter une échéance
+                  </button>
+                </div>
+              )}
+
               {/* Réel — 12 mois (graphical). A future year has no imported réel yet. */}
               {reel ? (
               <div>
-                <span className="mb-1.5 block text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Réel · 12 mois</span>
+                <span className="mb-1.5 block text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Réel · 12 mois · {year}</span>
                 <div className="overflow-x-auto rounded-xl border border-border/40 bg-card/40 p-2 [scrollbar-width:thin]">
                   <div className="grid min-w-[540px] grid-cols-12 gap-1">
                     {posteMonthly(poste).map((v, i) => {
