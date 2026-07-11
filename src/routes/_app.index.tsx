@@ -321,9 +321,7 @@ function SecurityTile() {
 
       <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {preview.map((c) => (
-          <div key={c.id} className="[&>div]:h-24">
-            <CameraFeed camera={c} size="sm" />
-          </div>
+          <CameraFeed key={c.id} camera={c} size="sm" />
         ))}
       </div>
 

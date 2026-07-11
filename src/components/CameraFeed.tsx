@@ -1,4 +1,4 @@
-import { Camera as CamIcon, Moon, WifiOff, CircleDot, Bell, Battery, BatteryLow } from "lucide-react";
+import { Camera as CamIcon, Moon, WifiOff, Bell } from "lucide-react";
 import type { Camera, CameraScene } from "@/lib/mock-data";
 
 /**
@@ -96,14 +96,9 @@ interface CameraFeedProps {
 export function CameraFeed({ camera, size = "md", showChrome = true }: CameraFeedProps) {
   const notInstalled = !camera.installed;
   const offline = camera.state === "offline";
-  const recording = camera.state === "recording" || camera.motion;
-
-  const height = size === "sm" ? "h-24" : size === "lg" ? "h-64" : "h-36";
-  const now = new Date();
-  const ts = now.toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" });
 
   return (
-    <div className={`relative w-full overflow-hidden rounded-xl border border-border/40 bg-foreground/95 ${height}`}>
+    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-border/40 bg-foreground/95">
       {notInstalled ? (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-secondary text-muted-foreground">
           <Bell className="h-6 w-6 opacity-60" />
@@ -120,47 +115,18 @@ export function CameraFeed({ camera, size = "md", showChrome = true }: CameraFee
 
           {showChrome && (
             <>
-              {/* Top-left: LIVE + name */}
-              <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-2 p-2 text-[10px] uppercase tracking-[0.16em] text-white/90">
-                <span className="inline-flex items-center gap-1 rounded-full bg-black/40 px-1.5 py-0.5 backdrop-blur-sm">
-                  {recording ? (
-                    <>
-                      <span className="relative flex h-1.5 w-1.5">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500/60" />
-                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-500" />
-                      </span>
-                      REC
-                    </>
-                  ) : (
-                    <>
-                      <CircleDot className="h-2.5 w-2.5" />
-                      LIVE
-                    </>
-                  )}
-                </span>
-                <span className="rounded bg-black/40 px-1.5 py-0.5 backdrop-blur-sm">{ts}</span>
-              </div>
-
               {/* Bottom-left: badges */}
               <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-2 text-[10px] uppercase tracking-[0.16em] text-white/90">
                 <span className="inline-flex items-center gap-1 rounded bg-black/40 px-1.5 py-0.5 backdrop-blur-sm">
                   <CamIcon className="h-3 w-3" />
                   {camera.name}
                 </span>
-                <div className="flex items-center gap-1">
-                  {camera.night && (
-                    <span className="inline-flex items-center gap-1 rounded bg-black/40 px-1.5 py-0.5 text-emerald-300 backdrop-blur-sm">
-                      <Moon className="h-3 w-3" />
-                      IR
-                    </span>
-                  )}
-                  {!camera.wired && camera.batteryPct !== undefined && (
-                    <span className={`inline-flex items-center gap-1 rounded bg-black/40 px-1.5 py-0.5 backdrop-blur-sm ${camera.batteryPct < 25 ? "text-amber-300" : ""}`}>
-                      {camera.batteryPct < 25 ? <BatteryLow className="h-3 w-3" /> : <Battery className="h-3 w-3" />}
-                      {camera.batteryPct}%
-                    </span>
-                  )}
-                </div>
+                {camera.night && (
+                  <span className="inline-flex items-center gap-1 rounded bg-black/40 px-1.5 py-0.5 text-emerald-300 backdrop-blur-sm">
+                    <Moon className="h-3 w-3" />
+                    IR
+                  </span>
+                )}
               </div>
 
               {camera.motion && (

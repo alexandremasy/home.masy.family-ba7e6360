@@ -366,6 +366,106 @@ export const motionEvents: MotionEvent[] = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Sécurité — dashboard maison (état-first : la maison est une machine à armer)
+// ─────────────────────────────────────────────────────────────────────────────
+
+// 1 ── État & armement
+export type ArmMode = "disarmed" | "home" | "night" | "away";
+export type SecurityVerdict = "secure" | "attention" | "alarm";
+
+export const armModes: { key: ArmMode; label: string; hint: string }[] = [
+  { key: "disarmed", label: "Désarmé", hint: "Aucune surveillance active" },
+  { key: "home",     label: "Maison",  hint: "Périmètre armé, intérieur libre" },
+  { key: "night",    label: "Nuit",    hint: "Périmètre + rez armés" },
+  { key: "away",     label: "Absent",  hint: "Tout armé, alertes push" },
+];
+
+export const security = {
+  mode: "home" as ArmMode,
+  armedSince: "18:40",
+  autoFollowPresence: true,
+};
+
+// 2 ── Présence (l'armement auto suit la présence)
+export interface PresenceMember {
+  name: string;
+  initial: string;
+  home: boolean;
+  place?: string;   // quand absent
+  since: string;    // "depuis 08:12" / "il y a 2 h"
+}
+export const presence: PresenceMember[] = [
+  { name: "Alex",  initial: "A", home: true,  since: "depuis ce matin" },
+  { name: "Sam",   initial: "S", home: false, place: "Bruxelles · Flagey", since: "il y a 2 h" },
+  { name: "Léa",   initial: "L", home: true,  since: "depuis 16:20" },
+];
+
+// 3 ── Périmètre (intégrité physique : portes, fenêtres, serrures)
+export type OpeningType = "door" | "window" | "garage";
+export type OpeningState = "secure" | "open" | "unlocked";
+export interface PerimeterPoint {
+  name: string;
+  zone: string;
+  type: OpeningType;
+  state: OpeningState;
+}
+export const perimeter: PerimeterPoint[] = [
+  { name: "Porte d'entrée",   zone: "Rez",      type: "door",   state: "secure" },
+  { name: "Baie salon",       zone: "Rez",      type: "window", state: "secure" },
+  { name: "Fenêtre cuisine",  zone: "Rez",      type: "window", state: "secure" },
+  { name: "Porte terrasse",   zone: "Rez",      type: "door",   state: "unlocked" },
+  { name: "Porte garage",     zone: "Garage",   type: "garage", state: "open" },
+  { name: "Fenêtre chambre",  zone: "Étage",    type: "window", state: "secure" },
+  { name: "Velux bureau",     zone: "Étage",    type: "window", state: "secure" },
+  { name: "Fenêtre buanderie",zone: "Sous-sol", type: "window", state: "secure" },
+];
+export const locks: { name: string; locked: boolean }[] = [
+  { name: "Porte d'entrée", locked: true },
+  { name: "Porte garage",   locked: false },
+  { name: "Porte terrasse", locked: false },
+];
+
+// 4 ── Activité (timeline unifiée, tous capteurs confondus)
+export type ActivityKind =
+  | "person" | "vehicle" | "animal" | "package" | "motion"
+  | "door" | "lock" | "doorbell" | "arm" | "system";
+export interface ActivityItem {
+  id: string;
+  kind: ActivityKind;
+  label: string;
+  where: string;
+  time: string;
+  ago: string;
+  level?: "info" | "warn" | "alert";
+}
+export const activity: ActivityItem[] = [
+  { id: "a1", kind: "door",     label: "Porte garage ouverte",       where: "Garage", time: "18:52", ago: "à l'instant",  level: "warn" },
+  { id: "a2", kind: "vehicle",  label: "Véhicule détecté",           where: "Allée",  time: "18:46", ago: "il y a 6 min" },
+  { id: "a3", kind: "arm",      label: "Passé en mode Maison",       where: "Système",time: "18:40", ago: "il y a 12 min" },
+  { id: "a4", kind: "person",   label: "Personne détectée",          where: "Jardin", time: "18:12", ago: "il y a 40 min" },
+  { id: "a5", kind: "doorbell", label: "Sonnette",                   where: "Entrée", time: "17:30", ago: "il y a 1 h" },
+  { id: "a6", kind: "package",  label: "Colis déposé",               where: "Allée",  time: "16:22", ago: "il y a 2 h" },
+  { id: "a7", kind: "lock",     label: "Porte d'entrée verrouillée", where: "Rez",    time: "08:12", ago: "ce matin" },
+  { id: "a8", kind: "animal",   label: "Animal (chat)",              where: "Arrière",time: "07:58", ago: "ce matin" },
+];
+
+// 6 ── Santé du système
+export const securityHealth = {
+  devicesOnline: 11,
+  devicesTotal: 12,
+  connectivity: "ok" as "ok" | "degraded" | "down",
+  siren: "ready" as "ready" | "triggered" | "off",
+  tamper: false,
+  lastTest: "il y a 3 j",
+  offline: [{ name: "Capteur fenêtre garage", since: "il y a 2 j" }],
+  batteries: [
+    { name: "Capteur porte cuisine", level: 18 },
+    { name: "Détecteur salon",       level: 46 },
+    { name: "Sonnette",              level: 72 },
+  ],
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Lave-vaisselle (cuisine)
 // ─────────────────────────────────────────────────────────────────────────────
 
