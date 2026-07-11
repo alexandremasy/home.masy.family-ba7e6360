@@ -327,6 +327,7 @@ export type PlanPoste = {
 // Annual prévu of a poste, in its own cadence. Ponctuel = Σ occurrence amounts; else amount × hits.
 export function planPosteYear(p: PlanPoste): number {
   if (p.recurrence === "Ponctuel") return (p.occurrences ?? []).reduce((s, o) => s + o.amount, 0);
+  if (p.recurrence === "Au besoin") return p.amount; // yearly envelope, no schedule
   return p.amount * p.months.length;
 }
 
@@ -419,24 +420,36 @@ export function planPostesForYear(year: number): PlanPoste[] {
   }));
 }
 
-// The 12 imported monthly actuals for a poste (the "data liées"). Deterministic mock:
+// Réel is IMPORTED data — independent of the plan. So it must anchor to the poste's seed
+// baseline, never the live-edited prévu: editing the prévision must not move the réel (only
+// the écart shifts). Resolves the unedited seed poste from the id (the `@year` suffix, or the
+// current-year seed).
+function baselinePoste(p: PlanPoste): PlanPoste {
+  const [, ys] = p.id.split("@");
+  const yr = ys ? Number(ys) : currentYear;
+  return planPostesForYear(yr).find(x => x.id === p.id) ?? p;
+}
+
+// The 12 imported monthly actuals for a poste (the "data liées"). Deterministic mock, anchored
+// to the seed baseline (see above):
 //   Mensuelle → ~flat with a small wobble; Trimestrielle → spikes at its occurrences;
 //   Annuelle → one spike, possibly shifted ±1 month off the plan (things move — that shift
 //   is exactly what you need to SEE to correct the payment month); Au besoin → scattered.
 export function posteMonthly(p: PlanPoste): number[] {
-  const seed = p.id.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
+  const b = baselinePoste(p);
+  const seed = b.id.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
   const out = new Array(12).fill(0);
-  if (p.recurrence === "Mensuelle") {
-    for (let i = 0; i < 12; i++) out[i] = Math.round(p.amount * (1 + Math.sin((i + seed) * 0.9) * 0.09));
-  } else if (p.recurrence === "Trimestrielle") {
-    p.months.forEach(m => { out[m] = Math.round(p.amount * (1 + ((seed % 9) - 4) / 100)); });
-  } else if (p.recurrence === "Annuelle") {
-    const planned = p.months[0] ?? 0;
+  if (b.recurrence === "Mensuelle") {
+    for (let i = 0; i < 12; i++) out[i] = Math.round(b.amount * (1 + Math.sin((i + seed) * 0.9) * 0.09));
+  } else if (b.recurrence === "Trimestrielle") {
+    b.months.forEach(m => { out[m] = Math.round(b.amount * (1 + ((seed % 9) - 4) / 100)); });
+  } else if (b.recurrence === "Annuelle") {
+    const planned = b.months[0] ?? 0;
     const shift = (seed % 3) - 1;               // -1, 0, +1 → the real payment may drift
     const actual = ((planned + shift) % 12 + 12) % 12;
-    out[actual] = Math.round(p.amount * (1 + ((seed % 11) - 4) / 100));
-  } else if (p.recurrence === "Ponctuel") {     // each dated occurrence lands at its month, may drift ±1
-    (p.occurrences ?? []).forEach((o, k) => {
+    out[actual] = Math.round(b.amount * (1 + ((seed % 11) - 4) / 100));
+  } else if (b.recurrence === "Ponctuel") {     // each dated occurrence lands at its month, may drift ±1
+    (b.occurrences ?? []).forEach((o, k) => {
       const shift = ((seed + k) % 3) - 1;
       const actual = ((o.m + shift) % 12 + 12) % 12;
       out[actual] += Math.round(o.amount * (1 + (((seed + k) % 11) - 4) / 100));
@@ -445,7 +458,7 @@ export function posteMonthly(p: PlanPoste): number[] {
     const n = 2 + (seed % 3);
     for (let k = 0; k < n; k++) {
       const m = (seed * 7 + k * 5) % 12;
-      out[m] += Math.round((p.amount / n) * (1 + (((seed + k) % 5) - 2) / 100));
+      out[m] += Math.round((b.amount / n) * (1 + (((seed + k) % 5) - 2) / 100));
     }
   }
   return out;
@@ -453,6 +466,33 @@ export function posteMonthly(p: PlanPoste): number[] {
 
 export const planReelYear = (p: PlanPoste): number => posteMonthly(p).reduce((s, v) => s + v, 0);
 export const planPrevuYear = (p: PlanPoste): number => planPosteYear(p);
+
+// The prévu spread over the 12 months (the plan as a monthly series, to compare against réel):
+// Mensuelle → flat; Ponctuel → its dated occurrences; else → the amount at each occurrence month.
+export function prevuMonthly(p: PlanPoste): number[] {
+  const out = new Array(12).fill(0);
+  if (p.recurrence === "Mensuelle") { for (let i = 0; i < 12; i++) out[i] = p.amount; }
+  else if (p.recurrence === "Ponctuel") { (p.occurrences ?? []).forEach(o => { out[o.m] += o.amount; }); }
+  else if (p.recurrence === "Au besoin") { /* envelope — no scheduled monthly prévu */ }
+  else { p.months.forEach(m => { out[m] = p.amount; }); } // Trimestrielle / Annuelle
+  return out;
+}
+
+// Same poste, one calendar year earlier — to surface last year's réel beside this year's plan.
+// Matches on the base id (strips the `@year` suffix planPostesForYear appends).
+export function planPostePrevYear(p: PlanPoste, year: number): PlanPoste | undefined {
+  const base = p.id.split("@")[0];
+  return planPostesForYear(year - 1).find(x => x.id.split("@")[0] === base);
+}
+
+// Median of the réel over the months where something actually landed (robust "typical hit",
+// less skewed by an outlier month than the mean). Zero months are ignored.
+export function planReelMedian(p: PlanPoste): number {
+  const hits = posteMonthly(p).filter(v => v > 0).sort((a, b) => a - b);
+  if (!hits.length) return 0;
+  const mid = Math.floor(hits.length / 2);
+  return hits.length % 2 ? hits[mid] : Math.round((hits[mid - 1] + hits[mid]) / 2);
+}
 // Comparison figure on the poste's own cadence: per-occurrence (avg of hit months) for
 // Mensuelle & Trimestrielle, year total for Annuelle & Au besoin. Like-for-like with prévu.
 export function planReelCadence(p: PlanPoste): number {

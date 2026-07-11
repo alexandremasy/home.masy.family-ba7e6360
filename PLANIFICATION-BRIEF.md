@@ -45,12 +45,16 @@ The freeze is **autonomous by default** — the system closes the year on its ow
 ## Functions to port (from `budget-data.ts`)
 
 - `type PlanKind = "entree" | "depense" | "epargne"`, `type PlanRecurrence = Recurrence4 | "Ponctuel"`, `type PlanOccurrence = { m, amount }`, `type PlanPoste` (id, cat, group, label, amount, recurrence, months[], occurrences?, sensor?)
-- `planPosteYear(poste)` — annual prévu: `Σ occurrences` for Ponctuel, else `amount × months.length`. Used by the cascade and the écart (compare réel against this, not against `amount`, for Ponctuel).
+- `planPosteYear(poste)` — annual prévu: `Σ occurrences` for Ponctuel, `amount` for Au besoin (envelope), else `amount × months.length`. Used by the cascade and the écart.
 - `planKindOf(poste)` — family of a poste (via the fixed `PLAN_CATS` map)
 - `annualisationProvision(postes)` — `Σ (Trimestrielle|Annuelle) amount×months.length / 12`
 - `planCascade(postes)` — returns `{ entrees, depenses, epargne, marge, provision, auBesoin }` (annual €, provision monthly)
-- `posteMonthly(poste)` — the 12-month réel (MOCK here; replace with real aggregation from imported transactions)
-- `planReelCadence(poste)` — réel on the poste's cadence, for the écart
+- `posteMonthly(poste)` — the 12-month réel (MOCK here; replace with real aggregation from imported transactions). **Réel is IMPORTED data — it must be independent of the prévu.** In the mock it anchors to the poste's seed baseline (`baselinePoste`), so editing the prévu never moves the réel (only the écart shifts). The real impl reads transactions; the invariant is the same.
+- `prevuMonthly(poste)` — the prévu spread over 12 months (flat for Mensuelle, dated for Ponctuel, occurrence-months for Trim/Annuelle, **empty for Au besoin** — no schedule). Drives the modal's prévu row.
+- `planReelYear(poste)` / `planReelMedian(poste)` — annual total + median-over-hit-months. The table's Réel column shows **both**; the écart is on the annual basis (`planReelYear − planPosteYear`), tinted by family (over = bad for dépenses, good for entrées/épargne, neutral within ±5%).
+- `planPostePrevYear(poste, year)` — the same poste one year earlier, to surface N-1's réel beside the plan (the modal's 3-series compare: prévu · réel N · réel N-1).
+
+**Au besoin has NO échéance month** — it's an annual envelope, excluded from the equilibrium and the provision, that hits the margin when it lands. The modal hides the month field for it; nothing is tinted in its 12-month strip. What is dated-but-variable (anniversaires…) belongs to **Ponctuel**, not Au besoin.
 
 ---
 
