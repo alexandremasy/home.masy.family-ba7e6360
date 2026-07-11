@@ -297,7 +297,7 @@ function RoomPage() {
         <Section
           title="Lave-vaisselle"
           action={
-            <Link to="/room/cuisine" className="text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground">
+            <Link to="/room/$roomKey" params={{ roomKey: "cuisine" }} className="text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground">
               détails
             </Link>
           }
