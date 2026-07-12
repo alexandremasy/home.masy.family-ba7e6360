@@ -37,11 +37,19 @@ exactly those handoffs:
 
 ## Gotcha — Lovable regenerates `vite.config.ts`
 
-Lovable overwrites this file on every sync. The `VITE_PROXIED` block (`allowedHosts:
-["mockup.masy.family"]` + `wss`/443 HMR) must be **re-applied after each sync**, or
-`mockup.masy.family` answers "Blocked request". The `@lovable.dev/vite-tanstack-config`
-preset already bundles the core plugins — do NOT add tanstackStart/react/tailwind/etc.
-manually or the app breaks on duplicate plugins.
+Lovable overwrites this file on every sync and strips the `VITE_PROXIED` block
+(`allowedHosts: ["mockup.masy.family"]` + `wss`/443 HMR) that serves the app behind
+Traefik — without it `mockup.masy.family` answers "Blocked request". This is now
+**auto-healed at container boot** by `scripts/ensure-proxied.mjs`, which re-injects the
+block before vite starts (idempotent). No manual step after a sync.
+
+Caveat: the script lives in this repo, so a Lovable sync *could* delete it too — it is
+committed (restore with git), and the boot command tolerates its absence (vite still
+starts, degrading to "Blocked request" until the script is restored).
+
+Separately: the `@lovable.dev/vite-tanstack-config` preset already bundles the core
+plugins — do NOT add tanstackStart/react/tailwind/etc. manually or the app breaks on
+duplicate plugins.
 
 ## Run
 
