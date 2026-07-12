@@ -30,18 +30,22 @@ L'enjeu produit est le **curseur d'autonomie** : copilote (propose → tu valide
 **Capturé d'Alex :**
 - Planification hebdomadaire dans un **calendrier**.
 - Deux slots par jour : **midi = chaud**, **soir = froid / léger**.
-- On dispose de **listes de repas chaud** et **repas froid** (catalogues existants côté famille).
-- Le problème réel : **concilier l'ensemble** n'est pas facile. C'est le point qui « mixe logique, UX et intelligence ».
+- On dispose de **listes de repas chaud** et **repas froid** (aujourd'hui dans une app de todo).
+- **Le vrai problème = trouver des idées.** Pas la logistique ni la négociation. Des idées **pas trop récurrentes**, adaptées à la **chaleur du moment**, à la **période de l'année** et aux **produits de saison**.
 
-**Pistes (à débattre) :**
-- *Réactif* : composeur de semaine — piocher dans les catalogues, contraint par slot (chaud/froid), variété (pas 3× pâtes), effort (jour chargé → repas simple), saison, stock.
-- *Proactif* : semaine pré-remplie proposée, rappel « planifie la semaine prochaine », apprentissage des rotations habituelles, alerte déséquilibre.
-- L'intelligence = un moteur de **suggestion sous contraintes**. Quelles sont les vraies contraintes à modéliser ? [à définir]
+**Le cœur du module = un moteur d'inspiration, pas un calendrier vide à remplir.** Le calendrier est le support ; la valeur est dans la **suggestion contextualisée + anti-répétition**.
+
+- *Réactif* : « propose-moi des idées pour la semaine » → le système pioche dans les catalogues chaud/froid, filtre par slot (midi chaud / soir froid), écarte ce qui a été servi récemment, pondère par saison / chaleur / produits de saison.
+- *Proactif* : semaine pré-composée proposée, rappel « planifie la semaine prochaine », détection de lassitude (« ça fait 3 semaines de rotation identique »).
+
+**Attributs d'un repas (pas d'ingrédients) :** nom · catégorie chaud/froid · saison(s) / période · tolérance chaleur (léger quand il fait chaud) · **dernière fois servi** (moteur anti-récurrence) · [autres à définir : effort ? favori ?].
+
+**Signaux d'inspiration à brancher (implémentation, plus tard) :** saison = calendrier ; chaleur = météo (le domaine Énergie a peut-être déjà une source) ; produits de saison = un petit référentiel mois → produits.
 
 **Open questions :**
-- Qu'est-ce qui rend la conciliation dure aujourd'hui, concrètement ? (variété ? charge mentale ? négociation à deux ? restes ?)
-- Le calendrier repas existe déjà où ? (format, outil actuel)
-- Un repas = juste un nom, ou une fiche (ingrédients, effort, saison, dernière fois servi) ?
+- Comment l'inspiration se présente-t-elle en UI ? (un composeur de semaine avec suggestions inline · un bouton « surprends-moi » · une file de propositions à accepter/refuser façon swipe ?)
+- La planification est-elle solo ou à deux (validation partagée) ?
+- « Pas trop récurrent » = quelle fenêtre ? (ne pas re-servir avant N semaines)
 
 ---
 
