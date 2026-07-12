@@ -82,6 +82,12 @@ Le « type » est porté par l'**ouverture de la base**, pas par un flag sur le 
 
 **Garde-fou :** ne pas sur-décomposer. Un plat « signature » toujours fait pareil (Hachis Parmentier) = une base fermée sans modifiers ; on ne le force pas en assemblage.
 
+### Saisie rapide — contrainte directrice [LOCKED]
+
+Objectif du planning = faire la liste de la semaine **vite**. **Pas** cliquer dans 50 boîtes et sections. → **Le modèle base + modifiers vit SOUS LE CAPOT** (moteur de suggestion, dépannage, normalisation de l'historique) — ce n'est **pas** le mode de saisie par défaut.
+
+Règle : **un repas = un geste** (piocher un plat entier, suggéré ou cherché). L'assemblage par composants n'apparaît **que si l'utilisateur le demande** : créer un nouveau plat, explorer/varier, ou dépanner. Lovable optimise pour la **vitesse de composition**, jamais pour l'exhaustivité du modèle.
+
 **Observations data à garder en tête :** la liste s'appelle **« Repas du soir »** (alors qu'Alex parlait du midi → un seul pool ou deux listes ? à trancher) ; elle mélange chaud cuisiné et salades froides ; certains items portent une **attribution** (« julie leloup », « pinterest ») et un **état de stock** (« Quiche courgettes au congélateur »).
 
 **Attributs d'un plat (méta — pas d'ingrédients) :** nom · **base / signature** · **modifiers** (protéine · légume · féculent · sauce · garniture) · catégorie chaud/froid (overridable météo) · **emportable / réchauffable** (oui/non) · **rapide** (oui/non) · **cadence** (rafale-court vs espacé) · dernière fois servi · [saison & fréquence : déduites de l'historique] · [attribution / source : optionnel].
