@@ -38,19 +38,22 @@ L'enjeu produit est le **curseur d'autonomie** : copilote (propose → tu valide
 - On dispose de **listes de repas chaud** et **repas froid** (aujourd'hui dans une app de todo).
 - **Le vrai problème = trouver des idées.** Pas la logistique ni la négociation. Des idées **pas trop récurrentes**, adaptées à la **chaleur du moment**, à la **période de l'année** et aux **produits de saison**.
 
-**Le cœur du module = un moteur d'inspiration, pas un calendrier vide à remplir.** Le calendrier est le support ; la valeur est dans la **suggestion contextualisée + anti-répétition**.
+**Le besoin central = un moteur d'inspiration.** La valeur n'est pas le calendrier (support), c'est **suggérer des idées contextualisées + éviter la répétition**.
 
-- *Réactif* : « propose-moi des idées pour la semaine » → le système pioche dans les catalogues chaud/froid, filtre par slot (midi chaud / soir froid), écarte ce qui a été servi récemment, pondère par saison / chaleur / produits de saison.
-- *Proactif* : semaine pré-composée proposée, rappel « planifie la semaine prochaine », détection de lassitude (« ça fait 3 semaines de rotation identique »).
+**Comportement attendu :**
+- *Réactif* : sur demande, proposer des idées de repas qui respectent le slot (midi chaud / soir froid), écartent ce qui a été servi récemment, et collent à la saison / chaleur / produits de saison.
+- *Proactif* : pouvoir pré-composer une semaine entière ; relancer quand il est temps de planifier ; signaler la lassitude (rotation trop répétitive).
 
-**Attributs d'un repas (pas d'ingrédients) :** nom · catégorie chaud/froid · saison(s) / période · tolérance chaleur (léger quand il fait chaud) · **dernière fois servi** (moteur anti-récurrence) · [autres à définir : effort ? favori ?].
+**Attributs d'un repas (pas d'ingrédients) :** nom · catégorie chaud/froid · saison(s) / période · tolérance chaleur · **dernière fois servi** (moteur anti-récurrence) · [autres à définir].
 
 **Signaux d'inspiration à brancher (implémentation, plus tard) :** saison = calendrier ; chaleur = météo (le domaine Énergie a peut-être déjà une source) ; produits de saison = un petit référentiel mois → produits.
 
-**Open questions :**
-- Comment l'inspiration se présente-t-elle en UI ? (un composeur de semaine avec suggestions inline · un bouton « surprends-moi » · une file de propositions à accepter/refuser façon swipe ?)
-- La planification est-elle solo ou à deux (validation partagée) ?
-- « Pas trop récurrent » = quelle fenêtre ? (ne pas re-servir avant N semaines)
+**Questions besoin ouvertes :**
+- **Contraintes dures vs préférences :** midi chaud / soir froid, est-ce absolu ou avec exceptions ? Un jour de canicule, le midi peut-il basculer froid ?
+- **Saisonnalité — d'où vient l'info ?** Un repas est-il tagué « été / hiver » à la main, ou le système déduit-il d'un référentiel produits de saison ? Les deux ?
+- **Anti-récurrence :** ne pas re-proposer avant combien de temps ? (~3 semaines ?)
+- **Portée & acteurs :** on planifie 1 semaine à la fois ? Solo ou à deux (validation partagée) ?
+- **Rythme proactif :** le système relance quel jour / à quelle fréquence pour planifier la semaine suivante ?
 
 ---
 
