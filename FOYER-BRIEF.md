@@ -57,22 +57,30 @@ L'enjeu produit est le **curseur d'autonomie** : copilote (propose → tu valide
 - **Planifier par suggestion, jamais par menu pré-établi.** Le système **propose**, l'humain compose. Une suggestion est une **proposition déplaçable** : « chouette, mais pas samedi → mets-la mardi ». Accepter une idée ≠ figer son jour.
 - **Mode dépannage (réactif, impromptu).** Le plan d'un jour tombe (« samedi, ça ne fonctionne pas »), ou il y a un **reste à écouler** (reste de BBQ : viandes, accompagnements). Besoin : demander **« qu'est-ce qu'on fait avec ça »** et recevoir des suggestions qui **vont avec le reste**, adaptées à la saison. Le **modèle modulaire ci-dessous** est le mécanisme naturel de ce mode.
 
-### Modèle de plat — modulaire hybride [proposition, validée par la data]
+### Modèle de plat — base + modifiers [validé sur la data]
 
-La liste réelle (~95 plats, Google Tasks, source `~/Downloads/…Agenda - Tasks.pdf`) tranche : **la majorité des plats sont déjà des assemblages `[protéine] + [féculent] + [légume/sauce]`** — « Saumon riz épinards », « Rôti haricots croquettes », « Poulet moutarde haricot gratin dauphinois », « Poisson épinards riz curcuma ». La famille **pense déjà ses repas en parties**.
+La liste réelle (~95 plats, Google Tasks, source `~/Downloads/…Agenda - Tasks.pdf`) montre que la famille **pense déjà ses repas en parties** : « Saumon riz épinards », « Rôti haricots croquettes », « Poulet moutarde haricot gratin dauphinois ».
 
-Mais une partie ne se décompose pas : **plats uniques / one-pot** — Potée (le cas cité), Lasagne, Chili, Raclette, Pizza, Quiche, Curry, Poke Bowl, Soupe repas. Entités entières.
+**Insight clé (Alex) :** même les « plats uniques » ne sont pas monolithiques — ils ont une composition variable. « Quiche saumon épinards / quiche lardon / quiche poulet poivron », « pizza margherita / pizza poulet oignon ». → **un seul modèle unifié**, pas deux types disjoints :
 
-→ **Deux types de plats, coexistants :**
-- **Assiette composée** = assemblage de **composants typés par rôle** : `protéine · féculent · légume · sauce` (+ éventuel crudité/garniture). Suggestions **par rôle** ; il existe des **associations préférables** (graphe des combinaisons qui reviennent, appris de l'historique).
-- **Plat unique** = une entité au catalogue, suggérée telle quelle (le « type potée »).
+**Un plat = une BASE (signature) + des MODIFIERS (composants typés par rôle).**
+- **Base / signature** — le squelette : `assiette` (neutre), `pâtes`, `bowl / riz`, `salade`, `quiche`, `pizza`, `gratin`, `soupe`, `wrap`, `tarte`, ou un one-pot nommé (`chili`, `curry`, `raclette`, `potée`…). La base porte la forme et une partie des contraintes (emportable ? chaud/froid ?).
+- **Modifiers** — le vocabulaire partagé : `protéine · légume · féculent · sauce · garniture`. **Les mêmes quelle que soit la base** — c'est ce qui unifie composé et one-pot.
 
-**Pourquoi le modulaire plutôt que de simples tags — triple emploi :**
-1. **Inspiration** — la combinatoire par rôle génère des centaines d'assiettes cohérentes à partir de peu de composants. Le vrai antidote au « manque d'idées » (mieux qu'une liste figée).
-2. **Dépannage** — « reste de BBQ » = j'ai la [protéine], le système propose [féculent]+[légume] qui vont avec. La modularité **est** le mécanisme de dépannage.
-3. **Normalisation de la data sale** — les ~15 variantes « poisson épinards X » se réduisent à `[poisson]+[épinards]+[féculent variable]`. Le modulaire absorbe les variations de l'historique.
+**« Assiette composée » vs « plat unique » n'est plus un type binaire — c'est le degré d'ouverture de la base :**
+- Base **ouverte** (assiette, pâtes, quiche, pizza, bowl) → beaucoup de modifiers libres → combinatoire d'inspiration maximale.
+- Base **fermée** (chili, raclette, potée) → modifiers figés ou nuls → suggérée quasi telle quelle.
 
-**Garde-fou :** ne pas tout forcer en modulaire. Un plat « signature » toujours fait pareil (Hachis Parmentier) peut rester un plat unique. Le type est un choix par plat.
+Le « type » est porté par l'**ouverture de la base**, pas par un flag sur le plat.
+
+**Triple emploi (préservé et étendu) :**
+1. **Inspiration** — la combinatoire base × modifiers génère des centaines de repas cohérents à partir de peu d'éléments. Antidote réel au « manque d'idées ».
+2. **Dépannage** — « reste de saumon » replace le modifier `saumon` dans **plusieurs bases** (assiette, quiche, pâtes) → éventail de suggestions. La modularité **est** le mécanisme de secours.
+3. **Normalisation de la data sale** — « Quiche saumon épinards / Quiche courgette poulet / Quiche poulet poivron » se replient sur `base(quiche) + {modifiers}`. Le modèle absorbe les variations de l'historique.
+
+**Associations préférables à deux niveaux :** `base × modifier` (la quiche aime saumon+épinards) et `modifier × modifier` (le poisson aime les épinards) — apprises de l'historique 4 ans.
+
+**Garde-fou :** ne pas sur-décomposer. Un plat « signature » toujours fait pareil (Hachis Parmentier) = une base fermée sans modifiers ; on ne le force pas en assemblage.
 
 **Observations data à garder en tête :** la liste s'appelle **« Repas du soir »** (alors qu'Alex parlait du midi → un seul pool ou deux listes ? à trancher) ; elle mélange chaud cuisiné et salades froides ; certains items portent une **attribution** (« julie leloup », « pinterest ») et un **état de stock** (« Quiche courgettes au congélateur »).
 
