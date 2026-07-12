@@ -86,9 +86,10 @@ Mais une partie ne se décompose pas : **plats uniques / one-pot** — Potée (l
 - **Hors périmètre Lovable (back, plus tard)** : extraction + normalisation Google Calendar, vrai moteur d'apprentissage, météo, **rappel proactif du mardi 18h via Discord**.
 
 **Questions besoin restantes :**
-- **Tags de composition** sur les plats (viande / BBQ / salade / pâtes) : OK pour permettre le matching « reste → suggestion » sans aller jusqu'aux ingrédients ? Combien de tags, lesquels ?
-- **Emportable & rapide** = deux attributs booléens distincts sur le plat, confirmé ?
-- Le mode dépannage part-il d'un **reste décrit à la volée** (« reste de BBQ ») ou d'un **plat déjà au catalogue** qu'on re-cuisine ?
+- **Valider le modèle modulaire hybride** et la liste des rôles : `protéine · féculent · légume · sauce` suffisent, ou il en manque (crudité, garniture) ?
+- **Nommer le « type potée »** : plat unique ? plat complet ? one-pot ? (terme à figer)
+- **Un seul catalogue tagué chaud/froid, ou deux listes midi/soir ?** (la liste fournie = « Repas du soir » mais tu parlais du midi)
+- **Emportable & rapide** = deux booléens distincts sur le plat, confirmé ?
 
 ---
 
