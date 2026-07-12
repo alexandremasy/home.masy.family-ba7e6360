@@ -70,6 +70,8 @@ La liste réelle (~95 plats, Google Tasks, source `~/Downloads/…Agenda - Tasks
 **Un plat = une BASE (signature) + des MODIFIERS (composants typés par rôle).**
 - **Base / signature** — le squelette : `assiette` (neutre), `pâtes`, `bowl / riz`, `salade`, `quiche`, `pizza`, `gratin`, `soupe`, `wrap`, `tarte`, ou un one-pot nommé (`chili`, `curry`, `raclette`, `potée`…). La base porte la forme et une partie des contraintes (emportable ? chaud/froid ?).
 - **Modifiers** — le vocabulaire partagé : `protéine · légume · féculent · sauce · garniture`. **Les mêmes quelle que soit la base** — c'est ce qui unifie composé et one-pot.
+  - **Un rôle est multi-valué** [confirmé] : un plat peut porter **plusieurs légumes** (petit pois + maïs). C'est une **composition** (les composants qui comptent), **pas** une liste d'ingrédients exhaustive (ni huile ni sel).
+  - **Chaque composant porte une quantité** (avocat ×2) — nécessaire au cumul des courses (voir Module 2). Unité simple (pièces) ; poids/volume à arbitrer.
 
 **« Assiette composée » vs « plat unique » n'est plus un type binaire — c'est le degré d'ouverture de la base :**
 - Base **ouverte** (assiette, pâtes, quiche, pizza, bowl) → beaucoup de modifiers libres → combinatoire d'inspiration maximale.
