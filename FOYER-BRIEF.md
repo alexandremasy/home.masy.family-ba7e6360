@@ -25,8 +25,8 @@ L'enjeu produit est le **curseur d'autonomie** : copilote (propose → tu valide
 ### Décisions cachées à trancher tôt (one-way / structurantes)
 
 1. **Curseur d'autonomie par action.** Composer un menu = réversible → autopilote OK. **Envoyer** un message d'anniversaire = externe, one-way → validation humaine obligatoire par défaut. À acter module par module.
-2. **[LOCKED] Modélisation des repas — PAS d'ingrédients.** Un repas = un nom + des attributs (catégorie chaud/froid, saison, tolérance à la chaleur, « servi la dernière fois le… »), mais **pas de liste d'ingrédients**. Conséquence directe : la liste de courses **ne se dérive pas** des repas par les ingrédients → le module Courses reste semi-manuel, assisté par la récurrence (voir Module 2, décision ouverte sur le lien léger repas → items).
-3. **Socle de données.** Les trois modules reposent sur des catalogues persistés (répertoire de repas chaud/froid, staples courses, répertoire de personnes + relations). Comme pour le budget : mockup UX ici, data layer à construire (probablement `api.masy.family`).
+2. **[LOCKED] Modélisation des repas — composition, pas ingrédients fins.** Un plat = **base + modifiers** (composants grossiers typés par rôle : protéine, légume, féculent…), **jamais une liste d'ingrédients fins** (ni huile ni sel). Voir le modèle détaillé au Module 1. Conséquence : la liste de courses **se dérive bien** des repas — non par des recettes, mais par les **modifiers** (voir Module 2). Le « pas d'ingrédients » tient ; ce sont les composants signifiants qui font le pont repas → courses.
+3. **Socle de données.** Les trois modules reposent sur des catalogues persistés (catalogue de plats + référentiel de composants, staples courses, répertoire de personnes + matière libre). Comme pour le budget : mockup UX ici, data layer à construire (probablement `api.masy.family`).
 
 ---
 
