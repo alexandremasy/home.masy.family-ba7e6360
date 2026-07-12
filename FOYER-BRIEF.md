@@ -83,6 +83,15 @@ Le « type » est porté par l'**ouverture de la base**, pas par un flag sur le 
 
 **Garde-fou :** ne pas sur-décomposer. Un plat « signature » toujours fait pareil (Hachis Parmentier) = une base fermée sans modifiers ; on ne le force pas en assemblage.
 
+### Cohérence multi-jour — le vrai cœur du moteur [confirmé]
+
+C'est la réponse directe au problème initial d'Alex : **« concilier l'ensemble »**. La cohérence ne se calcule pas plat par plat mais **sur toute la fenêtre glissante (~2 semaines)**, et — c'est ici que le modèle base+modifiers paie — **au niveau des composants, pas seulement des plats.** Deux forces opposées qui coexistent :
+
+- **Répéter (voulu)** — refaire un plat 2× (grosse quantité cuisinée d'un coup / batch emporté au bureau), ou **réutiliser un composant** acheté en gros (« écouler le chou »). Le système doit **favoriser** la réapparition ciblée.
+- **Varier (anti-lassitude)** — au **niveau modifier** : pas de `protéine=poulet` tous les jours, pas de `légume=tomate` partout. Répartir les protéines et les légumes sur la fenêtre.
+
+**La clé qui réconcilie les deux :** répéter/varier ne s'appliquent pas aux mêmes composants. On **répète le composant à écouler** (le chou), on **varie tous les autres** (les protéines, les autres légumes). Le moteur = un **équilibrage par rôle sur la fenêtre**, avec des composants « épinglés » à réutiliser et les autres à disperser. Sans le split base+modifiers, ce raisonnement est impossible — c'est la justification n°1 du modèle.
+
 ### Saisie rapide — contrainte directrice [LOCKED]
 
 Objectif du planning = faire la liste de la semaine **vite**. **Pas** cliquer dans 50 boîtes et sections. → **Le modèle base + modifiers vit SOUS LE CAPOT** (moteur de suggestion, dépannage, normalisation de l'historique) — ce n'est **pas** le mode de saisie par défaut.
