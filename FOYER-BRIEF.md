@@ -90,12 +90,22 @@ Le « type » est porté par l'**ouverture de la base**, pas par un flag sur le 
 
 ### Cohérence multi-jour — le vrai cœur du moteur [confirmé]
 
-C'est la réponse directe au problème initial d'Alex : **« concilier l'ensemble »**. La cohérence ne se calcule pas plat par plat mais **sur toute la fenêtre glissante (~2 semaines)**, et — c'est ici que le modèle base+modifiers paie — **au niveau des composants, pas seulement des plats.** Deux forces opposées qui coexistent :
+C'est la réponse directe au problème initial d'Alex : **« concilier l'ensemble »**. La cohérence ne se calcule pas plat par plat mais **sur toute la fenêtre glissante (~2 semaines)**, et — c'est ici que le modèle base+modifiers paie — **au niveau des composants, pas seulement des plats.** Trois forces à concilier :
 
-- **Répéter (voulu)** — refaire un plat 2× (grosse quantité cuisinée d'un coup / batch emporté au bureau), ou **réutiliser un composant** acheté en gros (« écouler le chou »). Le système doit **favoriser** la réapparition ciblée.
-- **Varier (anti-lassitude)** — au **niveau modifier** : pas de `protéine=poulet` tous les jours, pas de `légume=tomate` partout. Répartir les protéines et les légumes sur la fenêtre.
+- **Répéter (voulu)** — deux mécaniques distinctes :
+  - **Batch de plat** [confirmé] : un **gros plat cuisiné 1× en portion familiale** (lasagne…) → à deux, il **couvre 2 repas**. Ce n'est PAS « re-cuisiner 2× » : c'est **cuisiner une fois, occuper N slots**. Décidé **à la planification** (« c'est un gros plat, on en a pour 2 fois »), pré-suggéré par un attribut de rendement du plat, ajustable.
+  - **Écoulement de composant** : réutiliser un composant acheté en gros (« écouler le chou ») → réapparition ciblée du modifier sur la fenêtre.
+- **Varier (anti-lassitude)** — au **niveau modifier** : pas de `protéine=poulet` tous les jours, pas de `légume=tomate` partout. Répartir protéines et légumes sur la fenêtre.
 
-**La clé qui réconcilie les deux :** répéter/varier ne s'appliquent pas aux mêmes composants. On **répète le composant à écouler** (le chou), on **varie tous les autres** (les protéines, les autres légumes). Le moteur = un **équilibrage par rôle sur la fenêtre**, avec des composants « épinglés » à réutiliser et les autres à disperser. Sans le split base+modifiers, ce raisonnement est impossible — c'est la justification n°1 du modèle.
+**La clé qui réconcilie répéter/varier :** ça ne s'applique pas aux mêmes composants. On **répète le composant à écouler** (le chou), on **varie tous les autres**. Équilibrage **par rôle** sur la fenêtre, composants « épinglés » à réutiliser vs les autres à disperser. Impossible sans le split base+modifiers — justification n°1 du modèle.
+
+### Production week-end — la contrainte cachée [confirmé]
+
+**Le week-end, on cuisine les plats de la semaine** (batch cooking). Ça explique en aval tout ce qu'on avait posé : midi de semaine = **emporté/réchauffé** parce que **cuisiné le week-end**. Conséquence forte sur la planification :
+
+- **La faisabilité de production est une contrainte du moteur**, au même titre que la variété. On optimise les repas de la semaine sur la **facilité / le temps de cuisine** — éviter d'aligner 5 plats longs à préparer le même week-end.
+- → Attribut de plat : **effort de préparation** (rapide ↔ long). Le moteur garde la **charge de cuisine cumulée du week-end** raisonnable.
+- Le batch de plat (ci-dessus) sert aussi cette optimisation : un gros plat couvrant 2 repas = 1 seule cuisson pour 2 slots.
 
 ### Saisie rapide — contrainte directrice [LOCKED]
 
