@@ -38,22 +38,27 @@ L'enjeu produit est le **curseur d'autonomie** : copilote (propose → tu valide
 - On dispose de **listes de repas chaud** et **repas froid** (aujourd'hui dans une app de todo).
 - **Le vrai problème = trouver des idées.** Pas la logistique ni la négociation. Des idées **pas trop récurrentes**, adaptées à la **chaleur du moment**, à la **période de l'année** et aux **produits de saison**.
 
-**Le besoin central = un moteur d'inspiration.** La valeur n'est pas le calendrier (support), c'est **suggérer des idées contextualisées + éviter la répétition**.
+**Le besoin central = un moteur d'inspiration.** La valeur n'est pas le calendrier (support), c'est **suggérer des idées contextualisées + gérer la répétition**.
 
-**Comportement attendu :**
-- *Réactif* : sur demande, proposer des idées de repas qui respectent le slot (midi chaud / soir froid), écartent ce qui a été servi récemment, et collent à la saison / chaleur / produits de saison.
-- *Proactif* : pouvoir pré-composer une semaine entière ; relancer quand il est temps de planifier ; signaler la lassitude (rotation trop répétitive).
+### Pilier — le moteur apprend de l'historique [confirmé]
 
-**Attributs d'un repas (pas d'ingrédients) :** nom · catégorie chaud/froid · saison(s) / période · tolérance chaleur · **dernière fois servi** (moteur anti-récurrence) · [autres à définir].
+**≥ 4 ans de repas déjà consignés dans un calendrier.** Ce n'est pas un détail : c'est **la matière première du moteur**. La saisonnalité, la cadence de chaque plat, la variété ne sont pas (que) déclarées à la main — elles se **déduisent de l'historique réel** : quand un plat revient dans l'année, à quelle fréquence, en corrélation avec la saison / le temps. → La saisonnalité (question 2 initiale) est **data-driven**, pas un tag manuel. Cet historique doit pouvoir être exploité par le moteur (source, format, import : à cadrer côté data).
 
-**Signaux d'inspiration à brancher (implémentation, plus tard) :** saison = calendrier ; chaleur = météo (le domaine Énergie a peut-être déjà une source) ; produits de saison = un petit référentiel mois → produits.
+### Règles [confirmées]
 
-**Questions besoin ouvertes :**
-- **Contraintes dures vs préférences :** midi chaud / soir froid, est-ce absolu ou avec exceptions ? Un jour de canicule, le midi peut-il basculer froid ?
-- **Saisonnalité — d'où vient l'info ?** Un repas est-il tagué « été / hiver » à la main, ou le système déduit-il d'un référentiel produits de saison ? Les deux ?
-- **Anti-récurrence :** ne pas re-proposer avant combien de temps ? (~3 semaines ?)
-- **Portée & acteurs :** on planifie 1 semaine à la fois ? Solo ou à deux (validation partagée) ?
-- **Rythme proactif :** le système relance quel jour / à quelle fréquence pour planifier la semaine suivante ?
+- **Chaud midi / froid soir = principe par défaut, pas une loi.** Modulé par le calendrier et ses événements (invités, sorties, week-end, canicule). Le système propose selon le principe mais laisse dévier librement.
+- **Cadence par repas, à double sens.** Certains plats doivent être **refaits en rafale sur une fenêtre courte** (pour écouler des produits), d'autres s'**espacent** pour la variété. La règle anti-récurrence n'est donc PAS un « pas avant N semaines » global — c'est une propriété par plat (probablement déductible de l'historique). Distinguer répétition **voulue** (écoulement produits) de répétition **subie** (manque d'idées).
+- **Planification à deux, ensemble.** Acte de couple, même moment, même écran — pas de workflow d'approbation asynchrone. L'outil sert la **décision commune** (concilier envies des deux + produits + saison).
+- **Rappel proactif : mardi ~18h** pour planifier la semaine à venir.
+
+**Attributs d'un repas (pas d'ingrédients) :** nom · catégorie chaud/froid · [saison & cadence : plutôt déduites de l'historique que saisies] · **dernière fois servi** · [autres à définir].
+
+**Signaux d'inspiration à brancher (implémentation) :** historique 4 ans (socle) ; chaleur = météo (le domaine Énergie a peut-être déjà une source) ; produits de saison = référentiel mois → produits, en appui de l'historique.
+
+**Questions besoin restantes :**
+- **Historique 4 ans — où vit-il, quel format ?** (Google Agenda, app todo, tableur…) — conditionne si le moteur peut vraiment s'en nourrir.
+- **Répétition voulue vs subie — comment le système la distingue ?** L'humain marque un plat « à refaire cette semaine (écouler les produits) » au moment de planifier, ou le moteur déduit la cadence naturelle de chaque plat depuis l'historique ?
+- **Canal du rappel du mardi 18h ?** (notif du cockpit, mail, autre)
 
 ---
 
