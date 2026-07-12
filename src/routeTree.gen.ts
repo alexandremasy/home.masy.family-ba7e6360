@@ -23,6 +23,9 @@ import { Route as AppMaisonIndexRouteImport } from './routes/_app.maison.index'
 import { Route as AppEnergieIndexRouteImport } from './routes/_app.energie.index'
 import { Route as AppBudgetIndexRouteImport } from './routes/_app.budget.index'
 import { Route as AppRoomRoomKeyRouteImport } from './routes/_app.room.$roomKey'
+import { Route as AppMaisonRepasRouteImport } from './routes/_app.maison.repas'
+import { Route as AppMaisonCoursesRouteImport } from './routes/_app.maison.courses'
+import { Route as AppMaisonAnniversairesRouteImport } from './routes/_app.maison.anniversaires'
 import { Route as AppEnergieSaisieRouteImport } from './routes/_app.energie.saisie'
 import { Route as AppBudgetVueRouteImport } from './routes/_app.budget.vue'
 import { Route as AppBudgetTransactionsRouteImport } from './routes/_app.budget.transactions'
@@ -104,6 +107,21 @@ const AppRoomRoomKeyRoute = AppRoomRoomKeyRouteImport.update({
   path: '/room/$roomKey',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMaisonRepasRoute = AppMaisonRepasRouteImport.update({
+  id: '/repas',
+  path: '/repas',
+  getParentRoute: () => AppMaisonRoute,
+} as any)
+const AppMaisonCoursesRoute = AppMaisonCoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
+  getParentRoute: () => AppMaisonRoute,
+} as any)
+const AppMaisonAnniversairesRoute = AppMaisonAnniversairesRouteImport.update({
+  id: '/anniversaires',
+  path: '/anniversaires',
+  getParentRoute: () => AppMaisonRoute,
+} as any)
 const AppEnergieSaisieRoute = AppEnergieSaisieRouteImport.update({
   id: '/energie/saisie',
   path: '/energie/saisie',
@@ -169,6 +187,9 @@ export interface FileRoutesByFullPath {
   '/budget/transactions': typeof AppBudgetTransactionsRoute
   '/budget/vue': typeof AppBudgetVueRouteWithChildren
   '/energie/saisie': typeof AppEnergieSaisieRoute
+  '/maison/anniversaires': typeof AppMaisonAnniversairesRoute
+  '/maison/courses': typeof AppMaisonCoursesRoute
+  '/maison/repas': typeof AppMaisonRepasRoute
   '/room/$roomKey': typeof AppRoomRoomKeyRoute
   '/budget/': typeof AppBudgetIndexRoute
   '/energie/': typeof AppEnergieIndexRoute
@@ -191,6 +212,9 @@ export interface FileRoutesByTo {
   '/budget/transactions': typeof AppBudgetTransactionsRoute
   '/budget/vue': typeof AppBudgetVueRouteWithChildren
   '/energie/saisie': typeof AppEnergieSaisieRoute
+  '/maison/anniversaires': typeof AppMaisonAnniversairesRoute
+  '/maison/courses': typeof AppMaisonCoursesRoute
+  '/maison/repas': typeof AppMaisonRepasRoute
   '/room/$roomKey': typeof AppRoomRoomKeyRoute
   '/budget': typeof AppBudgetIndexRoute
   '/energie': typeof AppEnergieIndexRoute
@@ -217,6 +241,9 @@ export interface FileRoutesById {
   '/_app/budget/transactions': typeof AppBudgetTransactionsRoute
   '/_app/budget/vue': typeof AppBudgetVueRouteWithChildren
   '/_app/energie/saisie': typeof AppEnergieSaisieRoute
+  '/_app/maison/anniversaires': typeof AppMaisonAnniversairesRoute
+  '/_app/maison/courses': typeof AppMaisonCoursesRoute
+  '/_app/maison/repas': typeof AppMaisonRepasRoute
   '/_app/room/$roomKey': typeof AppRoomRoomKeyRoute
   '/_app/budget/': typeof AppBudgetIndexRoute
   '/_app/energie/': typeof AppEnergieIndexRoute
@@ -243,6 +270,9 @@ export interface FileRouteTypes {
     | '/budget/transactions'
     | '/budget/vue'
     | '/energie/saisie'
+    | '/maison/anniversaires'
+    | '/maison/courses'
+    | '/maison/repas'
     | '/room/$roomKey'
     | '/budget/'
     | '/energie/'
@@ -265,6 +295,9 @@ export interface FileRouteTypes {
     | '/budget/transactions'
     | '/budget/vue'
     | '/energie/saisie'
+    | '/maison/anniversaires'
+    | '/maison/courses'
+    | '/maison/repas'
     | '/room/$roomKey'
     | '/budget'
     | '/energie'
@@ -290,6 +323,9 @@ export interface FileRouteTypes {
     | '/_app/budget/transactions'
     | '/_app/budget/vue'
     | '/_app/energie/saisie'
+    | '/_app/maison/anniversaires'
+    | '/_app/maison/courses'
+    | '/_app/maison/repas'
     | '/_app/room/$roomKey'
     | '/_app/budget/'
     | '/_app/energie/'
@@ -405,6 +441,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRoomRoomKeyRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/maison/repas': {
+      id: '/_app/maison/repas'
+      path: '/repas'
+      fullPath: '/maison/repas'
+      preLoaderRoute: typeof AppMaisonRepasRouteImport
+      parentRoute: typeof AppMaisonRoute
+    }
+    '/_app/maison/courses': {
+      id: '/_app/maison/courses'
+      path: '/courses'
+      fullPath: '/maison/courses'
+      preLoaderRoute: typeof AppMaisonCoursesRouteImport
+      parentRoute: typeof AppMaisonRoute
+    }
+    '/_app/maison/anniversaires': {
+      id: '/_app/maison/anniversaires'
+      path: '/anniversaires'
+      fullPath: '/maison/anniversaires'
+      preLoaderRoute: typeof AppMaisonAnniversairesRouteImport
+      parentRoute: typeof AppMaisonRoute
+    }
     '/_app/energie/saisie': {
       id: '/_app/energie/saisie'
       path: '/energie/saisie'
@@ -508,10 +565,16 @@ const AppBudgetRouteWithChildren = AppBudgetRoute._addFileChildren(
 )
 
 interface AppMaisonRouteChildren {
+  AppMaisonAnniversairesRoute: typeof AppMaisonAnniversairesRoute
+  AppMaisonCoursesRoute: typeof AppMaisonCoursesRoute
+  AppMaisonRepasRoute: typeof AppMaisonRepasRoute
   AppMaisonIndexRoute: typeof AppMaisonIndexRoute
 }
 
 const AppMaisonRouteChildren: AppMaisonRouteChildren = {
+  AppMaisonAnniversairesRoute: AppMaisonAnniversairesRoute,
+  AppMaisonCoursesRoute: AppMaisonCoursesRoute,
+  AppMaisonRepasRoute: AppMaisonRepasRoute,
   AppMaisonIndexRoute: AppMaisonIndexRoute,
 }
 
