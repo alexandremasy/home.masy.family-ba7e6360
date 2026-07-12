@@ -174,19 +174,29 @@ Ce que tu achètes en gros (le chou) **épingle un composant à réutiliser** c�
 
 ---
 
-## Module 3 — Anniversaires (calendrier + messages)
+## Module 3 — Anniversaires (studio de message assisté)
 
-**Capturé d'Alex :**
-- Un **calendrier des anniversaires**.
-- Une **loop existante** qui crée des messages personnalisés selon le **type de relation**.
-- Alex pense qu'on peut faire **mieux que la loop en place**.
+**Existant :**
+- Une **loop** génère un message par **type de relation**. Le **déclencheur va bien** : jour J → **notification Discord**. À garder.
+- Ce qui cloche : le message est **trop générique, pas assez personnel** (même si la logique de customisation actuelle a du bon).
 
-**Pistes (à débattre) :**
-- *Réactif* : à la date, générer un mot contextualisé (relation + historique + événement récent).
-- *Proactif* : rappel J-N, brouillon pré-généré, choix du canal, apprentissage du ton.
-- « Mieux que la loop » = moins générique, plus contextuel, et un curseur d'autonomie explicite (l'envoi reste validé — décision cachée #1).
+**Ce que veut Alex — un studio de rédaction, pas une loop [confirmé].** Trois briques :
+1. **Suggestion basée sur les méta de la personne** (pas juste un « type » figé — voir le nœud ci-dessous).
+2. **Curseurs de style, façon branding** — régler le registre par axes (comme les niveaux d'une identité de marque) : ex. formel↔complice, sobre↔chaleureux, sérieux↔drôle, court↔long. Axes à définir.
+3. **Relance par commentaire** — écrire un feedback en langage naturel (« plus court », « ajoute une allusion à X ») → **régénère** sur cette base. Boucle de raffinement dirigée.
 
-**Open questions :**
-- Que fait la loop actuelle exactement, et qu'est-ce qui cloche ? (trop générique ? mauvais timing ? pas de validation ?)
-- Où tourne-t-elle (n8n ?) et où sont stockées les relations ?
-- Objectif : le message final, ou juste un très bon brouillon à finir soi-même ?
+**Décisions cadres [confirmées] :**
+- **100 % local, aucun envoi au destinataire.** Le système **produit un texte**, l'humain le copie et l'envoie lui-même. → la décision cachée #1 tombe du côté safe : zéro automatisation d'envoi, zéro irréversible. Le « canal » (WhatsApp) n'est **pas** une intégration.
+- **Format cible = message instantané type WhatsApp** : court, direct, ton perso (pas une lettre). Un paramètre de longueur/registre par défaut, pas un connecteur.
+- **Trigger jour J = notif Discord** (déjà en place, back).
+
+**Le nœud — la personnalisation par méta [à définir, cœur du module].** Alex déplace le curseur de « type de relation » (catégorie rigide) vers des **méta riches par personne** qui nourrissent la génération. Le type de relation devient **un** attribut parmi d'autres. Pistes de méta candidates (à valider/élaguer avec Alex) : type de relation · proximité · ton habituel avec elle · langue · souvenirs / private jokes · événement de vie récent · centres d'intérêt · cap d'âge (30/40/50) · historique des messages passés (ne pas répéter d'une année sur l'autre). **C'est ici que se joue « plus personnel ».**
+
+**Frontière Lovable vs back :**
+- **Lovable (UX, mock)** : calendrier des anniversaires · fiche personne + ses méta · les **curseurs de style** · zone message avec **régénérer** + champ **commentaire de relance**. Génération **mockée**.
+- **Back (plus tard)** : la vraie génération LLM (méta + curseurs + commentaire → message), la notif Discord jour J, le stockage des personnes/méta.
+
+**Questions besoin restantes :**
+- **Les méta de personne** — lesquelles retenir (le nœud) ? À creuser au prochain tour.
+- **Les axes de curseurs de style** — quels 3-5 axes ? (dérivables de ta logique branding).
+- **Historique des messages** — le système garde-t-il les messages des années passées pour éviter la répétition ?
