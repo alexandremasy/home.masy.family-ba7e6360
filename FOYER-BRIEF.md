@@ -20,7 +20,7 @@ L'enjeu produit est le **curseur d'autonomie** : copilote (propose → tu valide
 ### Décisions cachées à trancher tôt (one-way / structurantes)
 
 1. **Curseur d'autonomie par action.** Composer un menu = réversible → autopilote OK. **Envoyer** un message d'anniversaire = externe, one-way → validation humaine obligatoire par défaut. À acter module par module.
-2. **Modélisation des repas.** Un repas porte-t-il ses ingrédients (→ dérivation automatique de la liste de courses) ou la liste reste-t-elle semi-manuelle assistée par récurrence ? C'est le point dur qui décide de tout le module Courses.
+2. **[LOCKED] Modélisation des repas — PAS d'ingrédients.** Un repas = un nom + des attributs (catégorie chaud/froid, saison, tolérance à la chaleur, « servi la dernière fois le… »), mais **pas de liste d'ingrédients**. Conséquence directe : la liste de courses **ne se dérive pas** des repas par les ingrédients → le module Courses reste semi-manuel, assisté par la récurrence (voir Module 2, décision ouverte sur le lien léger repas → items).
 3. **Socle de données.** Les trois modules reposent sur des catalogues persistés (répertoire de repas chaud/froid, staples courses, répertoire de personnes + relations). Comme pour le budget : mockup UX ici, data layer à construire (probablement `api.masy.family`).
 
 ---
