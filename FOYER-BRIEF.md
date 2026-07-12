@@ -103,10 +103,10 @@ Règle : **un repas = un geste** (piocher un plat entier, suggéré ou cherché)
 
 **Mécanique alias [confirmé].** Un plat nommé = un **alias** d'une composition figée : `Saumon riz épinards` **est** `base(assiette) + protéine(saumon) + féculent(riz) + légume(épinards)`. La DB stocke le split (pour le moteur) ; l'UI présente le **plat entier en premier** dans la liste/suggestions. Choisir un alias = un tap. Le **mode « custom »** (à la demande) permet de partir d'un alias et de **swapper un composant** (« comme ça, mais boulgour au lieu du riz ») ou de composer de zéro. → Question ouverte : un custom crée-t-il un **nouvel alias** au catalogue (réutilisable), ou reste-t-il une variation jetable ?
 
-**Observations data à garder en tête :** la liste s'appelle **« Repas du soir »** (alors qu'Alex parlait du midi → un seul pool ou deux listes ? à trancher) ; elle mélange chaud cuisiné et salades froides ; certains items portent une **attribution** (« julie leloup », « pinterest ») et un **état de stock** (« Quiche courgettes au congélateur »).
+**Observations data à garder en tête :** **un seul catalogue [confirmé]** (la liste « Repas du soir » sert de pool commun) mêlant complet et léger ; certains items portent une **attribution** (« julie leloup », « pinterest ») et un **état de stock** (« Quiche courgettes au congélateur »).
 
-**Attributs d'un plat (méta — pas d'ingrédients) :** nom · **base / signature** · **modifiers** (protéine · légume · féculent · sauce · garniture) · catégorie chaud/froid (overridable météo) · **emportable / réchauffable** (oui/non) · **rapide** (oui/non) · **cadence** (rafale-court vs espacé) · dernière fois servi · [saison & fréquence : déduites de l'historique] · [attribution / source : optionnel].
-> Note : une partie des contraintes (emportable, chaud/froid) peut être **portée par la base** plutôt que re-saisie par plat — à arbitrer.
+**Attributs d'un plat (méta — pas d'ingrédients) :** nom · **base / signature** · **modifiers** (protéine · légume · féculent · sauce · garniture) · **densité** (complet/léger) · **température** (chaud/froid) · **emportable / réchauffable** (oui/non) · **rapide** (oui/non) · **cadence** (rafale-court vs espacé) · dernière fois servi · [saison & fréquence : déduites de l'historique] · [attribution / source : optionnel].
+> Note : une partie des tags (emportable, température) peut être **portée par la base** plutôt que re-saisie par plat — à arbitrer.
 
 **Signaux d'inspiration à brancher (back, plus tard) :** historique 4 ans normalisé (socle) ; météo/canicule (le domaine Énergie a peut-être déjà une source) ; produits de saison (référentiel mois → produits).
 
