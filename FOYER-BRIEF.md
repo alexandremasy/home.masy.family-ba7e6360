@@ -158,12 +158,14 @@ On avait hésité entre dériver des ingrédients (impossible — pas d'ingrédi
 
 Ce que tu achètes en gros (le chou) **épingle un composant à réutiliser** côté repas (cf. cohérence multi-jour). Les deux modules se bouclent : **courses ← repas** (dérivation) et **repas ← courses** (écoulement du stock acheté).
 
-**Limite volontaire (cohérent avec « pas de couches ») :** les modifiers sont **grossiers** (saumon, pas « 600 g de saumon + huile + sel »). La liste donne donc des **items, pas des quantités ni les ingrédients fins** (huile, épices). Léger par choix.
+**Quantités = dérivées par cumul [confirmé].** Chaque composant d'un plat porte une quantité (avocat ×2) ; la liste **somme ces quantités sur toute la fenêtre** — 3 plats qui utilisent l'avocat (1+2+2) → « **5 avocats** ». C'est le cumul multi-repas qui fait la valeur (sans lui, on sous-compte). Reste **léger** : la quantité vit au niveau **composant** (pièces), pas ingrédient fin (ni huile ni sel ni grammages).
+
+**Le stock n'est PAS géré par un tracking de placard [confirmé].** La logique « on en a assez / pour 2 fois » se pose **à la planification des repas** (le batch de plat, cf. Module 1), pas via un inventaire à tenir à jour. → cohérent avec « pas de couches ». La liste reste dérivée des repas + staples + manuel.
 
 **Questions besoin :**
-- **Stock / placard ?** Traque-t-on ce qu'on a déjà (riz au placard → ne pas le lister), ou liste « bête » que l'humain décoche ? (le tag « au congélateur » de ta data suggère un début de conscience du stock — mais attention au principe « pas de couches »).
-- **Quantités = hors scope** (items seulement), confirmé ?
-- **Où vit la liste en UX ?** Dans le cockpit (mock) ici, en attendant la migration DB — un écran à part ou attaché au planning repas ?
+- **Unité de quantité** — pièces uniquement (avocat ×5), ou aussi poids/volume (500 g) pour certains composants ? (garde-fou « pas de couches »).
+- **Staples** — liste apprise/pré-cochée : validée à chaque fenêtre, ou toujours présente en fond ?
+- **Où vit la liste en UX ?** Dans le cockpit (mock) ici — un écran à part ou attaché au planning repas ?
 
 ---
 
