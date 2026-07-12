@@ -208,6 +208,5 @@ Le générateur reçoit : **matière libre + curseurs + socle (jamais bateau) + 
 - **Back (plus tard)** : la vraie génération LLM (méta + curseurs + commentaire → message), la notif Discord jour J, le stockage des personnes/méta.
 
 **Questions besoin restantes :**
-- **Les méta de personne** — lesquelles retenir (le nœud) ? À creuser au prochain tour.
-- **Les axes de curseurs de style** — quels 3-5 axes ? (dérivables de ta logique branding).
-- **Historique des messages** — le système garde-t-il les messages des années passées pour éviter la répétition ?
+- **Valider les 4 axes de curseurs** (Registre · Chaleur · Humour · Longueur) et trancher le 5ᵉ candidat (densité de références perso = curseur ou piloté par la matière libre ?).
+- **Matière libre** — confirmer l'approche « zone de notes libre + quelques méta mécaniques », vs un début de structure minimale.
