@@ -15,12 +15,17 @@ import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTeslaRouteImport } from './routes/_app.tesla'
 import { Route as AppSecuriteRouteImport } from './routes/_app.securite'
 import { Route as AppReseauRouteImport } from './routes/_app.reseau'
+import { Route as AppMaisonRouteImport } from './routes/_app.maison'
 import { Route as AppBudgetRouteImport } from './routes/_app.budget'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as AppMaisonIndexRouteImport } from './routes/_app.maison.index'
 import { Route as AppEnergieIndexRouteImport } from './routes/_app.energie.index'
 import { Route as AppBudgetIndexRouteImport } from './routes/_app.budget.index'
 import { Route as AppRoomRoomKeyRouteImport } from './routes/_app.room.$roomKey'
+import { Route as AppMaisonRepasRouteImport } from './routes/_app.maison.repas'
+import { Route as AppMaisonCoursesRouteImport } from './routes/_app.maison.courses'
+import { Route as AppMaisonAnniversairesRouteImport } from './routes/_app.maison.anniversaires'
 import { Route as AppEnergieSaisieRouteImport } from './routes/_app.energie.saisie'
 import { Route as AppBudgetVueRouteImport } from './routes/_app.budget.vue'
 import { Route as AppBudgetTransactionsRouteImport } from './routes/_app.budget.transactions'
@@ -29,6 +34,8 @@ import { Route as AppBudgetMensuelRouteImport } from './routes/_app.budget.mensu
 import { Route as AppBudgetImportRouteImport } from './routes/_app.budget.import'
 import { Route as AppBudgetAnnuelRouteImport } from './routes/_app.budget.annuel'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as AppMaisonAnniversairesIndexRouteImport } from './routes/_app.maison.anniversaires.index'
+import { Route as AppMaisonAnniversairesPersonIdRouteImport } from './routes/_app.maison.anniversaires.$personId'
 import { Route as AppBudgetVueReserveRouteImport } from './routes/_app.budget.vue.reserve'
 
 const McpRoute = McpRouteImport.update({
@@ -60,6 +67,11 @@ const AppReseauRoute = AppReseauRouteImport.update({
   path: '/reseau',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMaisonRoute = AppMaisonRouteImport.update({
+  id: '/maison',
+  path: '/maison',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppBudgetRoute = AppBudgetRouteImport.update({
   id: '/budget',
   path: '/budget',
@@ -77,6 +89,11 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AppMaisonIndexRoute = AppMaisonIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppMaisonRoute,
+} as any)
 const AppEnergieIndexRoute = AppEnergieIndexRouteImport.update({
   id: '/energie/',
   path: '/energie/',
@@ -91,6 +108,21 @@ const AppRoomRoomKeyRoute = AppRoomRoomKeyRouteImport.update({
   id: '/room/$roomKey',
   path: '/room/$roomKey',
   getParentRoute: () => AppRoute,
+} as any)
+const AppMaisonRepasRoute = AppMaisonRepasRouteImport.update({
+  id: '/repas',
+  path: '/repas',
+  getParentRoute: () => AppMaisonRoute,
+} as any)
+const AppMaisonCoursesRoute = AppMaisonCoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
+  getParentRoute: () => AppMaisonRoute,
+} as any)
+const AppMaisonAnniversairesRoute = AppMaisonAnniversairesRouteImport.update({
+  id: '/anniversaires',
+  path: '/anniversaires',
+  getParentRoute: () => AppMaisonRoute,
 } as any)
 const AppEnergieSaisieRoute = AppEnergieSaisieRouteImport.update({
   id: '/energie/saisie',
@@ -133,6 +165,18 @@ const Char91DotmcpChar93InvokeToolToolRoute =
     path: '/.mcp/invoke-tool/$tool',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AppMaisonAnniversairesIndexRoute =
+  AppMaisonAnniversairesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppMaisonAnniversairesRoute,
+  } as any)
+const AppMaisonAnniversairesPersonIdRoute =
+  AppMaisonAnniversairesPersonIdRouteImport.update({
+    id: '/$personId',
+    path: '/$personId',
+    getParentRoute: () => AppMaisonAnniversairesRoute,
+  } as any)
 const AppBudgetVueReserveRoute = AppBudgetVueReserveRouteImport.update({
   id: '/reserve',
   path: '/reserve',
@@ -145,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/budget': typeof AppBudgetRouteWithChildren
+  '/maison': typeof AppMaisonRouteWithChildren
   '/reseau': typeof AppReseauRoute
   '/securite': typeof AppSecuriteRoute
   '/tesla': typeof AppTeslaRoute
@@ -156,10 +201,16 @@ export interface FileRoutesByFullPath {
   '/budget/transactions': typeof AppBudgetTransactionsRoute
   '/budget/vue': typeof AppBudgetVueRouteWithChildren
   '/energie/saisie': typeof AppEnergieSaisieRoute
+  '/maison/anniversaires': typeof AppMaisonAnniversairesRouteWithChildren
+  '/maison/courses': typeof AppMaisonCoursesRoute
+  '/maison/repas': typeof AppMaisonRepasRoute
   '/room/$roomKey': typeof AppRoomRoomKeyRoute
   '/budget/': typeof AppBudgetIndexRoute
   '/energie/': typeof AppEnergieIndexRoute
+  '/maison/': typeof AppMaisonIndexRoute
   '/budget/vue/reserve': typeof AppBudgetVueReserveRoute
+  '/maison/anniversaires/$personId': typeof AppMaisonAnniversairesPersonIdRoute
+  '/maison/anniversaires/': typeof AppMaisonAnniversairesIndexRoute
 }
 export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
@@ -177,10 +228,15 @@ export interface FileRoutesByTo {
   '/budget/transactions': typeof AppBudgetTransactionsRoute
   '/budget/vue': typeof AppBudgetVueRouteWithChildren
   '/energie/saisie': typeof AppEnergieSaisieRoute
+  '/maison/courses': typeof AppMaisonCoursesRoute
+  '/maison/repas': typeof AppMaisonRepasRoute
   '/room/$roomKey': typeof AppRoomRoomKeyRoute
   '/budget': typeof AppBudgetIndexRoute
   '/energie': typeof AppEnergieIndexRoute
+  '/maison': typeof AppMaisonIndexRoute
   '/budget/vue/reserve': typeof AppBudgetVueReserveRoute
+  '/maison/anniversaires/$personId': typeof AppMaisonAnniversairesPersonIdRoute
+  '/maison/anniversaires': typeof AppMaisonAnniversairesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -189,6 +245,7 @@ export interface FileRoutesById {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_app/budget': typeof AppBudgetRouteWithChildren
+  '/_app/maison': typeof AppMaisonRouteWithChildren
   '/_app/reseau': typeof AppReseauRoute
   '/_app/securite': typeof AppSecuriteRoute
   '/_app/tesla': typeof AppTeslaRoute
@@ -201,10 +258,16 @@ export interface FileRoutesById {
   '/_app/budget/transactions': typeof AppBudgetTransactionsRoute
   '/_app/budget/vue': typeof AppBudgetVueRouteWithChildren
   '/_app/energie/saisie': typeof AppEnergieSaisieRoute
+  '/_app/maison/anniversaires': typeof AppMaisonAnniversairesRouteWithChildren
+  '/_app/maison/courses': typeof AppMaisonCoursesRoute
+  '/_app/maison/repas': typeof AppMaisonRepasRoute
   '/_app/room/$roomKey': typeof AppRoomRoomKeyRoute
   '/_app/budget/': typeof AppBudgetIndexRoute
   '/_app/energie/': typeof AppEnergieIndexRoute
+  '/_app/maison/': typeof AppMaisonIndexRoute
   '/_app/budget/vue/reserve': typeof AppBudgetVueReserveRoute
+  '/_app/maison/anniversaires/$personId': typeof AppMaisonAnniversairesPersonIdRoute
+  '/_app/maison/anniversaires/': typeof AppMaisonAnniversairesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -214,6 +277,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/budget'
+    | '/maison'
     | '/reseau'
     | '/securite'
     | '/tesla'
@@ -225,10 +289,16 @@ export interface FileRouteTypes {
     | '/budget/transactions'
     | '/budget/vue'
     | '/energie/saisie'
+    | '/maison/anniversaires'
+    | '/maison/courses'
+    | '/maison/repas'
     | '/room/$roomKey'
     | '/budget/'
     | '/energie/'
+    | '/maison/'
     | '/budget/vue/reserve'
+    | '/maison/anniversaires/$personId'
+    | '/maison/anniversaires/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/mcp'
@@ -246,10 +316,15 @@ export interface FileRouteTypes {
     | '/budget/transactions'
     | '/budget/vue'
     | '/energie/saisie'
+    | '/maison/courses'
+    | '/maison/repas'
     | '/room/$roomKey'
     | '/budget'
     | '/energie'
+    | '/maison'
     | '/budget/vue/reserve'
+    | '/maison/anniversaires/$personId'
+    | '/maison/anniversaires'
   id:
     | '__root__'
     | '/_app'
@@ -257,6 +332,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_app/budget'
+    | '/_app/maison'
     | '/_app/reseau'
     | '/_app/securite'
     | '/_app/tesla'
@@ -269,10 +345,16 @@ export interface FileRouteTypes {
     | '/_app/budget/transactions'
     | '/_app/budget/vue'
     | '/_app/energie/saisie'
+    | '/_app/maison/anniversaires'
+    | '/_app/maison/courses'
+    | '/_app/maison/repas'
     | '/_app/room/$roomKey'
     | '/_app/budget/'
     | '/_app/energie/'
+    | '/_app/maison/'
     | '/_app/budget/vue/reserve'
+    | '/_app/maison/anniversaires/$personId'
+    | '/_app/maison/anniversaires/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -327,6 +409,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppReseauRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/maison': {
+      id: '/_app/maison'
+      path: '/maison'
+      fullPath: '/maison'
+      preLoaderRoute: typeof AppMaisonRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/budget': {
       id: '/_app/budget'
       path: '/budget'
@@ -348,6 +437,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/maison/': {
+      id: '/_app/maison/'
+      path: '/'
+      fullPath: '/maison/'
+      preLoaderRoute: typeof AppMaisonIndexRouteImport
+      parentRoute: typeof AppMaisonRoute
+    }
     '/_app/energie/': {
       id: '/_app/energie/'
       path: '/energie'
@@ -368,6 +464,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/room/$roomKey'
       preLoaderRoute: typeof AppRoomRoomKeyRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/_app/maison/repas': {
+      id: '/_app/maison/repas'
+      path: '/repas'
+      fullPath: '/maison/repas'
+      preLoaderRoute: typeof AppMaisonRepasRouteImport
+      parentRoute: typeof AppMaisonRoute
+    }
+    '/_app/maison/courses': {
+      id: '/_app/maison/courses'
+      path: '/courses'
+      fullPath: '/maison/courses'
+      preLoaderRoute: typeof AppMaisonCoursesRouteImport
+      parentRoute: typeof AppMaisonRoute
+    }
+    '/_app/maison/anniversaires': {
+      id: '/_app/maison/anniversaires'
+      path: '/anniversaires'
+      fullPath: '/maison/anniversaires'
+      preLoaderRoute: typeof AppMaisonAnniversairesRouteImport
+      parentRoute: typeof AppMaisonRoute
     }
     '/_app/energie/saisie': {
       id: '/_app/energie/saisie'
@@ -425,6 +542,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/maison/anniversaires/': {
+      id: '/_app/maison/anniversaires/'
+      path: '/'
+      fullPath: '/maison/anniversaires/'
+      preLoaderRoute: typeof AppMaisonAnniversairesIndexRouteImport
+      parentRoute: typeof AppMaisonAnniversairesRoute
+    }
+    '/_app/maison/anniversaires/$personId': {
+      id: '/_app/maison/anniversaires/$personId'
+      path: '/$personId'
+      fullPath: '/maison/anniversaires/$personId'
+      preLoaderRoute: typeof AppMaisonAnniversairesPersonIdRouteImport
+      parentRoute: typeof AppMaisonAnniversairesRoute
+    }
     '/_app/budget/vue/reserve': {
       id: '/_app/budget/vue/reserve'
       path: '/reserve'
@@ -471,8 +602,43 @@ const AppBudgetRouteWithChildren = AppBudgetRoute._addFileChildren(
   AppBudgetRouteChildren,
 )
 
+interface AppMaisonAnniversairesRouteChildren {
+  AppMaisonAnniversairesPersonIdRoute: typeof AppMaisonAnniversairesPersonIdRoute
+  AppMaisonAnniversairesIndexRoute: typeof AppMaisonAnniversairesIndexRoute
+}
+
+const AppMaisonAnniversairesRouteChildren: AppMaisonAnniversairesRouteChildren =
+  {
+    AppMaisonAnniversairesPersonIdRoute: AppMaisonAnniversairesPersonIdRoute,
+    AppMaisonAnniversairesIndexRoute: AppMaisonAnniversairesIndexRoute,
+  }
+
+const AppMaisonAnniversairesRouteWithChildren =
+  AppMaisonAnniversairesRoute._addFileChildren(
+    AppMaisonAnniversairesRouteChildren,
+  )
+
+interface AppMaisonRouteChildren {
+  AppMaisonAnniversairesRoute: typeof AppMaisonAnniversairesRouteWithChildren
+  AppMaisonCoursesRoute: typeof AppMaisonCoursesRoute
+  AppMaisonRepasRoute: typeof AppMaisonRepasRoute
+  AppMaisonIndexRoute: typeof AppMaisonIndexRoute
+}
+
+const AppMaisonRouteChildren: AppMaisonRouteChildren = {
+  AppMaisonAnniversairesRoute: AppMaisonAnniversairesRouteWithChildren,
+  AppMaisonCoursesRoute: AppMaisonCoursesRoute,
+  AppMaisonRepasRoute: AppMaisonRepasRoute,
+  AppMaisonIndexRoute: AppMaisonIndexRoute,
+}
+
+const AppMaisonRouteWithChildren = AppMaisonRoute._addFileChildren(
+  AppMaisonRouteChildren,
+)
+
 interface AppRouteChildren {
   AppBudgetRoute: typeof AppBudgetRouteWithChildren
+  AppMaisonRoute: typeof AppMaisonRouteWithChildren
   AppReseauRoute: typeof AppReseauRoute
   AppSecuriteRoute: typeof AppSecuriteRoute
   AppTeslaRoute: typeof AppTeslaRoute
@@ -484,6 +650,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppBudgetRoute: AppBudgetRouteWithChildren,
+  AppMaisonRoute: AppMaisonRouteWithChildren,
   AppReseauRoute: AppReseauRoute,
   AppSecuriteRoute: AppSecuriteRoute,
   AppTeslaRoute: AppTeslaRoute,
