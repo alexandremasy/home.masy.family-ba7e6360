@@ -84,7 +84,8 @@ Le « type » est porté par l'**ouverture de la base**, pas par un flag sur le 
 
 **Observations data à garder en tête :** la liste s'appelle **« Repas du soir »** (alors qu'Alex parlait du midi → un seul pool ou deux listes ? à trancher) ; elle mélange chaud cuisiné et salades froides ; certains items portent une **attribution** (« julie leloup », « pinterest ») et un **état de stock** (« Quiche courgettes au congélateur »).
 
-**Attributs d'un plat (méta — pas d'ingrédients) :** nom · **type** (assiette composée / plat unique) · **composants par rôle** (si composée) · catégorie chaud/froid (overridable météo) · **emportable / réchauffable** (oui/non) · **rapide** (oui/non) · **cadence** (rafale-court vs espacé) · dernière fois servi · [saison & fréquence : déduites de l'historique] · [attribution / source : optionnel].
+**Attributs d'un plat (méta — pas d'ingrédients) :** nom · **base / signature** · **modifiers** (protéine · légume · féculent · sauce · garniture) · catégorie chaud/froid (overridable météo) · **emportable / réchauffable** (oui/non) · **rapide** (oui/non) · **cadence** (rafale-court vs espacé) · dernière fois servi · [saison & fréquence : déduites de l'historique] · [attribution / source : optionnel].
+> Note : une partie des contraintes (emportable, chaud/froid) peut être **portée par la base** plutôt que re-saisie par plat — à arbitrer.
 
 **Signaux d'inspiration à brancher (back, plus tard) :** historique 4 ans normalisé (socle) ; météo/canicule (le domaine Énergie a peut-être déjà une source) ; produits de saison (référentiel mois → produits).
 
