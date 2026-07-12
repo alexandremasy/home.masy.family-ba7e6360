@@ -56,14 +56,16 @@ L'enjeu produit est le **curseur d'autonomie** : copilote (propose → tu valide
 - Ce sont **souvent les mêmes choses qui reviennent**.
 - Sur base des repas choisis, **aider la mise à jour** pour **optimiser l'encodage**.
 
-**Pistes (à débattre) :**
-- *Réactif* : à partir du menu validé, générer/agréger les ingrédients ; dé-dupliquer.
-- *Proactif* : pré-cocher les staples récurrents, détecter les cadences de rachat, connaître le stock du placard.
-- Dépend entièrement de la **décision cachée #2** (repas → ingrédients ou pas).
+**Tension à résoudre :** pas d'ingrédients sur les repas (décision #2) → l'aide « sur base des repas choisis » ne peut PAS venir des ingrédients. Deux façons de tenir la promesse d'Alex (« optimiser l'encodage ») :
+
+- **Option A — Courses autonome, aide par récurrence.** La liste ne connaît pas les repas. Le système apprend ce qui **revient chaque semaine** (staples), le pré-coche, détecte les cadences de rachat. Simple, robuste, indépendant du module Repas.
+- **Option B — Lien léger repas → items.** Un repas peut porter 2-3 **items de courses** associés (pas une recette : juste « pour ce plat, penser à racheter X »). Choisir le repas pré-remplit ces items. Plus d'aide, un peu plus de saisie en amont sur les fiches repas.
+
+Non exclusives : B peut se poser par-dessus A. À trancher.
 
 **Open questions :**
-- La liste vit où aujourd'hui ? (app dédiée, papier, notes)
-- L'optimisation visée = moins de frappe, ou moins d'oublis, ou les deux ?
+- L'optimisation visée = moins de frappe, moins d'oublis, ou les deux ?
+- Y a-t-il une notion de **stock / placard**, ou la liste part de zéro chaque semaine ?
 
 ---
 
