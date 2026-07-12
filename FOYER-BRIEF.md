@@ -95,10 +95,10 @@ Le « type » est porté par l'**ouverture de la base**, pas par un flag sur le 
 - **Hors périmètre Lovable (back, plus tard)** : extraction + normalisation Google Calendar, vrai moteur d'apprentissage, météo, **rappel proactif du mardi 18h via Discord**.
 
 **Questions besoin restantes :**
-- **Valider le modèle modulaire hybride** et la liste des rôles : `protéine · féculent · légume · sauce` suffisent, ou il en manque (crudité, garniture) ?
-- **Nommer le « type potée »** : plat unique ? plat complet ? one-pot ? (terme à figer)
+- **Vocabulaire des bases** — à dériver de la data (assiette, pâtes, salade, bowl, quiche, pizza, gratin, soupe, wrap, tarte, + one-pots nommés). Liste à figer.
+- **Ouverture des bases** — déclare-t-on quels rôles chaque base accepte (quiche → protéine+légume), ou modifiers libres partout ?
 - **Un seul catalogue tagué chaud/froid, ou deux listes midi/soir ?** (la liste fournie = « Repas du soir » mais tu parlais du midi)
-- **Emportable & rapide** = deux booléens distincts sur le plat, confirmé ?
+- **Emportable / rapide** — portés par la base ou par le plat ?
 
 ---
 
