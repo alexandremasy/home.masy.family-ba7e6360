@@ -130,16 +130,28 @@ Règle : **un repas = un geste** (piocher un plat entier, suggéré ou cherché)
 - Ce sont **souvent les mêmes choses qui reviennent**.
 - Sur base des repas choisis, **aider la mise à jour** pour **optimiser l'encodage**.
 
-**Tension à résoudre :** pas d'ingrédients sur les repas (décision #2) → l'aide « sur base des repas choisis » ne peut PAS venir des ingrédients. Deux façons de tenir la promesse d'Alex (« optimiser l'encodage ») :
+### La tension A/B est dissoute par le modèle repas [insight]
 
-- **Option A — Courses autonome, aide par récurrence.** La liste ne connaît pas les repas. Le système apprend ce qui **revient chaque semaine** (staples), le pré-coche, détecte les cadences de rachat. Simple, robuste, indépendant du module Repas.
-- **Option B — Lien léger repas → items.** Un repas peut porter 2-3 **items de courses** associés (pas une recette : juste « pour ce plat, penser à racheter X »). Choisir le repas pré-remplit ces items. Plus d'aide, un peu plus de saisie en amont sur les fiches repas.
+On avait hésité entre dériver des ingrédients (impossible — pas d'ingrédients) et la récurrence pure. **Le modèle base+modifiers dissout la question** : les modifiers (`saumon · épinards · riz · courgette`…) **sont déjà une liste grossière des composants principaux**. Une fenêtre de repas planifiée se décompose donc **automatiquement** en composants à acheter — sans modéliser la moindre recette. L'Option B, **gratuite**, offerte par le moteur repas.
 
-Non exclusives : B peut se poser par-dessus A. À trancher.
+### La liste = 3 sources
 
-**Open questions :**
-- L'optimisation visée = moins de frappe, moins d'oublis, ou les deux ?
-- Y a-t-il une notion de **stock / placard**, ou la liste part de zéro chaque semaine ?
+1. **Composants des repas planifiés** — modifiers agrégés + dédupliqués sur la fenêtre. **Zéro saisie** (dérivés).
+2. **Staples récurrents** — pain, lait, café… ce qui revient à chaque fois. Appris de l'historique, **pré-cochés**.
+3. **Ajouts manuels** — l'exceptionnel.
+
+→ « **Optimiser l'encodage** » = tu ne re-tapes ni les composants (ils viennent des repas) ni les staples (ils reviennent) ; tu n'ajoutes que l'exception.
+
+### Le pont d'écoulement (boucle avec les repas)
+
+Ce que tu achètes en gros (le chou) **épingle un composant à réutiliser** côté repas (cf. cohérence multi-jour). Les deux modules se bouclent : **courses ← repas** (dérivation) et **repas ← courses** (écoulement du stock acheté).
+
+**Limite volontaire (cohérent avec « pas de couches ») :** les modifiers sont **grossiers** (saumon, pas « 600 g de saumon + huile + sel »). La liste donne donc des **items, pas des quantités ni les ingrédients fins** (huile, épices). Léger par choix.
+
+**Questions besoin :**
+- **Stock / placard ?** Traque-t-on ce qu'on a déjà (riz au placard → ne pas le lister), ou liste « bête » que l'humain décoche ? (le tag « au congélateur » de ta data suggère un début de conscience du stock — mais attention au principe « pas de couches »).
+- **Quantités = hors scope** (items seulement), confirmé ?
+- **Où vit la liste en UX ?** Dans le cockpit (mock) ici, en attendant la migration DB — un écran à part ou attaché au planning repas ?
 
 ---
 
