@@ -3,7 +3,7 @@ import { Section } from "@/components/Card";
 import { people, nextBirthday, daysUntil, upcomingAge, frLongDay } from "@/lib/maison-data";
 import { Cake, ArrowRight, Bell } from "lucide-react";
 
-export const Route = createFileRoute("/_app/maison/anniversaires")({
+export const Route = createFileRoute("/_app/maison/anniversaires/")({
   component: AnniversairesPage,
   head: () => ({ meta: [{ title: "Anniversaires — Maison" }] }),
 });
