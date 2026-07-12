@@ -51,9 +51,10 @@ const BLOCK = `
         }
       : {}),`;
 
-// Insert right after the `vite: {` opening — more stable than keying off the
-// exact plugins line, which Lovable may change.
-const m = src.match(/vite\s*:\s*\{/);
+// Insert right after the `vite: {` opening of the config object. Anchor to the
+// start of a line (^ + only leading whitespace) so we skip the `vite: {` that
+// appears inside Lovable's header COMMENT ("...defineConfig({ vite: { ... } })").
+const m = src.match(/^[ \t]*vite\s*:\s*\{/m);
 if (!m) {
   console.error(
     "[ensure-proxied] ⚠ no `vite: {` block found in " + target + "\n" +
