@@ -47,7 +47,10 @@ L'enjeu produit est le **curseur d'autonomie** : copilote (propose → tu valide
 
 ### Règles [confirmées]
 
-- **Chaud midi / froid soir = principe par défaut, pas une loi.** Modulé par les événements du calendrier (invités, sorties, week-end). **La météo peut inverser la nature du repas** : en canicule, le « repas chaud » du midi devient de fait une **salade froide**. Le système propose selon le principe mais laisse dévier librement.
+- **Un seul catalogue, deux axes de tag [confirmé].** Pas de listes séparées midi/soir — un pool unique de plats, tagués sur **deux axes indépendants** :
+  - **Densité : complet ↔ léger** — c'est l'axe qui oriente le slot. **Léger → soir**, complet → midi (nourrissant, emporté).
+  - **Température : chaud / froid** — contrainte pratique (emporté réchauffé vs froid), corrélée mais distincte (une salade repas peut être froide *et* complète).
+  - Ces préférences sont **des défauts, pas des lois** : modulés par les événements du calendrier (invités, week-end) et par la **météo** (canicule → le midi bascule léger/froid).
 - **Contrainte semaine ≠ week-end.** Les midis **de semaine** doivent être **emportables + réchauffables au bureau** (lunchbox). Le **week-end** est plus souple (fait maison, pas de transport) — mais parfois un **repas rapide** est quand même nécessaire. Donc la contrainte « emportable » et « rapide » dépend du jour + du slot.
 - **Cadence par repas, à double sens.** Certains plats se **refont en rafale sur une fenêtre courte** (écouler des produits, cohérent avec le batch emporté au bureau), d'autres s'**espacent** pour la variété. Pas de règle « N semaines » globale. **Cadence = attribut (méta) du plat** [confirmé], pas une déduction à la volée.
 - **Planification à deux, ensemble.** Acte de couple, même moment, même écran — pas d'approbation asynchrone. L'outil sert la **décision commune**.
