@@ -115,11 +115,11 @@ Règle : **un repas = un geste** (piocher un plat entier, suggéré ou cherché)
 - **Lovable produit l'UX réactive** : planifier une semaine à partir de **suggestions (mockées)**, placer/déplacer, filtrer par contexte (semaine→emportable, week-end→souple/rapide), mode dépannage-reste, fiches plats. Sur données **mock** comme le mockup Budget.
 - **Hors périmètre Lovable (back, plus tard)** : extraction + normalisation Google Calendar, vrai moteur d'apprentissage, météo, **rappel proactif du mardi 18h via Discord**.
 
-**Questions besoin restantes :**
+**Arbitrages fins restants (non bloquants — à fermer plus tard) :**
 - **Vocabulaire des bases** — à dériver de la data (assiette, pâtes, salade, bowl, quiche, pizza, gratin, soupe, wrap, tarte, + one-pots nommés). Liste à figer.
 - **Ouverture des bases** — déclare-t-on quels rôles chaque base accepte (quiche → protéine+légume), ou modifiers libres partout ?
-- **Un seul catalogue tagué chaud/froid, ou deux listes midi/soir ?** (la liste fournie = « Repas du soir » mais tu parlais du midi)
-- **Emportable / rapide** — portés par la base ou par le plat ?
+- **Tags portés par la base ou par le plat** (emportable, température) ?
+- **Custom → alias** — un plat recomposé devient-il un alias réutilisable au catalogue, ou une variation jetable ?
 
 ---
 
