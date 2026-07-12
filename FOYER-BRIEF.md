@@ -117,7 +117,7 @@ Règle : **un repas = un geste** (piocher un plat entier, suggéré ou cherché)
 
 **Observations data à garder en tête :** **un seul catalogue [confirmé]** (la liste « Repas du soir » sert de pool commun) mêlant complet et léger ; certains items portent une **attribution** (« julie leloup », « pinterest ») et un **état de stock** (« Quiche courgettes au congélateur »).
 
-**Attributs d'un plat (méta — pas d'ingrédients) :** nom · **base / signature** · **modifiers** (protéine · légume · féculent · sauce · garniture) · **densité** (complet/léger) · **température** (chaud/froid) · **emportable / réchauffable** (oui/non) · **rapide** (oui/non) · **cadence** (rafale-court vs espacé) · dernière fois servi · [saison & fréquence : déduites de l'historique] · [attribution / source : optionnel].
+**Attributs d'un plat (méta — pas d'ingrédients) :** nom · **base / signature** · **modifiers** (multi-valués + quantité, par rôle : protéine · légume · féculent · sauce · garniture) · **densité** (complet/léger) · **température** (chaud/froid) · **emportable / réchauffable** (oui/non) · **effort de préparation** (rapide ↔ long) · **rendement / portions** (→ nb de slots couverts pour un couple) · **cadence** (espacement de variété entre fenêtres) · dernière fois servi · [saison & fréquence : déduites de l'historique] · [attribution / source : optionnel].
 > Note : une partie des tags (emportable, température) peut être **portée par la base** plutôt que re-saisie par plat — à arbitrer.
 
 **Signaux d'inspiration à brancher (back, plus tard) :** historique 4 ans normalisé (socle) ; météo/canicule (le domaine Énergie a peut-être déjà une source) ; produits de saison (référentiel mois → produits).
