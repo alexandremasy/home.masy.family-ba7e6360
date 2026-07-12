@@ -2,6 +2,8 @@
 
 > **Statut : idéation en cours.** Ce n'est pas encore un handoff Lovable. On capture le modèle au fil de la réflexion ; rien n'est verrouillé tant que ce n'est pas marqué **[LOCKED]**. Nom de domaine "Foyer" = provisoire, à valider.
 
+> **[LOCKED] Scope = UX / UI uniquement.** Comme le mockup Budget : ce repo valide l'UX. La persistance (migration des listes todo → base de données) est actée mais **hors sujet ici** — elle se fera dans `api.masy.family`. Ne pas construire de data layer dans ce brief.
+
 Un nouveau domaine du cockpit, à côté de Budget / Énergie / Réseau / Sécurité / Tesla. Il couvre les **routines récurrentes du foyer** : ce qui revient chaque semaine (repas, courses) et chaque année (anniversaires). Aucun code n'existe encore pour ce domaine.
 
 ---
