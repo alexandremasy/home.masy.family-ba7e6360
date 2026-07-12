@@ -15,9 +15,11 @@ import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTeslaRouteImport } from './routes/_app.tesla'
 import { Route as AppSecuriteRouteImport } from './routes/_app.securite'
 import { Route as AppReseauRouteImport } from './routes/_app.reseau'
+import { Route as AppMaisonRouteImport } from './routes/_app.maison'
 import { Route as AppBudgetRouteImport } from './routes/_app.budget'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as AppMaisonIndexRouteImport } from './routes/_app.maison.index'
 import { Route as AppEnergieIndexRouteImport } from './routes/_app.energie.index'
 import { Route as AppBudgetIndexRouteImport } from './routes/_app.budget.index'
 import { Route as AppRoomRoomKeyRouteImport } from './routes/_app.room.$roomKey'
@@ -60,6 +62,11 @@ const AppReseauRoute = AppReseauRouteImport.update({
   path: '/reseau',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMaisonRoute = AppMaisonRouteImport.update({
+  id: '/maison',
+  path: '/maison',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppBudgetRoute = AppBudgetRouteImport.update({
   id: '/budget',
   path: '/budget',
@@ -77,6 +84,11 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AppMaisonIndexRoute = AppMaisonIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppMaisonRoute,
+} as any)
 const AppEnergieIndexRoute = AppEnergieIndexRouteImport.update({
   id: '/energie/',
   path: '/energie/',
@@ -145,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/budget': typeof AppBudgetRouteWithChildren
+  '/maison': typeof AppMaisonRouteWithChildren
   '/reseau': typeof AppReseauRoute
   '/securite': typeof AppSecuriteRoute
   '/tesla': typeof AppTeslaRoute
@@ -159,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/room/$roomKey': typeof AppRoomRoomKeyRoute
   '/budget/': typeof AppBudgetIndexRoute
   '/energie/': typeof AppEnergieIndexRoute
+  '/maison/': typeof AppMaisonIndexRoute
   '/budget/vue/reserve': typeof AppBudgetVueReserveRoute
 }
 export interface FileRoutesByTo {
@@ -180,6 +194,7 @@ export interface FileRoutesByTo {
   '/room/$roomKey': typeof AppRoomRoomKeyRoute
   '/budget': typeof AppBudgetIndexRoute
   '/energie': typeof AppEnergieIndexRoute
+  '/maison': typeof AppMaisonIndexRoute
   '/budget/vue/reserve': typeof AppBudgetVueReserveRoute
 }
 export interface FileRoutesById {
@@ -189,6 +204,7 @@ export interface FileRoutesById {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_app/budget': typeof AppBudgetRouteWithChildren
+  '/_app/maison': typeof AppMaisonRouteWithChildren
   '/_app/reseau': typeof AppReseauRoute
   '/_app/securite': typeof AppSecuriteRoute
   '/_app/tesla': typeof AppTeslaRoute
@@ -204,6 +220,7 @@ export interface FileRoutesById {
   '/_app/room/$roomKey': typeof AppRoomRoomKeyRoute
   '/_app/budget/': typeof AppBudgetIndexRoute
   '/_app/energie/': typeof AppEnergieIndexRoute
+  '/_app/maison/': typeof AppMaisonIndexRoute
   '/_app/budget/vue/reserve': typeof AppBudgetVueReserveRoute
 }
 export interface FileRouteTypes {
@@ -214,6 +231,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/budget'
+    | '/maison'
     | '/reseau'
     | '/securite'
     | '/tesla'
@@ -228,6 +246,7 @@ export interface FileRouteTypes {
     | '/room/$roomKey'
     | '/budget/'
     | '/energie/'
+    | '/maison/'
     | '/budget/vue/reserve'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -249,6 +268,7 @@ export interface FileRouteTypes {
     | '/room/$roomKey'
     | '/budget'
     | '/energie'
+    | '/maison'
     | '/budget/vue/reserve'
   id:
     | '__root__'
@@ -257,6 +277,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_app/budget'
+    | '/_app/maison'
     | '/_app/reseau'
     | '/_app/securite'
     | '/_app/tesla'
@@ -272,6 +293,7 @@ export interface FileRouteTypes {
     | '/_app/room/$roomKey'
     | '/_app/budget/'
     | '/_app/energie/'
+    | '/_app/maison/'
     | '/_app/budget/vue/reserve'
   fileRoutesById: FileRoutesById
 }
@@ -327,6 +349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppReseauRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/maison': {
+      id: '/_app/maison'
+      path: '/maison'
+      fullPath: '/maison'
+      preLoaderRoute: typeof AppMaisonRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/budget': {
       id: '/_app/budget'
       path: '/budget'
@@ -347,6 +376,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/.mcp/list-tools'
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_app/maison/': {
+      id: '/_app/maison/'
+      path: '/'
+      fullPath: '/maison/'
+      preLoaderRoute: typeof AppMaisonIndexRouteImport
+      parentRoute: typeof AppMaisonRoute
     }
     '/_app/energie/': {
       id: '/_app/energie/'
@@ -471,8 +507,21 @@ const AppBudgetRouteWithChildren = AppBudgetRoute._addFileChildren(
   AppBudgetRouteChildren,
 )
 
+interface AppMaisonRouteChildren {
+  AppMaisonIndexRoute: typeof AppMaisonIndexRoute
+}
+
+const AppMaisonRouteChildren: AppMaisonRouteChildren = {
+  AppMaisonIndexRoute: AppMaisonIndexRoute,
+}
+
+const AppMaisonRouteWithChildren = AppMaisonRoute._addFileChildren(
+  AppMaisonRouteChildren,
+)
+
 interface AppRouteChildren {
   AppBudgetRoute: typeof AppBudgetRouteWithChildren
+  AppMaisonRoute: typeof AppMaisonRouteWithChildren
   AppReseauRoute: typeof AppReseauRoute
   AppSecuriteRoute: typeof AppSecuriteRoute
   AppTeslaRoute: typeof AppTeslaRoute
@@ -484,6 +533,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppBudgetRoute: AppBudgetRouteWithChildren,
+  AppMaisonRoute: AppMaisonRouteWithChildren,
   AppReseauRoute: AppReseauRoute,
   AppSecuriteRoute: AppSecuriteRoute,
   AppTeslaRoute: AppTeslaRoute,
