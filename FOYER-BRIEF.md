@@ -42,23 +42,34 @@ L'enjeu produit est le **curseur d'autonomie** : copilote (propose → tu valide
 
 ### Pilier — le moteur apprend de l'historique [confirmé]
 
-**≥ 4 ans de repas déjà consignés dans un calendrier.** Ce n'est pas un détail : c'est **la matière première du moteur**. La saisonnalité, la cadence de chaque plat, la variété ne sont pas (que) déclarées à la main — elles se **déduisent de l'historique réel** : quand un plat revient dans l'année, à quelle fréquence, en corrélation avec la saison / le temps. → La saisonnalité (question 2 initiale) est **data-driven**, pas un tag manuel. Cet historique doit pouvoir être exploité par le moteur (source, format, import : à cadrer côté data).
+**≥ 4 ans de repas déjà consignés dans Google Calendar.** C'est **la matière première du moteur** : la saisonnalité, la cadence de chaque plat, la variété se **déduisent de l'historique réel** (quand un plat revient, à quelle fréquence, en corrélation saison / temps). → La saisonnalité est **data-driven**, pas un tag manuel.
+**⚠️ Data sale :** saisie humaine, **beaucoup de variations autour des mêmes plats** (« bolo », « spaghetti bolognaise »…). Une couche de **normalisation / dédoublonnage** est nécessaire avant exploitation. Extraction + nettoyage = **côté data / back, pas dans l'UX Lovable, plus tard.**
 
 ### Règles [confirmées]
 
-- **Chaud midi / froid soir = principe par défaut, pas une loi.** Modulé par le calendrier et ses événements (invités, sorties, week-end, canicule). Le système propose selon le principe mais laisse dévier librement.
-- **Cadence par repas, à double sens.** Certains plats doivent être **refaits en rafale sur une fenêtre courte** (pour écouler des produits), d'autres s'**espacent** pour la variété. La règle anti-récurrence n'est donc PAS un « pas avant N semaines » global — c'est une propriété par plat (probablement déductible de l'historique). Distinguer répétition **voulue** (écoulement produits) de répétition **subie** (manque d'idées).
-- **Planification à deux, ensemble.** Acte de couple, même moment, même écran — pas de workflow d'approbation asynchrone. L'outil sert la **décision commune** (concilier envies des deux + produits + saison).
-- **Rappel proactif : mardi ~18h** pour planifier la semaine à venir.
+- **Chaud midi / froid soir = principe par défaut, pas une loi.** Modulé par les événements du calendrier (invités, sorties, week-end). **La météo peut inverser la nature du repas** : en canicule, le « repas chaud » du midi devient de fait une **salade froide**. Le système propose selon le principe mais laisse dévier librement.
+- **Contrainte semaine ≠ week-end.** Les midis **de semaine** doivent être **emportables + réchauffables au bureau** (lunchbox). Le **week-end** est plus souple (fait maison, pas de transport) — mais parfois un **repas rapide** est quand même nécessaire. Donc la contrainte « emportable » et « rapide » dépend du jour + du slot.
+- **Cadence par repas, à double sens.** Certains plats se **refont en rafale sur une fenêtre courte** (écouler des produits, cohérent avec le batch emporté au bureau), d'autres s'**espacent** pour la variété. Pas de règle « N semaines » globale. **Cadence = attribut (méta) du plat** [confirmé], pas une déduction à la volée.
+- **Planification à deux, ensemble.** Acte de couple, même moment, même écran — pas d'approbation asynchrone. L'outil sert la **décision commune**.
 
-**Attributs d'un repas (pas d'ingrédients) :** nom · catégorie chaud/froid · [saison & cadence : plutôt déduites de l'historique que saisies] · **dernière fois servi** · [autres à définir].
+### Modes d'usage [confirmés]
 
-**Signaux d'inspiration à brancher (implémentation) :** historique 4 ans (socle) ; chaleur = météo (le domaine Énergie a peut-être déjà une source) ; produits de saison = référentiel mois → produits, en appui de l'historique.
+- **Planifier par suggestion, jamais par menu pré-établi.** Le système **propose**, l'humain compose. Une suggestion est une **proposition déplaçable** : « chouette, mais pas samedi → mets-la mardi ». Accepter une idée ≠ figer son jour.
+- **Mode dépannage (réactif, impromptu).** Le plan d'un jour tombe (« samedi, ça ne fonctionne pas »), ou il y a un **reste à écouler** (reste de BBQ : viandes, accompagnements). Besoin : demander **« qu'est-ce qu'on fait avec ça »** et recevoir des suggestions qui **vont avec le reste**, adaptées à la saison. → suppose un minimum de **tags de composition** sur les plats (viande / BBQ / salade / pâtes…) pour matcher un reste sans modéliser les ingrédients (voir question ouverte — ne casse pas la décision #2).
+
+**Attributs d'un plat (méta — pas d'ingrédients) :** nom · catégorie chaud/froid (overridable météo) · **emportable / réchauffable** (oui/non) · **rapide** (oui/non) · **cadence** (rafale-court vs espacé) · tags de composition légers [à confirmer] · dernière fois servi · [saison & fréquence : déduites de l'historique].
+
+**Signaux d'inspiration à brancher (back, plus tard) :** historique 4 ans normalisé (socle) ; météo/canicule (le domaine Énergie a peut-être déjà une source) ; produits de saison (référentiel mois → produits).
+
+### Frontière Lovable vs back [à confirmer]
+
+- **Lovable produit l'UX réactive** : planifier une semaine à partir de **suggestions (mockées)**, placer/déplacer, filtrer par contexte (semaine→emportable, week-end→souple/rapide), mode dépannage-reste, fiches plats. Sur données **mock** comme le mockup Budget.
+- **Hors périmètre Lovable (back, plus tard)** : extraction + normalisation Google Calendar, vrai moteur d'apprentissage, météo, **rappel proactif du mardi 18h via Discord**.
 
 **Questions besoin restantes :**
-- **Historique 4 ans — où vit-il, quel format ?** (Google Agenda, app todo, tableur…) — conditionne si le moteur peut vraiment s'en nourrir.
-- **Répétition voulue vs subie — comment le système la distingue ?** L'humain marque un plat « à refaire cette semaine (écouler les produits) » au moment de planifier, ou le moteur déduit la cadence naturelle de chaque plat depuis l'historique ?
-- **Canal du rappel du mardi 18h ?** (notif du cockpit, mail, autre)
+- **Tags de composition** sur les plats (viande / BBQ / salade / pâtes) : OK pour permettre le matching « reste → suggestion » sans aller jusqu'aux ingrédients ? Combien de tags, lesquels ?
+- **Emportable & rapide** = deux attributs booléens distincts sur le plat, confirmé ?
+- Le mode dépannage part-il d'un **reste décrit à la volée** (« reste de BBQ ») ou d'un **plat déjà au catalogue** qu'on re-cuisine ?
 
 ---
 
