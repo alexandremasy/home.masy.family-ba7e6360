@@ -2,7 +2,12 @@
 
 > **Statut : idéation en cours.** Ce n'est pas encore un handoff Lovable. On capture le modèle au fil de la réflexion ; rien n'est verrouillé tant que ce n'est pas marqué **[LOCKED]**. Nom de domaine "Foyer" = provisoire, à valider.
 
-> **[LOCKED] Scope = UX / UI uniquement.** Comme le mockup Budget : ce repo valide l'UX. La persistance (migration des listes todo → base de données) est actée mais **hors sujet ici** — elle se fera dans `api.masy.family`. Ne pas construire de data layer dans ce brief.
+> **[LOCKED] Nature de ce document = cahier des besoins (PM spec).** Il définit **le quoi et les règles métier**, pas les écrans. Répartition des rôles :
+> - **Ce brief** — besoins fonctionnels + règles + comportement réactif/proactif attendu (ce doc).
+> - **Lovable** — conçoit l'UX / UI à partir de ces besoins.
+> - **`api.masy.family`** — la persistance (migration des listes todo → base de données), actée mais **hors sujet ici**.
+>
+> Ne pas prescrire d'écrans ni de composants dans ce doc — décrire le comportement attendu, laisser Lovable trouver la forme.
 
 Un nouveau domaine du cockpit, à côté de Budget / Énergie / Réseau / Sécurité / Tesla. Il couvre les **routines récurrentes du foyer** : ce qui revient chaque semaine (repas, courses) et chaque année (anniversaires). Aucun code n'existe encore pour ce domaine.
 
