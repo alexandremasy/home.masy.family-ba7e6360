@@ -55,9 +55,28 @@ L'enjeu produit est le **curseur d'autonomie** : copilote (propose → tu valide
 ### Modes d'usage [confirmés]
 
 - **Planifier par suggestion, jamais par menu pré-établi.** Le système **propose**, l'humain compose. Une suggestion est une **proposition déplaçable** : « chouette, mais pas samedi → mets-la mardi ». Accepter une idée ≠ figer son jour.
-- **Mode dépannage (réactif, impromptu).** Le plan d'un jour tombe (« samedi, ça ne fonctionne pas »), ou il y a un **reste à écouler** (reste de BBQ : viandes, accompagnements). Besoin : demander **« qu'est-ce qu'on fait avec ça »** et recevoir des suggestions qui **vont avec le reste**, adaptées à la saison. → suppose un minimum de **tags de composition** sur les plats (viande / BBQ / salade / pâtes…) pour matcher un reste sans modéliser les ingrédients (voir question ouverte — ne casse pas la décision #2).
+- **Mode dépannage (réactif, impromptu).** Le plan d'un jour tombe (« samedi, ça ne fonctionne pas »), ou il y a un **reste à écouler** (reste de BBQ : viandes, accompagnements). Besoin : demander **« qu'est-ce qu'on fait avec ça »** et recevoir des suggestions qui **vont avec le reste**, adaptées à la saison. Le **modèle modulaire ci-dessous** est le mécanisme naturel de ce mode.
 
-**Attributs d'un plat (méta — pas d'ingrédients) :** nom · catégorie chaud/froid (overridable météo) · **emportable / réchauffable** (oui/non) · **rapide** (oui/non) · **cadence** (rafale-court vs espacé) · tags de composition légers [à confirmer] · dernière fois servi · [saison & fréquence : déduites de l'historique].
+### Modèle de plat — modulaire hybride [proposition, validée par la data]
+
+La liste réelle (~95 plats, Google Tasks, source `~/Downloads/…Agenda - Tasks.pdf`) tranche : **la majorité des plats sont déjà des assemblages `[protéine] + [féculent] + [légume/sauce]`** — « Saumon riz épinards », « Rôti haricots croquettes », « Poulet moutarde haricot gratin dauphinois », « Poisson épinards riz curcuma ». La famille **pense déjà ses repas en parties**.
+
+Mais une partie ne se décompose pas : **plats uniques / one-pot** — Potée (le cas cité), Lasagne, Chili, Raclette, Pizza, Quiche, Curry, Poke Bowl, Soupe repas. Entités entières.
+
+→ **Deux types de plats, coexistants :**
+- **Assiette composée** = assemblage de **composants typés par rôle** : `protéine · féculent · légume · sauce` (+ éventuel crudité/garniture). Suggestions **par rôle** ; il existe des **associations préférables** (graphe des combinaisons qui reviennent, appris de l'historique).
+- **Plat unique** = une entité au catalogue, suggérée telle quelle (le « type potée »).
+
+**Pourquoi le modulaire plutôt que de simples tags — triple emploi :**
+1. **Inspiration** — la combinatoire par rôle génère des centaines d'assiettes cohérentes à partir de peu de composants. Le vrai antidote au « manque d'idées » (mieux qu'une liste figée).
+2. **Dépannage** — « reste de BBQ » = j'ai la [protéine], le système propose [féculent]+[légume] qui vont avec. La modularité **est** le mécanisme de dépannage.
+3. **Normalisation de la data sale** — les ~15 variantes « poisson épinards X » se réduisent à `[poisson]+[épinards]+[féculent variable]`. Le modulaire absorbe les variations de l'historique.
+
+**Garde-fou :** ne pas tout forcer en modulaire. Un plat « signature » toujours fait pareil (Hachis Parmentier) peut rester un plat unique. Le type est un choix par plat.
+
+**Observations data à garder en tête :** la liste s'appelle **« Repas du soir »** (alors qu'Alex parlait du midi → un seul pool ou deux listes ? à trancher) ; elle mélange chaud cuisiné et salades froides ; certains items portent une **attribution** (« julie leloup », « pinterest ») et un **état de stock** (« Quiche courgettes au congélateur »).
+
+**Attributs d'un plat (méta — pas d'ingrédients) :** nom · **type** (assiette composée / plat unique) · **composants par rôle** (si composée) · catégorie chaud/froid (overridable météo) · **emportable / réchauffable** (oui/non) · **rapide** (oui/non) · **cadence** (rafale-court vs espacé) · dernière fois servi · [saison & fréquence : déduites de l'historique] · [attribution / source : optionnel].
 
 **Signaux d'inspiration à brancher (back, plus tard) :** historique 4 ans normalisé (socle) ; météo/canicule (le domaine Énergie a peut-être déjà une source) ; produits de saison (référentiel mois → produits).
 
