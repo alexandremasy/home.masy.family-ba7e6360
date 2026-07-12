@@ -51,6 +51,7 @@ L'enjeu produit est le **curseur d'autonomie** : copilote (propose → tu valide
 - **Contrainte semaine ≠ week-end.** Les midis **de semaine** doivent être **emportables + réchauffables au bureau** (lunchbox). Le **week-end** est plus souple (fait maison, pas de transport) — mais parfois un **repas rapide** est quand même nécessaire. Donc la contrainte « emportable » et « rapide » dépend du jour + du slot.
 - **Cadence par repas, à double sens.** Certains plats se **refont en rafale sur une fenêtre courte** (écouler des produits, cohérent avec le batch emporté au bureau), d'autres s'**espacent** pour la variété. Pas de règle « N semaines » globale. **Cadence = attribut (méta) du plat** [confirmé], pas une déduction à la volée.
 - **Planification à deux, ensemble.** Acte de couple, même moment, même écran — pas d'approbation asynchrone. L'outil sert la **décision commune**.
+- **Horizon glissant, PAS la semaine civile [confirmé].** On planifie le **mardi (~18h) jusqu'au vendredi de la semaine suivante** (~10 jours). Fenêtre **glissante**, re-jouée chaque mardi ; les fenêtres se chevauchent → la **cohérence s'évalue sur ~2 semaines glissantes**, pas sur une semaine isolée. (≠ Budget, qui est calendaire strict.) → à confirmer : bornes exactes de la fenêtre.
 
 ### Modes d'usage [confirmés]
 
