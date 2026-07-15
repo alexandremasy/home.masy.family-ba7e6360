@@ -83,6 +83,7 @@ function LabAmbience() {
   // Module navigation: the home stays the ground, a module opens over it. The dock stays
   // reachable inside a module — that's how you jump module to module.
   const [openModule, setOpenModule] = useState<string | null>(null);
+  const [launcher, setLauncher] = useState(false);
 
   const t = sunProgress(now, m.sunrise, m.sunset);
   const sunX = bez(t, 14, 160, 306), sunY = bez(t, 96, -34, 96);
