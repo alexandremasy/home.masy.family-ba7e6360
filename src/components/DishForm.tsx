@@ -102,23 +102,16 @@ export function DishForm({
 
   return (
     <form onSubmit={submit} className="space-y-5">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Nom du plat">
-          <Input
-            value={d.name}
-            onChange={(e) => set("name", e.target.value)}
-            placeholder="ex. Curry de poulet"
-            aria-invalid={touched && nameError}
-          />
-          {touched && nameError && <p className="mt-1 text-xs text-destructive">Le nom est requis.</p>}
-        </Field>
-
-        <Field label="Base">
-          <select value={d.base} onChange={(e) => set("base", e.target.value as Base)} className={selectCls}>
-            {BASES.map((b) => <option key={b} value={b}>{b}</option>)}
-          </select>
-        </Field>
-      </div>
+      <Field label="Nom du plat">
+        <Input
+          value={d.name}
+          onChange={(e) => set("name", e.target.value)}
+          placeholder="ex. Curry de poulet"
+          aria-invalid={touched && nameError}
+          className="sm:max-w-sm"
+        />
+        {touched && nameError && <p className="mt-1 text-xs text-destructive">Le nom est requis.</p>}
+      </Field>
 
       {/* Every axis of the dish reads the same way: a segmented choice. */}
       <div className="flex flex-wrap gap-x-8 gap-y-5">
