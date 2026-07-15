@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
 import { DishCard, StatusPill } from "@/components/DishCard";
 import { useDishes } from "@/lib/dishes-store";
-import { initialPlan, effortLevel, fmtMinutes, type Base, type Dish } from "@/lib/maison-data";
-import { Search, Package, Repeat, Zap, Flame, Plus } from "lucide-react";
+import { initialPlan, type Base, type Dish } from "@/lib/maison-data";
+import { Search, Plus } from "lucide-react";
 
 export const Route = createFileRoute("/_app/repas/plats/")({
   component: PlatsPage,
@@ -20,14 +20,6 @@ function PlatsPage() {
 
   const allBases = useMemo(() => [...new Set(dishes.map((d) => d.base))].sort() as Base[], [dishes]);
   const results = useMemo(() => applyFilter(dishes, filter, query), [dishes, filter, query]);
-
-  // How often each dish is on the current plan — the catalogue's job is to show
-  // what exists, but "never served" is the useful signal here.
-  const planned = useMemo(() => {
-    const m = new Map<string, number>();
-    for (const e of initialPlan) m.set(e.dishId, (m.get(e.dishId) ?? 0) + 1);
-    return m;
-  }, []);
 
   return (
     <div className="space-y-4">
