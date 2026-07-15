@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Home, Zap, ShieldCheck, Wifi, Car, Coins, ArrowUpRight, Cake, Music, Plug, Search, SlidersHorizontal, Flame } from "lucide-react";
+import { useState } from "react";
+import { Home, Zap, ShieldCheck, Wifi, Car, Coins, ArrowUpRight, Cake, Music, Plug, Search, SlidersHorizontal, Flame, Droplet, X, TrendingDown, Minus } from "lucide-react";
 import { CountUp } from "@/components/CountUp";
 import { meteo, tesla, dishwasher, energie } from "@/lib/mock-data";
 import { people } from "@/lib/maison-data";
