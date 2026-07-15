@@ -1,0 +1,95 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
+import { dishes, initialPlan, type Base, type Dish } from "@/lib/maison-data";
+import { Search, Package, Repeat, Zap, Flame } from "lucide-react";
+
+export const Route = createFileRoute("/_app/repas/plats")({
+  component: PlatsPage,
+  head: () => ({ meta: [{ title: "Plats — Repas" }] }),
+});
+
+const ALL_BASES = [...new Set(dishes.map((d) => d.base))].sort() as Base[];
+
+function PlatsPage() {
+  const [filter, setFilter] = useState<DishFilter>(EMPTY_FILTER);
+  const [query, setQuery] = useState("");
+
+  const results = useMemo(() => applyFilter(dishes, filter, query), [filter, query]);
+
+  // How often each dish is on the current plan — the catalogue's job is to show
+  // what exists, but "never served" is the useful signal here.
+  const planned = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const e of initialPlan) m.set(e.dishId, (m.get(e.dishId) ?? 0) + 1);
+    return m;
+  }, []);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative w-full sm:max-w-xs">
+          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Chercher un plat ou un composant…"
+            className="pl-8"
+          />
+        </div>
+        <p className="shrink-0 text-xs text-muted-foreground">
+          {results.length} plat{results.length > 1 ? "s" : ""} sur {dishes.length}
+        </p>
+      </div>
+
+      <DishFilters value={filter} onChange={setFilter} bases={ALL_BASES} />
+
+      {results.length === 0 ? (
+        <p className="py-10 text-center text-sm text-muted-foreground">
+          Aucun plat ne correspond à ces critères.
+        </p>
+      ) : (
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {results.map((d) => <DishCard key={d.id} dish={d} plannedCount={planned.get(d.id) ?? 0} />)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DishCard({ dish, plannedCount }: { dish: Dish; plannedCount: number }) {
+  return (
+    <div className="flex flex-col rounded-xl border border-border/60 bg-card p-3.5 transition-colors hover:border-border hover:bg-secondary/40">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="truncate font-serif text-base leading-tight">{dish.name}</p>
+          <p className="mt-0.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            {dish.base} · {dish.densite} · {dish.temperature}
+          </p>
+        </div>
+        {plannedCount > 0 && (
+          <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+            ×{plannedCount} planifié
+          </span>
+        )}
+      </div>
+
+      <div className="mt-2.5 flex flex-wrap gap-1">
+        {dish.modifiers.map((m) => (
+          <Badge key={m.name} variant="secondary" className="text-[10px] font-normal">{m.name}</Badge>
+        ))}
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-2.5 text-[11px] text-muted-foreground">
+        {dish.emportable && <span className="inline-flex items-center gap-1"><Package className="h-3 w-3" />emportable</span>}
+        {dish.rendement > 1 && <span className="inline-flex items-center gap-1"><Repeat className="h-3 w-3" />{dish.rendement} créneaux</span>}
+        <span className="inline-flex items-center gap-1">
+          {dish.effort <= 2 ? <Zap className="h-3 w-3" /> : <Flame className="h-3 w-3" />}
+          effort {dish.effort}/5
+        </span>
+      </div>
+    </div>
+  );
+}
