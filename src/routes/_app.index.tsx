@@ -331,64 +331,68 @@ function BirthdayTile() {
   );
 }
 
-/** What we eat today and tomorrow. The plan is a sliding window that starts tomorrow. */
+/**
+ * What we eat, read as a sentence rather than a list.
+ * The plan is a sliding window that starts tomorrow (MAISON-BRIEF), so today is
+ * usually empty — we show the first day that actually has meals, then tease the next.
+ */
 function RepasTile() {
   const dayPlan = (d: Date) => {
     const key = iso(d);
     const at = (slot: "midi" | "soir") => {
       const e = initialPlan.find((x) => x.date === key && x.slot === slot);
-      if (!e) return null;
-      const dish = dishById(e.dishId);
-      return dish ? { name: dish.name, batch: !!e.batchOfDate } : null;
+      return e ? dishById(e.dishId)?.name ?? null : null;
     };
     return { midi: at("midi"), soir: at("soir") };
   };
 
-  const days = [
-    { label: "Aujourd'hui", plan: dayPlan(TODAY) },
-    { label: "Demain", plan: dayPlan(addDays(TODAY, 1)) },
-  ];
+  const label = (offset: number) =>
+    offset === 0 ? "Aujourd'hui" : offset === 1 ? "Demain" : offset === 2 ? "Après-demain" : frLongDay(addDays(TODAY, offset));
+
+  // first day with something planned, then the one after it
+  const planned = [0, 1, 2, 3]
+    .map((o) => ({ o, ...dayPlan(addDays(TODAY, o)) }))
+    .filter((d) => d.midi || d.soir);
+  const first = planned[0];
+  const next = planned[1];
 
   return (
     <Tile span={2} to="/maison/repas" className="flex flex-col">
       <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Repas</p>
-          <p className="mt-1 font-serif text-xl">Ce qu'on mange</p>
-        </div>
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Repas</p>
         <UtensilsCrossed className="h-4.5 w-4.5 text-muted-foreground" />
       </div>
 
-      <div className="mt-4 flex flex-1 flex-col gap-2">
-        {days.map((d) => (
-          <div key={d.label} className="rounded-lg bg-secondary/60 px-2.5 py-2">
-            <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{d.label}</p>
-            <div className="mt-1 flex flex-col gap-0.5">
-              <MealLine slot="Midi" meal={d.plan.midi} />
-              <MealLine slot="Soir" meal={d.plan.soir} />
-            </div>
-          </div>
-        ))}
-      </div>
-    </Tile>
-  );
-}
-
-function MealLine({ slot, meal }: { slot: string; meal: { name: string; batch: boolean } | null }) {
-  return (
-    <div className="flex items-baseline gap-2 text-sm">
-      <span className="w-9 shrink-0 text-[11px] uppercase tracking-[0.1em] text-muted-foreground">{slot}</span>
-      {meal ? (
+      {first ? (
         <>
-          <span className="min-w-0 flex-1 truncate font-serif">{meal.name}</span>
-          {meal.batch && (
-            <span className="shrink-0 rounded-full bg-card px-1.5 py-0.5 text-[10px] text-muted-foreground">batch</span>
+          <p className="mt-3 font-serif text-xl leading-snug">
+            {label(first.o)}
+            {first.midi && (
+              <>
+                , <span className="text-foreground">{first.midi}</span>
+                <span className="text-muted-foreground"> à midi</span>
+              </>
+            )}
+            {first.soir && (
+              <>
+                {first.midi ? " et " : ", "}
+                <span className="text-foreground">{first.soir}</span>
+                <span className="text-muted-foreground"> le soir</span>
+              </>
+            )}
+            <span className="text-muted-foreground">.</span>
+          </p>
+
+          {next && (
+            <p className="mt-auto pt-3 text-xs text-muted-foreground">
+              Puis {label(next.o).toLowerCase()} · {next.midi ?? next.soir}
+            </p>
           )}
         </>
       ) : (
-        <span className="flex-1 text-xs italic text-muted-foreground/60">rien de prévu</span>
+        <p className="mt-3 font-serif text-xl leading-snug text-muted-foreground">Rien de planifié pour l'instant.</p>
       )}
-    </div>
+    </Tile>
   );
 }
 
