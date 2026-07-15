@@ -101,6 +101,6 @@ function DishCard({ dish, plannedCount }: { dish: Dish; plannedCount: number }) 
           effort {dish.effort}/5
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
