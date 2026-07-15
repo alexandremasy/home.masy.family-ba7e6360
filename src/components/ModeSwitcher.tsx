@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { ChevronDown, Home, Wallet, Newspaper, Radar } from "lucide-react";
+import { ChevronDown, Home, Wallet, Newspaper, Radar, ShieldCheck } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
