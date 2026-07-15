@@ -29,22 +29,24 @@ function RepasLayout() {
   const current = tabs.find((t) => pathname.startsWith(t.to))?.to ?? tabs[0].to;
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Repas"
-        subtitle="Fenêtre glissante de ~10 jours, cohérence évaluée sur 2 semaines."
-        variant="page"
-      />
+    <DishesProvider>
+      <div className="space-y-6">
+        <PageHeader
+          title="Repas"
+          subtitle="Fenêtre glissante de ~10 jours, cohérence évaluée sur 2 semaines."
+          variant="page"
+        />
 
-      <Tabs value={current} onValueChange={(to) => navigate({ to })}>
-        <TabsList className="h-10 bg-secondary/70 p-1">
-          {tabs.map((t) => (
-            <TabsTrigger key={t.to} value={t.to} className="px-4">{t.label}</TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
+        <Tabs value={current} onValueChange={(to) => navigate({ to })}>
+          <TabsList className="h-10 bg-secondary/70 p-1">
+            {tabs.map((t) => (
+              <TabsTrigger key={t.to} value={t.to} className="px-4">{t.label}</TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
 
-      <Outlet />
-    </div>
+        <Outlet />
+      </div>
+    </DishesProvider>
   );
 }
