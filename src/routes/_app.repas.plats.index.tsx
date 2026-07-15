@@ -51,7 +51,7 @@ function PlatsPage() {
         </p>
       ) : (
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {results.map((d) => <CatalogueCard key={d.id} dish={d} plannedCount={planned.get(d.id) ?? 0} />)}
+          {results.map((d) => <CatalogueCard key={d.id} dish={d} />)}
         </div>
       )}
     </div>
