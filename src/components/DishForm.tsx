@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
-import type { Dish, Base, Role, Unit, Composant, Effort } from "@/lib/maison-data";
+import { EFFORT_LEVELS, fmtMinutes, type Dish, type Base, type Role, type Unit, type Composant } from "@/lib/maison-data";
+import { cap } from "@/lib/utils";
 
 const BASES: Base[] = [
   "assiette", "pâtes", "bowl", "salade", "quiche", "pizza", "gratin",
@@ -187,10 +188,12 @@ export function DishForm({
                   {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
                 </select>
                 <Input
-                  value={m.name}
-                  onChange={(e) => setMod(i, { name: e.target.value })}
+                  // cap() on both sides: ::first-letter does nothing to an input's
+                  // value, so the capital has to be in the string itself.
+                  value={cap(m.name)}
+                  onChange={(e) => setMod(i, { name: cap(e.target.value) })}
                   placeholder="Composant"
-                  className="h-8 min-w-32 flex-1 text-sm first-letter:uppercase"
+                  className="h-8 min-w-32 flex-1 text-sm"
                 />
                 <Input
                   type="number" min={0} step="any"
