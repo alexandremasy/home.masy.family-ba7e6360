@@ -256,41 +256,29 @@ function SlotCell({
       </div>
 
       {entry && dish ? (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div
-              draggable
-              onDragStart={(e) => {
-                e.dataTransfer.setData("application/json", JSON.stringify({ date, slot }));
-                e.dataTransfer.effectAllowed = "move";
-              }}
-              className="mt-1 flex-1 cursor-grab active:cursor-grabbing"
-            >
-              <p className="line-clamp-2 text-sm font-medium leading-snug">{dish.name}</p>
-              {isBatch && (
-                <span className="mt-1 inline-flex items-center gap-0.5 rounded-full bg-warm/15 px-1.5 py-0.5 text-[10px] text-warm">
-                  <Repeat className="h-3 w-3" />batch
-                </span>
-              )}
-              <div className="absolute right-1 top-1 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
-                <button onClick={onOpen} aria-label="Changer" className="grid h-6 w-6 place-items-center rounded-md bg-card text-muted-foreground hover:text-foreground">
-                  <RefreshCw className="h-3 w-3" />
-                </button>
-                <button onClick={onRemove} aria-label="Retirer" className="grid h-6 w-6 place-items-center rounded-md bg-card text-muted-foreground hover:text-destructive">
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
-            </div>
-          </TooltipTrigger>
-          {/* The cell only has room for the name — the composition lives here. */}
-          <TooltipContent side="top" className="max-w-56">
-            <p className="font-medium">{dish.name}</p>
-            <p className="mt-0.5 text-[10px] uppercase tracking-[0.14em] opacity-70">
-              {dish.base} · {dish.densite} · {dish.temperature}
-            </p>
-            <p className="mt-1 text-xs opacity-90">{dish.modifiers.map((m) => m.name).join(" · ")}</p>
-          </TooltipContent>
-        </Tooltip>
+        <div
+          draggable
+          onDragStart={(e) => {
+            e.dataTransfer.setData("application/json", JSON.stringify({ date, slot }));
+            e.dataTransfer.effectAllowed = "move";
+          }}
+          className="mt-1 flex-1 cursor-grab active:cursor-grabbing"
+        >
+          <p className="line-clamp-2 text-sm font-medium leading-snug">{dish.name}</p>
+          {isBatch && (
+            <span className="mt-1 inline-flex items-center gap-0.5 rounded-full bg-warm/15 px-1.5 py-0.5 text-[10px] text-warm">
+              <Repeat className="h-3 w-3" />batch
+            </span>
+          )}
+          <div className="absolute right-1 top-1 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+            <button onClick={onOpen} aria-label="Changer" className="grid h-6 w-6 place-items-center rounded-md bg-card text-muted-foreground hover:text-foreground">
+              <RefreshCw className="h-3 w-3" />
+            </button>
+            <button onClick={onRemove} aria-label="Retirer" className="grid h-6 w-6 place-items-center rounded-md bg-card text-muted-foreground hover:text-destructive">
+              <X className="h-3 w-3" />
+            </button>
+          </div>
+        </div>
       ) : (
         <button
           onClick={onOpen}
