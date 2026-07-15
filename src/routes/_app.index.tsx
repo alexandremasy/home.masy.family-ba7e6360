@@ -772,7 +772,6 @@ function WeatherDialog() {
           </div>
         </div>
       </DialogContent>
-    </Dialog>
   );
 }
 
