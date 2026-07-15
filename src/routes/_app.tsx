@@ -15,8 +15,11 @@ function AppLayout() {
 
   // A module with its own world is full-bleed (its tabs live in the TopNav, which an
   // overlay would cover). Everything else opens as an overlay above the dashboard.
-  const isBudgetMode = pathname.startsWith("/budget") || pathname.startsWith("/securite");
-  const isOverlay = !isBudgetMode && pathname !== "/";
+  const isFullBleed =
+    pathname.startsWith("/budget") ||
+    pathname.startsWith("/securite") ||
+    pathname.startsWith("/maison");
+  const isOverlay = !isFullBleed && pathname !== "/";
 
   // Pick a line based on day-of-year for a stable but rotating feel
   const start = new Date(new Date().getFullYear(), 0, 0);
