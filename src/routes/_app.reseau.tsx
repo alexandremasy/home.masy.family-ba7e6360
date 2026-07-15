@@ -77,7 +77,7 @@ function ReseauPage() {
             label="Bloquées"
             value={reseau.pihole.blocked24h.toLocaleString("fr-BE")}
             sub={`${reseau.pihole.blockedPct}%`}
-            tone="warm"
+            tone="default"
           />
           <Stat
             icon={<Users className="h-4 w-4 anim-float" />}

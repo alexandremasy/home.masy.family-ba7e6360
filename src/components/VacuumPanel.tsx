@@ -13,9 +13,9 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
 
   const status =
     cleaning ? { tone: "bg-primary/15 text-primary", Icon: Bot, text: v.currentRoom ? `Nettoie · ${v.currentRoom}` : "En nettoyage" } :
-    returning? { tone: "bg-mustard/25 text-mustard-foreground", Icon: MoveRight, text: "Retour à la base" } :
+    returning? { tone: "bg-mustard/25 text-mustard", Icon: MoveRight, text: "Retour à la base" } :
     charging ? { tone: "bg-success/15 text-success", Icon: BatteryCharging, text: "En charge" } :
-    paused   ? { tone: "bg-warm/15 text-warm", Icon: PauseCircle, text: "En pause" } :
+    paused   ? { tone: "bg-secondary text-muted-foreground", Icon: PauseCircle, text: "En pause" } :
     error    ? { tone: "bg-destructive/15 text-destructive", Icon: AlertTriangle, text: v.errorMsg ?? "Erreur" } :
                { tone: "bg-muted text-muted-foreground", Icon: Home, text: `À la base (${v.dockLocation})` };
 

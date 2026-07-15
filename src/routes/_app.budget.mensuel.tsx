@@ -86,7 +86,7 @@ function MensuelPage() {
       {/* KPI Hero */}
       <div className="grid gap-3 stagger sm:grid-cols-2 lg:grid-cols-4">
         <Kpi label="Entrées"   value={entrees} icon={ArrowDownRight} tone="primary" delta={0} />
-        <Kpi label="Dépenses"  value={totalActual} icon={ArrowUpRight} tone="warm" delta={expenseDelta} invertDelta />
+        <Kpi label="Dépenses"  value={totalActual} icon={ArrowUpRight} tone="mustard" delta={expenseDelta} invertDelta />
         <Kpi label="Net"       value={net} icon={TrendingUp} tone={net >= 0 ? "success" : "warm"} />
         <Kpi label="Épargne"   value={epargne} icon={PiggyBank} tone="primary" />
       </div>
@@ -163,7 +163,7 @@ function MensuelPage() {
 
 function Kpi({ label, value, icon: Icon, tone, delta, invertDelta }: {
   label: string; value: number; icon: typeof ArrowDownRight;
-  tone: "primary" | "warm" | "success";
+  tone: "primary" | "warm" | "mustard" | "success";
   delta?: number; invertDelta?: boolean;
 }) {
   const toneCls =

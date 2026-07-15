@@ -535,7 +535,7 @@ function BigStat({
         {icon}
         {label}
       </Eyebrow>
-      <p className={"mt-2 font-serif text-3xl " + (accent ? "text-primary" : trend === "down" ? "text-success" : trend === "up" ? "text-warm" : "text-foreground")}>
+      <p className={"mt-2 font-serif text-3xl " + (accent ? "text-primary" : trend === "down" ? "text-success" : trend === "up" ? "text-mustard" : "text-foreground")}>
         {value}
       </p>
       {sub && <p className="mt-1 text-[11px] text-muted-foreground">{sub}</p>}

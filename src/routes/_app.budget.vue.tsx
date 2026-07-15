@@ -219,7 +219,7 @@ function VerdictHeader({ verdict, view }: { verdict: ReturnType<typeof annualVer
 
 function SecondaryReading({ label, primary, secondary, tone }: {
   label: string; primary: string; secondary?: string;
-  tone: "primary" | "warm" | "success" | "destructive";
+  tone: "primary" | "warm" | "mustard" | "success" | "destructive";
 }) {
   const cls = tone === "warm" ? "text-warm"
     : tone === "success" ? "text-success"
@@ -236,7 +236,7 @@ function SecondaryReading({ label, primary, secondary, tone }: {
 
 function MicroStat({ label, primary, secondary, tone }: {
   label: string; primary: string; secondary?: string;
-  tone: "primary" | "warm" | "success" | "destructive";
+  tone: "primary" | "warm" | "mustard" | "success" | "destructive";
 }) {
   const cls = tone === "warm" ? "text-warm"
     : tone === "success" ? "text-success"
@@ -309,8 +309,8 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
               )}
               <Line type="monotone" dataKey="inReel" stroke="var(--success)" strokeWidth={2.5} dot={false} name="Entrées" connectNulls={false} />
               <Line type="monotone" dataKey="inProj" stroke="var(--success)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Entrées (proj.)" connectNulls={false} />
-              <Line type="monotone" dataKey="depReel" stroke="var(--warm)" strokeWidth={2.5} dot={false} name="Dépenses" connectNulls={false} />
-              <Line type="monotone" dataKey="depProj" stroke="var(--warm)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Dépenses (proj.)" connectNulls={false} />
+              <Line type="monotone" dataKey="depReel" stroke="var(--mustard)" strokeWidth={2.5} dot={false} name="Dépenses" connectNulls={false} />
+              <Line type="monotone" dataKey="depProj" stroke="var(--mustard)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Dépenses (proj.)" connectNulls={false} />
               <Line type="monotone" dataKey="epReel" stroke="var(--primary)" strokeWidth={2.5} dot={false} name="Épargne" connectNulls={false} />
               <Line type="monotone" dataKey="epProj" stroke="var(--primary)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Épargne (proj.)" connectNulls={false} />
             </ComposedChart>
@@ -551,7 +551,7 @@ function PasseView({ monthIdx }: { monthIdx: number }) {
     <div className="space-y-6">
       <div className="grid gap-3 sm:grid-cols-3">
         <SmallStat label="Entrées" value={entrees} tone="primary" />
-        <SmallStat label="Dépenses" value={totalActual} tone="warm" />
+        <SmallStat label="Dépenses" value={totalActual} tone="mustard" />
         <SmallStat label="Écart vs prévu" value={delta} tone={delta > 0 ? "warm" : "success"} signed />
       </div>
 
@@ -611,7 +611,7 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
     <div className="space-y-6">
       <div className="grid gap-3 sm:grid-cols-3">
         <SmallStat label="Entrées" value={entrees} tone="primary" />
-        <SmallStat label="Déjà dépensé" value={dejaDepense} tone="warm" hint={`${Math.round(progress*100)}% du mois`} />
+        <SmallStat label="Déjà dépensé" value={dejaDepense} tone="mustard" hint={`${Math.round(progress*100)}% du mois`} />
         <SmallStat label="Encore prévu" value={encorePrevu} tone="primary" hint="projection" />
       </div>
 
@@ -683,7 +683,7 @@ function FuturView({ monthIdx }: { monthIdx: number }) {
     <div className="space-y-6">
       <div className="grid gap-3 sm:grid-cols-3">
         <SmallStat label="Entrées prévues" value={5200} tone="primary" hint="salaire net" />
-        <SmallStat label="Dépenses prévues" value={prevuTotal} tone="warm" hint={`${ofMonth.length} postes`} />
+        <SmallStat label="Dépenses prévues" value={prevuTotal} tone="mustard" hint={`${ofMonth.length} postes`} />
         <SmallStat label="Net projeté" value={5200 - prevuTotal} tone={(5200 - prevuTotal) >= 0 ? "success" : "warm"} />
       </div>
 
@@ -728,13 +728,13 @@ function FuturView({ monthIdx }: { monthIdx: number }) {
             <AreaChart data={synth} margin={{ top: 4, right: 4, left: -10, bottom: 0 }}>
               <defs>
                 <linearGradient id="futurGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--warm)" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="var(--warm)" stopOpacity={0} />
+                  <stop offset="0%" stopColor="var(--mustard)" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="var(--mustard)" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <XAxis dataKey="d" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} />
               <YAxis hide />
-              <Area type="monotone" dataKey="v" stroke="var(--warm)" strokeWidth={1.5} fill="url(#futurGrad)" strokeDasharray="4 3" />
+              <Area type="monotone" dataKey="v" stroke="var(--mustard)" strokeWidth={1.5} fill="url(#futurGrad)" strokeDasharray="4 3" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -759,8 +759,8 @@ function BillsBar({ bills, label }: { bills: { label: string; amount: number }[]
   );
 }
 
-function SmallStat({ label, value, tone, hint, signed }: { label: string; value: number; tone: "primary"|"warm"|"success"; hint?: string; signed?: boolean }) {
-  const cls = tone === "warm" ? "text-warm" : tone === "success" ? "text-success" : "text-foreground";
+function SmallStat({ label, value, tone, hint, signed }: { label: string; value: number; tone: "primary"|"warm"|"mustard"|"success"; hint?: string; signed?: boolean }) {
+  const cls = tone === "warm" ? "text-warm" : tone === "mustard" ? "text-mustard" : tone === "success" ? "text-success" : "text-foreground";
   return (
     <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft">
       <Eyebrow size="xs">{label}</Eyebrow>

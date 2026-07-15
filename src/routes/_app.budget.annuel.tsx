@@ -79,7 +79,7 @@ function AnnuelPage() {
 
       {/* Big totals */}
       <div className="grid gap-3 stagger sm:grid-cols-2 lg:grid-cols-4">
-        <BigStat label="Dépenses annuelles" value={totalSpend} suffix="€" tone="warm" />
+        <BigStat label="Dépenses annuelles" value={totalSpend} suffix="€" tone="mustard" />
         <BigStat label="Entrées annuelles"  value={totalIncome} suffix="€" tone="primary" />
         <BigStat label="Net" value={net} suffix="€" tone={net >= 0 ? "success" : "warm"} />
         <BigStat label="Taux d'épargne" value={epargneRate} suffix="%" tone="success" />
@@ -107,7 +107,7 @@ function AnnuelPage() {
               />
               <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
               <Bar dataKey="Entrées" fill="var(--primary)" radius={[4,4,0,0]} maxBarSize={18} />
-              <Bar dataKey="Dépenses" fill="var(--warm)" radius={[4,4,0,0]} maxBarSize={18} />
+              <Bar dataKey="Dépenses" fill="var(--mustard)" radius={[4,4,0,0]} maxBarSize={18} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -130,8 +130,8 @@ function AnnuelPage() {
                   <stop offset="100%" stopColor="var(--primary)" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="aSpend" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--warm)" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="var(--warm)" stopOpacity={0} />
+                  <stop offset="0%" stopColor="var(--mustard)" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="var(--mustard)" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
@@ -145,7 +145,7 @@ function AnnuelPage() {
               <ReferenceLine y={avgSpend} stroke="var(--muted-foreground)" strokeDasharray="4 4" />
               <ReferenceLine x={rolling12[currentIdx].m} stroke="var(--foreground)" strokeOpacity={0.25} strokeDasharray="2 4" />
               <Area type="monotone" dataKey="income" name="Entrées" stroke="var(--primary)" strokeWidth={2} fill="url(#aIncome)" />
-              <Area type="monotone" dataKey="spend"  name="Dépenses" stroke="var(--warm)"   strokeWidth={2} fill="url(#aSpend)" />
+              <Area type="monotone" dataKey="spend"  name="Dépenses" stroke="var(--mustard)"   strokeWidth={2} fill="url(#aSpend)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -178,22 +178,24 @@ function AnnuelPage() {
                   (isCurrent ? "border-foreground/60" : "border-border/40")
                 }
                 style={{
-                  background: `linear-gradient(180deg, color-mix(in oklab, var(--warm) ${Math.round(intensity * 22)}%, var(--card)) 0%, var(--card) 100%)`,
+                  background: `linear-gradient(180deg, color-mix(in oklab, var(--mustard) ${Math.round(intensity * 22)}%, var(--card)) 0%, var(--card) 100%)`,
                 }}
               >
                 <div className="flex items-center justify-between">
                   <Eyebrow size="xs" as="span">{m}</Eyebrow>
                   {cost > 0 && (
                     <span className="inline-block h-1.5 w-1.5 rounded-full"
-                      style={{ background: `color-mix(in oklab, var(--warm) ${30 + intensity * 70}%, transparent)` }} />
+                      style={{ background: `color-mix(in oklab, var(--mustard) ${30 + intensity * 70}%, transparent)` }} />
                   )}
                 </div>
                 <div className="mt-1.5 flex flex-1 flex-col gap-1">
                   {bills.length === 0 && <span className="text-[10px] text-muted-foreground/50">—</span>}
                   {bills.map((b) => (
                     <span key={b.label}
+                      // An expense is not an alert — a paid rent was painted with
+                      // the alert tone. Income stays green; everything else is neutral.
                       className={"truncate rounded-md px-1.5 py-0.5 text-[10px] font-medium leading-tight " +
-                        (b.kind === "income" ? "bg-success/15 text-success" : "bg-warm/15 text-warm")}
+                        (b.kind === "income" ? "bg-success/15 text-success" : "bg-secondary text-muted-foreground")}
                       title={`${b.label} · ${eur(b.amount)}`}
                     >{b.label}</span>
                   ))}
@@ -283,10 +285,9 @@ function AnnuelPage() {
               i, v: Math.max(0, env.balance - env.contrib * (11 - i)) + Math.sin(i * 1.3) * env.contrib * 0.15,
             }));
             const toneRing =
-              env.tone === "warm" ? "bg-warm/15 text-warm"
-              : env.tone === "mustard" ? "bg-mustard/20 text-mustard-foreground"
+              env.tone === "mustard" ? "bg-mustard/20 text-mustard"
               : "bg-primary/10 text-primary";
-            const stroke = env.tone === "warm" ? "var(--warm)" : env.tone === "mustard" ? "var(--mustard)" : "var(--primary)";
+            const stroke = env.tone === "mustard" ? "var(--mustard)" : "var(--primary)";
             return (
               <div key={env.key} className="group rounded-2xl border border-border/60 bg-card p-5 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
                 <div className="flex items-center justify-between">
@@ -319,8 +320,8 @@ function AnnuelPage() {
   );
 }
 
-function BigStat({ label, value, suffix, tone }: { label: string; value: number; suffix: string; tone: "primary"|"warm"|"success" }) {
-  const cls = tone === "warm" ? "text-warm" : tone === "success" ? "text-success" : "text-foreground";
+function BigStat({ label, value, suffix, tone }: { label: string; value: number; suffix: string; tone: "primary"|"warm"|"mustard"|"success" }) {
+  const cls = tone === "warm" ? "text-warm" : tone === "mustard" ? "text-mustard" : tone === "success" ? "text-success" : "text-foreground";
   return (
     <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft">
       <Eyebrow>{label}</Eyebrow>

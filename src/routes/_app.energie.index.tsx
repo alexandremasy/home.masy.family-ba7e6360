@@ -20,7 +20,7 @@ type Trend = "up" | "down" | "stable";
 
 function TrendBadge({ trend, pct, suffix = "vs 90j" }: { trend: Trend; pct: number; suffix?: string }) {
   const Icon = trend === "down" ? TrendingDown : trend === "up" ? TrendingUp : Minus;
-  const tone = trend === "down" ? "text-success" : trend === "up" ? "text-warm" : "text-muted-foreground";
+  const tone = trend === "down" ? "text-success" : trend === "up" ? "text-mustard" : "text-muted-foreground";
   return (
     <span className={"inline-flex items-center gap-1 text-sm " + tone}>
       <Icon className="h-4 w-4" />

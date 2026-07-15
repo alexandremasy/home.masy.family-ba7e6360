@@ -17,10 +17,10 @@ function AnniversairesPage() {
   return (
     <div className="space-y-6">
       {upcoming && (
-        <div className="rounded-2xl border border-warm/40 bg-warm/5 p-5 shadow-soft">
+        <div className="rounded-2xl border border-mustard/40 bg-mustard/5 p-5 shadow-soft">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <Eyebrow tone="current" size="xs" className="text-warm inline-flex items-center gap-1.5">
+              <Eyebrow tone="current" size="xs" className="text-mustard inline-flex items-center gap-1.5">
                 <Bell className="h-3 w-3" /> Prochain anniversaire
               </Eyebrow>
               <p className="mt-1 font-serif text-2xl">{upcoming.name}</p>

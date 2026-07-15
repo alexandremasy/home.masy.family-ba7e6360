@@ -74,7 +74,7 @@ export function Dashboard() {
             <Tile key={room.key} span={1} to={`/room/${room.key}`} className={"flex flex-col " + bureauCls}>
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-3">
-                  <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-mustard/20 text-mustard-foreground" : "bg-secondary text-muted-foreground")}>
+                  <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-mustard/20 text-mustard" : "bg-secondary text-muted-foreground")}>
                     <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
                   </span>
                   <div>
@@ -96,8 +96,8 @@ export function Dashboard() {
               )}
 
               <div className="mt-auto pt-3 flex items-center gap-3 text-xs text-muted-foreground">
-                <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-mustard-foreground" : "")}>
-                  <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-mustard-foreground" : "")} />
+                <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-mustard" : "")}>
+                  <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-mustard" : "")} />
                   {room.lightsOn ? "Allumé" : "Éteint"}
                 </span>
                 {room.climate && (
@@ -516,8 +516,8 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
       )}
 
       <div className="mt-auto pt-3 flex items-center gap-3 text-xs text-muted-foreground">
-        <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-mustard-foreground" : "")}>
-          <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-mustard-foreground" : "")} />
+        <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-mustard" : "")}>
+          <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-mustard" : "")} />
           {room.lightsOn ? "Allumé" : "Éteint"}
         </span>
         {variant === "idle" && (
@@ -534,9 +534,9 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
 function EqBars() {
   return (
     <span className="flex items-end gap-0.5 pb-1" aria-hidden>
-      <span className="eq-bar h-3 w-0.5 rounded-full bg-mustard-foreground/70" style={{ animationDelay: "0ms" }} />
-      <span className="eq-bar h-4 w-0.5 rounded-full bg-mustard-foreground/70" style={{ animationDelay: "150ms" }} />
-      <span className="eq-bar h-2.5 w-0.5 rounded-full bg-mustard-foreground/70" style={{ animationDelay: "300ms" }} />
+      <span className="eq-bar h-3 w-0.5 rounded-full bg-foreground/70" style={{ animationDelay: "0ms" }} />
+      <span className="eq-bar h-4 w-0.5 rounded-full bg-foreground/70" style={{ animationDelay: "150ms" }} />
+      <span className="eq-bar h-2.5 w-0.5 rounded-full bg-foreground/70" style={{ animationDelay: "300ms" }} />
     </span>
   );
 }
@@ -623,7 +623,7 @@ function Tip({ children, label }: { children: React.ReactNode; label: string }) 
 
 function TrendBadge({ trend, pct, hidePct }: { trend: "up" | "down" | "stable"; pct?: number; hidePct?: boolean }) {
   const Icon = trend === "down" ? TrendingDown : trend === "up" ? TrendingUp : Minus;
-  const tone = trend === "down" ? "text-success" : trend === "up" ? "text-warm" : "text-muted-foreground";
+  const tone = trend === "down" ? "text-success" : trend === "up" ? "text-mustard" : "text-muted-foreground";
   return (
     <span className={"inline-flex items-center gap-0.5 text-xs " + tone}>
       <Icon className="h-3.5 w-3.5" />

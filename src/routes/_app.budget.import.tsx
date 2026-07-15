@@ -72,7 +72,7 @@ function ImportPage() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <StatBadge icon={Plus} tone="success" n={t.nouvelles} label="Nouvelles" />
             <StatBadge icon={Equal} tone="muted" n={t.inchangees} label="Inchangées" />
-            <StatBadge icon={RefreshCw} tone="warm" n={t.modifiees} label="Modifiées" />
+            <StatBadge icon={RefreshCw} tone="mustard" n={t.modifiees} label="Modifiées" />
             <StatBadge icon={Lock} tone="mustard" n={t.protegees} label="Protégées" />
           </div>
 
@@ -107,7 +107,7 @@ function ImportPage() {
             <ul className="divide-y divide-border/40">
               {importPreviewMock.protegees.map((p, i) => (
                 <li key={i} className="flex items-center gap-3 py-3 text-sm">
-                  <Lock className="h-3.5 w-3.5 text-mustard-foreground/70" />
+                  <Lock className="h-3.5 w-3.5 text-mustard" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-medium">{p.label}</p>
                     <p className="text-xs text-muted-foreground">{p.date} · {p.category}</p>
@@ -227,7 +227,7 @@ function StatBadge({ icon: Icon, tone, n, label }: {
   const cls =
     tone === "success" ? "bg-success/10 text-success border-success/20"
     : tone === "warm" ? "bg-warm/10 text-warm border-warm/20"
-    : tone === "mustard" ? "bg-mustard/15 text-mustard-foreground border-mustard/30"
+    : tone === "mustard" ? "bg-mustard/15 text-mustard border-mustard/30"
     : "bg-secondary text-muted-foreground border-border/60";
   return (
     <div className={"flex items-center gap-3 rounded-2xl border p-4 shadow-soft " + cls}>

@@ -10,7 +10,7 @@ import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, BatteryFull, B
 
 function batteryFor(level: number): { Icon: LucideIcon; tone: string } {
   if (level < 20) return { Icon: BatteryWarning, tone: "text-destructive" };
-  if (level < 40) return { Icon: BatteryLow, tone: "text-warm-foreground" };
+  if (level < 40) return { Icon: BatteryLow, tone: "text-warm" };
   if (level < 75) return { Icon: BatteryMedium, tone: "text-muted-foreground" };
   return { Icon: BatteryFull, tone: "text-success" };
 }

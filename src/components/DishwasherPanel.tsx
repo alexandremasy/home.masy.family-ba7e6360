@@ -40,7 +40,7 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
 
   const statusPill =
     running ? { tone: "bg-primary/15 text-primary", Icon: Play, text: `${d.remainingMin} min restantes` } :
-    paused  ? { tone: "bg-warm/15 text-warm", Icon: Pause, text: "En pause" } :
+    paused  ? { tone: "bg-secondary text-muted-foreground", Icon: Pause, text: "En pause" } :
     finished? { tone: "bg-success/15 text-success", Icon: CheckCircle2, text: "Cycle terminé" } :
     error   ? { tone: "bg-destructive/15 text-destructive", Icon: AlertTriangle, text: d.errorMsg ?? "Erreur" } :
     doorOpen? { tone: "bg-warm/15 text-warm", Icon: DoorOpen, text: "Porte ouverte" } :

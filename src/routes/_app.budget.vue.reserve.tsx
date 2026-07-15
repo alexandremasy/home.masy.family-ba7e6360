@@ -157,7 +157,7 @@ function ReserveOverlay() {
               >
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   {displayed.map((env) => {
-                    const stroke = env.tone === "warm" ? "var(--warm)" : env.tone === "mustard" ? "var(--mustard)" : "var(--primary)";
+                    const stroke = env.tone === "mustard" ? "var(--mustard)" : "var(--primary)";
                     const editing = editKey === env.key;
                     const nextM = nextMonthFor(env.history);
                     return (
