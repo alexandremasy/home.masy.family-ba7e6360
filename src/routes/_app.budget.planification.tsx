@@ -13,6 +13,7 @@ import {
   type PlanPoste, type PlanRecurrence, type PlanOccurrence, type PlanKind, type Recurrence4,
 } from "@/lib/budget-data";
 import { energie } from "@/lib/mock-data";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app/budget/planification")({
   component: PlanificationPage,
@@ -120,19 +121,19 @@ function PlanificationPage() {
             </span>
           )}
           <div className="flex items-center gap-2">
-            <button onClick={() => setYear(y => Math.max(PLAN_MIN_YEAR, y - 1))}
-              disabled={year <= PLAN_MIN_YEAR}
-              aria-label="Année précédente"
-              className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-30">
-              <ChevronLeft className="h-4 w-4" />
-            </button>
+            <Button onClick={() => setYear(y => Math.max(PLAN_MIN_YEAR, y - 1))}
+       disabled={year <= PLAN_MIN_YEAR}
+       aria-label="Année précédente"
+       variant="outline" size="iconRound">
+       <ChevronLeft className="h-4 w-4" />
+      </Button>
             <span className="w-12 text-center font-serif text-lg tabular-nums">{year}</span>
-            <button onClick={() => setYear(y => Math.min(PLAN_MAX_YEAR, y + 1))}
-              disabled={year >= PLAN_MAX_YEAR}
-              aria-label="Année suivante"
-              className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-30">
-              <ChevronRight className="h-4 w-4" />
-            </button>
+            <Button onClick={() => setYear(y => Math.min(PLAN_MAX_YEAR, y + 1))}
+       disabled={year >= PLAN_MAX_YEAR}
+       aria-label="Année suivante"
+       variant="outline" size="iconRound">
+       <ChevronRight className="h-4 w-4" />
+      </Button>
           </div>
         </div>
       </header>

@@ -15,6 +15,7 @@ import {
   Sparkles, X, RefreshCw, Search, Repeat, Info, AlertTriangle, Package, Move,
   ThermometerSun, ChevronLeft, ChevronRight, ChevronDown, SlidersHorizontal,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app/repas/planification")({
   component: RepasPage,
@@ -74,20 +75,20 @@ function RepasPage() {
               </button>
             )}
             <div className="flex items-center gap-1">
-              <button
-                onClick={() => setWeekOffset((o) => o - 1)}
-                aria-label="Semaine précédente"
-                className="grid h-8 w-8 place-items-center rounded-full border border-border/60 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => setWeekOffset((o) => o + 1)}
-                aria-label="Semaine suivante"
-                className="grid h-8 w-8 place-items-center rounded-full border border-border/60 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
+              <Button
+        onClick={() => setWeekOffset((o) => o - 1)}
+        aria-label="Semaine précédente"
+        variant="outline" size="iconRound"
+       >
+        <ChevronLeft className="h-4 w-4" />
+       </Button>
+              <Button
+        onClick={() => setWeekOffset((o) => o + 1)}
+        aria-label="Semaine suivante"
+        variant="outline" size="iconRound"
+       >
+        <ChevronRight className="h-4 w-4" />
+       </Button>
             </div>
           </div>
         </div>

@@ -11,6 +11,7 @@ import {
   monthlyAnnualProvision, annualBalance, MONTHS_FR, eur,
   type CatKey,
 } from "@/lib/budget-data";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app/budget/annuel")({
   component: AnnuelPage,
@@ -64,13 +65,13 @@ function AnnuelPage() {
           <h1 className="mt-1 font-serif text-3xl tracking-tight sm:text-4xl">Année {year}</h1>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => setYear((y) => y - 1)}
-            className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
-          ><ChevronLeft className="h-4 w-4" /></button>
-          <button onClick={() => setYear((y) => Math.min(now.getFullYear(), y + 1))}
-            disabled={year >= now.getFullYear()}
-            className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-30"
-          ><ChevronRight className="h-4 w-4" /></button>
+          <Button onClick={() => setYear((y) => y - 1)}
+      variant="outline" size="iconRound"
+     ><ChevronLeft className="h-4 w-4" /></Button>
+          <Button onClick={() => setYear((y) => Math.min(now.getFullYear(), y + 1))}
+      disabled={year >= now.getFullYear()}
+      variant="outline" size="iconRound"
+     ><ChevronRight className="h-4 w-4" /></Button>
         </div>
       </div>
 

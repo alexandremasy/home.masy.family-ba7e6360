@@ -7,6 +7,7 @@ import {
   monthlyAnnualProvision, MONTHS_FR_LONG, eur,
   type Category, type CatKey,
 } from "@/lib/budget-data";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app/budget/mensuel")({
   component: MensuelPage,
@@ -56,19 +57,17 @@ function MensuelPage() {
           <h1 className="mt-1 font-serif text-3xl tracking-tight sm:text-4xl capitalize">{monthLabel}</h1>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
+          <Button
+            variant="outline" size="iconRound"
             onClick={() => setMonthOffset((o) => o - 1)}
-            className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             aria-label="Mois précédent"
-          ><ChevronLeft className="h-4 w-4" /></button>
-          <button
-            type="button"
+          ><ChevronLeft className="h-4 w-4" /></Button>
+          <Button
+            variant="outline" size="iconRound"
             onClick={() => setMonthOffset((o) => Math.min(0, o + 1))}
             disabled={monthOffset >= 0}
-            className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground disabled:opacity-30 disabled:hover:bg-transparent"
             aria-label="Mois suivant"
-          ><ChevronRight className="h-4 w-4" /></button>
+          ><ChevronRight className="h-4 w-4" /></Button>
           <div className="ml-2 inline-flex rounded-full border border-border/60 bg-card p-0.5 text-xs">
             <button
               onClick={() => setRolling(false)}

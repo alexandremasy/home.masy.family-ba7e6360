@@ -18,6 +18,7 @@ import {
   categoryTrend12, categoryYoY,
   type TemporalState, type UpcomingBill, type BudgetView,
 } from "@/lib/budget-data";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app/budget/vue")({
   component: VuePage,
@@ -42,11 +43,11 @@ function VuePage() {
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:flex sm:flex-wrap sm:justify-between sm:gap-4">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           {zoom !== null && (
-            <button
-              onClick={() => setZoom(null)}
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border/60 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-              aria-label="Retour à la vue d'ensemble"
-            ><ArrowLeft className="h-4 w-4" /></button>
+            <Button
+       onClick={() => setZoom(null)}
+       variant="outline" size="iconRound"
+       aria-label="Retour à la vue d'ensemble"
+      ><ArrowLeft className="h-4 w-4" /></Button>
           )}
           <div className="min-w-0">
             <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
@@ -65,14 +66,14 @@ function VuePage() {
         </div>
         {zoom === null && (
           <div className="flex shrink-0 items-center gap-2">
-            <button onClick={() => setNavIdx((i) => Math.max(0, i - 1))} disabled={navIdx === 0}
-              aria-label="Vers le glissant"
-              className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-30"
-            ><ChevronLeft className="h-4 w-4" /></button>
-            <button onClick={() => setNavIdx((i) => Math.min(NAV_VIEWS.length - 1, i + 1))} disabled={navIdx === NAV_VIEWS.length - 1}
-              aria-label="Vers les années passées"
-              className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-30"
-            ><ChevronRight className="h-4 w-4" /></button>
+            <Button onClick={() => setNavIdx((i) => Math.max(0, i - 1))} disabled={navIdx === 0}
+       aria-label="Vers le glissant"
+       variant="outline" size="iconRound"
+      ><ChevronLeft className="h-4 w-4" /></Button>
+            <Button onClick={() => setNavIdx((i) => Math.min(NAV_VIEWS.length - 1, i + 1))} disabled={navIdx === NAV_VIEWS.length - 1}
+       aria-label="Vers les années passées"
+       variant="outline" size="iconRound"
+      ><ChevronRight className="h-4 w-4" /></Button>
           </div>
         )}
       </header>
@@ -507,12 +508,12 @@ function MonthView({ year, monthIdx, onPrev, onNext }: { year: number; monthIdx:
       <div className="flex flex-wrap items-center justify-between gap-3">
         <StateBadge state={state} />
         <div className="flex items-center gap-2">
-          <button onClick={onPrev} disabled={monthIdx === 0}
-            className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-30"
-          ><ChevronLeft className="h-4 w-4" /></button>
-          <button onClick={onNext} disabled={monthIdx === 11}
-            className="grid h-9 w-9 place-items-center rounded-full border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-30"
-          ><ChevronRight className="h-4 w-4" /></button>
+          <Button onClick={onPrev} disabled={monthIdx === 0}
+            variant="outline" size="iconRound"
+          ><ChevronLeft className="h-4 w-4" /></Button>
+          <Button onClick={onNext} disabled={monthIdx === 11}
+            variant="outline" size="iconRound"
+          ><ChevronRight className="h-4 w-4" /></Button>
         </div>
       </div>
 
