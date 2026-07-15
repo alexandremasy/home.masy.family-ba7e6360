@@ -328,26 +328,10 @@
   .anim-cloud { animation: cloud-drift 4s ease-in-out infinite; }
 
   /* ---- Custom cursor (alexandremasy.com-inspired) ----
-     - .cursor-dot replaces the native cursor with a tiny dot.
-     - .cursor-follower is a soft circle ring that trails the dot when idle,
-       and morphs into a wobbly rounded rectangle snapped to the bounds of
+     - The native system cursor is kept (auto → pointer on interactive elements).
+     - .cursor-follower is a soft circle ring that trails the native cursor when
+       idle, and morphs into a wobbly rounded rectangle snapped to the bounds of
        any interactive element under the cursor. */
-  @media (hover: hover) and (pointer: fine) {
-    html, body, * { cursor: none !important; }
-  }
-  .cursor-dot {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 6px;
-    height: 6px;
-    border-radius: 9999px;
-    background: var(--primary);
-    pointer-events: none;
-    z-index: 60;
-    transition: opacity 0.2s ease, width 0.2s ease, height 0.2s ease;
-    will-change: transform, opacity;
-  }
   .cursor-follower {
     position: fixed;
     top: 0;
