@@ -365,6 +365,30 @@ function RepasTile() {
   );
 }
 
+/** Rooms that are off and empty: they share one slot, one line each, thin edge only. */
+function IdleRoomsTile({ rooms: idle }: { rooms: Room[] }) {
+  return (
+    <div className="col-span-1 flex h-full flex-col gap-1.5 rounded-2xl border-[3px] border-border/50 p-2.5">
+      <p className="px-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70">Au repos</p>
+      <div className="flex flex-1 flex-col justify-around">
+        {idle.map((r) => (
+          <Link
+            key={r.key}
+            to={`/room/${r.key}`}
+            className="group flex items-center gap-2 rounded-lg px-1 py-1.5 transition-colors hover:bg-secondary/50"
+          >
+            <RoomIcon icon={r.icon} className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <span className="min-w-0 flex-1 truncate font-serif text-sm">{r.name}</span>
+            {typeof r.temperature === "number" && (
+              <span className="shrink-0 font-serif text-sm tabular-nums text-muted-foreground">{r.temperature}°</span>
+            )}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /**
  * A dial of ticks — the value fills the arc up to its share of `max`.
  * Reused idea: the same control reads a tank level or a line speed.
