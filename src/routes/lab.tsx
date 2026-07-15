@@ -4,8 +4,9 @@ import { CountUp } from "@/components/CountUp";
 import { meteo, tesla, dishwasher } from "@/lib/mock-data";
 import { people } from "@/lib/maison-data";
 
-// Ambience proof v4 — one merged attention zone (weather lives INSIDE it), eye-level greeting,
-// persistent module dock, light + dark following the browser.
+// Ambience proof v6 — closing the gap with the Novo ref:
+// sober background (no aurora wash), OPAQUE saturated tiles that pop, glass as a single
+// exception, and material (radial-gradient volumes) instead of flat icons.
 export const Route = createFileRoute("/lab")({
   component: LabAmbience,
   head: () => ({ meta: [{ title: "Épreuve d'ambiance — Accueil" }] }),
@@ -38,9 +39,6 @@ function LabAmbience() {
     <div className="lab-root relative min-h-screen w-full overflow-hidden">
       <style>{CSS}</style>
 
-      <div className="lab-blob b1" /><div className="lab-blob b2" /><div className="lab-blob b3" />
-
-      {/* Eye-level start: generous breathing room above the greeting */}
       <div className="relative z-10 mx-auto w-full max-w-2xl px-6 pb-32 pt-[20vh] sm:pt-[24vh]">
 
         {/* Greeting */}
@@ -57,47 +55,55 @@ function LabAmbience() {
           </div>
         </div>
 
-        {/* ---- ONE attention zone — the weather lives inside the bento, not above it ---- */}
+        {/* ---- One attention zone. Rhythm: colour · dark · glass · dark ---- */}
         <div className="lab-in mt-9 grid grid-cols-2 gap-3" style={{ ["--d" as string]: "140ms" }}>
 
-          {/* Moment — wide hero */}
-          <div className="lab-hero col-span-2 relative overflow-hidden rounded-[30px] p-6">
+          {/* MOMENT — opaque saturated hero (the big colour tile) */}
+          <div className="lab-tile-accent col-span-2 relative overflow-hidden rounded-[30px] p-6">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-[11px] uppercase tracking-[0.18em] text-black/55">{m.location} · maintenant</p>
+                <p className="text-[11px] uppercase tracking-[0.18em] text-black/50">{m.location} · maintenant</p>
                 <div className="mt-1 flex items-baseline gap-2 text-black">
                   <span className="font-serif text-6xl tracking-tight"><CountUp to={m.tempC} />°</span>
-                  <span className="text-sm text-black/60">{m.label}</span>
+                  <span className="text-sm text-black/55">{m.label}</span>
                 </div>
-                <p className="mt-2 text-[13px] text-black/55">Le jour décline · coucher {m.sunset}</p>
+                <p className="mt-2 text-[13px] text-black/50">Le jour décline · coucher {m.sunset}</p>
               </div>
               <button className="lab-arrow"><ArrowUpRight className="h-4 w-4" /></button>
             </div>
             <svg viewBox="0 0 320 108" className="mt-3 h-24 w-full overflow-visible">
-              <path d="M 14 96 Q 160 -34 306 96" fill="none" stroke="rgba(0,0,0,0.35)" strokeWidth="1.5" strokeDasharray="3 5" className="lab-arc" />
-              <line x1="14" y1="96" x2="306" y2="96" stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+              <defs>
+                <radialGradient id="sunball" cx="34%" cy="28%" r="72%">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="55%" stopColor="oklch(0.93 0.09 85)" />
+                  <stop offset="100%" stopColor="oklch(0.74 0.15 52)" />
+                </radialGradient>
+              </defs>
+              <path d="M 14 96 Q 160 -34 306 96" fill="none" stroke="rgba(0,0,0,0.30)" strokeWidth="1.5" strokeDasharray="3 5" className="lab-arc" />
+              <line x1="14" y1="96" x2="306" y2="96" stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
               <g className="lab-sun">
-                <circle cx={sunX} cy={sunY} r="16" fill="rgba(0,0,0,0.18)" className="lab-sun-glow" />
-                <circle cx={sunX} cy={sunY} r="7" fill="#fff" />
+                <ellipse cx={sunX} cy={sunY + 13} rx="11" ry="3" fill="rgba(0,0,0,0.18)" />
+                <circle cx={sunX} cy={sunY} r="11" fill="url(#sunball)" />
               </g>
             </svg>
           </div>
 
-          {/* Léo — tall tile (the asymmetry) */}
+          {/* LÉO — second colour tile, saturated, with an overflowing volume */}
           {leo && (
-            <div className="lab-glass row-span-2 flex flex-col justify-between rounded-3xl p-5">
-              <div>
-                <span className="grid h-11 w-11 place-items-center rounded-full text-black" style={{ background: "linear-gradient(140deg, var(--amber), var(--terra))" }}><Cake className="h-5 w-5" /></span>
-                <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-[color:var(--hot)]">Aujourd'hui</p>
-                <p className="mt-1 font-serif text-xl leading-tight text-[color:var(--ink)]">Léo a 34 ans</p>
-                <p className="mt-1.5 text-[12px] leading-relaxed text-[color:var(--dim)]">Un mot lui ferait plaisir.</p>
+            <div className="lab-tile-deep row-span-2 relative flex flex-col justify-between overflow-hidden rounded-3xl p-5">
+              <span className="lab-orb-3d" aria-hidden />
+              <div className="relative">
+                <span className="grid h-11 w-11 place-items-center rounded-full bg-black/20 text-white"><Cake className="h-5 w-5" /></span>
+                <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-white/70">Aujourd'hui</p>
+                <p className="mt-1 font-serif text-xl leading-tight text-white">Léo a 34 ans</p>
+                <p className="mt-1.5 text-[12px] leading-relaxed text-white/70">Un mot lui ferait plaisir.</p>
               </div>
-              <button className="mt-4 w-full rounded-full bg-[color:var(--amber)] py-2 text-[13px] font-medium text-black transition-transform hover:scale-[1.02]">Écrire</button>
+              <button className="relative mt-4 w-full rounded-full bg-white py-2 text-[13px] font-medium text-black transition-transform hover:scale-[1.02]">Écrire</button>
             </div>
           )}
 
-          {/* Music — vertical compact tile */}
-          <div className="lab-glass flex flex-col justify-between rounded-3xl p-4">
+          {/* MUSIC — dark opaque surface */}
+          <div className="lab-surface flex flex-col justify-between rounded-3xl p-4">
             <div className="flex items-start justify-between">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--hot)]"><Music className="h-4 w-4" /></span>
               <div className="lab-eq" aria-hidden><i /><i /><i /><i /></div>
@@ -108,7 +114,7 @@ function LabAmbience() {
             </div>
           </div>
 
-          {/* Bernard — vertical compact tile */}
+          {/* BERNARD — THE glass exception */}
           <div className="lab-glass flex flex-col justify-between rounded-3xl p-4">
             <div className="flex items-start justify-between">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--ink)]"><Car className="h-4 w-4" /></span>
@@ -120,14 +126,14 @@ function LabAmbience() {
             </div>
           </div>
 
-          {/* Dishwasher — wide strip */}
-          <div className="lab-glass col-span-2 rounded-3xl p-4">
+          {/* DISHWASHER — dark opaque strip */}
+          <div className="lab-surface col-span-2 rounded-3xl p-4">
             <div className="flex items-center justify-between">
               <p className="text-[13px] font-medium text-[color:var(--ink)]">Lave-vaisselle · {dishwasher.phase}</p>
               <p className="text-[11px] text-[color:var(--dim)]">fin ~20:30</p>
             </div>
             <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-[color:var(--track)]">
-              <div className="lab-bar h-full rounded-full" style={{ ["--p" as string]: `${dishwasher.progressPct}%`, background: "linear-gradient(90deg, var(--terra), var(--amber))" }} />
+              <div className="lab-bar h-full rounded-full" style={{ ["--p" as string]: `${dishwasher.progressPct}%`, background: "linear-gradient(90deg, var(--accent-deep), var(--accent-lite))" }} />
             </div>
           </div>
         </div>
@@ -137,14 +143,14 @@ function LabAmbience() {
         </p>
       </div>
 
-      {/* ---- Global module nav — persistent, discreet, always one tap away ---- */}
+      {/* Global module nav */}
       <nav className="lab-in lab-dock fixed bottom-5 left-1/2 z-50 flex -translate-x-1/2 items-center gap-1 rounded-full px-2 py-2" style={{ ["--d" as string]: "460ms" }}>
         {MODULES.map((mod) => {
           const Icon = mod.icon;
           return (
             <button key={mod.key} aria-label={mod.label} className="lab-dock-btn group relative grid h-11 w-11 place-items-center rounded-full text-[color:var(--dim)]">
               <Icon className="h-[18px] w-[18px]" />
-              {mod.alert && <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[color:var(--terra)]" />}
+              {mod.alert && <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[color:var(--accent-deep)]" />}
               <span className="lab-tip">{mod.label}</span>
             </button>
           );
@@ -155,72 +161,59 @@ function LabAmbience() {
 }
 
 const CSS = `
-/* ---------- LIGHT (default) — warm, aurora present enough for glass to exist ---------- */
+/* ---------- LIGHT — sober cream, colour lives in the tiles ---------- */
 .lab-root {
-  --bg0: oklch(0.98 0.012 85); --bg1: oklch(0.955 0.028 62);
-  --ink: oklch(0.26 0.03 40); --dim: oklch(0.52 0.03 50);
-  --amber: oklch(0.82 0.13 68); --terra: oklch(0.64 0.16 33); --hot: oklch(0.58 0.16 35);
-  --glass-bg: rgba(255,255,255,0.55); --glass-br: rgba(255,255,255,0.8);
-  --glass-sh: 0 24px 60px -30px rgba(90,50,20,0.4); --glass-hl: rgba(255,255,255,0.9);
+  --bg: oklch(0.965 0.010 80);
+  --surface: oklch(1 0 0); --surface-br: oklch(0.90 0.012 80);
+  --ink: oklch(0.24 0.03 40); --dim: oklch(0.50 0.03 50); --hot: oklch(0.58 0.16 35);
+  --accent-lite: oklch(0.84 0.115 72); --accent-deep: oklch(0.62 0.16 34);
+  --glass-bg: rgba(255,255,255,0.55); --glass-br: rgba(255,255,255,0.85);
   --chip: rgba(0,0,0,0.05); --track: rgba(0,0,0,0.08);
-  --blob1: oklch(0.74 0.14 33 / 0.30); --blob2: oklch(0.86 0.12 72 / 0.32); --blob3: oklch(0.68 0.09 330 / 0.14);
+  --sh: 0 18px 44px -24px rgba(80,45,20,0.35);
   --ease: cubic-bezier(0.2,0.7,0.2,1);
-  background: radial-gradient(130% 100% at 50% -10%, var(--bg0), var(--bg1) 75%);
-  color: var(--ink);
+  background: var(--bg); color: var(--ink);
 }
-/* ---------- DARK — follows the browser, or a forced .dark class ---------- */
+/* ---------- DARK — sober warm-black, colour lives in the tiles ---------- */
 @media (prefers-color-scheme: dark) {
   .lab-root {
-    --bg0: oklch(0.19 0.035 42); --bg1: oklch(0.13 0.028 32);
-    --ink: oklch(0.96 0.015 75); --dim: oklch(0.72 0.03 62); --hot: oklch(0.82 0.13 68);
-    --glass-bg: rgba(255,248,240,0.055); --glass-br: rgba(255,238,222,0.13);
-    --glass-sh: 0 24px 60px -30px rgba(0,0,0,0.7); --glass-hl: rgba(255,244,232,0.14);
+    --bg: oklch(0.145 0.018 32);
+    --surface: oklch(0.205 0.020 34); --surface-br: oklch(0.26 0.02 34);
+    --ink: oklch(0.96 0.012 75); --dim: oklch(0.66 0.02 60); --hot: oklch(0.84 0.115 72);
+    --glass-bg: rgba(255,248,240,0.07); --glass-br: rgba(255,238,222,0.14);
     --chip: rgba(255,255,255,0.10); --track: rgba(255,255,255,0.10);
-    --blob1: oklch(0.66 0.15 33 / 0.55); --blob2: oklch(0.80 0.12 68 / 0.40); --blob3: oklch(0.50 0.13 330 / 0.28);
+    --sh: 0 24px 60px -28px rgba(0,0,0,0.75);
   }
 }
 .dark .lab-root {
-  --bg0: oklch(0.19 0.035 42); --bg1: oklch(0.13 0.028 32);
-  --ink: oklch(0.96 0.015 75); --dim: oklch(0.72 0.03 62); --hot: oklch(0.82 0.13 68);
-  --glass-bg: rgba(255,248,240,0.055); --glass-br: rgba(255,238,222,0.13);
-  --glass-sh: 0 24px 60px -30px rgba(0,0,0,0.7); --glass-hl: rgba(255,244,232,0.14);
+  --bg: oklch(0.145 0.018 32);
+  --surface: oklch(0.205 0.020 34); --surface-br: oklch(0.26 0.02 34);
+  --ink: oklch(0.96 0.012 75); --dim: oklch(0.66 0.02 60); --hot: oklch(0.84 0.115 72);
+  --glass-bg: rgba(255,248,240,0.07); --glass-br: rgba(255,238,222,0.14);
   --chip: rgba(255,255,255,0.10); --track: rgba(255,255,255,0.10);
-  --blob1: oklch(0.66 0.15 33 / 0.55); --blob2: oklch(0.80 0.12 68 / 0.40); --blob3: oklch(0.50 0.13 330 / 0.28);
+  --sh: 0 24px 60px -28px rgba(0,0,0,0.75);
 }
-.lab-glass {
-  background: var(--glass-bg); border: 1px solid var(--glass-br);
-  backdrop-filter: blur(22px) saturate(1.25);
-  box-shadow: var(--glass-sh), inset 0 1px 0 var(--glass-hl);
-}
+/* Opaque tiles — the pop */
+.lab-tile-accent { background: var(--accent-lite); box-shadow: var(--sh), inset 0 1px 0 rgba(255,255,255,0.4); }
+.lab-tile-deep { background: var(--accent-deep); box-shadow: var(--sh), inset 0 1px 0 rgba(255,255,255,0.25); }
+.lab-surface { background: var(--surface); border: 1px solid var(--surface-br); box-shadow: var(--sh); }
+/* Glass — the single exception */
+.lab-glass { background: var(--glass-bg); border: 1px solid var(--glass-br); backdrop-filter: blur(20px) saturate(1.2); box-shadow: var(--sh), inset 0 1px 0 var(--glass-br); }
+/* Material — an overflowing volume inside the deep tile */
+.lab-orb-3d { position:absolute; right:-28%; bottom:-16%; width:74%; aspect-ratio:1; border-radius:999px;
+  background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.85), rgba(255,255,255,0.28) 42%, rgba(0,0,0,0.16) 78%);
+  filter: blur(0.4px); opacity:.5; pointer-events:none; }
 .lab-orb { display:grid; place-items:center; width:40px; height:40px; border-radius:999px; color:var(--dim);
-  background: var(--glass-bg); border:1px solid var(--glass-br); backdrop-filter: blur(12px); }
-.lab-arrow { display:grid; place-items:center; width:36px; height:36px; border-radius:999px; color:#000; background: rgba(0,0,0,0.14); }
-.lab-hero { background: linear-gradient(150deg, var(--amber), var(--terra));
-  box-shadow: 0 30px 70px -28px oklch(0.64 0.16 33 / 0.55), inset 0 1px 0 rgba(255,255,255,0.35); }
+  background: var(--surface); border:1px solid var(--surface-br); }
+.lab-arrow { display:grid; place-items:center; width:36px; height:36px; border-radius:999px; color:#000; background: rgba(0,0,0,0.13); }
 /* Dock */
-.lab-dock { background: var(--glass-bg); border:1px solid var(--glass-br); backdrop-filter: blur(24px) saturate(1.3); box-shadow: var(--glass-sh); }
+.lab-dock { background: var(--surface); border:1px solid var(--surface-br); box-shadow: var(--sh); }
 .lab-dock-btn { transition: background .25s var(--ease), color .25s var(--ease), transform .25s var(--ease); }
 .lab-dock-btn:hover { background: var(--chip); color: var(--hot); transform: translateY(-2px); }
-/* Tooltip — glass, rises on hover/focus */
-.lab-tip {
-  position:absolute; bottom: calc(100% + 10px); left:50%;
-  transform: translateX(-50%) translateY(4px) scale(.96);
-  padding: 5px 10px; border-radius: 999px; white-space: nowrap;
-  font-size: 12px; line-height: 1; color: var(--ink);
-  background: var(--glass-bg); border: 1px solid var(--glass-br);
-  backdrop-filter: blur(18px) saturate(1.3); box-shadow: var(--glass-sh);
-  opacity: 0; pointer-events: none;
-  transition: opacity .2s var(--ease), transform .25s var(--ease);
-}
-.lab-dock-btn:hover .lab-tip, .lab-dock-btn:focus-visible .lab-tip {
-  opacity: 1; transform: translateX(-50%) translateY(0) scale(1);
-}
-/* Aurora */
-.lab-blob { position:absolute; border-radius:999px; filter: blur(90px); pointer-events:none; z-index:0; }
-.b1 { left:-14%; top:-8%; width:64vh; height:64vh; background: radial-gradient(circle, var(--blob1), transparent 70%); animation: lab-float 18s ease-in-out infinite; }
-.b2 { right:-12%; top:4%; width:58vh; height:58vh; background: radial-gradient(circle, var(--blob2), transparent 70%); animation: lab-float 24s ease-in-out infinite reverse; }
-.b3 { left:18%; bottom:-16%; width:60vh; height:60vh; background: radial-gradient(circle, var(--blob3), transparent 70%); animation: lab-float 28s ease-in-out infinite; }
-@keyframes lab-float { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(5%,4%) scale(1.1);} }
+.lab-tip { position:absolute; bottom: calc(100% + 10px); left:50%; transform: translateX(-50%) translateY(4px) scale(.96);
+  padding:5px 10px; border-radius:999px; white-space:nowrap; font-size:12px; line-height:1; color:var(--ink);
+  background: var(--surface); border:1px solid var(--surface-br); box-shadow: var(--sh);
+  opacity:0; pointer-events:none; transition: opacity .2s var(--ease), transform .25s var(--ease); }
+.lab-dock-btn:hover .lab-tip, .lab-dock-btn:focus-visible .lab-tip { opacity:1; transform: translateX(-50%) translateY(0) scale(1); }
 /* Motion */
 @keyframes lab-rise { from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:none;} }
 .lab-in { opacity:0; animation: lab-rise .7s var(--ease) forwards; animation-delay: var(--d,0ms); }
@@ -228,8 +221,6 @@ const CSS = `
 .lab-arc { animation: lab-draw 1.6s var(--ease) .5s both; }
 @keyframes lab-sun-in { from{opacity:0; transform:scale(.4);} to{opacity:1; transform:scale(1);} }
 .lab-sun { transform-box: fill-box; transform-origin:center; animation: lab-sun-in .8s var(--ease) 1.2s both; }
-@keyframes lab-glow { 0%,100%{opacity:.5; r:15;} 50%{opacity:.85; r:19;} }
-.lab-sun-glow { animation: lab-glow 3.5s ease-in-out infinite 1.6s; }
 .lab-eq { display:flex; align-items:flex-end; gap:2.5px; height:16px; }
 .lab-eq i { width:3px; border-radius:2px; background: var(--hot); height:40%; animation: lab-bars 1s ease-in-out infinite; }
 .lab-eq i:nth-child(2){animation-delay:.2s;} .lab-eq i:nth-child(3){animation-delay:.45s;} .lab-eq i:nth-child(4){animation-delay:.1s;}
