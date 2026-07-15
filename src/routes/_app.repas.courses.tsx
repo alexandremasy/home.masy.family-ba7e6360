@@ -9,9 +9,9 @@ import {
 } from "@/lib/maison-data";
 import { Check, Plus, Minus, X, ShoppingBasket, Sparkles, PenLine, Undo2 } from "lucide-react";
 
-export const Route = createFileRoute("/_app/maison/courses")({
+export const Route = createFileRoute("/_app/repas/courses")({
   component: CoursesPage,
-  head: () => ({ meta: [{ title: "Courses — Maison" }] }),
+  head: () => ({ meta: [{ title: "Courses — Repas" }] }),
 });
 
 function CoursesPage() {

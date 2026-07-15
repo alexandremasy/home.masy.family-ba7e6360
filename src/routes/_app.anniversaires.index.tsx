@@ -3,7 +3,7 @@ import { Section } from "@/components/Card";
 import { people, nextBirthday, daysUntil, upcomingAge, frLongDay } from "@/lib/maison-data";
 import { Cake, ArrowRight, Bell } from "lucide-react";
 
-export const Route = createFileRoute("/_app/maison/anniversaires/")({
+export const Route = createFileRoute("/_app/anniversaires/")({
   component: AnniversairesPage,
   head: () => ({ meta: [{ title: "Anniversaires — Maison" }] }),
 });
@@ -27,7 +27,7 @@ function AnniversairesPage() {
               </p>
             </div>
             <Link
-              to="/maison/anniversaires/$personId"
+              to="/anniversaires/$personId"
               params={{ personId: upcoming.id }}
               className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-transform hover:translate-x-0.5"
             >
@@ -45,7 +45,7 @@ function AnniversairesPage() {
             return (
               <li key={p.id}>
                 <Link
-                  to="/maison/anniversaires/$personId"
+                  to="/anniversaires/$personId"
                   params={{ personId: p.id }}
                   className="group flex items-center gap-3 py-3 transition-colors hover:bg-secondary/40 -mx-2 px-2 rounded-lg"
                 >

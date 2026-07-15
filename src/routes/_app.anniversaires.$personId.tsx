@@ -10,7 +10,7 @@ import {
 } from "@/lib/maison-data";
 import { ArrowLeft, Cake, Copy, RefreshCw, Sparkles, Check, History } from "lucide-react";
 
-export const Route = createFileRoute("/_app/maison/anniversaires/$personId")({
+export const Route = createFileRoute("/_app/anniversaires/$personId")({
   component: PersonStudio,
   head: ({ params }) => ({ meta: [{ title: `${params.personId} — Anniversaires` }] }),
 });
@@ -40,7 +40,7 @@ function PersonStudio() {
   return (
     <div className="space-y-6">
       <Link
-        to="/maison/anniversaires"
+        to="/anniversaires"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-3.5 w-3.5" /> Tous les anniversaires
