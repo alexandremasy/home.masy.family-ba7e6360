@@ -136,11 +136,6 @@ export function DishForm({
           <Segmented value={d.rechauffable} options={YES_NO} onChange={(v) => set("rechauffable", v)} />
         </Field>
       </div>
-      {/* The engine hard-filters weekday lunches on these two — worth saying out loud. */}
-      <p className="-mt-3 text-xs text-muted-foreground">
-        Un midi de semaine n'accepte que les plats emportables et réchauffables.
-      </p>
-
       <div className="flex flex-wrap gap-x-8 gap-y-5">
         <Field label="Effort">
           <Segmented value={d.effort} options={EFFORT_OPTIONS} onChange={(v) => set("effort", v)} />
