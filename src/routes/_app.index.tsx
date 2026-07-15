@@ -279,14 +279,6 @@ export function Dashboard() {
           </div>
         </Tile>
 
-        {/* Sécurité — mosaïque caméras */}
-        <SecurityTile />
-
-        {/* Lave-vaisselle */}
-        <DishwasherTile />
-
-        {/* Aspirateur */}
-        <VacuumTile />
       </div>
 
     </div>
