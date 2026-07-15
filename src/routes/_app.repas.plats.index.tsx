@@ -1,12 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
+import { DishCard, StatusPill } from "@/components/DishCard";
 import { useDishes } from "@/lib/dishes-store";
 import { initialPlan, effortLevel, fmtMinutes, type Base, type Dish } from "@/lib/maison-data";
-import { cap } from "@/lib/utils";
 import { Search, Package, Repeat, Zap, Flame, Plus } from "lucide-react";
 
 export const Route = createFileRoute("/_app/repas/plats/")({
@@ -60,14 +59,15 @@ function PlatsPage() {
         </p>
       ) : (
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {results.map((d) => <DishCard key={d.id} dish={d} plannedCount={planned.get(d.id) ?? 0} />)}
+          {results.map((d) => <CatalogueCard key={d.id} dish={d} plannedCount={planned.get(d.id) ?? 0} />)}
         </div>
       )}
     </div>
   );
 }
 
-function DishCard({ dish, plannedCount }: { dish: Dish; plannedCount: number }) {
+/** The catalogue shell around the shared DishCard body. */
+function CatalogueCard({ dish, plannedCount }: { dish: Dish; plannedCount: number }) {
   return (
     <Link
       to="/repas/plats/$dishId"
@@ -77,20 +77,11 @@ function DishCard({ dish, plannedCount }: { dish: Dish; plannedCount: number }) 
       <DishCard
         dish={dish}
         status={
+          // "Au plan · 2×" = it sits on the current plan twice. Not to be
+          // confused with the "Couvre 2 repas" tag, which is what one cook yields.
           plannedCount > 0
-            ? <StatusPill tone="primary">×{plannedCount} au plan</StatusPill>
+            ? <StatusPill tone="primary" title="Planifié sur la fenêtre courante">Au plan · {plannedCount}×</StatusPill>
             : undefined
-        }
-        footer={
-          // The catalogue's own extra: the practical properties, at a glance.
-          <div className="mt-3 flex flex-wrap items-center gap-2.5 text-[11px] text-muted-foreground">
-            {dish.emportable && <span className="inline-flex items-center gap-1"><Package className="h-3 w-3" />emportable</span>}
-            {dish.rendement > 1 && <span className="inline-flex items-center gap-1"><Repeat className="h-3 w-3" />{dish.rendement} créneaux</span>}
-            <span className="inline-flex items-center gap-1">
-              {dish.effort === 1 ? <Zap className="h-3 w-3" /> : <Flame className="h-3 w-3" />}
-              {effortLevel(dish.effort).label.toLowerCase()} · {fmtMinutes(effortLevel(dish.effort).minutes)}
-            </span>
-          </div>
         }
       />
     </Link>
