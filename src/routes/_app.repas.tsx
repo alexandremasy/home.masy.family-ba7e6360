@@ -33,7 +33,7 @@ function RepasLayout() {
       <div className="space-y-6">
         <PageHeader
           title="Repas"
-          subtitle="Fenêtre glissante de ~10 jours, cohérence évaluée sur 2 semaines."
+          subtitle="Ce qu'on mange, midi et soir. On cuisine le weekend, on emporte la semaine."
           variant="page"
         />
 
