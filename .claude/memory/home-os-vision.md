@@ -32,8 +32,18 @@ administration in depth** — on arrival you get presence (greeting, aurora, the
 deserves attention); you *descend* into density only when you choose to act. This is the same
 attention-first model as [[dashboard-design-direction]].
 
-**Open — Alex to answer:** the one-word feeling he wants on arrival (serenity? warmth? being
-awaited?) — that word is the compass. Next step proposed: prototype an "ambience proof" of the
+**Compass (answered):** the feeling Alex wants, on every surface, is **"une ambiance de maison
+chaleureuse et profondément humaine"** — warmth + the people first (not sensors). Arrival must be
+*alive* (motion, like his video ref), and NOT hang on a rare event (a birthday isn't every day, and
+on a birthday other things happen too) → the pillar is a permanent living "moment" (time, light, sun
+arc) + a flux of what's happening now; a birthday is just one card in the flux.
+
+**Design learning — glass needs contrast.** Translucent "liquid glass" cards on the near-white cream
+background read as white-on-white: no depth, no material. To make glass exist you need contrast
+BEHIND the cards — either (A) a much stronger, living warm aurora, or (B) darker/night zones (like
+the dashboard's dark Bernard card). Open branch for Alex to pick (A lit & warm vs B dark & cinematic).
+
+**Open — Alex to answer:** Next step proposed: prototype an "ambience proof" of the
 arrival screen (living aurora + greeting + the card that matters + glass module access) to judge
 the emotion live, NOT the full refactor yet. Working mode: prototype in the live mockup, screenshot,
 iterate (see [[live-access-and-brief-workflow]]).
