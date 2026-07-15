@@ -275,7 +275,7 @@ function EnergieModule({ onClose }: { onClose: () => void }) {
               <span className="grid h-9 w-9 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--hot)]"><Zap className="h-4 w-4" /></span>
               <span className="inline-flex items-center gap-1 text-[11px] text-[color:var(--dim)]"><TrendingDown className="h-3 w-3" />{el.trendPct}%</span>
             </div>
-            <p className="mt-4 font-serif text-3xl tracking-tight text-[color:var(--ink)]"><CountUp to={el.dailyKWh} /> <span className="text-base text-[color:var(--dim)]">kWh/j</span></p>
+            <p className="mt-4 font-serif text-3xl tracking-tight text-[color:var(--ink)]"><CountUp to={el.dailyKWh} decimals={1} /> <span className="text-base text-[color:var(--dim)]">kWh/j</span></p>
             <p className="mt-0.5 text-[11px] text-[color:var(--dim)]">Jour {el.dayTotal} · Nuit {el.nightTotal} · moy. 90j {el.avg90dKWh}</p>
           </div>
 
