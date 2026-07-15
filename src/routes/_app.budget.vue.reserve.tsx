@@ -11,6 +11,7 @@ import { CountUp } from "@/components/CountUp";
 import { Section } from "@/components/Card";
 import { envelopes, eur, savingsStockSeries, envelopeHistory, MONTHS_FR, type BudgetView } from "@/lib/budget-data";
 import { Eyebrow } from "@/components/Eyebrow";
+import { OverlayCloseLink } from "@/components/OverlayCloseLink";
 
 // A MODAL with its own route (nested under /budget/vue), rendered with the SAME overlay system as
 // the Maison room pages: blurred backdrop + max-w-5xl panel + a fixed centered close pill, plus the
@@ -234,14 +235,7 @@ function ReserveOverlay() {
         </div>
       </div>
 
-      {/* Close pill — same as the room overlay: fixed, centered at the top of the viewport */}
-      <Link
-        to="/budget/vue"
-        aria-label="Fermer"
-        className="fixed left-1/2 top-4 z-30 grid h-9 w-9 -translate-x-1/2 place-items-center rounded-full bg-secondary text-foreground/70 shadow-soft transition-colors hover:bg-secondary/80 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:top-6"
-      >
-        <X className="h-4 w-4" />
-      </Link>
+      <OverlayCloseLink to="/budget/vue" />
     </div>,
     document.body,
   );

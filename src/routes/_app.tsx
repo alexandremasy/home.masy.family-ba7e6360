@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { createFileRoute, Outlet, useLocation, useNavigate, Link } from "@tanstack/react-router";
-import { X } from "lucide-react";
 import { TopNav } from "@/components/TopNav";
 import { footerLines } from "@/lib/mock-data";
 import { Dashboard } from "./_app.index";
+import { OverlayCloseLink } from "@/components/OverlayCloseLink";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
@@ -97,13 +97,7 @@ function AppLayout() {
               </div>
             </div>
           </div>
-          <Link
-            to="/"
-            aria-label="Fermer"
-            className="fixed left-1/2 top-4 z-30 grid h-9 w-9 -translate-x-1/2 place-items-center rounded-full bg-secondary text-foreground/70 shadow-soft transition-colors hover:bg-secondary/80 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:top-6"
-          >
-            <X className="h-4 w-4" />
-          </Link>
+          <OverlayCloseLink to="/" />
         </div>
       )}
     </div>
