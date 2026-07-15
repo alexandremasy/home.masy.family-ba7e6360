@@ -266,25 +266,32 @@ export function Dashboard() {
  * What matters first is WHOSE birthday it is; the age comes second.
  */
 function BirthdayTile() {
-  const next = [...people]
+  const sorted = [...people]
     .map((p) => ({ p, days: daysUntil(nextBirthday(p)) }))
-    .sort((a, b) => a.days - b.days)[0];
-  if (!next) return null;
+    .sort((a, b) => a.days - b.days);
+  const [first, second] = sorted;
+  if (!first) return null;
 
-  const { p, days } = next;
-  const today = days === 0;
-  const when = today ? "Auj." : days === 1 ? "Demain" : `Dans ${days} j`;
+  const today = first.days === 0;
+  const when = today ? "Auj." : first.days === 1 ? "Demain" : `Dans ${first.days} j`;
 
   return (
-    <Tile span={1} to="/maison/anniversaires" tone={today ? "warm" : "default"} className="relative overflow-hidden">
+    <Tile span={1} to="/maison/anniversaires" tone={today ? "warm" : "default"} className="relative flex flex-col overflow-hidden">
       <Cake className={"pointer-events-none absolute -right-5 -top-5 h-28 w-28 " + (today ? "opacity-15" : "opacity-[0.06]")} />
       <div className="relative">
         <p className={"text-xs uppercase tracking-[0.18em] " + (today ? "opacity-70" : "text-muted-foreground")}>{when}</p>
-        <p className="mt-1 font-serif text-lg leading-tight">Anniversaire de {p.name}</p>
+        <p className="mt-1 font-serif text-lg leading-tight">Anniversaire de {first.p.name}</p>
         <p className={"mt-0.5 text-xs " + (today ? "opacity-80" : "text-muted-foreground")}>
-          {upcomingAge(p)} ans · {p.relation}
+          {upcomingAge(first.p)} ans · {first.p.relation}
         </p>
       </div>
+
+      {/* the one after — a quiet footnote */}
+      {second && (
+        <div className={"relative mt-auto border-t pt-2 text-[11px] " + (today ? "border-foreground/15 opacity-70" : "border-border/60 text-muted-foreground")}>
+          Puis {second.p.name} · dans {second.days} j
+        </div>
+      )}
     </Tile>
   );
 }
