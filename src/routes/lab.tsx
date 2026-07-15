@@ -147,8 +147,8 @@ function LabAmbience() {
             </div>
           )}
 
-          {/* MAZOUT — the ticked gauge, on a subject that earns it */}
-          <button className="surface group flex flex-col rounded-3xl p-4 text-left">
+          {/* MAZOUT — the ticked gauge, on a subject that earns it. It's also the door in. */}
+          <button onClick={() => setOpenModule("energie")} className="surface group flex flex-col rounded-3xl p-4 text-left">
             <div className="flex w-full items-start justify-between">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--accent-deep)]"><Flame className="h-4 w-4" /></span>
               <Arrow />
