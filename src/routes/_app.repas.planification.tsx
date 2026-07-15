@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { DishFilters, applyFilter, isFilterActive, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
+import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
 import {
   dishById, suggestFor, coherenceSignals, initialPlan, calWeeks, iso,
   isWeekend, frLongDay, addDays, dayWeather, weatherHintFor, TODAY,
