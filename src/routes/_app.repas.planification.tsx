@@ -443,8 +443,9 @@ function SuggestionCard({
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onPick(dish, false); }
       }}
       className={
-        "group relative flex cursor-pointer flex-col rounded-xl border border-border/60 p-3 text-left transition-all hover:border-primary hover:bg-secondary/40 hover:shadow-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-ring " +
-        (leftover ? "bg-primary/[0.04]" : "")
+        "group relative flex cursor-pointer flex-col rounded-xl border bg-card p-3 text-left transition-all hover:shadow-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-ring " +
+        // A leftover keeps the white card and earns a primary border instead.
+        (leftover ? "border-primary" : "border-border/60 hover:border-primary")
       }
     >
       <div className="flex items-start justify-between gap-2">
@@ -456,11 +457,14 @@ function SuggestionCard({
         )}
       </div>
 
-      {/* Composition — what's in it. The first thing you scan after the name. */}
-      <p className="mt-1.5 line-clamp-2 text-[11px] leading-relaxed text-muted-foreground">
-        {dish.modifiers.map((m) => m.name).join(" · ")}
-      </p>
+      {/* Composition — the project's standard tag (Badge, secondary). */}
+      <div className="mt-2 flex flex-wrap gap-1">
+        {dish.modifiers.map((m) => (
+          <Badge key={m.name} variant="secondary" className="text-[10px] font-normal">{m.name}</Badge>
+        ))}
+      </div>
 
+      {/* Facets — outlined, echoing the filter bar. A different family on purpose. */}
       <div className="mt-2.5 flex flex-wrap items-center gap-1">
         <Facet>{dish.base}</Facet>
         <Facet>{dish.densite}</Facet>
