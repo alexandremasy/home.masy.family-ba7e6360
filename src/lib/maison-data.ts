@@ -405,6 +405,15 @@ export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: 
       return { dish, reason: "non emportable", score: -100 };
     }
 
+    // Rendement rules the repetition. One cook covers `rendement` slots:
+    //  - all of them placed → the cook is used up, stop proposing it
+    //  - some still open    → finishing it beats cooking something new, so it leads
+    const placed = dishCount.get(dish.id) ?? 0;
+    const remaining = dish.rendement - placed;
+    if (remaining <= 0) {
+      return { dish, reason: "déjà couvert sur la fenêtre", score: -100 };
+    }
+
     // Density default
     if (slot === "midi" && dish.densite === "complet") s += 8;
     if (slot === "soir" && dish.densite === "léger") s += 8;
@@ -418,20 +427,23 @@ export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: 
     // Effort constraint: weekday = no long dishes
     if (!weekend && dish.effort >= 4) s -= 12;
 
-    // Variety penalties
-    const alreadyDish = dishCount.get(dish.id) ?? 0;
-    s -= alreadyDish * 18;
+    // Variety, at component level (the pinned dish repeats, everything else varies)
     const overlap = dish.modifiers.reduce((acc, m) => acc + Math.min(2, compCount.get(m.name) ?? 0), 0);
     s -= overlap * 2;
 
-    // Compose reason
-    if (heat && dish.temperature === "froid") reason = "canicule → froid";
-    else if (weekend && dish.tags?.includes("batch")) reason = "batch weekend, couvre 2–3 slots";
-    else if (isMidi && dish.emportable) reason = "emportable · réchauffable";
-    else if (slot === "soir" && dish.densite === "léger") reason = "léger pour le soir";
-    else reason = "variété OK";
+    const leftover = placed > 0;
+    if (leftover) {
+      // Outranks the component-overlap penalty it necessarily incurs against itself.
+      s += 40;
+      reason = `cuisson déjà prévue · ${remaining} créneau${remaining > 1 ? "x" : ""} à écouler`;
+      return { dish, reason, score: s, leftover, remaining };
+    }
 
-    return { dish, reason, score: s };
+    if (heat && dish.temperature === "froid") reason = "canicule → froid";
+    else if (weekend && dish.tags?.includes("batch")) reason = "batch weekend";
+    else reason = "";
+
+    return { dish, reason, score: s, remaining };
   });
 
   return scored
