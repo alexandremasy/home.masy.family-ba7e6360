@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { WeatherIcon } from "@/components/WeatherIcon";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
 import {
@@ -336,18 +335,12 @@ function SlotPicker({
     <>
       <DialogHeader>
         <DialogTitle className="flex items-center gap-2 font-serif text-xl">
-          {frLongDay(date)} · {slot === "midi" ? "Midi" : "Soir"}
+          {cap(frLongDay(date))} · {slot === "midi" ? "Midi" : "Soir"}
           <span className="inline-flex items-center gap-1 rounded-full border border-border/60 px-2 py-0.5 text-[11px] font-normal text-muted-foreground">
             <WeatherIcon cond={w.cond} className="h-3 w-3" animated={false} />
             {w.maxC}°
           </span>
         </DialogTitle>
-        <DialogDescription>
-          {isWeekend(date)
-            ? "Weekend, souple — c'est aussi le jour de production."
-            : slot === "midi" ? "Midi semaine → emportable + réchauffable." : "Soir semaine → plutôt léger."}
-          {w.heatwave && " Forte chaleur : les suggestions basculent vers froid/léger."}
-        </DialogDescription>
       </DialogHeader>
 
       <div className="space-y-2.5">
@@ -357,13 +350,13 @@ function SlotPicker({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Chercher un plat, ou un reste à écouler…"
-            className="pl-8"
+            className="bg-card pl-8"
           />
         </div>
         <DishFilters value={filter} onChange={setFilter} bases={bases} />
       </div>
 
-      <div className="max-h-[55vh] space-y-5 overflow-y-auto">
+      <div className="max-h-[55vh] space-y-7 overflow-y-auto">
         {shown.length === 0 && (
           <p className="px-1 py-6 text-sm text-muted-foreground">
             Aucun plat ne correspond — élargissez les critères.
