@@ -22,7 +22,7 @@ const upcoming = [
 
 export function ModeSwitcher() {
   const { pathname } = useLocation();
-  const current = pathname.startsWith("/budget") ? modes[1] : modes[0];
+  const current = modes.find((m) => m.to !== "/" && pathname.startsWith(m.to)) ?? modes[0];
   const Icon = current.icon;
 
   return (
