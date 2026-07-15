@@ -90,6 +90,11 @@
   --ring: oklch(0.62 0.10 195);
 }
 
+/* From lg the nav pills move up into the single bar — see TopNav. */
+@media (min-width: 1024px) {
+  :root { --nav-h: 69px; }
+}
+
 .dark {
   --background: oklch(0.18 0.015 230);
   --foreground: oklch(0.95 0.008 95);
