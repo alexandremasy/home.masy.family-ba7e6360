@@ -59,6 +59,8 @@ the clinical medical mauve — so it stays "maison chaleureuse", not pharma. 3D 
 asset chantier; evoke material via rich gradients/glows for now. Keep the V2 wins (sun arc, living
 flux, motion).
 
-**Working mode:** prototype in the live mockup; to show Alex MOTION, record a Playwright video →
-mp4 and SendUserFile it (he's on tmux+ssh, can't see pasted images; live URL + sent files work).
+**Working mode:** prototype in the live mockup at `/lab`. **Do NOT record videos** — Alex said they're
+unneeded (he opens `/lab` in his own browser to judge motion). Screenshots (PNG via SendUserFile) +
+the live URL are enough. Capture **viewport-only** (not fullPage) when a `fixed` element like the dock
+must be shown in place, and pass Playwright `colorScheme` to capture both themes.
 See [[live-access-and-brief-workflow]].
