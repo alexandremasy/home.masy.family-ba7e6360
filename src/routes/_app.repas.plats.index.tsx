@@ -3,9 +3,9 @@ import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
-import { DishCard, StatusPill } from "@/components/DishCard";
+import { DishCard } from "@/components/DishCard";
 import { useDishes } from "@/lib/dishes-store";
-import { initialPlan, type Base, type Dish } from "@/lib/maison-data";
+import { type Base, type Dish } from "@/lib/maison-data";
 import { Search, Plus } from "lucide-react";
 
 export const Route = createFileRoute("/_app/repas/plats/")({
