@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Search, X, Check, Pencil, ArrowUpDown } from "lucide-react";
 import { categories, transactionsSeed, RECURRENCES, eur2, type Transaction, type CatKey, type Recurrence } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/budget/transactions")({
@@ -139,10 +140,15 @@ function TransactionsPage() {
           <thead>
             <tr className="border-b border-border/60 text-left text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
               <th className="w-10 px-3 py-3">
-                <input type="checkbox"
-                  checked={selected.size === filtered.length && filtered.length > 0}
-                  onChange={(e) => setSelected(e.target.checked ? new Set(filtered.map((r) => r.id)) : new Set())}
-                  className="h-3.5 w-3.5 accent-foreground" />
+                <Checkbox
+                  aria-label="Tout sélectionner"
+                  checked={
+                    selected.size === 0 ? false
+                    : selected.size === filtered.length ? true
+                    : "indeterminate"
+                  }
+                  onCheckedChange={(c) => setSelected(c ? new Set(filtered.map((r) => r.id)) : new Set())}
+                  className="h-3.5 w-3.5" />
               </th>
               <ThSort label="Date" k="date" sort={sort} setSort={setSort} />
               <ThSort label="Libellé" k="label" sort={sort} setSort={setSort} />
@@ -162,7 +168,7 @@ function TransactionsPage() {
                   className={"group border-b border-border/40 transition-colors " +
                     (isSelected ? "bg-primary/5" : "hover:bg-secondary/40")}>
                   <td className="px-3 py-2.5">
-                    <input type="checkbox" checked={isSelected} onChange={() => toggleSelect(r.id)} className="h-3.5 w-3.5 accent-foreground" />
+                    <Checkbox aria-label={`Sélectionner ${r.label}`} checked={isSelected} onCheckedChange={() => toggleSelect(r.id)} className="h-3.5 w-3.5" />
                   </td>
                   <td className="px-3 py-2.5 tabular-nums text-muted-foreground">{r.date.slice(8,10)}/{r.date.slice(5,7)}</td>
                   <td className="px-3 py-2.5">

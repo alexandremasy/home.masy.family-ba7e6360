@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Section } from "@/components/Card";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import {
   deriveCourses, initialPlan, staples as initialStaples,
@@ -119,16 +120,14 @@ function CoursesPage() {
               <ul className="divide-y divide-border/50">
                 {list.map((it) => (
                   <li key={it.key} className="group flex items-center gap-2 py-1.5">
-                    <button
-                      onClick={() => toggleCheck(it.key)}
-                      aria-label={it.checked ? "Décocher" : "Cocher"}
-                      className={
-                        "grid h-5 w-5 shrink-0 place-items-center rounded-md border transition-colors " +
-                        (it.checked ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background text-transparent hover:border-primary")
-                      }
-                    >
-                      <Check className="h-3 w-3" />
-                    </button>
+                    {/* Was a <button> drawing its own tick: no role, no checked
+                        state, invisible to assistive tech. */}
+                    <Checkbox
+                      checked={it.checked}
+                      onCheckedChange={() => toggleCheck(it.key)}
+                      aria-label={`${it.name} — ${it.checked ? "acheté" : "à acheter"}`}
+                      className="h-5 w-5 shrink-0 rounded-md data-[state=checked]:border-primary data-[state=checked]:bg-primary"
+                    />
                     <div className="min-w-0 flex-1">
                       <p className={"text-sm " + (it.checked ? "" : "text-muted-foreground line-through decoration-muted-foreground/40")}>
                         {it.name}
