@@ -167,22 +167,20 @@ function DayCell({
 }) {
   const key = iso(date);
   const weekend = isWeekend(date);
-  const past = isPast(date);
-  const outside = !isInWindow(date);
   const today = key === iso(TODAY);
   const w = dayWeather(date);
 
   return (
     <div
       className={
-        "flex min-h-[10rem] flex-col overflow-hidden rounded-xl border transition-colors " +
-        (outside ? "border-border/40 bg-transparent opacity-45 " : weekend ? "border-warm/40 bg-warm/5 " : "border-border/60 bg-card ") +
+        "flex min-h-[12.5rem] flex-col overflow-hidden rounded-xl border transition-colors " +
+        (weekend ? "border-warm/40 bg-warm/5 " : "border-border/60 bg-card ") +
         (today ? "ring-2 ring-primary/50" : "")
       }
     >
       {/* Day header — date left, that day's weather right. The weather drives the suggestions. */}
-      <div className="flex items-start justify-between gap-1 px-2 pt-2">
-        <span className={"font-serif text-lg leading-none tabular-nums " + (today ? "text-primary" : outside ? "text-muted-foreground" : "")}>
+      <div className="flex items-start justify-between gap-1 px-2.5 pt-2.5">
+        <span className={"font-serif text-2xl leading-none tabular-nums " + (today ? "text-primary" : "")}>
           {date.getDate()}
         </span>
         <span
@@ -190,19 +188,19 @@ function DayCell({
           title={`${w.minC}° / ${w.maxC}°${w.heatwave ? " · forte chaleur" : ""}`}
         >
           {w.heatwave
-            ? <ThermometerSun className="h-3.5 w-3.5 text-warm" />
-            : <WeatherIcon cond={w.cond} className="h-3.5 w-3.5" animated={!outside} />}
-          <span className={"text-[10px] tabular-nums " + (w.heatwave ? "text-warm" : "")}>{w.maxC}°</span>
+            ? <ThermometerSun className="h-4 w-4 text-warm" />
+            : <WeatherIcon cond={w.cond} className="h-4 w-4" />}
+          <span className={"text-xs tabular-nums " + (w.heatwave ? "text-warm" : "")}>{w.maxC}°</span>
         </span>
       </div>
 
-      {weekend && !past && (
-        <span className="mt-1 inline-flex items-center gap-0.5 self-start rounded-full px-2 text-[9px] uppercase tracking-[0.14em] text-warm">
-          <Flame className="h-2.5 w-2.5" />batch
+      {weekend && (
+        <span className="mt-1 inline-flex items-center gap-1 self-start rounded-full px-2.5 text-[10px] uppercase tracking-[0.14em] text-warm">
+          <Flame className="h-3 w-3" />batch
         </span>
       )}
 
-      <div className="mt-1 flex flex-1 flex-col gap-1 p-1.5">
+      <div className="mt-1.5 flex flex-1 flex-col gap-1.5 p-2">
         {(["midi", "soir"] as Slot[]).map((slot) => (
           <SlotCell
             key={slot}
@@ -210,7 +208,6 @@ function DayCell({
             slot={slot}
             entry={plan.find((e) => e.date === key && e.slot === slot)}
             weekend={weekend}
-            past={past}
             onOpen={() => onSelect({ date: key, slot })}
             onRemove={() => onRemove(key, slot)}
             onDropFrom={(from) => onMove(from, { date: key, slot })}
