@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { WeatherIcon } from "@/components/WeatherIcon";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -9,7 +8,7 @@ import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/compo
 import {
   dishById, suggestFor, coherenceSignals, initialPlan, calWeeks, iso,
   isWeekend, frLongDay, addDays, dayWeather, weatherHintFor, TODAY,
-  type PlanEntry, type Slot, type Dish, type Base,
+  type PlanEntry, type Slot, type Dish, type Base, type Suggestion,
 } from "@/lib/maison-data";
 import {
   Sparkles, X, RefreshCw, Search, Repeat, Info, AlertTriangle, Package, Move,
@@ -446,11 +445,18 @@ function SuggestionCard({
         </p>
       </div>
 
-      {/* One tag row: components, plus the batch action styled as a tag among them. */}
+      {/* One tag row: components, then the two tag-shaped extras — the leftover
+          marker and the batch action. `accent` is only legible as a solid fill:
+          its foreground token is dark navy in BOTH themes. */}
       <div className="mt-2 flex flex-wrap items-center gap-1">
         {dish.modifiers.slice(0, 4).map((m) => (
           <Badge key={m.name} variant="secondary" className="text-[10px] font-normal">{m.name}</Badge>
         ))}
+        {leftover && (
+          <span className="inline-flex items-center gap-1 rounded-md border border-accent bg-accent px-2.5 py-0.5 text-[10px] font-medium text-accent-foreground">
+            <Repeat className="h-3 w-3" />{reason}
+          </span>
+        )}
         {dish.rendement > 1 && !leftover && (
           <button
             type="button"
@@ -462,13 +468,6 @@ function SuggestionCard({
           </button>
         )}
       </div>
-
-      {/* Only an actionable reason earns a line — "the cook already exists". */}
-      {leftover && (
-        <p className="mt-2 inline-flex items-start gap-1 text-[11px] text-accent-foreground">
-          <Repeat className="mt-0.5 h-3 w-3 shrink-0" />{reason}
-        </p>
-      )}
     </div>
   );
 }
