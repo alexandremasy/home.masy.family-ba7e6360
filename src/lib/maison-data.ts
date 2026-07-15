@@ -458,13 +458,12 @@ export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: 
     else if (weekend && dish.tags?.includes("batch")) reason = "batch weekend";
     else reason = "";
 
-    return { dish, reason, score: s, remaining };
+    return [{ dish, reason, score: s, remaining, placed }];
   });
 
-  return scored
-    .filter((s) => s.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit);
+  // No score cutoff: the hard rule already left the pool. A low score means
+  // "further down the list", never "gone".
+  return scored.sort((a, b) => b.score - a.score).slice(0, limit);
 }
 
 export interface WeatherHint {
