@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
 import { useDishes } from "@/lib/dishes-store";
-import { initialPlan, type Base, type Dish } from "@/lib/maison-data";
+import { initialPlan, effortLevel, fmtMinutes, type Base, type Dish } from "@/lib/maison-data";
+import { cap } from "@/lib/utils";
 import { Search, Package, Repeat, Zap, Flame, Plus } from "lucide-react";
 
 export const Route = createFileRoute("/_app/repas/plats/")({
@@ -73,34 +74,25 @@ function DishCard({ dish, plannedCount }: { dish: Dish; plannedCount: number }) 
       params={{ dishId: dish.id }}
       className="flex flex-col rounded-xl border border-border/60 bg-card p-3.5 transition-all hover:border-primary hover:bg-secondary/40 hover:shadow-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className="truncate font-serif text-base leading-tight">{dish.name}</p>
-          <p className="mt-0.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-            {dish.base} · {dish.densite} · {dish.temperature}
-          </p>
-        </div>
-        {plannedCount > 0 && (
-          <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
-            ×{plannedCount} planifié
-          </span>
-        )}
-      </div>
-
-      <div className="mt-2.5 flex flex-wrap gap-1">
-        {dish.modifiers.map((m) => (
-          <Badge key={m.name} variant="secondary" className="text-[10px] font-normal">{m.name}</Badge>
-        ))}
-      </div>
-
-      <div className="mt-3 flex flex-wrap items-center gap-2.5 text-[11px] text-muted-foreground">
-        {dish.emportable && <span className="inline-flex items-center gap-1"><Package className="h-3 w-3" />emportable</span>}
-        {dish.rendement > 1 && <span className="inline-flex items-center gap-1"><Repeat className="h-3 w-3" />{dish.rendement} créneaux</span>}
-        <span className="inline-flex items-center gap-1">
-          {dish.effort <= 2 ? <Zap className="h-3 w-3" /> : <Flame className="h-3 w-3" />}
-          effort {dish.effort}/5
-        </span>
-      </div>
+      <DishCard
+        dish={dish}
+        status={
+          plannedCount > 0
+            ? <StatusPill tone="primary">×{plannedCount} au plan</StatusPill>
+            : undefined
+        }
+        footer={
+          // The catalogue's own extra: the practical properties, at a glance.
+          <div className="mt-3 flex flex-wrap items-center gap-2.5 text-[11px] text-muted-foreground">
+            {dish.emportable && <span className="inline-flex items-center gap-1"><Package className="h-3 w-3" />emportable</span>}
+            {dish.rendement > 1 && <span className="inline-flex items-center gap-1"><Repeat className="h-3 w-3" />{dish.rendement} créneaux</span>}
+            <span className="inline-flex items-center gap-1">
+              {dish.effort === 1 ? <Zap className="h-3 w-3" /> : <Flame className="h-3 w-3" />}
+              {effortLevel(dish.effort).label.toLowerCase()} · {fmtMinutes(effortLevel(dish.effort).minutes)}
+            </span>
+          </div>
+        }
+      />
     </Link>
   );
 }
