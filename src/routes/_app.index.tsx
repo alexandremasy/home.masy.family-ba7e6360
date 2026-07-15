@@ -656,24 +656,73 @@ function WeatherIcon({ cond, className, animated = true }: { cond: WeatherCond; 
 function WeatherTile() {
   const m = meteo.today;
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <button
-          type="button"
-          className="group relative col-span-1 h-full overflow-hidden rounded-2xl p-4 text-left transition-colors hover:bg-secondary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label="Voir la météo détaillée"
-        >
-          <div className="flex items-start justify-between gap-2">
-            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{m.location}</p>
-            <WeatherIcon cond={m.cond} className="h-6 w-6 text-foreground/80" />
-          </div>
-          <div className="mt-2 flex items-baseline gap-1">
-            <span className="font-serif text-3xl tracking-tight text-foreground">{m.tempC}</span>
-            <span className="text-sm text-muted-foreground">°</span>
-          </div>
-          <p className="mt-0.5 text-[11px] text-muted-foreground">{m.minC}° / {m.maxC}° · {m.label}</p>
-        </button>
-      </DialogTrigger>
+    <div className="col-span-1 flex h-full flex-col">
+      {/* Top half — weather, opens the forecast */}
+      <Dialog>
+        <DialogTrigger asChild>
+          <button
+            type="button"
+            className="group relative flex-1 overflow-hidden rounded-t-2xl p-4 text-left transition-colors hover:bg-secondary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label="Voir la météo détaillée"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{m.location}</p>
+              <WeatherIcon cond={m.cond} className="h-6 w-6 text-foreground/80" />
+            </div>
+            <div className="mt-2 flex items-baseline gap-1">
+              <span className="font-serif text-3xl tracking-tight text-foreground">{m.tempC}</span>
+              <span className="text-sm text-muted-foreground">°</span>
+            </div>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">{m.minC}° / {m.maxC}° · {m.label}</p>
+          </button>
+        </DialogTrigger>
+        <WeatherDialog />
+      </Dialog>
+
+      {/* Bottom half — what we eat, quietly */}
+      <RepasHalf />
+    </div>
+  );
+}
+
+/** The meals, folded under the weather: same cell, lower half, deliberately quiet. */
+function RepasHalf() {
+  const dayPlan = (d: Date) => {
+    const key = iso(d);
+    const at = (slot: "midi" | "soir") => {
+      const e = initialPlan.find((x) => x.date === key && x.slot === slot);
+      return e ? dishById(e.dishId)?.name ?? null : null;
+    };
+    return { midi: at("midi"), soir: at("soir") };
+  };
+  const label = (o: number) => (o === 0 ? "Auj." : o === 1 ? "Demain" : frLongDay(addDays(TODAY, o)));
+  const first = [0, 1, 2, 3].map((o) => ({ o, ...dayPlan(addDays(TODAY, o)) })).filter((d) => d.midi || d.soir)[0];
+
+  return (
+    <Link
+      to="/maison/repas"
+      className="group flex-1 rounded-b-2xl border-t border-border/50 p-4 transition-colors hover:bg-secondary/40"
+    >
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Repas · {first ? label(first.o) : "—"}</p>
+        <UtensilsCrossed className="h-4 w-4 text-muted-foreground/70" />
+      </div>
+      {first ? (
+        <div className="mt-2 space-y-0.5">
+          {first.midi && <p className="truncate font-serif text-sm leading-tight">{first.midi}</p>}
+          {first.soir && <p className="truncate font-serif text-sm leading-tight text-muted-foreground">{first.soir}</p>}
+        </div>
+      ) : (
+        <p className="mt-2 text-[11px] italic text-muted-foreground/60">rien de planifié</p>
+      )}
+    </Link>
+  );
+}
+
+function WeatherDialog() {
+  const m = meteo.today;
+  return (
+    <></>
       <DialogContent className="sm:max-w-lg duration-300 data-[state=open]:slide-in-from-top-4 data-[state=closed]:slide-out-to-top-2 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95">
         <DialogHeader>
           <DialogTitle className="font-serif text-2xl">Météo · {m.location}</DialogTitle>
