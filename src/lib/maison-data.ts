@@ -270,21 +270,23 @@ export const TODAY = (() => { const t = new Date(); t.setHours(0, 0, 0, 0); retu
 export const WINDOW_START = addDays(TODAY, 1);
 export const WINDOW_DAYS: Date[] = Array.from({ length: 10 }, (_, i) => addDays(WINDOW_START, i));
 
-// Calendar view: 2 full weeks, monday-first, anchored on the week containing TODAY.
-// The plan window (tomorrow → +10) always falls inside it.
+// Calendar view: monday of the week containing TODAY.
 export const CAL_START = addDays(TODAY, -((TODAY.getDay() + 6) % 7));
-export const CAL_DAYS: Date[] = Array.from({ length: 14 }, (_, i) => addDays(CAL_START, i));
-export const CAL_WEEKS: Date[][] = [CAL_DAYS.slice(0, 7), CAL_DAYS.slice(7)];
 
-/** A day before today can't be planned — it's history. */
-export function isPast(d: Date): boolean {
-  return d.getTime() < TODAY.getTime();
+/**
+ * Two weeks of calendar, scrolled by ONE week at a time.
+ * `offsetWeeks` shifts the anchor by 7 days, so consecutive views overlap —
+ * which mirrors the sliding plan window (see MAISON-BRIEF, Module 1).
+ */
+export function calWeeks(offsetWeeks: number): Date[][] {
+  const start = addDays(CAL_START, offsetWeeks * 7);
+  const days = Array.from({ length: 14 }, (_, i) => addDays(start, i));
+  return [days.slice(0, 7), days.slice(7)];
 }
 
-/** The sliding plan window is what the engine reasons about; the rest of the grid is context. */
-export function isInWindow(d: Date): boolean {
-  return d.getTime() >= WINDOW_START.getTime() &&
-         d.getTime() <= WINDOW_DAYS[WINDOW_DAYS.length - 1].getTime();
+/** A day before today is history — still editable, just rendered flatter. */
+export function isPast(d: Date): boolean {
+  return d.getTime() < TODAY.getTime();
 }
 
 // ------------------------------------------------------------
