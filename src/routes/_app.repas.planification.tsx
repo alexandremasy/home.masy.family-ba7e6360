@@ -373,16 +373,38 @@ function SlotPicker({
       </DialogHeader>
 
       <div className="space-y-2.5">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Chercher un plat, ou un reste à écouler…"
-            className="bg-card pl-8"
-          />
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              ref={searchRef}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Chercher un plat…"
+              className="bg-card pl-8"
+            />
+          </div>
+          {/* Collapsed by default. The count is not decoration: the slot opens with
+              its density filter already on, and a silent filter is a trap. */}
+          <button
+            type="button"
+            onClick={() => setFiltersOpen((o) => !o)}
+            aria-expanded={filtersOpen}
+            className={
+              "inline-flex shrink-0 items-center gap-1.5 rounded-md border px-3 py-2 text-sm transition-colors " +
+              (activeCount > 0
+                ? "border-foreground bg-foreground text-background"
+                : "border-border bg-card text-muted-foreground hover:text-foreground")
+            }
+          >
+            <SlidersHorizontal className="h-3.5 w-3.5" />
+            Filtres
+            {activeCount > 0 && <span className="tabular-nums">· {activeCount}</span>}
+            <ChevronDown className={"h-3.5 w-3.5 transition-transform " + (filtersOpen ? "rotate-180" : "")} />
+          </button>
         </div>
-        <DishFilters value={filter} onChange={setFilter} bases={bases} />
+
+        {filtersOpen && <DishFilters value={filter} onChange={setFilter} bases={bases} />}
       </div>
 
       <div className="max-h-[55vh] space-y-7 overflow-y-auto">
