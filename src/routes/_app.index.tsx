@@ -7,7 +7,7 @@ import { RoomIcon } from "@/components/RoomIcon";
 
 import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, type WeatherCond } from "@/lib/mock-data";
 import { people, nextBirthday, upcomingAge, daysUntil, initialPlan, dishById, iso, addDays, frLongDay, TODAY } from "@/lib/maison-data";
-import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer, Gauge, Server, Cast, Cake, UtensilsCrossed } from "lucide-react";
+import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer, Server, Cast, Cake, UtensilsCrossed } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -358,13 +358,14 @@ function RepasTile() {
  * Reused idea: the same control reads a tank level or a line speed.
  */
 function TickGauge({ value, max, className = "" }: { value: number; max: number; className?: string }) {
-  const N = 36, cx = 100, cy = 92, r = 70;
+  // Many hairline ticks, a wide arc: the density is what makes it read as an instrument.
+  const N = 56, cx = 100, cy = 88, r = 78;
   const pct = Math.min(1, Math.max(0, value / max));
   const ticks = Array.from({ length: N }, (_, i) => {
     const t = i / (N - 1);
     const a = Math.PI - t * Math.PI;
     const on = t <= pct;
-    const len = on ? 13 : 9;
+    const len = on ? 14 : 7;
     return {
       key: i, on,
       x1: cx + r * Math.cos(a), y1: cy - r * Math.sin(a),
@@ -372,11 +373,12 @@ function TickGauge({ value, max, className = "" }: { value: number; max: number;
     };
   });
   return (
-    <svg viewBox="0 0 200 100" className={className} aria-hidden>
+    <svg viewBox="0 0 200 96" className={className} aria-hidden>
       {ticks.map((t) => (
         <line key={t.key} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2}
-          strokeWidth={t.on ? 2.4 : 1.4} strokeLinecap="round"
-          className={t.on ? "stroke-primary" : "stroke-border"} />
+          strokeWidth={t.on ? 1.6 : 1} strokeLinecap="round"
+          className={t.on ? "stroke-primary" : "stroke-border"}
+          opacity={t.on ? 1 : 0.7} />
       ))}
     </svg>
   );
@@ -824,18 +826,6 @@ function EnergieRow({
       {sub && <span className="text-[11px] tabular-nums text-muted-foreground">{sub}</span>}
       {trend && <TrendBadge trend={trend} pct={trendPct} hidePct />}
       <StatusDot status={status} />
-    </div>
-  );
-}
-
-function ReseauRow({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub?: string }) {
-  return (
-    <div className="flex flex-1 items-center gap-2 rounded-lg bg-secondary/60 px-2.5">
-      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-card text-foreground/80">{icon}</span>
-      <span className="min-w-0 flex-1 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{label}</span>
-      <span className="font-serif text-sm leading-none tabular-nums">{value}</span>
-      {sub && <span className="text-[11px] tabular-nums text-muted-foreground">{sub}</span>}
-      <span className="h-1.5 w-1.5 rounded-full bg-success" />
     </div>
   );
 }
