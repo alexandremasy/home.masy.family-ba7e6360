@@ -7,6 +7,7 @@ import {
   ShieldCheck, ShieldAlert, ShieldOff, Home, Moon, LogOut,
   DoorOpen, Lock, Warehouse, MapPin,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Tab 1 — État: arming + presence. They belong together: the arming follows the presence.
 export const Route = createFileRoute("/_app/securite/etat")({
@@ -121,9 +122,9 @@ function ArmingHero({ verdict, openPoints }: { verdict: "secure" | "attention"; 
               {p.name}
             </span>
           ))}
-          <button className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-foreground px-3 py-1.5 text-xs text-background transition-transform hover:-translate-y-0.5">
+          <Button variant="inverted" size="sm" className="ml-auto gap-1.5 rounded-full transition-transform hover:-translate-y-0.5">
             <Lock className="h-3.5 w-3.5" />Tout verrouiller
-          </button>
+          </Button>
         </div>
       )}
 

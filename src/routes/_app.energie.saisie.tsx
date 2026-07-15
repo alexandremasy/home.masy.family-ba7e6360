@@ -3,6 +3,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { Section } from "@/components/Card";
 import { PageHeader } from "@/components/PageHeader";
+import { Button } from "@/components/ui/button";
 import { Check, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -123,12 +124,14 @@ function SaisiePage() {
             </div>
           )}
 
-          <button
+          <Button
             type="submit"
+            variant="inverted"
             disabled={submitting || done}
             className={
-              "mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3 font-medium transition-all disabled:opacity-80 " +
-              (done ? "bg-success text-background" : "bg-foreground text-background hover:opacity-90")
+              // The only CTA with an alternate fill — `done` overrides the variant.
+              "mt-2 h-auto w-full gap-2 rounded-full px-6 py-3 disabled:opacity-80 " +
+              (done ? "bg-success text-background hover:bg-success" : "")
             }
           >
             {submitting ? (
@@ -138,7 +141,7 @@ function SaisiePage() {
             ) : (
               "Enregistrer le relevé"
             )}
-          </button>
+          </Button>
         </form>
       </Section>
     </div>

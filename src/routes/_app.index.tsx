@@ -11,6 +11,7 @@ import { people, nextBirthday, upcomingAge, daysUntil, initialPlan, dishById, is
 import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, ArrowUp, Activity, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Sunrise, Sunset, Thermometer, Server, Cast, Cake, UtensilsCrossed } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app/")({
   // Dashboard is rendered by the parent _app layout (so it stays visible
@@ -128,12 +129,9 @@ export function Dashboard() {
                 <Sparkles className="h-4 w-4 anim-breathe" />
               </span>
             </div>
-            <Link
-              to="/energie/saisie"
-              className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-transform hover:translate-x-0.5"
-            >
-              Saisir <ArrowRight className="h-4 w-4" />
-            </Link>
+            <Button asChild variant="inverted" className="mt-5 gap-1.5 rounded-full transition-transform hover:translate-x-0.5">
+              <Link to="/energie/saisie">Saisir <ArrowRight className="h-4 w-4" /></Link>
+            </Button>
           </Tile>
         ) : (
           <Tile span={2} to="/energie" className="flex flex-col">

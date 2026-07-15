@@ -6,6 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRight, Droplet, Zap, Flame, TrendingDown, TrendingUp, Minus, AlertTriangle, CalendarDays, Sun, Moon, Sparkles, Pencil, Check, X, SunMedium } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app/energie/")({
   component: EnergiePage,
@@ -231,9 +232,9 @@ function EnergiePage() {
             <p className="text-xs uppercase tracking-[0.18em] opacity-70">À faire</p>
             <p className="mt-1 font-serif text-2xl">Relevé mensuel à saisir</p>
           </div>
-          <Link to="/energie/saisie" className="group inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background">
-            Saisir <ArrowRight className="h-4 w-4 icon-hover-x transition-transform" />
-          </Link>
+          <Button asChild variant="inverted" className="group gap-2 rounded-full">
+            <Link to="/energie/saisie">Saisir <ArrowRight className="h-4 w-4 icon-hover-x transition-transform" /></Link>
+          </Button>
         </div>
       ) : (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card px-5 py-3 text-sm shadow-soft">
@@ -242,9 +243,9 @@ function EnergiePage() {
             Relevé du <strong className="text-foreground">{lastReadingFmt}</strong>
             <span className="hidden sm:inline">— consommation de <strong className="text-foreground capitalize">{coveredMonthLabel}</strong></span>
           </span>
-          <Link to="/energie/saisie" className="group inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-1.5 text-xs font-medium text-background">
-            Nouveau relevé <ArrowRight className="h-3.5 w-3.5 icon-hover-x transition-transform" />
-          </Link>
+          <Button asChild variant="inverted" size="sm" className="group gap-1.5 rounded-full">
+            <Link to="/energie/saisie">Nouveau relevé <ArrowRight className="h-3.5 w-3.5 icon-hover-x transition-transform" /></Link>
+          </Button>
         </div>
       )}
 

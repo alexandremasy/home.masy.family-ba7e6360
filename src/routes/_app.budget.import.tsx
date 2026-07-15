@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { UploadCloud, FileSpreadsheet, Plus, RefreshCw, Equal, Lock, Check, Sparkles, History } from "lucide-react";
 import { importPreviewMock, importHistory, eur2 } from "@/lib/budget-data";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app/budget/import")({
   component: ImportPage,
@@ -141,9 +142,9 @@ function ImportPage() {
               </p>
               <div className="flex items-center gap-2">
                 <button onClick={reset} className="rounded-full px-4 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground">Annuler</button>
-                <button onClick={commit} className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-2 text-sm text-background hover:opacity-90">
+                <Button onClick={commit} variant="inverted" className="gap-1.5 rounded-full">
                   <Check className="h-3.5 w-3.5" /> Valider l'import
-                </button>
+                </Button>
               </div>
             </div>
           )}

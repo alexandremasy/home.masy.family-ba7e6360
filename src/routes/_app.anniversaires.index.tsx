@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Section } from "@/components/Card";
 import { people, nextBirthday, daysUntil, upcomingAge, frLongDay } from "@/lib/maison-data";
 import { Cake, ArrowRight, Bell } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app/anniversaires/")({
   component: AnniversairesPage,
@@ -26,13 +27,11 @@ function AnniversairesPage() {
                 {frLongDay(nextBirthday(upcoming))} · {upcomingAge(upcoming)} ans · dans {daysUntil(nextBirthday(upcoming))} j
               </p>
             </div>
-            <Link
-              to="/anniversaires/$personId"
-              params={{ personId: upcoming.id }}
-              className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-transform hover:translate-x-0.5"
-            >
-              Écrire <ArrowRight className="h-4 w-4" />
-            </Link>
+            <Button asChild variant="inverted" className="gap-1.5 rounded-full transition-transform hover:translate-x-0.5">
+              <Link to="/anniversaires/$personId" params={{ personId: upcoming.id }}>
+                Écrire <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
           </div>
         </div>
       )}

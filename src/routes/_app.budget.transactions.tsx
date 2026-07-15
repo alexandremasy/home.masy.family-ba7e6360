@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search, X, Check, Pencil, ArrowUpDown } from "lucide-react";
 import { categories, transactionsSeed, RECURRENCES, eur2, type Transaction, type CatKey, type Recurrence } from "@/lib/budget-data";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app/budget/transactions")({
   component: TransactionsPage,
@@ -124,10 +125,9 @@ function TransactionsPage() {
             <option value="">Recatégoriser en…</option>
             {categories.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
           </select>
-          <button onClick={applyBulk} disabled={!bulkCat}
-            className="inline-flex items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-sm text-background disabled:opacity-40">
+          <Button onClick={applyBulk} disabled={!bulkCat} variant="inverted" size="sm" className="gap-1 rounded-full">
             <Check className="h-3.5 w-3.5" /> Appliquer
-          </button>
+          </Button>
           <button onClick={() => setSelected(new Set())} className="text-sm text-muted-foreground hover:text-foreground">Annuler</button>
         </div>
       )}
