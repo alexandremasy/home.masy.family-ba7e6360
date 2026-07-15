@@ -43,7 +43,15 @@ background read as white-on-white: no depth, no material. To make glass exist yo
 BEHIND the cards — either (A) a much stronger, living warm aurora, or (B) darker/night zones (like
 the dashboard's dark Bernard card). Open branch for Alex to pick (A lit & warm vs B dark & cinematic).
 
-**Open — Alex to answer:** Next step proposed: prototype an "ambience proof" of the
-arrival screen (living aurora + greeting + the card that matters + glass module access) to judge
-the emotion live, NOT the full refactor yet. Working mode: prototype in the live mockup, screenshot,
-iterate (see [[live-access-and-brief-workflow]]).
+**Where we are (2026-07-15).** Ambience proof built at route `/lab` (isolated, real accueil
+untouched), iterated to V2: living "moment" hero with animated sun arc + "en ce moment" flux
+(music equalizer, Bernard, dishwasher bar) + glass module access, all entering in a cascade. All
+its animation CSS is self-contained in `src/routes/lab.tsx`. Emotion + motion + focus-with-more-info
+land well; **glass/depth still doesn't** (see design learning above).
+
+**Open — Alex to answer:** voie A (stronger living warm aurora, stay luminous) vs voie B
+(introduce dark/night zones) to finally make the glass read. Then push depth in that direction.
+
+**Working mode:** prototype in the live mockup; to show Alex MOTION, record a Playwright video →
+mp4 and SendUserFile it (he's on tmux+ssh, can't see pasted images; live URL + sent files work).
+See [[live-access-and-brief-workflow]].
