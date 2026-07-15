@@ -36,9 +36,6 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-const selectCls =
-  "h-9 w-full rounded-md border border-border bg-background px-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring";
-
 /** The project's segmented control (same shape as Énergie's tabs). */
 function Segmented<T extends string | number | boolean>({
   value, options, onChange,

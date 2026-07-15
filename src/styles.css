@@ -183,14 +183,6 @@
     70% { box-shadow: 0 0 0 8px transparent; opacity: 0; }
     100% { box-shadow: 0 0 0 0 transparent; opacity: 0; }
   }
-  @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-  }
-  @keyframes blink-soft {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.35; }
-  }
   @keyframes slide-up {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -208,12 +200,6 @@
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-2px); }
   }
-  @keyframes swing {
-    0%, 100% { transform: rotate(0); }
-    20% { transform: rotate(-8deg); }
-    60% { transform: rotate(6deg); }
-    80% { transform: rotate(-3deg); }
-  }
   @keyframes drift {
     0%, 100% { transform: translateX(0); }
     50% { transform: translateX(2px); }
@@ -227,7 +213,6 @@
     0%, 100% { filter: drop-shadow(0 0 0 transparent); }
     50% { filter: drop-shadow(0 0 8px color-mix(in oklab, var(--primary) 40%, transparent)); }
   }
-  @keyframes spin-slow { to { transform: rotate(360deg); } }
   @keyframes sway {
     0%, 100% { transform: rotate(-3deg); }
     50% { transform: rotate(3deg); }
@@ -235,21 +220,12 @@
   .anim-sway { animation: sway 4.5s ease-in-out infinite; transform-origin: top center; }
 
   .anim-breathe { animation: breathe 2.4s ease-in-out infinite; }
-  .anim-blink { animation: blink-soft 2s ease-in-out infinite; }
   .anim-float { animation: float 3.2s ease-in-out infinite; }
   .anim-drift { animation: drift 4s ease-in-out infinite; }
   .anim-glow { animation: glow 2.8s ease-in-out infinite; }
-  .anim-spin-slow { animation: spin-slow 14s linear infinite; }
-  .anim-shimmer {
-    background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
-    background-size: 200% 100%;
-    animation: shimmer 2.4s linear infinite;
-    opacity: 0.15;
-  }
   .anim-slide-up { animation: slide-up 0.5s cubic-bezier(0.2,0.7,0.2,1) both; }
   .anim-pop-in { animation: pop-in 0.5s cubic-bezier(0.2,0.7,0.2,1) both; }
   .anim-wiggle:hover { animation: wiggle 0.4s ease-in-out; }
-  .anim-swing-hover:hover { animation: swing 0.6s ease-in-out; }
   .anim-pulse-ring::after {
     content: ""; position: absolute; inset: 0; border-radius: inherit;
     animation: pulse-ring 1.8s ease-out infinite;
@@ -261,14 +237,6 @@
   .group:hover .icon-hover-x { transform: translateX(2px); }
 
   .eq-bar { transform-origin: bottom; animation: equalizer 0.9s ease-in-out infinite; }
-
-  /* Page transition: applied to <main> keyed by route */
-  /* Page transition (initial mount only). */
-  .page-enter { animation: page-in 0.5s cubic-bezier(0.16,0.84,0.24,1) both; }
-  @keyframes page-in {
-    from { opacity: 0; transform: translateY(8px) scale(0.995); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-  }
 
   /* ---- Stripe-like slide-up overlay ----
      Backdrop fades, panel glides up + scales in. */
@@ -310,10 +278,6 @@
   .mode-enter { animation: mode-in 0.4s cubic-bezier(0.16,0.84,0.24,1) both; }
 
   /* Donut draw-in */
-  @keyframes draw-stroke {
-    from { stroke-dashoffset: var(--len, 1000); }
-    to   { stroke-dashoffset: 0; }
-  }
 
   /* Weather icon animations */
   @keyframes sun-spin { to { transform: rotate(360deg); } }
@@ -389,36 +353,8 @@
   }
 
   /* ---- Animated mesh gradient ---- */
-  @keyframes mesh-shift {
-    0%, 100% {
-      background-position: 0% 0%, 100% 0%, 50% 100%;
-    }
-    50% {
-      background-position: 30% 20%, 70% 30%, 50% 80%;
-    }
-  }
-  .bg-mesh-anim {
-    background-image:
-      radial-gradient(40% 50% at 0% 0%, color-mix(in oklab, var(--primary) 22%, transparent) 0%, transparent 60%),
-      radial-gradient(35% 45% at 100% 0%, color-mix(in oklab, var(--accent) 20%, transparent) 0%, transparent 60%),
-      radial-gradient(45% 50% at 50% 100%, color-mix(in oklab, var(--warm) 16%, transparent) 0%, transparent 60%);
-    background-size: 200% 200%, 200% 200%, 200% 200%;
-    animation: mesh-shift 18s ease-in-out infinite;
-  }
-
-  /* ---- Reveal on scroll ---- */
-  .reveal {
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.6s cubic-bezier(0.2,0.7,0.2,1), transform 0.6s cubic-bezier(0.2,0.7,0.2,1);
-  }
-  .reveal.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
 
   @media (prefers-reduced-motion: reduce) {
-    .bg-mesh-anim { animation: none; }
     .cursor-follower { display: none; }
   }
 }
