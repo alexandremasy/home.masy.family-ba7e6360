@@ -251,7 +251,7 @@ function SlotCell({
       className={
         "group relative flex flex-1 flex-col rounded-lg border p-2 text-left transition-all " +
         (dragOver ? "border-primary bg-primary/5 " : "border-transparent ") +
-        (entry ? "bg-secondary/50" : "")
+        (entry ? "bg-secondary/50 hover:border-border hover:bg-secondary" : "")
       }
     >
       <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
