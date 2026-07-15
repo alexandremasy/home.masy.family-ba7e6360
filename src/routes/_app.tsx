@@ -44,8 +44,8 @@ function AppLayout() {
     return () => { document.body.style.overflow = prev; };
   }, [isOverlay]);
 
-  // Budget mode: dedicated, full-bleed shell — no Maison backdrop, no overlay.
-  if (isBudgetMode) {
+  // Full-bleed shell — no Maison backdrop, no overlay. The route owns the whole page.
+  if (isFullBleed) {
     return (
       <div className="min-h-screen bg-background">
         <TopNav />
