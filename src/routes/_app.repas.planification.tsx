@@ -17,7 +17,7 @@ import {
   ThermometerSun, ChevronLeft, ChevronRight,
 } from "lucide-react";
 
-export const Route = createFileRoute("/_app/repas")({
+export const Route = createFileRoute("/_app/repas/planification")({
   component: RepasPage,
   head: () => ({ meta: [{ title: "Repas — Cockpit" }] }),
 });
@@ -60,12 +60,6 @@ function RepasPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Repas"
-        subtitle="Fenêtre glissante de ~10 jours, cohérence évaluée sur 2 semaines."
-        variant="page"
-      />
-
       {/* Coherence — one compact strip, not a column */}
       <div className="flex flex-wrap items-center gap-1.5">
         {signals.slice(0, 4).map((s, i) => (
