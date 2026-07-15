@@ -37,27 +37,43 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 const selectCls =
   "h-9 w-full rounded-md border border-border bg-background px-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
-function Segmented<T extends string>({
+/** The project's segmented control (same shape as Énergie's tabs). */
+function Segmented<T extends string | number | boolean>({
   value, options, onChange,
-}: { value: T; options: T[]; onChange: (v: T) => void }) {
+}: {
+  value: T;
+  options: Array<{ value: T; label: string }>;
+  onChange: (v: T) => void;
+}) {
   return (
     <div className="inline-flex rounded-lg bg-secondary/70 p-1">
       {options.map((o) => (
         <button
-          key={o}
+          key={String(o.value)}
           type="button"
-          onClick={() => onChange(o)}
+          onClick={() => onChange(o.value)}
           className={
-            "rounded-md px-3 py-1 text-sm capitalize transition-all " +
-            (value === o ? "bg-background text-foreground shadow" : "text-muted-foreground hover:text-foreground")
+            "rounded-md px-3 py-1 text-sm transition-all " +
+            (value === o.value ? "bg-background text-foreground shadow" : "text-muted-foreground hover:text-foreground")
           }
         >
-          {o}
+          {o.label}
         </button>
       ))}
     </div>
   );
 }
+
+// Effort is 1–5 in the model; nobody thinks in "3/5" when cooking.
+const EFFORT_OPTIONS: Array<{ value: Effort; label: string }> = [
+  { value: 1, label: "Rapide" },
+  { value: 2, label: "Facile" },
+  { value: 3, label: "Moyen" },
+  { value: 4, label: "Long" },
+  { value: 5, label: "Très long" },
+];
+
+const YES_NO = [{ value: true, label: "Oui" }, { value: false, label: "Non" }];
 
 export function DishForm({
   initial, submitLabel, onSubmit, onCancel,
