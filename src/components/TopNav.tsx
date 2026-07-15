@@ -2,7 +2,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { ThemeToggle } from "./ThemeToggle";
 import { RoomIcon } from "./RoomIcon";
 import { ModeSwitcher } from "./ModeSwitcher";
-import { Car, Wifi, Zap, ChevronDown, MoreHorizontal, Settings, Wrench, ExternalLink, Home, LayoutDashboard, CalendarRange, Table2, FileUp, ShieldCheck, UtensilsCrossed, Cake, DoorClosed, Activity, ShoppingBasket } from "lucide-react";
+import { Car, Wifi, Zap, ChevronDown, MoreHorizontal, Settings, Wrench, ExternalLink, Home, LayoutDashboard, CalendarRange, Table2, FileUp, ShieldCheck, UtensilsCrossed, Cake, DoorClosed, Activity } from "lucide-react";
 import type { ReactNode } from "react";
 import type { Room } from "@/lib/mock-data";
 import {
@@ -69,7 +69,7 @@ export function TopNav() {
         <ModeSwitcher />
 
         {items ? (
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className="hidden items-center gap-1 lg:flex">
             {items.map((item) => {
               const active = pathname === item.to || pathname.startsWith(item.to + "/");
               return (
@@ -90,7 +90,7 @@ export function TopNav() {
             })}
           </nav>
         ) : (
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className="hidden items-center gap-1 lg:flex">
             <DropdownMenu>
               <DropdownMenuTrigger
                 className={
@@ -171,7 +171,7 @@ export function TopNav() {
       </div>
 
       {/* Mobile nav */}
-      <div className="md:hidden">
+      <div className="lg:hidden">
         <nav className="flex gap-1 overflow-x-auto px-4 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {items ? (
             items.map((item) => {
