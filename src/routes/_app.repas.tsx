@@ -207,12 +207,6 @@ function DayCell({
         </span>
       </div>
 
-      {weekend && (
-        <span className="mt-1 inline-flex items-center gap-1 self-start rounded-full px-2.5 text-[10px] uppercase tracking-[0.14em] text-warm">
-          <Flame className="h-3 w-3" />batch
-        </span>
-      )}
-
       <div className="mt-1.5 flex flex-1 flex-col gap-1.5 p-2">
         {(["midi", "soir"] as Slot[]).map((slot) => (
           <SlotCell
