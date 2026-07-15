@@ -1,5 +1,10 @@
 import type { Dish, Base, Densite, Temperature } from "@/lib/maison-data";
 import { Package, Repeat, Zap, X } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { cap } from "@/lib/utils";
+
+/** Radix Select rejects "" as a value — the all-bases option needs a real one. */
+const ALL_BASES = "__all__";
 
 /**
  * Filters over the dish model's own axes (see MAISON-BRIEF, Module 1).
@@ -101,18 +106,25 @@ export function DishFilters({
 
       <span className="mx-0.5 h-4 w-px bg-border" />
 
-      <select
-        value={value.base ?? ""}
-        onChange={(e) => set("base", (e.target.value || null) as Base | null)}
-        aria-label="Filtrer par base"
-        className={
-          "h-[26px] shrink-0 rounded-full border px-2.5 text-xs outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring " +
-          (value.base ? "border-foreground bg-foreground text-background" : "border-border/60 bg-transparent text-muted-foreground")
-        }
+      {/* Radix has no "empty" value, so the all-bases case gets its own sentinel. */}
+      <Select
+        value={value.base ?? ALL_BASES}
+        onValueChange={(v) => set("base", v === ALL_BASES ? null : (v as Base))}
       >
-        <option value="">Toutes les bases</option>
-        {bases.map((b) => <option key={b} value={b}>{b}</option>)}
-      </select>
+        <SelectTrigger
+          aria-label="Filtrer par base"
+          className={
+            "h-[26px] w-auto shrink-0 gap-1 rounded-full px-2.5 text-xs shadow-none " +
+            (value.base ? "border-foreground bg-foreground text-background" : "border-border/60 bg-transparent text-muted-foreground")
+          }
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={ALL_BASES}>Toutes les bases</SelectItem>
+          {bases.map((b) => <SelectItem key={b} value={b} className="capitalize">{cap(b)}</SelectItem>)}
+        </SelectContent>
+      </Select>
 
       {isFilterActive(value) && (
         <button

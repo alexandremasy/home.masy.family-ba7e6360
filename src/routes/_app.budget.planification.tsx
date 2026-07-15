@@ -14,6 +14,7 @@ import {
 } from "@/lib/budget-data";
 import { energie } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/budget/planification")({
@@ -537,11 +538,11 @@ function EditModal({ poste, onClose, onPatch, reel = true, year }: {
             <div className="min-w-0 space-y-4 pt-2">
               {/* Fields — Ponctuel drops the single amount for a dated occurrence list */}
               <div className="grid grid-cols-2 gap-3">
-                <label className={ponctuel ? "col-span-2 block" : "block"}>
+                <div className={ponctuel ? "col-span-2 block" : "block"}>
                   <Eyebrow size="xs" as="span" className="mb-1 block">Fréquence</Eyebrow>
-                  <select value={poste.recurrence}
-                    onChange={(e) => {
-                      const rec = e.target.value as PlanRecurrence;
+                  <Select value={poste.recurrence}
+                    onValueChange={(v) => {
+                      const rec = v as PlanRecurrence;
                       if (rec === "Ponctuel") {
                         const seed = poste.occurrences ?? [{ m: poste.months[0] ?? 0, amount: poste.amount || 0 }];
                         onPatch(poste.id, { recurrence: rec, occurrences: seed, months: seed.map(o => o.m) });
@@ -550,10 +551,15 @@ function EditModal({ poste, onClose, onPatch, reel = true, year }: {
                         onPatch(poste.id, { recurrence: rec, months: defaultMonthsFor(rec, poste.months[0] ?? 0), occurrences: undefined, amount });
                       }
                     }}
-                    className="w-full rounded-lg border border-border/60 bg-card px-2.5 py-2 text-sm outline-none focus:border-foreground/40">
-                    {RECS.map(r => <option key={r} value={r}>{r}</option>)}
-                  </select>
-                </label>
+                  >
+                    <SelectTrigger aria-label="Fréquence" className="w-full bg-card">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {RECS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
                 {!ponctuel && (
                   <label className="block">
                     <Eyebrow size="xs" as="span" className="mb-1 block">Montant prévu</Eyebrow>
@@ -566,14 +572,18 @@ function EditModal({ poste, onClose, onPatch, reel = true, year }: {
                   </label>
                 )}
                 {nonMensuel && (
-                  <label className="block">
+                  <div className="block">
                     <Eyebrow size="xs" as="span" className="mb-1 block">Mois d'échéance</Eyebrow>
-                    <select value={poste.months[0] ?? 0}
-                      onChange={(e) => onPatch(poste.id, { months: defaultMonthsFor(poste.recurrence as Recurrence4, Number(e.target.value)) })}
-                      className="w-full rounded-lg border border-border/60 bg-card px-2.5 py-2 text-sm outline-none focus:border-foreground/40">
-                      {MONTHS_FR.map((m, i) => <option key={i} value={i}>{m}</option>)}
-                    </select>
-                  </label>
+                    <Select value={String(poste.months[0] ?? 0)}
+                      onValueChange={(v) => onPatch(poste.id, { months: defaultMonthsFor(poste.recurrence as Recurrence4, Number(v)) })}>
+                      <SelectTrigger aria-label="Mois d'échéance" className="w-full bg-card">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {MONTHS_FR.map((m, i) => <SelectItem key={i} value={String(i)}>{m}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 )}
               </div>
 
@@ -587,11 +597,15 @@ function EditModal({ poste, onClose, onPatch, reel = true, year }: {
                   <div className="space-y-2">
                     {(poste.occurrences ?? []).map((o, i) => (
                       <div key={i} className="flex items-center gap-2">
-                        <select value={o.m}
-                          onChange={(e) => setOccs((poste.occurrences ?? []).map((x, j) => j === i ? { ...x, m: Number(e.target.value) } : x))}
-                          className="w-32 rounded-lg border border-border/60 bg-card px-2.5 py-2 text-sm outline-none focus:border-foreground/40">
-                          {MONTHS_FR.map((m, k) => <option key={k} value={k}>{m}</option>)}
-                        </select>
+                        <Select value={String(o.m)}
+                          onValueChange={(v) => setOccs((poste.occurrences ?? []).map((x, j) => j === i ? { ...x, m: Number(v) } : x))}>
+                          <SelectTrigger aria-label="Mois de l'échéance" className="w-32 shrink-0 bg-card">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {MONTHS_FR.map((m, k) => <SelectItem key={k} value={String(k)}>{m}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
                         <div className="flex min-w-0 flex-1 items-center rounded-lg border border-border/60 bg-card px-2.5 py-2 focus-within:border-foreground/40">
                           <input type="number" value={o.amount}
                             onChange={(e) => setOccs((poste.occurrences ?? []).map((x, j) => j === i ? { ...x, amount: Math.max(0, Number(e.target.value) || 0) } : x))}

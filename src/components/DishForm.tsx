@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
 import { EFFORT_LEVELS, fmtMinutes, type Dish, type Base, type Role, type Unit, type Composant } from "@/lib/maison-data";
@@ -195,14 +196,14 @@ export function DishForm({
               of its own. Fixed row: every dish has exactly one, never removable. */}
           <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-secondary/40 p-1.5">
             <span className="w-20 shrink-0 pl-1 text-xs text-muted-foreground">Base</span>
-            <select
-              value={d.base}
-              onChange={(e) => set("base", e.target.value as Base)}
-              aria-label="Base du plat"
-              className="h-8 flex-1 rounded-md border border-border bg-background px-2 text-sm capitalize outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              {BASES.map((b) => <option key={b} value={b} className="capitalize">{cap(b)}</option>)}
-            </select>
+            <Select value={d.base} onValueChange={(v) => set("base", v as Base)}>
+              <SelectTrigger aria-label="Base du plat" className="h-8 flex-1 bg-background capitalize">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {BASES.map((b) => <SelectItem key={b} value={b} className="capitalize">{cap(b)}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
 
           {d.modifiers.length === 0 ? (
@@ -212,9 +213,14 @@ export function DishForm({
           ) : (
             d.modifiers.map((m, i) => (
               <div key={i} className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border/60 p-1.5">
-                <select value={m.role} onChange={(e) => setMod(i, { role: e.target.value as Role })} className="h-8 w-24 shrink-0 rounded-md border border-border bg-background px-2 text-xs capitalize outline-none">
-                  {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
-                </select>
+                <Select value={m.role} onValueChange={(v) => setMod(i, { role: v as Role })}>
+                  <SelectTrigger aria-label="Rôle du composant" className="h-8 w-28 shrink-0 bg-background px-2 text-xs capitalize">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ROLES.map((r) => <SelectItem key={r} value={r} className="capitalize">{r}</SelectItem>)}
+                  </SelectContent>
+                </Select>
                 <Input
                   // cap() on both sides: ::first-letter does nothing to an input's
                   // value, so the capital has to be in the string itself.
@@ -229,9 +235,14 @@ export function DishForm({
                   onChange={(e) => setMod(i, { qty: Number(e.target.value) })}
                   className="h-8 w-20 text-sm"
                 />
-                <select value={m.unit} onChange={(e) => setMod(i, { unit: e.target.value as Unit })} className="h-8 rounded-md border border-border bg-background px-2 text-xs outline-none">
-                  {UNITS.map((u) => <option key={u} value={u}>{u}</option>)}
-                </select>
+                <Select value={m.unit} onValueChange={(v) => setMod(i, { unit: v as Unit })}>
+                  <SelectTrigger aria-label="Unité" className="h-8 w-24 shrink-0 bg-background px-2 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {UNITS.map((u) => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                  </SelectContent>
+                </Select>
                 <button
                   type="button" onClick={() => removeMod(i)} aria-label={`Retirer ${m.name || "le composant"}`}
                   className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-destructive"

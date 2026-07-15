@@ -4,6 +4,7 @@ import { Search, X, Check, Pencil, ArrowUpDown } from "lucide-react";
 import { categories, transactionsSeed, RECURRENCES, eur2, type Transaction, type CatKey, type Recurrence } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/budget/transactions")({
@@ -101,16 +102,24 @@ function TransactionsPage() {
             )}
           </div>
           <div className="-mx-1 flex gap-2 overflow-x-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
-            <select value={catFilter} onChange={(e) => setCatFilter(e.target.value as CatKey | "all")}
-              className="shrink-0 rounded-full border border-border/60 bg-background px-3 py-2 text-sm outline-none focus:border-ring">
-              <option value="all">Toutes catégories</option>
-              {categories.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
-            </select>
-            <select value={recFilter} onChange={(e) => setRecFilter(e.target.value as Recurrence | "all")}
-              className="shrink-0 rounded-full border border-border/60 bg-background px-3 py-2 text-sm outline-none focus:border-ring">
-              <option value="all">Toute récurrence</option>
-              {RECURRENCES.map((r) => <option key={r} value={r}>{r}</option>)}
-            </select>
+            <Select value={catFilter} onValueChange={(v) => setCatFilter(v as CatKey | "all")}>
+              <SelectTrigger aria-label="Filtrer par catégorie" className="w-auto shrink-0 gap-2 rounded-full bg-background">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Toutes catégories</SelectItem>
+                {categories.map((c) => <SelectItem key={c.key} value={c.key}>{c.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={recFilter} onValueChange={(v) => setRecFilter(v as Recurrence | "all")}>
+              <SelectTrigger aria-label="Filtrer par récurrence" className="w-auto shrink-0 gap-2 rounded-full bg-background">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Toute récurrence</SelectItem>
+                {RECURRENCES.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+              </SelectContent>
+            </Select>
             <Chip on={onlyUncat} onClick={() => setOnlyUncat((v) => !v)}>Non catégorisées</Chip>
             <Chip on={onlyEdited} onClick={() => setOnlyEdited((v) => !v)}>Modifiées localement</Chip>
           </div>
@@ -122,11 +131,14 @@ function TransactionsPage() {
       {selected.size > 0 && (
         <div className="sticky top-[68px] z-20 flex flex-wrap items-center gap-3 rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 shadow-soft anim-slide-up">
           <span className="text-sm font-medium">{selected.size} sélection{selected.size > 1 ? "s" : ""}</span>
-          <select value={bulkCat} onChange={(e) => setBulkCat(e.target.value as CatKey | "")}
-            className="rounded-full border border-border/60 bg-background px-3 py-1.5 text-sm">
-            <option value="">Recatégoriser en…</option>
-            {categories.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
-          </select>
+          <Select value={bulkCat} onValueChange={(v) => setBulkCat(v as CatKey)}>
+            <SelectTrigger aria-label="Recatégoriser la sélection" className="h-8 w-auto gap-2 rounded-full bg-background">
+              <SelectValue placeholder="Recatégoriser en…" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map((c) => <SelectItem key={c.key} value={c.key}>{c.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
           <Button onClick={applyBulk} disabled={!bulkCat} variant="inverted" size="sm" className="gap-1 rounded-full">
             <Check className="h-3.5 w-3.5" /> Appliquer
           </Button>
@@ -177,17 +189,26 @@ function TransactionsPage() {
                   </td>
                   <td className="px-3 py-2.5">
                     {editing?.id === r.id && editing.field === "category" ? (
-                      <select autoFocus value={r.category}
-                        onBlur={() => setEditing(null)}
-                        onChange={(e) => {
-                          const k = e.target.value as CatKey;
+                      // Inline edit: `open` is driven by the row's editing state, and
+                      // closing it clears that state — no autoFocus/onBlur dance.
+                      <Select
+                        open
+                        value={r.category}
+                        onOpenChange={(o) => { if (!o) setEditing(null); }}
+                        onValueChange={(v) => {
+                          const k = v as CatKey;
                           const sub = categories.find((c) => c.key === k)?.subs[0]?.label ?? "—";
                           updateRow(r.id, { category: k, sub });
                           setEditing(null);
                         }}
-                        className="rounded-md border border-ring bg-background px-2 py-1 text-sm">
-                        {categories.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
-                      </select>
+                      >
+                        <SelectTrigger aria-label="Changer la catégorie" className="h-8 w-auto gap-2 border-ring bg-background">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map((c) => <SelectItem key={c.key} value={c.key}>{c.label}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
                     ) : (
                       <button onClick={() => setEditing({ id: r.id, field: "category" })}
                         className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 hover:bg-secondary">
