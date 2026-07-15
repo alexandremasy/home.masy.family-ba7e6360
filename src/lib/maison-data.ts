@@ -55,8 +55,8 @@ export interface Dish {
   emportable: boolean;             // lunchbox friendly
   rechauffable: boolean;
   effort: Effort;                  // weekend cooking load
-  rendement: 1 | 2 | 3;            // slots covered by one cook (couple)
-  tags?: string[];
+  rendement: 1 | 2 | 3;            // meals covered by one cook (couple)
+  tags?: string[];                 // season & mood: "été", "hiver", "convivial"
   dernierServiLe?: string;         // ISO date
 }
 
@@ -133,7 +133,6 @@ export const dishes: Dish[] = [
       { name: "poivron", role: "légume", qty: 2, unit: "pièce" },
     ],
     densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 3,
-    tags: ["batch"],
   },
   {
     id: "curry-poulet", name: "Curry de poulet", base: "curry",
@@ -155,7 +154,6 @@ export const dishes: Dish[] = [
       { name: "mozzarella", role: "garniture", qty: 300, unit: "g" },
     ],
     densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 3, rendement: 3,
-    tags: ["batch"],
   },
   {
     id: "salade-poulet-avocat", name: "Salade repas poulet avocat", base: "salade",
@@ -255,7 +253,7 @@ export const dishes: Dish[] = [
       { name: "carotte", role: "légume", qty: 4, unit: "pièce" },
     ],
     densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 3,
-    tags: ["hiver", "batch"],
+    tags: ["hiver"],
   },
 ];
 
@@ -450,8 +448,8 @@ export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: 
     if (heat && dish.temperature === "froid") s += 15;
     if (heat && dish.temperature === "chaud") s -= 6;
 
-    // Batch preference on weekend
-    if (weekend && dish.tags?.includes("batch")) s += 10;
+    // A weekend cook should earn several meals — that IS what rendement means.
+    if (weekend && dish.rendement > 1) s += 10;
 
     // Effort constraint: weekday = no long dishes
     if (!weekend && dish.effort >= 3) s -= 12;
@@ -477,7 +475,7 @@ export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: 
     }
 
     if (heat && dish.temperature === "froid") reason = "canicule → froid";
-    else if (weekend && dish.tags?.includes("batch")) reason = "batch weekend";
+    else if (weekend && dish.rendement > 1) reason = "une cuisson, plusieurs repas";
     else reason = "";
 
     return [{ dish, reason, score: s, remaining, placed }];
@@ -511,7 +509,7 @@ export function coherenceSignals(plan: PlanEntry[]): Array<{ tone: "warn" | "inf
   });
   // Batch info
   const batchDishes = new Set(plan.filter((p) => !p.batchOfDate).map((p) => p.dishId).filter((id) => (dishById(id)?.rendement ?? 1) >= 2));
-  if (batchDishes.size >= 2) out.push({ tone: "info", text: `${batchDishes.size} plats en batch : ils couvrent plusieurs créneaux.` });
+  if (batchDishes.size >= 2) out.push({ tone: "info", text: `${batchDishes.size} plats couvrent plusieurs repas.` });
 
   // Weekend load, in time at the stove — "8/15" was a scale with no unit.
   const weekendMinutes = plan
