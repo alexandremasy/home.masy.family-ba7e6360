@@ -386,13 +386,14 @@ function SlotPicker({
 }
 
 function SuggestionCard({
-  dish, reason, score, onPick,
+  dish, reason, leftover, onPick,
 }: {
-  dish: Dish; reason: string; score: number;
+  dish: Dish; reason: string; leftover?: boolean;
   onPick: (dish: Dish, batch: boolean) => void;
 }) {
   // The card itself is the pick target — no "Choisir" button. The ×2 button
   // overlays it and stops propagation, so batch stays reachable in one gesture.
+  // No score badge: it was the engine's raw internal number, meaningless here.
   return (
     <div
       role="button"
@@ -401,16 +402,16 @@ function SuggestionCard({
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onPick(dish, false); }
       }}
-      className="group relative flex cursor-pointer flex-col rounded-xl border border-border/60 p-3 text-left transition-all hover:border-primary hover:bg-secondary/40 hover:shadow-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className={
+        "group relative flex cursor-pointer flex-col rounded-xl border p-3 text-left transition-all hover:border-primary hover:bg-secondary/40 hover:shadow-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-ring " +
+        (leftover ? "border-warm/50 bg-warm/5" : "border-border/60")
+      }
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className="truncate font-serif text-base leading-tight">{dish.name}</p>
-          <p className="mt-0.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-            {dish.base} · {dish.densite} · {dish.temperature}
-          </p>
-        </div>
-        <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">{score}</span>
+      <div className="min-w-0">
+        <p className="truncate font-serif text-base leading-tight">{dish.name}</p>
+        <p className="mt-0.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+          {dish.base} · {dish.densite} · {dish.temperature}
+        </p>
       </div>
       <div className="mt-2 flex flex-wrap gap-1">
         {dish.modifiers.slice(0, 4).map((m) => (
@@ -418,10 +419,13 @@ function SuggestionCard({
         ))}
       </div>
       <div className="mt-2 flex items-end justify-between gap-2">
-        <p className="inline-flex items-start gap-1 text-[11px] text-muted-foreground">
-          <Sparkles className="mt-0.5 h-3 w-3 shrink-0 text-primary" />{reason}
-        </p>
-        {dish.rendement > 1 && (
+        {/* Only an actionable reason earns a line — "the cook already exists". */}
+        {leftover ? (
+          <p className="inline-flex items-start gap-1 text-[11px] text-warm">
+            <Repeat className="mt-0.5 h-3 w-3 shrink-0" />{reason}
+          </p>
+        ) : <span />}
+        {dish.rendement > 1 && !leftover && (
           <Button
             size="sm" variant="outline"
             onClick={(e) => { e.stopPropagation(); onPick(dish, true); }}
