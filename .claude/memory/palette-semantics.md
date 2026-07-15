@@ -16,10 +16,17 @@ The tokens in `src/styles.css` carry meaning, not just hue. Picking one for its 
 - **`accent`** (mustard, hue 70) — decorative warmth (lights on, PMC tile).
 - **`success`** / **`destructive`** — as named.
 
-**Trap: `--accent-foreground` and `--warm-foreground` are dark navy in BOTH light and dark themes.**
-They are designed to sit on a *solid* `bg-accent` / `bg-warm` fill. Put `text-accent-foreground` on a
-card (`bg-accent/[0.07]`) and it vanishes in dark mode. Either use a solid fill with its own
-foreground, or a token whose text form works on the card (`text-warm`, `text-primary`).
+**Trap: the `-foreground` tokens only work on a *solid* `bg-accent` / `bg-warm` fill**, and the two
+behave differently — measured in `styles.css`:
+
+| Token | light | dark |
+|---|---|---|
+| `--accent-foreground` | navy `0.22` | navy `0.18` — **navy in both** |
+| `--warm-foreground` | near-white `0.99` | navy `0.18` — **it inverts** |
+
+So `text-accent-foreground` on a card vanishes in dark mode, while `text-warm-foreground` off a solid
+fill is invisible in *light* mode and flips meaning at the theme switch. For text, use `text-warm` /
+`text-primary` / `text-accent` — never the `-foreground` pair unless the element owns a solid fill.
 
 **Always screenshot both `colorScheme: light` and `dark`** — this class of bug is invisible in light
 mode. See [[live-access-and-brief-workflow]].
