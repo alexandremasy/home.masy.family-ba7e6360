@@ -189,14 +189,18 @@ function DayCell({
   return (
     <div
       className={
-        "flex min-h-[12.5rem] flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-colors " +
+        "flex flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-colors lg:min-h-[12.5rem] " +
         (today ? "ring-2 ring-primary/50" : "")
       }
     >
-      {/* Day header — date left, that day's weather right. The weather drives the suggestions. */}
-      <div className="flex items-start justify-between gap-1 px-2.5 pt-2.5">
-        <span className={"font-serif text-2xl leading-none tabular-nums " + (today ? "text-primary" : "")}>
-          {date.getDate()}
+      {/* Day header — date left, that day's weather right. The weather drives the
+          suggestions. Without a weekday column below lg, the header carries the day. */}
+      <div className="flex items-baseline justify-between gap-1 px-2.5 pt-2.5">
+        <span className={"font-semibold leading-none tabular-nums " + (today ? "text-primary" : "")}>
+          <span className="text-2xl">{date.getDate()}</span>
+          <span className="ml-1.5 text-xs uppercase tracking-[0.14em] text-muted-foreground lg:hidden">
+            {date.toLocaleDateString("fr-BE", { weekday: "long" })}
+          </span>
         </span>
         <span
           className="flex items-center gap-1 text-muted-foreground"
@@ -209,7 +213,8 @@ function DayCell({
         </span>
       </div>
 
-      <div className="mt-1.5 flex flex-1 flex-col gap-1.5 p-2">
+      {/* Side by side on a phone row, stacked in a calendar column. */}
+      <div className="mt-1.5 grid flex-1 grid-cols-2 gap-1.5 p-2 lg:flex lg:flex-col">
         {(["midi", "soir"] as Slot[]).map((slot) => (
           <SlotCell
             key={slot}
