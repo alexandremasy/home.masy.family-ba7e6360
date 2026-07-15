@@ -10,7 +10,29 @@ export type Role = "protéine" | "légume" | "féculent" | "sauce" | "garniture"
 export type Unit = "pièce" | "g" | "gousse" | "botte";
 export type Densite = "complet" | "léger";
 export type Temperature = "chaud" | "froid";
-export type Effort = 1 | 2 | 3 | 4 | 5; // 1 = rapide, 5 = long
+export type Effort = 1 | 2 | 3; // see EFFORT_LEVELS
+
+/**
+ * Effort is time at the stove. Three levels is all anyone can tell apart, and
+ * each one carries the number that makes it mean something.
+ */
+export const EFFORT_LEVELS: Array<{ value: Effort; label: string; minutes: number }> = [
+  { value: 1, label: "Rapide", minutes: 30 },
+  { value: 2, label: "Moyen", minutes: 60 },
+  { value: 3, label: "Long", minutes: 120 },
+];
+
+export function effortLevel(e: Effort) {
+  return EFFORT_LEVELS.find((l) => l.value === e) ?? EFFORT_LEVELS[0];
+}
+
+/** 150 → "2 h 30", 60 → "1 h", 30 → "30 min". */
+export function fmtMinutes(min: number): string {
+  if (min < 60) return `${min} min`;
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return m ? `${h} h ${m}` : `${h} h`;
+}
 export type Base =
   | "assiette" | "pâtes" | "bowl" | "salade" | "quiche" | "pizza" | "gratin"
   | "soupe" | "wrap" | "tarte" | "chili" | "curry" | "raclette" | "potée"
@@ -58,7 +80,7 @@ export const dishes: Dish[] = [
       { name: "riz", role: "féculent", qty: 300, unit: "g" },
       { name: "épinards", role: "légume", qty: 300, unit: "g" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 1,
+    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 1,
     dernierServiLe: "2026-06-30",
   },
   {
@@ -68,7 +90,7 @@ export const dishes: Dish[] = [
       { name: "haricots verts", role: "légume", qty: 400, unit: "g" },
       { name: "croquettes", role: "féculent", qty: 12, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 3, rendement: 2,
+    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 2,
     dernierServiLe: "2026-06-22",
   },
   {
@@ -79,7 +101,7 @@ export const dishes: Dish[] = [
       { name: "pommes de terre", role: "féculent", qty: 1000, unit: "g" },
       { name: "moutarde", role: "sauce", qty: 2, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 4, rendement: 2,
+    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 3, rendement: 2,
   },
   {
     id: "quiche-saumon-epinards", name: "Quiche saumon épinards", base: "quiche",
@@ -88,7 +110,7 @@ export const dishes: Dish[] = [
       { name: "épinards", role: "légume", qty: 250, unit: "g" },
       { name: "pâte brisée", role: "féculent", qty: 1, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 2,
+    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 2,
   },
   {
     id: "pizza-poulet-oignon", name: "Pizza poulet oignon", base: "pizza",
@@ -99,7 +121,7 @@ export const dishes: Dish[] = [
       { name: "tomate", role: "sauce", qty: 1, unit: "pièce" },
       { name: "mozzarella", role: "garniture", qty: 250, unit: "g" },
     ],
-    densite: "complet", temperature: "chaud", emportable: false, rechauffable: true, effort: 2, rendement: 1,
+    densite: "complet", temperature: "chaud", emportable: false, rechauffable: true, effort: 1, rendement: 1,
   },
   {
     id: "chili", name: "Chili con carne", base: "chili",
@@ -110,7 +132,7 @@ export const dishes: Dish[] = [
       { name: "oignon", role: "légume", qty: 2, unit: "pièce" },
       { name: "poivron", role: "légume", qty: 2, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 3, rendement: 3,
+    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 3,
     tags: ["batch"],
   },
   {
@@ -122,7 +144,7 @@ export const dishes: Dish[] = [
       { name: "curry", role: "sauce", qty: 1, unit: "pièce" },
       { name: "lait de coco", role: "sauce", qty: 1, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 3, rendement: 2,
+    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 2,
   },
   {
     id: "lasagne", name: "Lasagne bolognaise", base: "lasagne",
@@ -132,7 +154,7 @@ export const dishes: Dish[] = [
       { name: "pâte lasagne", role: "féculent", qty: 1, unit: "pièce" },
       { name: "mozzarella", role: "garniture", qty: 300, unit: "g" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 4, rendement: 3,
+    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 3, rendement: 3,
     tags: ["batch"],
   },
   {
@@ -164,7 +186,7 @@ export const dishes: Dish[] = [
       { name: "riz", role: "féculent", qty: 250, unit: "g" },
       { name: "concombre", role: "légume", qty: 1, unit: "pièce" },
     ],
-    densite: "complet", temperature: "froid", emportable: true, rechauffable: false, effort: 2, rendement: 1,
+    densite: "complet", temperature: "froid", emportable: true, rechauffable: false, effort: 1, rendement: 1,
   },
   {
     id: "soupe-potiron", name: "Soupe de potiron", base: "soupe",
@@ -182,7 +204,7 @@ export const dishes: Dish[] = [
       { name: "mozzarella", role: "garniture", qty: 250, unit: "g" },
       { name: "pâte brisée", role: "féculent", qty: 1, unit: "pièce" },
     ],
-    densite: "léger", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 2,
+    densite: "léger", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 2,
   },
   {
     id: "raclette", name: "Raclette", base: "raclette",
@@ -203,7 +225,7 @@ export const dishes: Dish[] = [
       { name: "parmesan", role: "garniture", qty: 100, unit: "g" },
       { name: "oignon", role: "légume", qty: 1, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 3, rendement: 2,
+    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 2,
   },
   {
     id: "pates-pesto-poulet", name: "Pâtes pesto poulet", base: "pâtes",
@@ -222,7 +244,7 @@ export const dishes: Dish[] = [
       { name: "oeuf", role: "protéine", qty: 4, unit: "pièce" },
       { name: "gruyère", role: "garniture", qty: 200, unit: "g" },
     ],
-    densite: "léger", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 2,
+    densite: "léger", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 2,
   },
   {
     id: "potee", name: "Potée liégeoise", base: "potée",
@@ -232,7 +254,7 @@ export const dishes: Dish[] = [
       { name: "pommes de terre", role: "féculent", qty: 800, unit: "g" },
       { name: "carotte", role: "légume", qty: 4, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 3, rendement: 3,
+    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 3,
     tags: ["hiver", "batch"],
   },
 ];
@@ -432,7 +454,7 @@ export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: 
     if (weekend && dish.tags?.includes("batch")) s += 10;
 
     // Effort constraint: weekday = no long dishes
-    if (!weekend && dish.effort >= 4) s -= 12;
+    if (!weekend && dish.effort >= 3) s -= 12;
 
     // Variety, at component level (the pinned dish repeats, everything else varies)
     const overlap = dish.modifiers.reduce((acc, m) => acc + Math.min(2, compCount.get(m.name) ?? 0), 0);
