@@ -69,6 +69,10 @@ function LabAmbience() {
   const leo = people.find((p) => p.id === "leo");
   const oil = energie.oil;
 
+  // Module navigation: the home stays the ground, a module opens over it. The dock stays
+  // reachable inside a module — that's how you jump module to module.
+  const [openModule, setOpenModule] = useState<string | null>(null);
+
   const t = sunProgress(now, m.sunrise, m.sunset);
   const sunX = bez(t, 14, 160, 306), sunY = bez(t, 96, -34, 96);
 
@@ -76,7 +80,8 @@ function LabAmbience() {
     <div className="lab-root relative min-h-screen w-full overflow-hidden">
       <style>{LAB_THEME_CSS}</style>
 
-      <div className="relative z-10 mx-auto w-full max-w-2xl px-6 pb-32 pt-[20vh] sm:pt-[24vh]">
+      <div className={"relative z-10 mx-auto w-full max-w-2xl px-6 pb-32 pt-[20vh] transition-all duration-500 sm:pt-[24vh] " +
+        (openModule ? "scale-[0.97] opacity-40 blur-[2px]" : "")}>
 
         {/* Greeting */}
         <div className="lab-in flex items-start justify-between" style={{ ["--d" as string]: "0ms" }}>
