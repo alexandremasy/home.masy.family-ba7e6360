@@ -405,23 +405,21 @@ export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: 
 
   const heat = weather?.heatwave ?? false;
 
-  const scored: Suggestion[] = dishes.map((dish) => {
+  // flatMap, not map: the ONE hard rule drops the dish from the pool entirely.
+  // Everything below only reorders.
+  const scored: Suggestion[] = dishes.flatMap((dish) => {
     let s = 50;
     let reason = "";
 
-    // Hard filters (weekday midi must be portable+reheatable)
-    if (!weekend && isMidi && (!dish.emportable || !dish.rechauffable)) {
-      return { dish, reason: "non emportable", score: -100 };
-    }
+    // The only hard rule: a weekday lunch has to travel and reheat.
+    if (!weekend && isMidi && (!dish.emportable || !dish.rechauffable)) return [];
 
     // Rendement rules the repetition. One cook covers `rendement` slots:
-    //  - all of them placed → the cook is used up, stop proposing it
-    //  - some still open    → finishing it beats cooking something new, so it leads
+    //  - some still open → finishing it beats cooking anew, so it leads
+    //  - all placed      → demoted well out of the shortlist, but still pickable
     const placed = dishCount.get(dish.id) ?? 0;
     const remaining = dish.rendement - placed;
-    if (remaining <= 0) {
-      return { dish, reason: "déjà couvert sur la fenêtre", score: -100 };
-    }
+    const exhausted = remaining <= 0;
 
     // Density default
     if (slot === "midi" && dish.densite === "complet") s += 8;
