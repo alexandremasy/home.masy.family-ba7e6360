@@ -266,12 +266,12 @@ function SlotCell({
               : "border-transparent bg-secondary/50 hover:border-border hover:bg-secondary hover:shadow-soft")
           }
         >
-          <p className="line-clamp-2 text-sm font-medium leading-snug">{dish.name}</p>
-          {isBatch && (
-            <span className="mt-1 inline-flex items-center gap-0.5 rounded-full bg-warm/15 px-1.5 py-0.5 text-[10px] text-warm">
-              <Repeat className="h-3 w-3" />batch
-            </span>
-          )}
+          {/* Same card, stripped to what a calendar cell can hold. */}
+          <DishCard
+            dish={dish}
+            variant="compact"
+            status={isBatch ? <StatusPill icon={<Repeat className="h-3 w-3" />}>batch</StatusPill> : undefined}
+          />
           <div className="absolute right-1 top-4 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
             <button onClick={onOpen} aria-label="Changer" className="grid h-6 w-6 place-items-center rounded-md bg-card text-muted-foreground shadow-soft hover:text-foreground">
               <RefreshCw className="h-3 w-3" />
