@@ -41,12 +41,17 @@ function PlatsPage() {
             className="pl-8"
           />
         </div>
-        <p className="shrink-0 text-xs text-muted-foreground">
-          {results.length} plat{results.length > 1 ? "s" : ""} sur {dishes.length}
-        </p>
+        <div className="flex shrink-0 items-center gap-3">
+          <p className="text-xs text-muted-foreground">
+            {results.length} plat{results.length > 1 ? "s" : ""} sur {dishes.length}
+          </p>
+          <Button asChild size="sm" className="gap-1.5">
+            <Link to="/repas/plats/nouveau"><Plus className="h-3.5 w-3.5" />Nouveau plat</Link>
+          </Button>
+        </div>
       </div>
 
-      <DishFilters value={filter} onChange={setFilter} bases={ALL_BASES} />
+      <DishFilters value={filter} onChange={setFilter} bases={allBases} />
 
       {results.length === 0 ? (
         <p className="py-10 text-center text-sm text-muted-foreground">
@@ -63,7 +68,11 @@ function PlatsPage() {
 
 function DishCard({ dish, plannedCount }: { dish: Dish; plannedCount: number }) {
   return (
-    <div className="flex flex-col rounded-xl border border-border/60 bg-card p-3.5 transition-colors hover:border-border hover:bg-secondary/40">
+    <Link
+      to="/repas/plats/$dishId"
+      params={{ dishId: dish.id }}
+      className="flex flex-col rounded-xl border border-border/60 bg-card p-3.5 transition-all hover:border-primary hover:bg-secondary/40 hover:shadow-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="truncate font-serif text-base leading-tight">{dish.name}</p>
