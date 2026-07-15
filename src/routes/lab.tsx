@@ -142,9 +142,10 @@ function LabAmbience() {
         {MODULES.map((mod) => {
           const Icon = mod.icon;
           return (
-            <button key={mod.key} title={mod.label} className="lab-dock-btn group relative grid h-11 w-11 place-items-center rounded-full text-[color:var(--dim)]">
+            <button key={mod.key} aria-label={mod.label} className="lab-dock-btn group relative grid h-11 w-11 place-items-center rounded-full text-[color:var(--dim)]">
               <Icon className="h-[18px] w-[18px]" />
               {mod.alert && <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[color:var(--terra)]" />}
+              <span className="lab-tip">{mod.label}</span>
             </button>
           );
         })}
