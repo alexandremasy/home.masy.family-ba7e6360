@@ -401,20 +401,28 @@ function ReseauTile() {
       </div>
 
       <div className="relative mt-1 flex flex-1 items-center justify-center">
-        <TickGauge value={st.downMbps} max={MAX} className="w-[62%] max-w-[190px] overflow-visible" />
-        <div className="absolute inset-x-0 top-[46%] text-center">
-          <p className="font-serif text-3xl leading-none tracking-tight">
+        <TickGauge value={st.downMbps} max={MAX} className="w-[78%] max-w-[220px] overflow-visible" />
+        <div className="absolute inset-x-0 top-[44%] text-center">
+          <p className="font-serif text-4xl leading-none tracking-tight tabular-nums">
             <CountUp to={st.downMbps} />
           </p>
-          <p className="mt-0.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Mbps</p>
+          <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Mbps ↓</p>
         </div>
       </div>
 
-      <div className="mt-auto flex items-center justify-center gap-3 pt-1 text-[11px] text-muted-foreground">
-        <span className="tabular-nums">↑ {st.upMbps}</span>
-        <span className="tabular-nums">{st.pingMs} ms</span>
-        <span className="inline-flex items-center gap-1"><Wifi className="h-3 w-3" />{clients}</span>
-        <span className="inline-flex items-center gap-1"><Server className="h-3 w-3" />{reseau.homelab.cpu}%</span>
+      <div className="mt-auto flex items-center justify-center gap-4 pt-1 text-xs text-foreground/75">
+        <Tip label={`Débit montant au dernier test (${st.when}).`}>
+          <span className="inline-flex items-center gap-1 tabular-nums"><ArrowUp className="h-3.5 w-3.5 text-muted-foreground" />{st.upMbps}</span>
+        </Tip>
+        <Tip label="Latence (ping) mesurée vers Internet.">
+          <span className="inline-flex items-center gap-1 tabular-nums"><Activity className="h-3.5 w-3.5 text-muted-foreground" />{st.pingMs} ms</span>
+        </Tip>
+        <Tip label={`Appareils connectés au WiFi (${reseau.wifi1.ssid} + ${reseau.wifi2.ssid}).`}>
+          <span className="inline-flex items-center gap-1 tabular-nums"><Wifi className="h-3.5 w-3.5 text-muted-foreground" />{clients}</span>
+        </Tip>
+        <Tip label={`Charge CPU du homelab · en ligne depuis ${reseau.homelab.uptimeDays} jours.`}>
+          <span className="inline-flex items-center gap-1 tabular-nums"><Server className="h-3.5 w-3.5 text-muted-foreground" />{reseau.homelab.cpu}%</span>
+        </Tip>
       </div>
     </Tile>
   );
