@@ -49,8 +49,15 @@ untouched), iterated to V2: living "moment" hero with animated sun arc + "en ce 
 its animation CSS is self-contained in `src/routes/lab.tsx`. Emotion + motion + focus-with-more-info
 land well; **glass/depth still doesn't** (see design learning above).
 
-**Open — Alex to answer:** voie A (stronger living warm aurora, stay luminous) vs voie B
-(introduce dark/night zones) to finally make the glass read. Then push depth in that direction.
+**Branch resolved → voie B (dark).** Alex picked a new ref (Novo/weight-loss app: dark aubergine
+bento, saturated violet tiles that pop, 3D product objects, editorial title with a colored emphasis
+word, ↗ arrows). Its ADN is now the target *language*: **warm-dark background** (aubergine/brown,
+NOT cold black), **saturated accent that pops** to give depth (the glass finally reads on dark),
+**asymmetric rounded bento**, **3D/material objects**, **expressive editorial typography**.
+Transposition nuance (mine, for the compass): keep it **warm** — accent toward amber/terracotta, not
+the clinical medical mauve — so it stays "maison chaleureuse", not pharma. 3D objects = a later
+asset chantier; evoke material via rich gradients/glows for now. Keep the V2 wins (sun arc, living
+flux, motion).
 
 **Working mode:** prototype in the live mockup; to show Alex MOTION, record a Playwright video →
 mp4 and SendUserFile it (he's on tmux+ssh, can't see pasted images; live URL + sent files work).
