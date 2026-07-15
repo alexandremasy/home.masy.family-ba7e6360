@@ -353,6 +353,71 @@ function RepasTile() {
   );
 }
 
+/**
+ * A dial of ticks — the value fills the arc up to its share of `max`.
+ * Reused idea: the same control reads a tank level or a line speed.
+ */
+function TickGauge({ value, max, className = "" }: { value: number; max: number; className?: string }) {
+  const N = 36, cx = 100, cy = 92, r = 70;
+  const pct = Math.min(1, Math.max(0, value / max));
+  const ticks = Array.from({ length: N }, (_, i) => {
+    const t = i / (N - 1);
+    const a = Math.PI - t * Math.PI;
+    const on = t <= pct;
+    const len = on ? 13 : 9;
+    return {
+      key: i, on,
+      x1: cx + r * Math.cos(a), y1: cy - r * Math.sin(a),
+      x2: cx + (r - len) * Math.cos(a), y2: cy - (r - len) * Math.sin(a),
+    };
+  });
+  return (
+    <svg viewBox="0 0 200 100" className={className} aria-hidden>
+      {ticks.map((t) => (
+        <line key={t.key} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2}
+          strokeWidth={t.on ? 2.4 : 1.4} strokeLinecap="round"
+          className={t.on ? "stroke-primary" : "stroke-border"} />
+      ))}
+    </svg>
+  );
+}
+
+/** Réseau — the line speed on a dial; ping, clients and homelab stay quiet underneath. */
+function ReseauTile() {
+  const st = reseau.internet.lastSpeedtest;
+  const clients = reseau.wifi1.clients + reseau.wifi2.clients;
+  const MAX = 500; // the line's ceiling — the dial reads the share of it
+
+  return (
+    <Tile span={2} to="/reseau" className="flex flex-col">
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Réseau</p>
+        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
+          <Wifi className="h-3 w-3" />
+          <span className="text-[11px] font-medium">Stable</span>
+        </span>
+      </div>
+
+      <div className="relative mt-1 flex flex-1 items-center justify-center">
+        <TickGauge value={st.downMbps} max={MAX} className="w-[62%] max-w-[190px] overflow-visible" />
+        <div className="absolute inset-x-0 top-[46%] text-center">
+          <p className="font-serif text-3xl leading-none tracking-tight">
+            <CountUp to={st.downMbps} />
+          </p>
+          <p className="mt-0.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Mbps</p>
+        </div>
+      </div>
+
+      <div className="mt-auto flex items-center justify-center gap-3 pt-1 text-[11px] text-muted-foreground">
+        <span className="tabular-nums">↑ {st.upMbps}</span>
+        <span className="tabular-nums">{st.pingMs} ms</span>
+        <span className="inline-flex items-center gap-1"><Wifi className="h-3 w-3" />{clients}</span>
+        <span className="inline-flex items-center gap-1"><Server className="h-3 w-3" />{reseau.homelab.cpu}%</span>
+      </div>
+    </Tile>
+  );
+}
+
 type SalonVariant = "spotify" | "netflix" | "idle";
 
 function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: SalonVariant }) {
