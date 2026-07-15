@@ -91,7 +91,6 @@ export function CursorFollower() {
 
   return (
     <>
-      <div ref={dotRef} className="cursor-dot" aria-hidden style={{ opacity: 0 }} />
       <svg ref={svgRef} className="cursor-follower" aria-hidden style={{ opacity: 0 }}>
         <defs>
           <filter id="cursor-warp" x="-20%" y="-20%" width="140%" height="140%">
