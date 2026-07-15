@@ -18,7 +18,9 @@ function AppLayout() {
   const isFullBleed =
     pathname.startsWith("/budget") ||
     pathname.startsWith("/securite") ||
-    pathname.startsWith("/maison");
+    pathname.startsWith("/repas") ||
+    pathname.startsWith("/courses") ||
+    pathname.startsWith("/anniversaires");
   const isOverlay = !isFullBleed && pathname !== "/";
 
   // Pick a line based on day-of-year for a stable but rotating feel
