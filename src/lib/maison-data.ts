@@ -278,6 +278,42 @@ export function isPast(d: Date): boolean {
   return d.getTime() < TODAY.getTime();
 }
 
+/** The sliding plan window is what the engine reasons about; the rest of the grid is context. */
+export function isInWindow(d: Date): boolean {
+  return d.getTime() >= WINDOW_START.getTime() &&
+         d.getTime() <= WINDOW_DAYS[WINDOW_DAYS.length - 1].getTime();
+}
+
+// ------------------------------------------------------------
+// Per-day weather (mocked, deterministic from the date so SSR and client agree)
+// ------------------------------------------------------------
+export interface DayWeather { cond: WeatherCond; maxC: number; minC: number; heatwave: boolean }
+
+const COND_CYCLE: WeatherCond[] = [
+  "partly", "sun", "sun", "rain", "cloud", "partly", "sun",
+  "storm", "partly", "cloud", "sun", "rain", "partly", "sun",
+];
+
+export function dayWeather(d: Date): DayWeather {
+  const seed = d.getDate() + d.getMonth() * 31;
+  const cond = COND_CYCLE[seed % COND_CYCLE.length];
+  const maxC = 16 + ((seed * 7) % 12); // 16–27
+  return { cond, maxC, minC: maxC - 6 - (seed % 3), heatwave: maxC >= 26 };
+}
+
+/** The hint the suggestion engine consumes for a given day. */
+export function weatherHintFor(d: Date): WeatherHint {
+  const w = dayWeather(d);
+  return { heatwave: w.heatwave, label: `${condLabel(w.cond)}, ${w.maxC}°` };
+}
+
+export function condLabel(c: WeatherCond): string {
+  return {
+    sun: "Ensoleillé", cloud: "Couvert", partly: "Éclaircies",
+    rain: "Pluie", storm: "Orages", snow: "Neige", fog: "Brouillard",
+  }[c];
+}
+
 // Seed plan — realistic weekday-lunch batch + varied dinners
 const PLAN_SEED: Array<{ dayOffset: number; slot: Slot; dishId: string; batchOffset?: number }> = [
   // Day 0 (tomorrow)
