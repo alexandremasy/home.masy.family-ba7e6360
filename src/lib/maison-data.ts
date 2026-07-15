@@ -3,6 +3,9 @@
 // All data is mocked. No persistence.
 // ============================================================
 
+import type { WeatherCond } from "./mock-data";
+export type { WeatherCond };
+
 export type Role = "protéine" | "légume" | "féculent" | "sauce" | "garniture";
 export type Unit = "pièce" | "g" | "gousse" | "botte";
 export type Densite = "complet" | "léger";
