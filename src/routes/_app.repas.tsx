@@ -219,9 +219,9 @@ function DayCell({
 }
 
 function SlotCell({
-  date, slot, entry, weekend, past, onOpen, onRemove, onDropFrom,
+  date, slot, entry, weekend, onOpen, onRemove, onDropFrom,
 }: {
-  date: string; slot: Slot; entry?: PlanEntry; weekend: boolean; past: boolean;
+  date: string; slot: Slot; entry?: PlanEntry; weekend: boolean;
   onOpen: () => void; onRemove: () => void;
   onDropFrom: (from: { date: string; slot: Slot }) => void;
 }) {
@@ -229,13 +229,11 @@ function SlotCell({
   const dish = entry ? dishById(entry.dishId) : undefined;
   const isBatch = !!entry?.batchOfDate;
 
-  if (past && !dish) return <div className="flex-1" />;
-
   return (
     <div
-      onDragOver={past ? undefined : (e) => { e.preventDefault(); setDragOver(true); }}
+      onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
       onDragLeave={() => setDragOver(false)}
-      onDrop={past ? undefined : (e) => {
+      onDrop={(e) => {
         setDragOver(false);
         const raw = e.dataTransfer.getData("application/json");
         if (!raw) return;
@@ -244,49 +242,47 @@ function SlotCell({
         onDropFrom(from);
       }}
       className={
-        "group relative flex flex-1 flex-col rounded-lg border p-1.5 text-left transition-all " +
+        "group relative flex flex-1 flex-col rounded-lg border p-2 text-left transition-all " +
         (dragOver ? "border-primary bg-primary/5 " : "border-transparent ") +
         (entry ? "bg-secondary/50" : "")
       }
     >
-      <div className="flex items-center justify-between text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+      <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
         <span>{slot === "midi" ? "Midi" : "Soir"}</span>
-        {!weekend && !past && slot === "midi" && !entry && <Package className="h-2.5 w-2.5" aria-label="Emportable" />}
+        {!weekend && slot === "midi" && !entry && <Package className="h-3 w-3" aria-label="Emportable" />}
       </div>
 
       {entry && dish ? (
         <div
-          draggable={!past}
+          draggable
           onDragStart={(e) => {
             e.dataTransfer.setData("application/json", JSON.stringify({ date, slot }));
             e.dataTransfer.effectAllowed = "move";
           }}
-          className={"mt-0.5 flex-1 " + (past ? "" : "cursor-grab active:cursor-grabbing")}
+          className="mt-1 flex-1 cursor-grab active:cursor-grabbing"
         >
-          <p className="line-clamp-2 text-xs font-medium leading-snug">{dish.name}</p>
+          <p className="line-clamp-2 text-sm font-medium leading-snug">{dish.name}</p>
           {isBatch && (
-            <span className="mt-1 inline-flex items-center gap-0.5 rounded-full bg-warm/15 px-1.5 py-0.5 text-[9px] text-warm">
-              <Repeat className="h-2.5 w-2.5" />batch
+            <span className="mt-1 inline-flex items-center gap-0.5 rounded-full bg-warm/15 px-1.5 py-0.5 text-[10px] text-warm">
+              <Repeat className="h-3 w-3" />batch
             </span>
           )}
-          {!past && (
-            <div className="absolute right-1 top-1 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
-              <button onClick={onOpen} aria-label="Changer" className="grid h-5 w-5 place-items-center rounded-md bg-card text-muted-foreground hover:text-foreground">
-                <RefreshCw className="h-2.5 w-2.5" />
-              </button>
-              <button onClick={onRemove} aria-label="Retirer" className="grid h-5 w-5 place-items-center rounded-md bg-card text-muted-foreground hover:text-destructive">
-                <X className="h-2.5 w-2.5" />
-              </button>
-            </div>
-          )}
+          <div className="absolute right-1 top-1 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+            <button onClick={onOpen} aria-label="Changer" className="grid h-6 w-6 place-items-center rounded-md bg-card text-muted-foreground hover:text-foreground">
+              <RefreshCw className="h-3 w-3" />
+            </button>
+            <button onClick={onRemove} aria-label="Retirer" className="grid h-6 w-6 place-items-center rounded-md bg-card text-muted-foreground hover:text-destructive">
+              <X className="h-3 w-3" />
+            </button>
+          </div>
         </div>
       ) : (
         <button
           onClick={onOpen}
           aria-label={`Suggérer un plat — ${slot}`}
-          className="mt-0.5 flex flex-1 items-center justify-center rounded-md border border-dashed border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+          className="mt-1 flex flex-1 items-center justify-center rounded-md border border-dashed border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
         >
-          <Sparkles className="h-3 w-3" />
+          <Sparkles className="h-3.5 w-3.5" />
         </button>
       )}
     </div>
