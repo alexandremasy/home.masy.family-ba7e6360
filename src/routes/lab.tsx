@@ -89,7 +89,7 @@ function LabAmbience() {
           {/* LÉO — second colour tile, saturated, with an overflowing volume */}
           {leo && (
             <div className="tile-deep row-span-2 relative flex flex-col justify-between overflow-hidden rounded-3xl p-5">
-              <span className="volume" aria-hidden />
+              <span className="volume" aria-hidden style={{ right: "-28%", bottom: "-16%", width: "74%", aspectRatio: "1", opacity: 0.5 }} />
               <div className="relative">
                 <span className="grid h-11 w-11 place-items-center rounded-full bg-black/20 text-white"><Cake className="h-5 w-5" /></span>
                 <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-white/70">Aujourd'hui</p>
