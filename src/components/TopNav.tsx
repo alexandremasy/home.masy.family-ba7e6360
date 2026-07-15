@@ -2,7 +2,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { ThemeToggle } from "./ThemeToggle";
 import { RoomIcon } from "./RoomIcon";
 import { ModeSwitcher } from "./ModeSwitcher";
-import { Car, Wifi, Zap, ChevronDown, MoreHorizontal, Settings, Wrench, ExternalLink, Home, LayoutDashboard, CalendarRange, Table2, FileUp, ShieldCheck, UtensilsCrossed, Cake } from "lucide-react";
+import { Car, Wifi, Zap, ChevronDown, MoreHorizontal, Settings, Wrench, ExternalLink, Home, LayoutDashboard, CalendarRange, Table2, FileUp, ShieldCheck, UtensilsCrossed, Cake, DoorClosed, Activity } from "lucide-react";
 import type { ReactNode } from "react";
 import type { Room } from "@/lib/mock-data";
 import {
@@ -25,13 +25,13 @@ const rooms: NavItem[] = [
   { to: "/room/escalier", label: "Escalier", icon: <RoomIcon icon={"footprints" as Room["icon"]} className="h-3.5 w-3.5" /> },
 ];
 
+// The Maison mode's own domains. Sécurité is NOT here — it's a mode of its own.
 const domains: NavItem[] = [
   { to: "/maison/repas", label: "Repas", icon: <UtensilsCrossed className="h-3.5 w-3.5" /> },
   { to: "/maison/anniversaires", label: "Anniversaires", icon: <Cake className="h-3.5 w-3.5" /> },
   { to: "/tesla", label: "Bernard", icon: <Car className="h-3.5 w-3.5" /> },
   { to: "/reseau", label: "Réseau", icon: <Wifi className="h-3.5 w-3.5" /> },
   { to: "/energie", label: "Énergie", icon: <Zap className="h-3.5 w-3.5" /> },
-  { to: "/securite", label: "Sécurité", icon: <ShieldCheck className="h-3.5 w-3.5" /> },
 ];
 
 const budgetTabs: NavItem[] = [
@@ -57,17 +57,19 @@ const externals: ExternalItem[] = [
 export function TopNav() {
   const { pathname } = useLocation();
   const isBudget = pathname.startsWith("/budget");
+  const isSecurite = pathname.startsWith("/securite");
   const activeRoom = rooms.find((r) => pathname.startsWith(r.to));
-  const items = isBudget ? budgetTabs : null;
+  // A module with its own world shows its tabs instead of the domain list.
+  const items = isBudget ? budgetTabs : isSecurite ? securiteTabs : null;
 
   return (
     <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
         <ModeSwitcher />
 
-        {isBudget ? (
+        {items ? (
           <nav className="hidden items-center gap-1 md:flex">
-            {items!.map((item) => {
+            {items.map((item) => {
               const active = pathname === item.to || pathname.startsWith(item.to + "/");
               return (
                 <Link
@@ -170,8 +172,8 @@ export function TopNav() {
       {/* Mobile nav */}
       <div className="md:hidden">
         <nav className="flex gap-1 overflow-x-auto px-4 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {isBudget ? (
-            budgetTabs.map((item) => {
+          {items ? (
+            items.map((item) => {
               const active = pathname === item.to || pathname.startsWith(item.to + "/");
               return (
                 <Link
