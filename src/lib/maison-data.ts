@@ -438,12 +438,20 @@ export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: 
     const overlap = dish.modifiers.reduce((acc, m) => acc + Math.min(2, compCount.get(m.name) ?? 0), 0);
     s -= overlap * 2;
 
+    if (exhausted) {
+      // Enough to leave the shortlist, not enough to vanish — you may still
+      // deliberately want it twice.
+      s -= 45;
+      reason = `déjà ${placed}× sur la fenêtre`;
+      return [{ dish, reason, score: s, exhausted: true, placed, remaining: 0 }];
+    }
+
     const leftover = placed > 0;
     if (leftover) {
       // Outranks the component-overlap penalty it necessarily incurs against itself.
       s += 40;
       reason = `à écouler · ${remaining} créneau${remaining > 1 ? "x" : ""}`;
-      return { dish, reason, score: s, leftover, remaining };
+      return [{ dish, reason, score: s, leftover, remaining, placed }];
     }
 
     if (heat && dish.temperature === "froid") reason = "canicule → froid";
