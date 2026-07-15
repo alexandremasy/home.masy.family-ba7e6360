@@ -300,12 +300,15 @@ function SlotCell({
         <button
           onClick={onOpen}
           aria-label={`Suggérer un plat — ${slot}`}
+          // min-h-11 = a thumb. In the phone's 2-column row `flex-1` has no height
+          // to fill, so the target collapsed to the icon.
           className={
-            "flex flex-1 items-center justify-center rounded-lg border border-dashed text-muted-foreground transition-colors " +
+            "flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-lg border border-dashed text-xs text-muted-foreground transition-colors " +
             (dragOver ? "border-primary bg-primary/5 text-primary" : "border-border hover:border-primary hover:text-primary")
           }
         >
           <Sparkles className="h-3.5 w-3.5" />
+          <span className="lg:hidden">Ajouter</span>
         </button>
       )}
     </div>
