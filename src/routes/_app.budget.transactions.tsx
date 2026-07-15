@@ -4,6 +4,7 @@ import { Search, X, Check, Pencil, ArrowUpDown } from "lucide-react";
 import { categories, transactionsSeed, RECURRENCES, eur2, type Transaction, type CatKey, type Recurrence } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eyebrow } from "@/components/Eyebrow";
 
@@ -147,11 +148,11 @@ function TransactionsPage() {
       )}
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-2xl border border-border/60 bg-card shadow-soft">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border/60 text-left text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-              <th className="w-10 px-3 py-3">
+      <div className="overflow-hidden rounded-2xl border border-border/60 bg-card shadow-soft">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-b border-border/60 text-left text-[11px] uppercase tracking-[0.18em] text-muted-foreground hover:bg-transparent">
+              <TableHead className="w-10 px-3 py-3">
                 <Checkbox
                   aria-label="Tout sélectionner"
                   checked={
@@ -161,33 +162,34 @@ function TransactionsPage() {
                   }
                   onCheckedChange={(c) => setSelected(c ? new Set(filtered.map((r) => r.id)) : new Set())}
                   className="h-3.5 w-3.5" />
-              </th>
+              </TableHead>
               <ThSort label="Date" k="date" sort={sort} setSort={setSort} />
               <ThSort label="Libellé" k="label" sort={sort} setSort={setSort} />
               <ThSort label="Catégorie" k="category" sort={sort} setSort={setSort} />
               <ThSort label="Montant" k="amount" sort={sort} setSort={setSort} className="text-right" />
-              <th className="px-3 py-3">Récurrence</th>
-              <th className="px-3 py-3">Provenance</th>
-            </tr>
-          </thead>
-          <tbody>
+              <TableHead className="px-3 py-3">Récurrence</TableHead>
+              <TableHead className="px-3 py-3">Provenance</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {filtered.map((r) => {
               const cat = categories.find((c) => c.key === r.category);
               const isUncat = r.category === "divers";
               const isSelected = selected.has(r.id);
               return (
-                <tr key={r.id}
+                <TableRow key={r.id}
+                  data-state={isSelected ? "selected" : undefined}
                   className={"group border-b border-border/40 transition-colors " +
                     (isSelected ? "bg-primary/5" : "hover:bg-secondary/40")}>
-                  <td className="px-3 py-2.5">
+                  <TableCell className="px-3 py-2.5">
                     <Checkbox aria-label={`Sélectionner ${r.label}`} checked={isSelected} onCheckedChange={() => toggleSelect(r.id)} className="h-3.5 w-3.5" />
-                  </td>
-                  <td className="px-3 py-2.5 tabular-nums text-muted-foreground">{r.date.slice(8,10)}/{r.date.slice(5,7)}</td>
-                  <td className="px-3 py-2.5">
+                  </TableCell>
+                  <TableCell className="px-3 py-2.5 tabular-nums text-muted-foreground">{r.date.slice(8,10)}/{r.date.slice(5,7)}</TableCell>
+                  <TableCell className="px-3 py-2.5">
                     <span className="font-medium">{r.label}</span>
                     {isUncat && <span className="ml-2 inline-block rounded-full bg-warm/10 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-warm">À trier</span>}
-                  </td>
-                  <td className="px-3 py-2.5">
+                  </TableCell>
+                  <TableCell className="px-3 py-2.5">
                     {editing?.id === r.id && editing.field === "category" ? (
                       // Inline edit: `open` is driven by the row's editing state, and
                       // closing it clears that state — no autoFocus/onBlur dance.
@@ -218,8 +220,8 @@ function TransactionsPage() {
                         <Pencil className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-50" />
                       </button>
                     )}
-                  </td>
-                  <td className="px-3 py-2.5 text-right">
+                  </TableCell>
+                  <TableCell className="px-3 py-2.5 text-right">
                     {editing?.id === r.id && editing.field === "amount" ? (
                       <input autoFocus type="number" defaultValue={r.amount} step="0.01"
                         onBlur={(e) => { updateRow(r.id, { amount: parseFloat(e.target.value) || 0 }); setEditing(null); }}
@@ -232,24 +234,24 @@ function TransactionsPage() {
                         {r.amount > 0 ? "+" : ""}{eur2(r.amount)}
                       </button>
                     )}
-                  </td>
-                  <td className="px-3 py-2.5 text-muted-foreground">{r.recurrence}</td>
-                  <td className="px-3 py-2.5">
+                  </TableCell>
+                  <TableCell className="px-3 py-2.5 text-muted-foreground">{r.recurrence}</TableCell>
+                  <TableCell className="px-3 py-2.5">
                     <span className={"inline-block rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider " +
                       (r.provenance === "Édité"
                         ? "bg-mustard/20 text-mustard"
                         : "bg-secondary text-muted-foreground")}>
                       {r.provenance}
                     </span>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               );
             })}
             {filtered.length === 0 && (
-              <tr><td colSpan={7} className="px-3 py-10 text-center text-sm text-muted-foreground">Aucune transaction ne correspond.</td></tr>
+              <TableRow className="hover:bg-transparent"><TableCell colSpan={7} className="px-3 py-10 text-center text-sm text-muted-foreground">Aucune transaction ne correspond.</TableCell></TableRow>
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
       <p className="text-center text-xs text-muted-foreground">
         {filtered.length} ligne{filtered.length > 1 ? "s" : ""} · Total {eur2(runningTotal)}
@@ -274,13 +276,13 @@ function ThSort({ label, k, sort, setSort, className = "" }: {
 }) {
   const active = sort.key === k;
   return (
-    <th className={"px-3 py-3 " + className}>
+    <TableHead className={"px-3 py-3 " + className}>
       <button
         onClick={() => setSort({ key: k, dir: active ? (sort.dir === 1 ? -1 : 1) : 1 })}
         className={"inline-flex items-center gap-1 transition-colors " + (active ? "text-foreground" : "hover:text-foreground")}
       >
         {label} <ArrowUpDown className="h-3 w-3 opacity-60" />
       </button>
-    </th>
+    </TableHead>
   );
 }
