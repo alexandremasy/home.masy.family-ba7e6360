@@ -106,13 +106,7 @@ export function Dashboard() {
           ];
         })}
 
-        {/* Anniversaire — the next one coming up */}
-        <BirthdayTile />
-
-        {/* Repas — today & tomorrow */}
-        <RepasTile />
-
-        {/* Weather — single cell, no background, floats into any hole */}
+        {/* Weather (top) + Repas (bottom) — one cell, floats into any hole */}
         <WeatherTile />
 
         {/* Énergie */}
