@@ -452,7 +452,9 @@ function SuggestionCard({
               type="button"
               onClick={(e) => { e.stopPropagation(); onPick(dish, true); }}
               title="Batch : une cuisson, deux créneaux"
-              className="ml-auto inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[10px] transition-colors hover:border-foreground hover:bg-foreground hover:text-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              // Shaped like the attribute tags it sits with, but it acts — hence
+              // the border and the hover.
+              className="ml-auto inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-0.5 text-[10px] transition-colors hover:border-foreground hover:bg-foreground hover:text-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Repeat className="h-3 w-3" />×2
             </button>
