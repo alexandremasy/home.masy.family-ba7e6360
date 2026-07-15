@@ -364,27 +364,54 @@ function SlotPicker({
         <DishFilters value={filter} onChange={setFilter} bases={bases} />
       </div>
 
-      <div className="max-h-[55vh] overflow-y-auto">
-        {shown.length === 0 ? (
+      <div className="max-h-[55vh] space-y-5 overflow-y-auto">
+        {shown.length === 0 && (
           <p className="px-1 py-6 text-sm text-muted-foreground">
             Aucun plat ne correspond — élargissez les critères.
           </p>
-        ) : (
-          <>
-            <p className="mb-2 text-[11px] text-muted-foreground">
-              {browsing
-                ? `${shown.length} plat${shown.length > 1 ? "s" : ""} · classés par pertinence pour ce créneau`
-                : `Suggestions ${slot === "midi" ? "complètes" : "légères"} pour ce créneau`}
-            </p>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {shown.map(({ dish, reason, leftover }) => (
-                <SuggestionCard key={dish.id} dish={dish} reason={reason} leftover={leftover} onPick={onPick} />
-              ))}
-            </div>
-          </>
+        )}
+
+        {suggestions.length > 0 && (
+          <DishSection
+            title="Suggestions"
+            hint={`Les mieux placées pour ce créneau${slot === "midi" ? " · complet" : " · léger"}`}
+            items={suggestions}
+            onPick={onPick}
+          />
+        )}
+
+        {others.length > 0 && (
+          <DishSection
+            title="Autres plats"
+            hint={`${others.length} plat${others.length > 1 ? "s" : ""} compatible${others.length > 1 ? "s" : ""} avec ce créneau`}
+            items={others}
+            onPick={onPick}
+          />
         )}
       </div>
     </>
+  );
+}
+
+function DishSection({
+  title, hint, items, onPick,
+}: {
+  title: string; hint: string;
+  items: Suggestion[];
+  onPick: (dish: Dish, batch: boolean) => void;
+}) {
+  return (
+    <section>
+      <div className="mb-2 flex items-baseline gap-2">
+        <h3 className="text-[10px] uppercase tracking-[0.18em] text-foreground">{title}</h3>
+        <p className="text-[11px] text-muted-foreground">{hint}</p>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        {items.map(({ dish, reason, leftover }) => (
+          <SuggestionCard key={dish.id} dish={dish} reason={reason} leftover={leftover} onPick={onPick} />
+        ))}
+      </div>
+    </section>
   );
 }
 
