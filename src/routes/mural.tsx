@@ -54,7 +54,7 @@ function MuralSurface() {
             <p className="mt-1 text-[12px] text-black/55">{m.tempC}° dehors · {m.label}</p>
           </div>
           {/* the day arc, shrunk — same signature, quarter scale */}
-          <svg viewBox="0 0 220 66" className="h-12 w-full overflow-visible">
+          <svg viewBox="0 0 220 66" className="mt-2 h-14 w-full overflow-visible">
             <defs>
               <radialGradient id="sunball-m" cx="34%" cy="28%" r="72%">
                 <stop offset="0%" stopColor="#ffffff" />
