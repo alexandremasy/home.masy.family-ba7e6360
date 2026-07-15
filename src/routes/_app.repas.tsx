@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
 import { PageHeader } from "@/components/PageHeader";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DishesProvider } from "@/lib/dishes-store";
 
 export const Route = createFileRoute("/_app/repas")({
   component: RepasLayout,
