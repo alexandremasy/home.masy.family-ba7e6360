@@ -373,7 +373,8 @@ export interface Suggestion {
  * - Penalises dishes/components already used a lot in the window
  * - Boosts batch tag on weekend
  */
-export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: WeatherHint): Suggestion[] {
+/** `limit` widens the ranked pool — 6 is the inspiration default, more when browsing/filtering. */
+export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: WeatherHint, limit = 6): Suggestion[] {
   const weekend = isWeekend(date);
   const isMidi = slot === "midi";
 
