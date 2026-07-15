@@ -8,6 +8,7 @@ import {
   type Category, type CatKey,
 } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
+import { BudgetBar } from "@/components/BudgetBar";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Panel } from "@/components/Card";
 
@@ -370,16 +371,7 @@ function CategoryRow({ cat, index, showPlanned, highlightOver }: {
               {showPlanned && <span className="text-muted-foreground"> / {eur(cat.budget)}</span>}
             </p>
           </div>
-          <div className="relative mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-            <div
-              className={"absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 ease-out " + (over ? "bg-warm" : "bg-primary")}
-              style={{ width: `${pct}%` }}
-            />
-            {over && showPlanned && (
-              <div className="absolute inset-y-0 left-full rounded-r-full bg-warm/40 transition-[width] duration-700"
-                style={{ width: `${overflowPct}%` }} />
-            )}
-          </div>
+          <BudgetBar value={pct} overflow={over && showPlanned ? overflowPct : 0} />
           {showPlanned && (
             <div className="mt-1.5 flex items-center justify-between text-[11px] tabular-nums">
               <span className="text-muted-foreground">{Math.round((cat.actual / cat.budget) * 100)}% du budget</span>

@@ -19,6 +19,7 @@ import {
   type TemporalState, type UpcomingBill, type BudgetView,
 } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
+import { BudgetBar } from "@/components/BudgetBar";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Panel } from "@/components/Card";
 
@@ -579,10 +580,7 @@ function PasseView({ monthIdx }: { monthIdx: number }) {
                         <span className="text-muted-foreground"> / {eur(c.budget)}</span>
                       </p>
                     </div>
-                    <div className="relative mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-                      <div className={"absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 ease-out " + (over ? "bg-warm" : "bg-primary")}
-                        style={{ width: `${pct}%` }} />
-                    </div>
+                    <BudgetBar value={pct} overflow={over ? Math.min(100, pct - 100) : 0} />
                   </div>
                 </div>
               </li>
@@ -642,12 +640,7 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
                         <span className="opacity-60"> + {eur(c.budget - Math.round(c.actual*progress))} prévu</span>
                       </p>
                     </div>
-                    <div className="relative mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-                      <div className="absolute inset-y-0 left-0 rounded-full bg-warm/40 transition-[width] duration-700"
-                        style={{ width: `${projPct}%` }} />
-                      <div className="absolute inset-y-0 left-0 rounded-full bg-primary transition-[width] duration-700"
-                        style={{ width: `${realPct}%` }} />
-                    </div>
+                    <BudgetBar value={realPct} projected={projPct} />
                   </div>
                 </div>
               </li>
