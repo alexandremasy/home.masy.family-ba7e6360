@@ -404,8 +404,11 @@ function DishSection({
         <p className="text-[11px] text-muted-foreground">{hint}</p>
       </div>
       <div className="grid gap-2 sm:grid-cols-2">
-        {items.map(({ dish, reason, leftover }) => (
-          <SuggestionCard key={dish.id} dish={dish} reason={reason} leftover={leftover} onPick={onPick} />
+        {items.map(({ dish, reason, leftover, exhausted }) => (
+          <SuggestionCard
+            key={dish.id} dish={dish} reason={reason}
+            leftover={leftover} exhausted={exhausted} onPick={onPick}
+          />
         ))}
       </div>
     </section>
