@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { WeatherIcon } from "@/components/WeatherIcon";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -146,7 +146,10 @@ function RepasPage() {
       <Dialog open={!!selected} onOpenChange={(o) => { if (!o) setSelected(null); }}>
         {/* The app's own background, so the white cards read as objects on it. */}
         <DialogContent
-          className="max-w-2xl gap-7 bg-background"
+          // Fills the viewport, minus 7rem: DialogContent hangs its close button
+          // at -top-12, so a true 100dvh would push it off-screen. flex + a
+          // flex-1 list is what lets the modal actually use that height.
+          className="flex max-h-[calc(100dvh-7rem)] max-w-2xl flex-col gap-5 bg-background sm:gap-7"
           onOpenAutoFocus={(e) => {
             // Radix focuses the first field on open. On desktop that's what you
             // want; on a phone it throws the keyboard over the very suggestions
@@ -380,7 +383,6 @@ function SlotPicker({
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
-              ref={searchRef}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Chercher un plat…"
