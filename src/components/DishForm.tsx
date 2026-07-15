@@ -183,15 +183,15 @@ export function DishForm({
           ) : (
             d.modifiers.map((m, i) => (
               <div key={i} className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border/60 p-1.5">
+                <select value={m.role} onChange={(e) => setMod(i, { role: e.target.value as Role })} className="h-8 w-24 shrink-0 rounded-md border border-border bg-background px-2 text-xs capitalize outline-none">
+                  {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
+                </select>
                 <Input
                   value={m.name}
                   onChange={(e) => setMod(i, { name: e.target.value })}
-                  placeholder="composant"
-                  className="h-8 min-w-32 flex-1 text-sm"
+                  placeholder="Composant"
+                  className="h-8 min-w-32 flex-1 text-sm first-letter:uppercase"
                 />
-                <select value={m.role} onChange={(e) => setMod(i, { role: e.target.value as Role })} className="h-8 rounded-md border border-border bg-background px-2 text-xs outline-none">
-                  {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
-                </select>
                 <Input
                   type="number" min={0} step="any"
                   value={m.qty}
@@ -208,9 +208,9 @@ export function DishForm({
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
-            ))}
-          </div>
-        )}
+            ))
+          )}
+        </div>
       </div>
 
       <div className="flex items-center gap-2 border-t border-border/60 pt-4">
