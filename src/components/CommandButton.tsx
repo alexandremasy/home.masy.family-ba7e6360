@@ -18,6 +18,18 @@ export function simulateHACommand(): Promise<void> {
   });
 }
 
+/**
+ * Deliberately NOT built on ui/button, and this is not an oversight.
+ *
+ * CommandButton contributes a behaviour (pending / errored round-trip) and no
+ * box: all 13 call sites define their own, and they contradict Button's base —
+ * `grid place-items-center` / `flex-col` boxes at h-7, h-11, h-16 against
+ * Button's `inline-flex items-center justify-center` and `h-9`. Worse,
+ * Button's `[&_svg]:size-4` outranks an icon's own `h-3.5` on specificity, so
+ * every icon on the room page would silently jump to 16px.
+ *
+ * Wrap it in a <Button> only if those 13 boxes are redesigned first.
+ */
 type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onClick"> & {
   /** Called once the simulated command resolves successfully. */
   onCommand?: () => void;
