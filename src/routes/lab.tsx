@@ -285,7 +285,7 @@ function EnergieModule({ onClose }: { onClose: () => void }) {
               <span className="grid h-9 w-9 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--hot)]"><Droplet className="h-4 w-4" /></span>
               <span className="inline-flex items-center gap-1 text-[11px] text-[color:var(--dim)]"><Minus className="h-3 w-3" />{water.trendPct}%</span>
             </div>
-            <p className="mt-4 font-serif text-3xl tracking-tight text-[color:var(--ink)]"><CountUp to={water.dailyM3} /> <span className="text-base text-[color:var(--dim)]">m³/j</span></p>
+            <p className="mt-4 font-serif text-3xl tracking-tight text-[color:var(--ink)]"><CountUp to={water.dailyM3} decimals={2} /> <span className="text-base text-[color:var(--dim)]">m³/j</span></p>
             <p className="mt-0.5 text-[11px] text-[color:var(--dim)]">{water.dailyL} L par jour · stable</p>
           </div>
 
