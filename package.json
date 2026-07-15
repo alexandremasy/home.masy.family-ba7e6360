@@ -14,7 +14,6 @@
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",
     "@fontsource/barlow": "^5.2.8",
-    "@fontsource/bitter": "^5.2.10",
     "@hookform/resolvers": "^5.2.2",
     "@lovable.dev/mcp-js": "^0.20.0",
     "@radix-ui/react-accordion": "^1.2.12",
