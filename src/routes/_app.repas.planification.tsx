@@ -414,15 +414,29 @@ function DishSection({
   );
 }
 
+/** A facet — same shape and wording as the filter bar above, on purpose. */
+function Facet({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full border border-border/60 px-2 py-0.5 text-[10px] text-muted-foreground">
+      {children}
+    </span>
+  );
+}
+
 function SuggestionCard({
   dish, reason, leftover, onPick,
 }: {
   dish: Dish; reason: string; leftover?: boolean;
   onPick: (dish: Dish, batch: boolean) => void;
 }) {
-  // The card itself is the pick target — no "Choisir" button. The ×2 button
-  // overlays it and stops propagation, so batch stays reachable in one gesture.
-  // No score badge: it was the engine's raw internal number, meaningless here.
+  // Three kinds of information, three treatments — they were all reading alike:
+  //   identity      → the name
+  //   composition   → what's IN the dish: plain text, it's content, not a facet
+  //   facets        → base/densité/température: the very axes of the filter bar,
+  //                   so they wear the filter bar's shape
+  // Status ("à écouler") and the batch action sit apart, aligned right.
+  //
+  // The card is the pick target — no "Choisir" button, no score badge.
   return (
     <div
       role="button"
@@ -432,37 +446,34 @@ function SuggestionCard({
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onPick(dish, false); }
       }}
       className={
-        "group relative flex cursor-pointer flex-col rounded-xl border p-3 text-left transition-all hover:border-primary hover:bg-secondary/40 hover:shadow-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-ring " +
-        // `accent` (mustard), not `warm` (terracotta): a leftover to use up is a
-        // useful signal, not an alert. `warm` is the alert tone everywhere else.
-        (leftover ? "border-accent/50 bg-accent/[0.07]" : "border-border/60")
+        "group relative flex cursor-pointer flex-col rounded-xl border border-border/60 p-3 text-left transition-all hover:border-primary hover:bg-secondary/40 hover:shadow-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-ring " +
+        (leftover ? "bg-primary/[0.04]" : "")
       }
     >
-      <div className="min-w-0">
-        <p className="truncate font-serif text-base leading-tight">{dish.name}</p>
-        <p className="mt-0.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-          {dish.base} · {dish.densite} · {dish.temperature}
-        </p>
-      </div>
-
-      {/* One tag row: components, then the two tag-shaped extras — the leftover
-          marker and the batch action. `accent` is only legible as a solid fill:
-          its foreground token is dark navy in BOTH themes. */}
-      <div className="mt-2 flex flex-wrap items-center gap-1">
-        {dish.modifiers.slice(0, 4).map((m) => (
-          <Badge key={m.name} variant="secondary" className="text-[10px] font-normal">{m.name}</Badge>
-        ))}
+      <div className="flex items-start justify-between gap-2">
+        <p className="min-w-0 flex-1 font-serif text-base leading-tight">{dish.name}</p>
         {leftover && (
-          <span className="inline-flex items-center gap-1 rounded-md border border-accent bg-accent px-2.5 py-0.5 text-[10px] font-medium text-accent-foreground">
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium text-primary-foreground">
             <Repeat className="h-3 w-3" />{reason}
           </span>
         )}
+      </div>
+
+      {/* Composition — what's in it. The first thing you scan after the name. */}
+      <p className="mt-1.5 line-clamp-2 text-[11px] leading-relaxed text-muted-foreground">
+        {dish.modifiers.map((m) => m.name).join(" · ")}
+      </p>
+
+      <div className="mt-2.5 flex flex-wrap items-center gap-1">
+        <Facet>{dish.base}</Facet>
+        <Facet>{dish.densite}</Facet>
+        <Facet>{dish.temperature}</Facet>
         {dish.rendement > 1 && !leftover && (
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onPick(dish, true); }}
-            title="Batch : couvre aussi le créneau suivant"
-            className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2.5 py-0.5 text-[10px] transition-colors hover:border-foreground hover:bg-foreground hover:text-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            title="Batch : une cuisson, deux créneaux"
+            className="ml-auto inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[10px] transition-colors hover:border-foreground hover:bg-foreground hover:text-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Repeat className="h-3 w-3" />×2
           </button>
