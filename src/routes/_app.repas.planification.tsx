@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { DishFilters, applyFilter, isFilterActive, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
 import {
-  dishes, dishById, suggestFor, coherenceSignals, initialPlan, calWeeks, iso,
+  dishById, suggestFor, coherenceSignals, initialPlan, calWeeks, iso,
   isWeekend, frLongDay, addDays, dayWeather, weatherHintFor, TODAY,
-  type PlanEntry, type Slot, type Dish,
+  type PlanEntry, type Slot, type Dish, type Base,
 } from "@/lib/maison-data";
 import {
   Sparkles, X, RefreshCw, Search, Repeat, Info, AlertTriangle, Package, Move,
@@ -297,19 +298,29 @@ function SlotPicker({
   date: Date; slot: Slot; plan: PlanEntry[];
   onPick: (dish: Dish, batch: boolean) => void;
 }) {
+  // The slot's density default (MAISON-BRIEF: complet → midi, léger → soir) opens
+  // as an active, removable filter — a default, not a law.
+  const baseline = useMemo<DishFilter>(
+    () => ({ ...EMPTY_FILTER, densite: slot === "midi" ? "complet" : "léger" }),
+    [slot],
+  );
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<DishFilter>(EMPTY_FILTER);
+  const [filter, setFilter] = useState<DishFilter>(baseline);
   const hint = useMemo(() => weatherHintFor(date), [date]);
 
   // One ranked pool for the whole modal: the engine orders it, filters narrow it.
   // Browsing never resurrects a dish the slot's hard rules rejected.
   const ranked = useMemo(() => suggestFor(date, slot, plan, hint, 200), [date, slot, plan, hint]);
-  const browsing = isFilterActive(filter) || query.trim().length > 0;
+  // Only count as "browsing" once the user moves off the slot's own default, so
+  // an untouched modal still opens on the curated shortlist rather than a full list.
+  const browsing =
+    query.trim().length > 0 ||
+    JSON.stringify(filter) !== JSON.stringify(baseline);
 
   const shown = useMemo(() => {
-    if (!browsing) return ranked.slice(0, 6);
     const keep = new Set(applyFilter(ranked.map((s) => s.dish), filter, query).map((d) => d.id));
-    return ranked.filter((s) => keep.has(s.dish.id));
+    const matching = ranked.filter((s) => keep.has(s.dish.id));
+    return browsing ? matching : matching.slice(0, 6);
   }, [ranked, filter, query, browsing]);
 
   const bases = useMemo(
