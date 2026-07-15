@@ -2,9 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { WeatherIcon } from "@/components/WeatherIcon";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
+import { DishCard, StatusPill } from "@/components/DishCard";
 import { cap } from "@/lib/utils";
 import {
   dishById, suggestFor, coherenceSignals, initialPlan, calWeeks, iso,
@@ -270,7 +270,11 @@ function SlotCell({
           <DishCard
             dish={dish}
             variant="compact"
-            status={isBatch ? <StatusPill icon={<Repeat className="h-3 w-3" />}>batch</StatusPill> : undefined}
+            status={
+              isBatch
+                ? <StatusPill icon={<Repeat className="h-3 w-3" />} title="Batch — cuisson d'un autre jour" />
+                : undefined
+            }
           />
           <div className="absolute right-1 top-4 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
             <button onClick={onOpen} aria-label="Changer" className="grid h-6 w-6 place-items-center rounded-md bg-card text-muted-foreground shadow-soft hover:text-foreground">
