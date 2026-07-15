@@ -295,6 +295,103 @@ export function Dashboard() {
 }
 
 
+/** The next birthday coming up — today's takes over the tile. */
+function BirthdayTile() {
+  const next = [...people]
+    .map((p) => ({ p, date: nextBirthday(p), days: daysUntil(nextBirthday(p)) }))
+    .sort((a, b) => a.days - b.days)[0];
+  if (!next) return null;
+
+  const { p, days } = next;
+  const today = days === 0;
+  const when = today ? "Aujourd'hui" : days === 1 ? "Demain" : `Dans ${days} jours`;
+
+  return (
+    <Tile span={1} to="/maison/anniversaires" tone={today ? "warm" : "default"} className="flex flex-col">
+      <div className="flex items-start justify-between gap-2">
+        <p className={"text-xs uppercase tracking-[0.18em] " + (today ? "opacity-70" : "text-muted-foreground")}>
+          Anniversaire
+        </p>
+        <Cake className={"h-4.5 w-4.5 " + (today ? "anim-breathe" : "text-muted-foreground")} />
+      </div>
+
+      <p className="mt-4 font-serif text-3xl leading-none tracking-tight">
+        <CountUp to={upcomingAge(p)} /><span className="ml-1 text-base opacity-60">ans</span>
+      </p>
+      <p className={"mt-1 font-serif text-xl leading-tight " + (today ? "" : "text-foreground")}>{p.name}</p>
+
+      <div className="mt-auto pt-3">
+        <span className={"inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium " + (
+          today ? "bg-foreground/10" : "bg-secondary text-muted-foreground"
+        )}>
+          {when} · {p.relation}
+        </span>
+      </div>
+    </Tile>
+  );
+}
+
+/** What we eat today and tomorrow. The plan is a sliding window that starts tomorrow. */
+function RepasTile() {
+  const dayPlan = (d: Date) => {
+    const key = iso(d);
+    const at = (slot: "midi" | "soir") => {
+      const e = initialPlan.find((x) => x.date === key && x.slot === slot);
+      if (!e) return null;
+      const dish = dishById(e.dishId);
+      return dish ? { name: dish.name, batch: !!e.batchOfDate } : null;
+    };
+    return { midi: at("midi"), soir: at("soir") };
+  };
+
+  const days = [
+    { label: "Aujourd'hui", plan: dayPlan(TODAY) },
+    { label: "Demain", plan: dayPlan(addDays(TODAY, 1)) },
+  ];
+
+  return (
+    <Tile span={2} to="/maison/repas" className="flex flex-col">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Repas</p>
+          <p className="mt-1 font-serif text-xl">Ce qu'on mange</p>
+        </div>
+        <UtensilsCrossed className="h-4.5 w-4.5 text-muted-foreground" />
+      </div>
+
+      <div className="mt-4 flex flex-1 flex-col gap-2">
+        {days.map((d) => (
+          <div key={d.label} className="rounded-lg bg-secondary/60 px-2.5 py-2">
+            <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{d.label}</p>
+            <div className="mt-1 flex flex-col gap-0.5">
+              <MealLine slot="Midi" meal={d.plan.midi} />
+              <MealLine slot="Soir" meal={d.plan.soir} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </Tile>
+  );
+}
+
+function MealLine({ slot, meal }: { slot: string; meal: { name: string; batch: boolean } | null }) {
+  return (
+    <div className="flex items-baseline gap-2 text-sm">
+      <span className="w-9 shrink-0 text-[11px] uppercase tracking-[0.1em] text-muted-foreground">{slot}</span>
+      {meal ? (
+        <>
+          <span className="min-w-0 flex-1 truncate font-serif">{meal.name}</span>
+          {meal.batch && (
+            <span className="shrink-0 rounded-full bg-card px-1.5 py-0.5 text-[10px] text-muted-foreground">batch</span>
+          )}
+        </>
+      ) : (
+        <span className="flex-1 text-xs italic text-muted-foreground/60">rien de prévu</span>
+      )}
+    </div>
+  );
+}
+
 type SalonVariant = "spotify" | "netflix" | "idle";
 
 function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: SalonVariant }) {
