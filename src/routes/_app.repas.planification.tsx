@@ -457,10 +457,17 @@ function SuggestionCard({
             <Repeat className="h-3 w-3" />{reason}
           </span>
         )}
+        {/* Already covered — say so, but discreetly: it stays a valid pick. */}
+        {exhausted && (
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground">
+            {reason}
+          </span>
+        )}
       </div>
 
-      {/* Composition — the project's standard tag (Badge, secondary). */}
+      {/* Composition — the base is the dish's skeleton, so it opens the row. */}
       <div className="mt-2 flex flex-wrap gap-1">
+        <Badge variant="secondary" className="text-[10px] font-normal">{dish.base}</Badge>
         {dish.modifiers.map((m) => (
           <Badge key={m.name} variant="secondary" className="text-[10px] font-normal">{m.name}</Badge>
         ))}
@@ -468,7 +475,6 @@ function SuggestionCard({
 
       {/* Facets — outlined, echoing the filter bar. A different family on purpose. */}
       <div className="mt-2.5 flex flex-wrap items-center gap-1">
-        <Facet>{dish.base}</Facet>
         <Facet>{dish.densite}</Facet>
         <Facet>{dish.temperature}</Facet>
         {dish.rendement > 1 && !leftover && (
