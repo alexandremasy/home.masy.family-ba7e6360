@@ -124,50 +124,50 @@ export function DishForm({
         </Field>
       </div>
 
-      <div className="flex flex-wrap gap-5">
+      {/* Every axis of the dish reads the same way: a segmented choice. */}
+      <div className="flex flex-wrap gap-x-8 gap-y-5">
         <Field label="Densité">
-          <Segmented value={d.densite} options={["complet", "léger"]} onChange={(v) => set("densite", v)} />
+          <Segmented
+            value={d.densite}
+            options={[{ value: "complet", label: "Complet" }, { value: "léger", label: "Léger" }]}
+            onChange={(v) => set("densite", v)}
+          />
         </Field>
         <Field label="Température">
-          <Segmented value={d.temperature} options={["chaud", "froid"]} onChange={(v) => set("temperature", v)} />
+          <Segmented
+            value={d.temperature}
+            options={[{ value: "chaud", label: "Chaud" }, { value: "froid", label: "Froid" }]}
+            onChange={(v) => set("temperature", v)}
+          />
         </Field>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Effort (1 rapide → 5 long)">
-          <select
-            value={d.effort}
-            onChange={(e) => set("effort", Number(e.target.value) as Effort)}
-            className={selectCls}
-          >
-            {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{n}</option>)}
-          </select>
+        <Field label="Emportable">
+          <Segmented value={d.emportable} options={YES_NO} onChange={(v) => set("emportable", v)} />
         </Field>
-        <Field label="Rendement (créneaux couverts par cuisson)">
-          <select
-            value={d.rendement}
-            onChange={(e) => set("rendement", Number(e.target.value) as Dish["rendement"])}
-            className={selectCls}
-          >
-            {[1, 2, 3].map((n) => <option key={n} value={n}>{n}</option>)}
-          </select>
+        <Field label="Réchauffable">
+          <Segmented value={d.rechauffable} options={YES_NO} onChange={(v) => set("rechauffable", v)} />
         </Field>
-      </div>
-
-      <div className="flex flex-wrap gap-5">
-        <label className="inline-flex cursor-pointer items-center gap-2 text-sm">
-          <input type="checkbox" checked={d.emportable} onChange={(e) => set("emportable", e.target.checked)} className="h-4 w-4 accent-primary" />
-          Emportable
-        </label>
-        <label className="inline-flex cursor-pointer items-center gap-2 text-sm">
-          <input type="checkbox" checked={d.rechauffable} onChange={(e) => set("rechauffable", e.target.checked)} className="h-4 w-4 accent-primary" />
-          Réchauffable
-        </label>
       </div>
       {/* The engine hard-filters weekday lunches on these two — worth saying out loud. */}
       <p className="-mt-3 text-xs text-muted-foreground">
         Un midi de semaine n'accepte que les plats emportables et réchauffables.
       </p>
+
+      <div className="flex flex-wrap gap-x-8 gap-y-5">
+        <Field label="Effort">
+          <Segmented value={d.effort} options={EFFORT_OPTIONS} onChange={(v) => set("effort", v)} />
+        </Field>
+        <Field label="Une cuisson couvre">
+          <Segmented
+            value={d.rendement}
+            options={[
+              { value: 1, label: "1 repas" },
+              { value: 2, label: "2 repas" },
+              { value: 3, label: "3 repas" },
+            ] as Array<{ value: Dish["rendement"]; label: string }>}
+            onChange={(v) => set("rendement", v)}
+          />
+        </Field>
+      </div>
 
       <div>
         <div className="flex items-center justify-between">
