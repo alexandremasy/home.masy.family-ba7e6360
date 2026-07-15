@@ -14,6 +14,17 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
+    // [ensure-proxied] Auto-injected at container boot. Lovable regenerates this
+    // file and strips this block; source of truth is scripts/ensure-proxied.mjs.
+    // Serves mockup.masy.family behind Traefik: accept the host + route HMR wss:443.
+    ...(process.env.VITE_PROXIED
+      ? {
+          server: {
+            allowedHosts: ["mockup.masy.family"],
+            hmr: { protocol: "wss", clientPort: 443 },
+          },
+        }
+      : {}),
     plugins: [mcpPlugin()],
   },
 });
