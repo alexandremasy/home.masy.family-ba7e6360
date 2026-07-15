@@ -57,9 +57,6 @@ export function CursorFollower() {
     const onMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      // Always update dot position
-      dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
-      dot.style.opacity = "1";
 
       const t = e.target as Element | null;
       const el = t?.closest(INTERACTIVE) ?? null;
