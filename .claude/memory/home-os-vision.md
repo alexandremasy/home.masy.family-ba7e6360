@@ -12,7 +12,15 @@ which becomes the tactical layer under this).
 and Alex is now exploring a **unified "home OS"** — the software that carries *the emotion you want
 in your home*, not a technical cockpit. Home Assistant = the past/plumbing; this is the layer above.
 
-**Surfaces (one OS, adapted density — this is what makes it an OS, not 3 apps):**
+**SCOPE — do not drift.** Work stays on the **central console** (the main interface). When Alex says
+"extensible au-delà du frame", he means **extension via the MODULES** (how you navigate from the home
+screen into Énergie/Sécurité/Budget…, and whether the visual language survives a dense admin screen)
+— NOT other physical surfaces. A `/mural` route prototyping the wall screen was built and **rejected
+("no go", "je ne veux pas d'encombrement de ce type") and deleted**. The wall/TV surfaces are a
+long-term ambition, not current work. A dock of 6 icons that lead nowhere is decoration, not
+navigation.
+
+**Surfaces (long-term ambition — NOT current scope; one OS, adapted density):**
 - **Central console / admin** — the interface we're building now (this web app). Fluid, natural,
   intelligence-in-the-background ambience. Can dive deep into rich administration.
 - **Small wall touchscreens** everywhere (e.g. Waveshare ESP32-S3 Touch LCD 4B) — glanceable.
