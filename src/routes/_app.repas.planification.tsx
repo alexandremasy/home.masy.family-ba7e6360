@@ -374,8 +374,8 @@ function SlotPicker({
                 : `Suggestions ${slot === "midi" ? "complètes" : "légères"} pour ce créneau`}
             </p>
             <div className="grid gap-2 sm:grid-cols-2">
-              {shown.map(({ dish, reason, score }) => (
-                <SuggestionCard key={dish.id} dish={dish} reason={reason} score={score} onPick={onPick} />
+              {shown.map(({ dish, reason, leftover }) => (
+                <SuggestionCard key={dish.id} dish={dish} reason={reason} leftover={leftover} onPick={onPick} />
               ))}
             </div>
           </>
