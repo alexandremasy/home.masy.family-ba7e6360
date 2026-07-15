@@ -380,8 +380,18 @@ function SuggestionCard({
   dish: Dish; reason: string; score: number;
   onPick: (dish: Dish, batch: boolean) => void;
 }) {
+  // The card itself is the pick target — no "Choisir" button. The ×2 button
+  // overlays it and stops propagation, so batch stays reachable in one gesture.
   return (
-    <div className="flex flex-col rounded-xl border border-border/60 p-3 transition-all hover:border-primary hover:shadow-lift">
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => onPick(dish, false)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onPick(dish, false); }
+      }}
+      className="group relative flex cursor-pointer flex-col rounded-xl border border-border/60 p-3 text-left transition-all hover:border-primary hover:bg-secondary/40 hover:shadow-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="truncate font-serif text-base leading-tight">{dish.name}</p>
@@ -396,15 +406,16 @@ function SuggestionCard({
           <Badge key={m.name} variant="secondary" className="text-[10px] font-normal">{m.name}</Badge>
         ))}
       </div>
-      <p className="mt-2 inline-flex items-start gap-1 text-[11px] text-muted-foreground">
-        <Sparkles className="mt-0.5 h-3 w-3 shrink-0 text-primary" />{reason}
-      </p>
-      <div className="mt-3 flex items-center gap-2">
-        <Button size="sm" onClick={() => onPick(dish, false)} className="h-7 flex-1 text-xs">Choisir</Button>
+      <div className="mt-2 flex items-end justify-between gap-2">
+        <p className="inline-flex items-start gap-1 text-[11px] text-muted-foreground">
+          <Sparkles className="mt-0.5 h-3 w-3 shrink-0 text-primary" />{reason}
+        </p>
         {dish.rendement > 1 && (
           <Button
-            size="sm" variant="outline" onClick={() => onPick(dish, true)}
-            className="h-7 gap-1 text-xs" title="Batch : couvre aussi le créneau suivant"
+            size="sm" variant="outline"
+            onClick={(e) => { e.stopPropagation(); onPick(dish, true); }}
+            className="h-7 shrink-0 gap-1 text-xs"
+            title="Batch : couvre aussi le créneau suivant"
           >
             <Repeat className="h-3 w-3" />×2
           </Button>
