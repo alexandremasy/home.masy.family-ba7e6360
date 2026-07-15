@@ -19,7 +19,6 @@ function AppLayout() {
     pathname.startsWith("/budget") ||
     pathname.startsWith("/securite") ||
     pathname.startsWith("/repas") ||
-    pathname.startsWith("/courses") ||
     pathname.startsWith("/anniversaires");
   const isOverlay = !isFullBleed && pathname !== "/";
 
