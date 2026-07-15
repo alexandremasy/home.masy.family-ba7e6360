@@ -53,8 +53,8 @@ export function Dashboard() {
 
         <BirthdayTile />
 
-        {/* PRIORITY 2 — Rooms */}
-        {visibleRooms.flatMap((room) => {
+        {/* PRIORITY 2 — Rooms. Idle ones share a single reduced slot (below). */}
+        {activeRooms.flatMap((room) => {
           if (room.key === "salon") {
             return [
               <SalonTile key="salon-v1" room={room} variant="spotify" />,
@@ -63,11 +63,8 @@ export function Dashboard() {
             ];
           }
           const bureauCls = room.key === "bureau" ? "sm:col-span-2" : "";
-          // A room nobody is in, with everything off, recedes: no fill, just a thin edge.
-          const idle = !room.lightsOn && !room.occupied;
-          const idleCls = idle ? " !bg-transparent !shadow-none !border-[3px] !border-border/50" : "";
           return [
-            <Tile key={room.key} span={1} to={`/room/${room.key}`} className={"flex flex-col " + bureauCls + idleCls}>
+            <Tile key={room.key} span={1} to={`/room/${room.key}`} className={"flex flex-col " + bureauCls}>
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-3">
                   <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-accent/20 text-accent-foreground" : "bg-secondary text-muted-foreground")}>
