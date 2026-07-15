@@ -25,6 +25,10 @@ export const Route = createFileRoute("/_app/")({
 
 export function Dashboard() {
   const visibleRooms = rooms.filter((r) => r.hasSensors);
+  // A room nobody is in, with everything off, doesn't deserve a slot of its own.
+  const isIdle = (r: Room) => !r.lightsOn && !r.occupied;
+  const activeRooms = visibleRooms.filter((r) => !isIdle(r));
+  const idleRooms = visibleRooms.filter(isIdle);
   const now = new Date();
   const greeting = now.getHours() < 12 ? "Bonjour" : now.getHours() < 18 ? "Bon après-midi" : "Bonsoir";
   const dateStr = now.toLocaleDateString("fr-BE", { weekday: "long", day: "numeric", month: "long" });
