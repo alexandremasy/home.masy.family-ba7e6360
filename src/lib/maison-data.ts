@@ -366,21 +366,30 @@ export interface Suggestion {
   score: number;
   /** An existing cook still covers slots — finishing it beats cooking something new. */
   leftover?: boolean;
+  /** Its cook is fully placed. Demoted, never removed — you may still want it. */
+  exhausted?: boolean;
   /** Slots this dish's current cook still has to fill. */
   remaining?: number;
+  /** Times it already sits on the window. */
+  placed?: number;
 }
 
 /**
  * Mock: rank dishes by suitability for a slot on a given date, given the plan.
- * - Filters by weekday emportable + rechauffable for midi
- * - Boosts season/weather-plausible dishes
+ *
+ * Only ONE rule removes a dish: the weekday-midi hard constraint (must be
+ * emportable + réchauffable). Everything else only moves it up or down — a plan
+ * is a proposal, not a gate.
+ *
  * - Rendement drives repetition: one cook covers N slots, so a dish already
- *   planned but not yet exhausted ranks FIRST, and one that is exhausted drops
- *   out entirely (MAISON-BRIEF: "a large dish cooked once covers N slots")
- * - Penalises component overlap across the window (variété, at modifier level)
- * - Boosts batch tag on weekend
+ *   planned but not yet exhausted ranks FIRST; once exhausted it is demoted out
+ *   of the shortlist but stays pickable (MAISON-BRIEF: "a large dish cooked once
+ *   covers N slots").
+ * - Boosts weather-plausible dishes, penalises component overlap (variété),
+ *   boosts batch on weekend.
+ *
+ * `limit` widens the ranked pool — 6 is the inspiration default, more when browsing.
  */
-/** `limit` widens the ranked pool — 6 is the inspiration default, more when browsing/filtering. */
 export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: WeatherHint, limit = 6): Suggestion[] {
   const weekend = isWeekend(date);
   const isMidi = slot === "midi";
