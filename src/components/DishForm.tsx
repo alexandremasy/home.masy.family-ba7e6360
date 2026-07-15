@@ -161,13 +161,27 @@ export function DishForm({
           </Button>
         </div>
 
-        {d.modifiers.length === 0 ? (
-          <p className="mt-2 rounded-lg border border-dashed border-border/60 px-3 py-4 text-center text-xs text-muted-foreground">
-            Aucun composant. Ils alimentent les suggestions, la variété et la liste de courses.
-          </p>
-        ) : (
-          <div className="mt-2 space-y-1.5">
-            {d.modifiers.map((m, i) => (
+        <div className="mt-2 space-y-1.5">
+          {/* The base is the dish's skeleton — it heads the components, not a field
+              of its own. Fixed row: every dish has exactly one, never removable. */}
+          <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-secondary/40 p-1.5">
+            <span className="w-20 shrink-0 pl-1 text-xs text-muted-foreground">Base</span>
+            <select
+              value={d.base}
+              onChange={(e) => set("base", e.target.value as Base)}
+              aria-label="Base du plat"
+              className="h-8 flex-1 rounded-md border border-border bg-background px-2 text-sm capitalize outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {BASES.map((b) => <option key={b} value={b} className="capitalize">{cap(b)}</option>)}
+            </select>
+          </div>
+
+          {d.modifiers.length === 0 ? (
+            <p className="rounded-lg border border-dashed border-border/60 px-3 py-4 text-center text-xs text-muted-foreground">
+              Aucun composant. Ils alimentent les suggestions, la variété et la liste de courses.
+            </p>
+          ) : (
+            d.modifiers.map((m, i) => (
               <div key={i} className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border/60 p-1.5">
                 <Input
                   value={m.name}
