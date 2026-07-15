@@ -59,26 +59,10 @@ function RepasPage() {
 
   return (
     <div className="space-y-6">
-      {/* Coherence — one compact strip, not a column */}
-      <div className="flex flex-wrap items-center gap-1.5">
-        {signals.slice(0, 4).map((s, i) => (
-          <span
-            key={i}
-            className={
-              "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs " +
-              (s.tone === "warn" ? "border-warm/40 bg-warm/10 text-warm" : "border-border/60 text-muted-foreground")
-            }
-          >
-            {s.tone === "warn" ? <AlertTriangle className="h-3 w-3 shrink-0" /> : <Info className="h-3 w-3 shrink-0" />}
-            {s.text}
-          </span>
-        ))}
-      </div>
-
       {/* Calendar — 2 weeks shown, scrolled one week at a time */}
       <div>
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <p className="font-serif text-lg">{rangeLabel(weeks)}</p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="font-semibold text-lg">{rangeLabel(weeks)}</p>
           <div className="flex items-center gap-2">
             {/* Only worth offering once you've drifted off the current week. */}
             {weekOffset !== 0 && (
