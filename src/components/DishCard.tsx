@@ -1,19 +1,7 @@
 import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
-import { cap, cn } from "@/lib/utils";
-import type { Dish } from "@/lib/maison-data";
-
-/**
- * A facet — deliberately shaped like the filter bar's chips, so the card shows
- * the very axes you filter on.
- */
-export function Facet({ children }: { children: ReactNode }) {
-  return (
-    <span className="inline-flex items-center gap-1 rounded-full border border-border/60 px-2 py-0.5 text-[10px] text-muted-foreground">
-      {children}
-    </span>
-  );
-}
+import { cn } from "@/lib/utils";
+import { effortLevel, fmtMinutes, type Dish } from "@/lib/maison-data";
 
 /**
  * The pill that sits right of the dish name. `primary` for something to act on
@@ -48,16 +36,37 @@ export function StatusPill({
 }
 
 /**
+ * The dish's own properties, every one of them a standard tag.
+ * Only what's true gets a tag — an absent "Emportable" says "not portable"
+ * quietly enough, and an empty row of "Non" tags reads as noise.
+ */
+function attributesOf(dish: Dish): string[] {
+  const e = effortLevel(dish.effort);
+  return [
+    dish.densite === "complet" ? "Complet" : "Léger",
+    dish.temperature === "chaud" ? "Chaud" : "Froid",
+    ...(dish.emportable ? ["Emportable"] : []),
+    `${e.label} · ${fmtMinutes(e.minutes)}`,
+    // "Couvre N repas" — a property of the dish. Distinct from the status pill
+    // "Au plan · N×", which is a fact about the current plan. The two used to
+    // both read as a bare number and were impossible to tell apart.
+    ...(dish.rendement > 1 ? [`Couvre ${dish.rendement} repas`] : []),
+  ];
+}
+
+/**
  * The one way a dish is displayed — calendar slot, slot picker, catalogue.
  *
  * Renders the BODY only: each caller owns its shell, because they genuinely
  * differ (a draggable div, a click-to-pick button, a Link).
  *
  * Structure, always in this order:
- *   1. name  (+ a status pill on the right)
- *   2. composition — base then components
- *   3. facets — densité, température (+ actions)
- *   4. footer — caller's extras
+ *   1. name (bold) + a status pill on the right
+ *   2. attributes — every one a standard tag
+ *   3. footer — caller's extras
+ *
+ * The composition (base + components) is deliberately NOT here: it belongs to
+ * the dish detail page. A card is for picking, not for reading a recipe.
  *
  * `variant="compact"` keeps that structure and stops after step 1: a calendar
  * cell has room for the name and nothing else.
@@ -67,9 +76,9 @@ export function DishCard({
 }: {
   dish: Dish;
   variant?: "full" | "compact";
-  /** Pill aligned right of the name: "à écouler", "déjà au plan", "batch"… */
+  /** Pill aligned right of the name: "à écouler", "au plan", "batch"… */
   status?: ReactNode;
-  /** Appended to the facet row, right-aligned. */
+  /** Appended to the attribute row, right-aligned. */
   actions?: ReactNode;
   footer?: ReactNode;
 }) {
@@ -80,7 +89,7 @@ export function DishCard({
       <div className={cn("flex items-start justify-between", compact ? "gap-1" : "gap-2")}>
         <p
           className={cn(
-            "min-w-0 flex-1 font-serif leading-tight",
+            "min-w-0 flex-1 font-semibold leading-tight",
             compact ? "line-clamp-2 text-sm" : "text-base",
           )}
         >
@@ -90,20 +99,12 @@ export function DishCard({
       </div>
 
       {!compact && (
-        <>
-          <div className="mt-2 flex flex-wrap gap-1">
-            <Badge variant="secondary" className="text-[10px] font-normal">{cap(dish.base)}</Badge>
-            {dish.modifiers.map((m) => (
-              <Badge key={m.name} variant="secondary" className="text-[10px] font-normal">{cap(m.name)}</Badge>
-            ))}
-          </div>
-
-          <div className="mt-2.5 flex flex-wrap items-center gap-1">
-            <Facet>{cap(dish.densite)}</Facet>
-            <Facet>{cap(dish.temperature)}</Facet>
-            {actions}
-          </div>
-        </>
+        <div className="mt-2 flex flex-wrap items-center gap-1">
+          {attributesOf(dish).map((a) => (
+            <Badge key={a} variant="secondary" className="text-[10px] font-normal">{a}</Badge>
+          ))}
+          {actions}
+        </div>
       )}
 
       {footer}
