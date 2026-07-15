@@ -204,19 +204,151 @@ function LabAmbience() {
         </p>
       </div>
 
-      {/* Global module nav */}
+      {/* ---- The module, over the home. The home stays the ground. ---- */}
+      {openModule === "energie" && <EnergieModule onClose={() => setOpenModule(null)} />}
+
+      {/* ---- Global module nav — stays reachable INSIDE a module: that's the jump ---- */}
       <nav className="lab-in dock fixed bottom-5 left-1/2 z-50 flex -translate-x-1/2 items-center gap-1 rounded-full px-2 py-2" style={{ ["--d" as string]: "460ms" }}>
         {MODULES.map((mod) => {
           const Icon = mod.icon;
+          const active = openModule === mod.key;
           return (
-            <button key={mod.key} aria-label={mod.label} className="dock-btn group relative grid h-11 w-11 place-items-center rounded-full text-[color:var(--dim)]">
+            <button key={mod.key} aria-label={mod.label}
+              onClick={() => setOpenModule(active ? null : mod.key)}
+              className={"dock-btn group relative grid h-11 w-11 place-items-center rounded-full " +
+                (active ? "text-black" : "text-[color:var(--dim)]")}
+              style={active ? { background: "var(--accent-lite)" } : undefined}>
               <Icon className="h-[18px] w-[18px]" />
-              {mod.alert && <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[color:var(--accent-deep)]" />}
+              {mod.alert && !active && <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[color:var(--accent-deep)]" />}
               <span className="tip">{mod.label}</span>
             </button>
           );
         })}
       </nav>
     </div>
+  );
+}
+
+/* ---------- Module: Énergie — the extensibility test.
+   Same vocabulary (sober bg, opaque tiles, the gauge, glass as exception) on a DENSE
+   administrative screen: three energies, 13 months of history, readings. ---------- */
+function EnergieModule({ onClose }: { onClose: () => void }) {
+  const oil = energie.oil, el = energie.electricity, water = energie.water;
+  const hist = energie.history;
+  const max = Math.max(...hist.map((x) => x.mazout));
+
+  return (
+    <div className="fixed inset-0 z-40 overflow-y-auto">
+      <button aria-label="Fermer" onClick={onClose} className="fixed inset-0 bg-black/45 backdrop-blur-md" />
+      <div className="lab-in relative mx-auto w-full max-w-2xl px-6 pb-32 pt-16" style={{ ["--d" as string]: "0ms" }}>
+
+        {/* Module header */}
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--dim)]">Module</p>
+            <h2 className="font-serif text-4xl tracking-tight text-[color:var(--ink)]">Énergie</h2>
+          </div>
+          <button onClick={onClose} className="orb h-10 w-10"><X className="h-4 w-4" /></button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          {/* The tank — the gauge, promoted to hero of its module */}
+          <div className="tile-accent col-span-2 relative overflow-hidden rounded-[30px] p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.18em] text-black/50">Cuve à mazout</p>
+                <p className="mt-1 font-serif text-5xl tracking-tight text-black">{oil.tankLiters} <span className="text-2xl text-black/50">L</span></p>
+                <p className="mt-1 text-[13px] text-black/55">sur {oil.tankCapacity} L · ~{oil.autonomyDays} jours d'autonomie</p>
+                <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-black/15 px-2.5 py-1 text-[11px] text-black/70">
+                  <Flame className="h-3 w-3" /> Un plein approche
+                </p>
+              </div>
+              <div className="w-40 shrink-0">
+                <GaugeOnAccent pct={oil.tankPct} />
+              </div>
+            </div>
+          </div>
+
+          {/* Élec */}
+          <div className="surface rounded-3xl p-4">
+            <div className="flex items-start justify-between">
+              <span className="grid h-9 w-9 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--hot)]"><Zap className="h-4 w-4" /></span>
+              <span className="inline-flex items-center gap-1 text-[11px] text-[color:var(--dim)]"><TrendingDown className="h-3 w-3" />{el.trendPct}%</span>
+            </div>
+            <p className="mt-4 font-serif text-3xl tracking-tight text-[color:var(--ink)]"><CountUp to={el.dailyKWh} /> <span className="text-base text-[color:var(--dim)]">kWh/j</span></p>
+            <p className="mt-0.5 text-[11px] text-[color:var(--dim)]">Jour {el.dayTotal} · Nuit {el.nightTotal} · moy. 90j {el.avg90dKWh}</p>
+          </div>
+
+          {/* Eau */}
+          <div className="surface rounded-3xl p-4">
+            <div className="flex items-start justify-between">
+              <span className="grid h-9 w-9 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--hot)]"><Droplet className="h-4 w-4" /></span>
+              <span className="inline-flex items-center gap-1 text-[11px] text-[color:var(--dim)]"><Minus className="h-3 w-3" />{water.trendPct}%</span>
+            </div>
+            <p className="mt-4 font-serif text-3xl tracking-tight text-[color:var(--ink)]"><CountUp to={water.dailyM3} /> <span className="text-base text-[color:var(--dim)]">m³/j</span></p>
+            <p className="mt-0.5 text-[11px] text-[color:var(--dim)]">{water.dailyL} L par jour · stable</p>
+          </div>
+
+          {/* 13 months — the density test */}
+          <div className="surface col-span-2 rounded-3xl p-5">
+            <div className="flex items-baseline justify-between">
+              <p className="text-[13px] font-medium text-[color:var(--ink)]">Mazout consommé</p>
+              <p className="text-[11px] text-[color:var(--dim)]">13 derniers mois · L</p>
+            </div>
+            <div className="mt-4 flex h-28 items-end gap-1.5">
+              {hist.map((x, i) => {
+                const hpc = (x.mazout / max) * 100;
+                const last = i === hist.length - 1;
+                return (
+                  <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
+                    <div className="flex w-full flex-1 items-end">
+                      <div className="bar w-full rounded-t-[4px]" style={{
+                        ["--p" as string]: "100%",
+                        height: `${hpc}%`,
+                        background: last ? "var(--accent-deep)" : "color-mix(in oklab, var(--ink) 16%, transparent)",
+                      }} />
+                    </div>
+                    <span className={"text-[9px] " + (last ? "text-[color:var(--accent-deep)]" : "text-[color:var(--dim)]")}>{x.month}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="mt-3 text-[11px] text-[color:var(--dim)]">Pic en décembre (1 980 L) · dernier relevé le {energie.lastReadingDate}</p>
+          </div>
+
+          {/* Readings — the admin bit, in glass (the exception) */}
+          <div className="glass col-span-2 rounded-3xl p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[13px] font-medium text-[color:var(--ink)]">Relevés</p>
+                <p className="text-[11px] text-[color:var(--dim)]">Prochain relevé au 1er du mois</p>
+              </div>
+              <button className="rounded-full bg-[color:var(--accent-lite)] px-4 py-2 text-[13px] font-medium text-black transition-transform hover:scale-[1.03]">Encoder</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** The same gauge, on the accent tile (black ticks instead of ink). */
+function GaugeOnAccent({ pct }: { pct: number }) {
+  const N = 34, cx = 100, cy = 96, r = 74;
+  const ticks = Array.from({ length: N }, (_, i) => {
+    const t = i / (N - 1);
+    const a = Math.PI - t * Math.PI;
+    const on = t <= pct / 100;
+    const len = on ? 12 : 8;
+    return { x1: cx + r * Math.cos(a), y1: cy - r * Math.sin(a), x2: cx + (r - len) * Math.cos(a), y2: cy - (r - len) * Math.sin(a), on, key: i };
+  });
+  return (
+    <svg viewBox="0 0 200 108" className="w-full overflow-visible">
+      {ticks.map((t) => (
+        <line key={t.key} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} strokeWidth={t.on ? 2.4 : 1.4} strokeLinecap="round"
+          stroke={t.on ? "rgba(0,0,0,0.75)" : "rgba(0,0,0,0.22)"} />
+      ))}
+      <text x={cx} y={cy - 24} textAnchor="middle" className="font-serif" fontSize="34" fill="#000">{pct}%</text>
+    </svg>
   );
 }
