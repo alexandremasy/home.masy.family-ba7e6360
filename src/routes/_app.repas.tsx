@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import {
   dishes, dishById, suggestFor, coherenceSignals, initialPlan, calWeeks, iso,
-  isWeekend, isPast, frLongDay, addDays, dayWeather, weatherHintFor, TODAY,
+  isWeekend, frLongDay, addDays, dayWeather, weatherHintFor, TODAY,
   type PlanEntry, type Slot, type Dish,
 } from "@/lib/maison-data";
 import {
