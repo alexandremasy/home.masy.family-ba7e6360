@@ -701,37 +701,31 @@ function WeatherIcon({ cond, className, animated = true }: { cond: WeatherCond; 
 function WeatherTile() {
   const m = meteo.today;
   return (
-    <div className="col-span-1 flex h-full flex-col">
-      {/* Top half — weather, opens the forecast */}
-      <Dialog>
-        <DialogTrigger asChild>
-          <button
-            type="button"
-            className="group relative flex-1 overflow-hidden rounded-t-2xl p-4 text-left transition-colors hover:bg-secondary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            aria-label="Voir la météo détaillée"
-          >
-            <div className="flex items-start justify-between gap-2">
-              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{m.location}</p>
-              <WeatherIcon cond={m.cond} className="h-6 w-6 text-foreground/80" />
-            </div>
-            <div className="mt-2 flex items-baseline gap-1">
-              <span className="font-serif text-3xl tracking-tight text-foreground">{m.tempC}</span>
-              <span className="text-sm text-muted-foreground">°</span>
-            </div>
-            <p className="mt-0.5 text-[11px] text-muted-foreground">{m.minC}° / {m.maxC}° · {m.label}</p>
-          </button>
-        </DialogTrigger>
-        <WeatherDialog />
-      </Dialog>
-
-      {/* Bottom half — what we eat, quietly */}
-      <RepasHalf />
-    </div>
+    <Dialog>
+      <DialogTrigger asChild>
+        <button
+          type="button"
+          className="group relative col-span-1 h-full overflow-hidden rounded-2xl p-4 text-left transition-colors hover:bg-secondary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label="Voir la météo détaillée"
+        >
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{m.location}</p>
+            <WeatherIcon cond={m.cond} className="h-6 w-6 text-foreground/80" />
+          </div>
+          <div className="mt-2 flex items-baseline gap-1">
+            <span className="font-serif text-3xl tracking-tight text-foreground">{m.tempC}</span>
+            <span className="text-sm text-muted-foreground">°</span>
+          </div>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">{m.minC}° / {m.maxC}° · {m.label}</p>
+        </button>
+      </DialogTrigger>
+      <WeatherDialog />
+    </Dialog>
   );
 }
 
-/** The meals, folded under the weather: same cell, lower half, deliberately quiet. */
-function RepasHalf() {
+/** What we eat — one quiet line under the greeting, icon first. */
+function RepasLine() {
   const dayPlan = (d: Date) => {
     const key = iso(d);
     const at = (slot: "midi" | "soir") => {
@@ -740,26 +734,21 @@ function RepasHalf() {
     };
     return { midi: at("midi"), soir: at("soir") };
   };
-  const label = (o: number) => (o === 0 ? "Auj." : o === 1 ? "Demain" : frLongDay(addDays(TODAY, o)));
+  const label = (o: number) => (o === 0 ? "Aujourd'hui" : o === 1 ? "Demain" : frLongDay(addDays(TODAY, o)));
   const first = [0, 1, 2, 3].map((o) => ({ o, ...dayPlan(addDays(TODAY, o)) })).filter((d) => d.midi || d.soir)[0];
+  if (!first) return null;
 
   return (
     <Link
       to="/maison/repas"
-      className="group flex-1 rounded-b-2xl border-t border-border/50 p-4 transition-colors hover:bg-secondary/40"
+      className="group mt-3 inline-flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
     >
-      <div className="flex items-start justify-between gap-2">
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Repas · {first ? label(first.o) : "—"}</p>
-        <UtensilsCrossed className="h-4 w-4 text-muted-foreground/70" />
-      </div>
-      {first ? (
-        <div className="mt-2 space-y-0.5">
-          {first.midi && <p className="truncate font-serif text-sm leading-tight">{first.midi}</p>}
-          {first.soir && <p className="truncate font-serif text-sm leading-tight text-muted-foreground">{first.soir}</p>}
-        </div>
-      ) : (
-        <p className="mt-2 text-[11px] italic text-muted-foreground/60">rien de planifié</p>
-      )}
+      <UtensilsCrossed className="h-3.5 w-3.5 shrink-0 text-muted-foreground/70 transition-colors group-hover:text-foreground" />
+      <span className="min-w-0">
+        <span className="uppercase tracking-[0.12em]">{label(first.o)}</span>
+        {first.midi && <> · {first.midi}</>}
+        {first.soir && <> · {first.soir}</>}
+      </span>
     </Link>
   );
 }
