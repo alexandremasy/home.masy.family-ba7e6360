@@ -21,6 +21,9 @@ export const Route = createFileRoute("/_app/repas/planification")({
 
 const WEEKDAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 
+/** fr locale yields "mardi 14 juillet" — a sentence start deserves its capital. */
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
 /** "13 → 26 juillet", collapsing the month when both ends share it. */
 function rangeLabel(weeks: Date[][]): string {
   const first = weeks[0][0];
