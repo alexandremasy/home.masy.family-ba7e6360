@@ -15,12 +15,12 @@ function MuralPage() {
   return (
     <div className="grid min-h-screen place-items-center bg-neutral-800 p-10">
       <style>{LAB_THEME_CSS}</style>
-      <div className="text-center">
+      <div>
         {/* The real surface, at its real size */}
         <div className="lab-root overflow-hidden rounded-[18px] shadow-2xl" style={{ width: 480, height: 480 }}>
           <MuralSurface />
         </div>
-        <p className="mt-4 text-xs uppercase tracking-[0.18em] text-white/40">Mural cuisine · 480 × 480 · 4"</p>
+        <p className="mt-4 text-center text-xs uppercase tracking-[0.18em] text-white/40">Mural cuisine · 480 × 480 · 4"</p>
       </div>
     </div>
   );
