@@ -70,16 +70,43 @@ function RepasPage() {
         ))}
       </div>
 
-      {/* Calendar — 2 weeks, monday-first */}
+      {/* Calendar — 2 weeks shown, scrolled one week at a time */}
       <div>
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <p className="font-serif text-lg">{rangeLabel(weeks)}</p>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setWeekOffset((o) => o - 1)}
+              aria-label="Semaine précédente"
+              className="grid h-8 w-8 place-items-center rounded-full border border-border/60 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setWeekOffset(0)}
+              disabled={weekOffset === 0}
+              className="rounded-full border border-border/60 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground disabled:opacity-40 disabled:hover:bg-transparent"
+            >
+              Aujourd'hui
+            </button>
+            <button
+              onClick={() => setWeekOffset((o) => o + 1)}
+              aria-label="Semaine suivante"
+              className="grid h-8 w-8 place-items-center rounded-full border border-border/60 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
         <div className="mb-2 grid grid-cols-7 gap-2 px-1">
           {WEEKDAYS.map((d) => (
-            <p key={d} className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{d}</p>
+            <p key={d} className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{d}</p>
           ))}
         </div>
 
         <div className="space-y-2">
-          {CAL_WEEKS.map((week, wi) => (
+          {weeks.map((week, wi) => (
             <div key={wi} className="grid grid-cols-7 gap-2">
               {week.map((d) => (
                 <DayCell
