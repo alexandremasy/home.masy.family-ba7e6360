@@ -27,8 +27,9 @@ const rooms: NavItem[] = [
 
 // The Maison mode's own domains. Sécurité is NOT here — it's a mode of its own.
 const domains: NavItem[] = [
-  { to: "/maison/repas", label: "Repas", icon: <UtensilsCrossed className="h-3.5 w-3.5" /> },
-  { to: "/maison/anniversaires", label: "Anniversaires", icon: <Cake className="h-3.5 w-3.5" /> },
+  { to: "/repas", label: "Repas", icon: <UtensilsCrossed className="h-3.5 w-3.5" /> },
+  { to: "/courses", label: "Courses", icon: <ShoppingBasket className="h-3.5 w-3.5" /> },
+  { to: "/anniversaires", label: "Anniversaires", icon: <Cake className="h-3.5 w-3.5" /> },
   { to: "/tesla", label: "Bernard", icon: <Car className="h-3.5 w-3.5" /> },
   { to: "/reseau", label: "Réseau", icon: <Wifi className="h-3.5 w-3.5" /> },
   { to: "/energie", label: "Énergie", icon: <Zap className="h-3.5 w-3.5" /> },
