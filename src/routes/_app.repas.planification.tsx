@@ -138,8 +138,8 @@ function RepasPage() {
 
       {/* Suggestions — modal, opened from a slot */}
       <Dialog open={!!selected} onOpenChange={(o) => { if (!o) setSelected(null); }}>
-        {/* Neutral grey shell so the white cards read as objects sitting on it. */}
-        <DialogContent className="max-w-2xl gap-7 bg-muted">
+        {/* The app's own background, so the white cards read as objects on it. */}
+        <DialogContent className="max-w-2xl gap-7 bg-background">
           {selected && selectedDate && (
             <SlotPicker
               date={selectedDate}
