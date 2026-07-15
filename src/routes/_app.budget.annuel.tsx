@@ -13,6 +13,7 @@ import {
 } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/Eyebrow";
+import { Panel } from "@/components/Card";
 
 export const Route = createFileRoute("/_app/budget/annuel")({
   component: AnnuelPage,
@@ -85,7 +86,7 @@ function AnnuelPage() {
       </div>
 
       {/* Grouped bar — flow per month */}
-      <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up">
+      <Panel className="anim-slide-up">
         <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="font-serif text-2xl tracking-tight">Flux mensuels</h2>
@@ -110,10 +111,10 @@ function AnnuelPage() {
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </section>
+      </Panel>
 
       {/* Rolling area */}
-      <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up">
+      <Panel className="anim-slide-up">
         <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="font-serif text-2xl tracking-tight">Évolution</h2>
@@ -148,10 +149,10 @@ function AnnuelPage() {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      </section>
+      </Panel>
 
       {/* Pressure + annualisation */}
-      <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up">
+      <Panel className="anim-slide-up">
         <header className="mb-4 flex items-end justify-between">
           <div>
             <h2 className="font-serif text-2xl tracking-tight">Pression de l'année</h2>
@@ -217,10 +218,10 @@ function AnnuelPage() {
             </p>
           </div>
         </div>
-      </section>
+      </Panel>
 
       {/* Category zoom */}
-      <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up">
+      <Panel className="anim-slide-up">
         <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="font-serif text-2xl tracking-tight">Zoom sur une catégorie</h2>
@@ -268,7 +269,7 @@ function AnnuelPage() {
             </div>
           ))}
         </div>
-      </section>
+      </Panel>
 
       {/* Envelopes */}
       <section className="anim-slide-up">

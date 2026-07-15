@@ -9,6 +9,7 @@ import {
 } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/Eyebrow";
+import { Panel } from "@/components/Card";
 
 export const Route = createFileRoute("/_app/budget/mensuel")({
   component: MensuelPage,
@@ -110,7 +111,7 @@ function MensuelPage() {
       </div>
 
       {/* Prévu vs Réel par catégorie */}
-      <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up">
+      <Panel className="anim-slide-up">
         <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="font-serif text-2xl tracking-tight">Prévu vs réel</h2>
@@ -127,11 +128,11 @@ function MensuelPage() {
             <CategoryRow key={c.key} cat={c} index={i} showPlanned={showPlanned} highlightOver={showOver} />
           ))}
         </ul>
-      </section>
+      </Panel>
 
       {/* Pression du mois */}
       {bills.length > 0 && (
-        <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up">
+        <Panel className="anim-slide-up">
           <header className="mb-4">
             <h2 className="font-serif text-xl tracking-tight">Pression du mois</h2>
             <p className="mt-0.5 text-xs text-muted-foreground">Grosses échéances non mensuelles qui atterrissent ce mois-ci</p>
@@ -148,7 +149,7 @@ function MensuelPage() {
               </span>
             ))}
           </div>
-        </section>
+        </Panel>
       )}
 
       <div className="text-center text-xs text-muted-foreground">
@@ -210,7 +211,7 @@ function IncomePanel() {
   const total = incomeSources.reduce((s, i) => s + i.value, 0);
   const max = Math.max(...incomeSources.map((i) => i.value));
   return (
-    <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7">
+    <Panel as="div">
       <header className="mb-4 flex items-end justify-between gap-3">
         <div>
           <h2 className="font-serif text-2xl tracking-tight">Entrées</h2>
@@ -237,7 +238,7 @@ function IncomePanel() {
           );
         })}
       </ul>
-    </div>
+    </Panel>
   );
 }
 
@@ -261,7 +262,7 @@ function DonutPanel({ focusCat, onFocus }: { focusCat: CatKey | null; onFocus: (
   const focused = slices.find((s) => s.key === focusKey);
 
   return (
-    <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7">
+    <Panel as="div">
       <header className="mb-4 flex items-end justify-between gap-3">
         <div>
           <h2 className="font-serif text-2xl tracking-tight">Dépenses</h2>
@@ -333,7 +334,7 @@ function DonutPanel({ focusCat, onFocus }: { focusCat: CatKey | null; onFocus: (
           })}
         </ul>
       </div>
-    </div>
+    </Panel>
   );
 }
 

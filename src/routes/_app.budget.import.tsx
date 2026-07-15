@@ -4,6 +4,7 @@ import { UploadCloud, FileSpreadsheet, Plus, RefreshCw, Equal, Lock, Check, Spar
 import { importPreviewMock, importHistory, eur2 } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/Eyebrow";
+import { Panel } from "@/components/Card";
 
 export const Route = createFileRoute("/_app/budget/import")({
   component: ImportPage,
@@ -168,7 +169,7 @@ function ImportPage() {
       )}
 
       {/* History */}
-      <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7">
+      <Panel>
         <header className="mb-4 flex items-center gap-2">
           <History className="h-4 w-4 text-muted-foreground" />
           <h2 className="font-serif text-xl tracking-tight">Historique des imports</h2>
@@ -190,7 +191,7 @@ function ImportPage() {
         <p className="mt-4 text-xs text-muted-foreground">
           Ré-importer un même mois est sûr : aucune ligne n'est dupliquée, vos éditions sont préservées.
         </p>
-      </section>
+      </Panel>
     </div>
   );
 }
@@ -241,12 +242,12 @@ function StatBadge({ icon: Icon, tone, n, label }: {
 
 function DiffSection({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7">
+    <Panel>
       <header className="mb-3">
         <h2 className="font-serif text-xl tracking-tight">{title}</h2>
         <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>
       </header>
       {children}
-    </section>
+    </Panel>
   );
 }

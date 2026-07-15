@@ -20,6 +20,7 @@ import {
 } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/Eyebrow";
+import { Panel } from "@/components/Card";
 
 export const Route = createFileRoute("/_app/budget/vue")({
   component: VuePage,
@@ -554,7 +555,7 @@ function PasseView({ monthIdx }: { monthIdx: number }) {
         <SmallStat label="Écart vs prévu" value={delta} tone={delta > 0 ? "warm" : "success"} signed />
       </div>
 
-      <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7">
+      <Panel>
         <header className="mb-4">
           <h3 className="font-serif text-xl tracking-tight">Prévu vs réel</h3>
           <p className="mt-1 text-sm text-muted-foreground">Variance par catégorie pour ce mois clos.</p>
@@ -588,7 +589,7 @@ function PasseView({ monthIdx }: { monthIdx: number }) {
             );
           })}
         </ul>
-      </section>
+      </Panel>
 
       {bills.length > 0 && <BillsBar bills={bills} label="Échéances réalisées ce mois" />}
     </div>
@@ -614,7 +615,7 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
         <SmallStat label="Encore prévu" value={encorePrevu} tone="primary" hint="projection" />
       </div>
 
-      <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7">
+      <Panel>
         <header className="mb-4 flex items-end justify-between gap-3">
           <div>
             <h3 className="font-serif text-xl tracking-tight">Réel à date + projection</h3>
@@ -653,7 +654,7 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
             );
           })}
         </ul>
-      </section>
+      </Panel>
 
       {bills.length > 0 && <BillsBar bills={bills} label="Échéances de ce mois" />}
     </div>
@@ -744,7 +745,7 @@ function FuturView({ monthIdx }: { monthIdx: number }) {
 
 function BillsBar({ bills, label }: { bills: { label: string; amount: number }[]; label: string }) {
   return (
-    <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7">
+    <Panel>
       <Eyebrow size="xs">{label}</Eyebrow>
       <div className="mt-3 flex flex-wrap gap-2">
         {bills.map((b, i) => (
@@ -754,7 +755,7 @@ function BillsBar({ bills, label }: { bills: { label: string; amount: number }[]
           </span>
         ))}
       </div>
-    </section>
+    </Panel>
   );
 }
 
