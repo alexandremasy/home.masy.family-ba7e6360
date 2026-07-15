@@ -733,7 +733,7 @@ function WeatherIcon({ cond, className, animated = true }: { cond: WeatherCond; 
   return <Icon className={(className ?? "") + anim} />;
 }
 
-/** Weather gets a cell of its own — a real card, like every other tile. */
+/** Weather — no background, as before; but it takes a full room-sized cell, not a half. */
 function WeatherTile() {
   const m = meteo.today;
   return (
@@ -741,22 +741,18 @@ function WeatherTile() {
       <DialogTrigger asChild>
         <button
           type="button"
-          className="group relative col-span-1 flex h-full flex-col overflow-hidden rounded-2xl border border-border/50 bg-card p-5 text-left text-card-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-border hover:shadow-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="group relative col-span-2 h-full overflow-hidden rounded-2xl p-4 text-left transition-colors hover:bg-secondary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Voir la météo détaillée"
         >
           <div className="flex items-start justify-between gap-2">
             <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{m.location}</p>
             <WeatherIcon cond={m.cond} className="h-6 w-6 text-foreground/80" />
           </div>
-
-          <p className="mt-6 font-serif text-4xl tracking-tight">
-            <CountUp to={m.tempC} /><span className="text-base text-muted-foreground">°</span>
-          </p>
-
-          <div className="mt-auto pt-3 text-xs text-muted-foreground">
-            <p>{m.label}</p>
-            <p className="mt-0.5 tabular-nums">{m.minC}° / {m.maxC}° · {m.rainProb}% pluie</p>
+          <div className="mt-2 flex items-baseline gap-1">
+            <span className="font-serif text-3xl tracking-tight text-foreground">{m.tempC}</span>
+            <span className="text-sm text-muted-foreground">°</span>
           </div>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">{m.minC}° / {m.maxC}° · {m.label}</p>
         </button>
       </DialogTrigger>
       <WeatherDialog />
