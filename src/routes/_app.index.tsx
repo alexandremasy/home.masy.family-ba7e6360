@@ -280,7 +280,7 @@ function BirthdayTile() {
   const when = today ? "Auj." : first.days === 1 ? "Demain" : `Dans ${first.days} j`;
 
   return (
-    <Tile span={1} to="/maison/anniversaires" tone={today ? "warm" : "default"} className="relative flex flex-col overflow-hidden">
+    <Tile span={1} to="/anniversaires" tone={today ? "warm" : "default"} className="relative flex flex-col overflow-hidden">
       <Cake className={"pointer-events-none absolute -right-5 -top-5 h-28 w-28 " + (today ? "opacity-15" : "opacity-[0.06]")} />
       <div className="relative">
         <p className={"text-xs uppercase tracking-[0.18em] " + (today ? "opacity-70" : "text-muted-foreground")}>{when}</p>
@@ -326,7 +326,7 @@ function RepasTile() {
   const next = planned[1];
 
   return (
-    <Tile span={2} to="/maison/repas" className="flex flex-col">
+    <Tile span={2} to="/repas" className="flex flex-col">
       <div className="flex items-start justify-between gap-2">
         <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Repas</p>
         <UtensilsCrossed className="h-4.5 w-4.5 text-muted-foreground" />
@@ -707,32 +707,6 @@ function OilBlock() {
   );
 }
 
-const weatherIconMap: Record<WeatherCond, typeof Sun> = {
-  sun: Sun,
-  cloud: Cloud,
-  partly: CloudSun,
-  rain: CloudRain,
-  storm: CloudLightning,
-  snow: CloudSnow,
-  fog: CloudFog,
-};
-
-const weatherAnimMap: Record<WeatherCond, string> = {
-  sun: "anim-sun",
-  cloud: "anim-cloud",
-  partly: "anim-partly",
-  rain: "anim-rain",
-  storm: "anim-storm",
-  snow: "anim-snow",
-  fog: "anim-fog",
-};
-
-function WeatherIcon({ cond, className, animated = true }: { cond: WeatherCond; className?: string; animated?: boolean }) {
-  const Icon = weatherIconMap[cond];
-  const anim = animated ? " " + weatherAnimMap[cond] : "";
-  return <Icon className={(className ?? "") + anim} />;
-}
-
 /** Weather — no background, as before; but it takes a full room-sized cell, not a half. */
 function WeatherTile() {
   const m = meteo.today;
@@ -778,7 +752,7 @@ function RepasLine() {
 
   return (
     <Link
-      to="/maison/repas"
+      to="/repas"
       className="group mt-3 flex items-start gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
     >
       <UtensilsCrossed className="mt-[3px] h-3.5 w-3.5 shrink-0 text-muted-foreground/70 transition-colors group-hover:text-foreground" />
