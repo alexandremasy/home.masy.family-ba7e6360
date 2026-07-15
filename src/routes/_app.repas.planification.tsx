@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { WeatherIcon } from "@/components/WeatherIcon";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
 import {
   dishById, suggestFor, coherenceSignals, initialPlan, calWeeks, iso,
@@ -421,17 +422,18 @@ function Facet({ children }: { children: React.ReactNode }) {
 }
 
 function SuggestionCard({
-  dish, reason, leftover, onPick,
+  dish, reason, leftover, exhausted, onPick,
 }: {
-  dish: Dish; reason: string; leftover?: boolean;
+  dish: Dish; reason: string; leftover?: boolean; exhausted?: boolean;
   onPick: (dish: Dish, batch: boolean) => void;
 }) {
-  // Three kinds of information, three treatments — they were all reading alike:
+  // Three kinds of information, three treatments:
   //   identity      → the name
-  //   composition   → what's IN the dish: plain text, it's content, not a facet
-  //   facets        → base/densité/température: the very axes of the filter bar,
-  //                   so they wear the filter bar's shape
-  // Status ("à écouler") and the batch action sit apart, aligned right.
+  //   composition   → the base + its components. The base is the dish's skeleton,
+  //                   so it belongs here, not among the facets.
+  //   facets        → densité/température: axes of the filter bar, so they wear
+  //                   the filter bar's shape
+  // Status ("à écouler" / "déjà au plan") and the batch action sit apart.
   //
   // The card is the pick target — no "Choisir" button, no score badge.
   return (
