@@ -5,7 +5,7 @@ import { MapPinBg } from "@/components/MapPinBg";
 import { PMCBag } from "@/components/PMCBag";
 import { RoomIcon } from "@/components/RoomIcon";
 
-import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, type WeatherCond } from "@/lib/mock-data";
+import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, type WeatherCond, type Room } from "@/lib/mock-data";
 import { people, nextBirthday, upcomingAge, daysUntil, initialPlan, dishById, iso, addDays, frLongDay, TODAY } from "@/lib/maison-data";
 import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, ArrowUp, Activity, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer, Server, Cast, Cake, UtensilsCrossed } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -365,26 +365,26 @@ function RepasTile() {
   );
 }
 
-/** Rooms that are off and empty: they share one slot, one line each, thin edge only. */
+/**
+ * Rooms that are off and empty. They give up their own slot and share one — but each
+ * stays its own card, with its own edge. A group would erase the fact they're separate rooms.
+ */
 function IdleRoomsTile({ rooms: idle }: { rooms: Room[] }) {
   return (
-    <div className="col-span-1 flex h-full flex-col gap-1.5 rounded-2xl border-[3px] border-border/50 p-2.5">
-      <p className="px-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70">Au repos</p>
-      <div className="flex flex-1 flex-col justify-around">
-        {idle.map((r) => (
-          <Link
-            key={r.key}
-            to={`/room/${r.key}`}
-            className="group flex items-center gap-2 rounded-lg px-1 py-1.5 transition-colors hover:bg-secondary/50"
-          >
-            <RoomIcon icon={r.icon} className="h-4 w-4 shrink-0 text-muted-foreground" />
-            <span className="min-w-0 flex-1 truncate font-serif text-sm">{r.name}</span>
-            {typeof r.temperature === "number" && (
-              <span className="shrink-0 font-serif text-sm tabular-nums text-muted-foreground">{r.temperature}°</span>
-            )}
-          </Link>
-        ))}
-      </div>
+    <div className="col-span-1 flex h-full flex-col gap-2">
+      {idle.map((r) => (
+        <Link
+          key={r.key}
+          to={`/room/${r.key}`}
+          className="group flex flex-1 items-center gap-2.5 rounded-2xl border-[3px] border-border/50 px-3 transition-colors hover:border-border hover:bg-secondary/30"
+        >
+          <RoomIcon icon={r.icon} className="h-4 w-4 shrink-0 text-muted-foreground icon-hover" />
+          <span className="min-w-0 flex-1 truncate font-serif text-sm">{r.name}</span>
+          {typeof r.temperature === "number" && (
+            <span className="shrink-0 font-serif text-sm tabular-nums text-muted-foreground">{r.temperature}°</span>
+          )}
+        </Link>
+      ))}
     </div>
   );
 }
