@@ -243,13 +243,10 @@ function SlotCell({
         if (from.date === date && from.slot === slot) return;
         onDropFrom(from);
       }}
-      className={
-        "group relative flex flex-1 flex-col rounded-lg border p-2 text-left transition-all " +
-        (dragOver ? "border-primary bg-primary/5 " : "border-transparent ") +
-        (entry ? "bg-secondary/50 hover:border-border hover:bg-secondary hover:shadow-soft" : "")
-      }
+      className="group relative flex flex-1 flex-col"
     >
-      <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+      {/* The label belongs to the slot, not to the dish — so it stays outside the box. */}
+      <div className="flex items-center justify-between px-1 pb-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
         <span>{slot === "midi" ? "Midi" : "Soir"}</span>
         {!weekend && slot === "midi" && !entry && <Package className="h-3 w-3" aria-label="Emportable" />}
       </div>
@@ -261,7 +258,12 @@ function SlotCell({
             e.dataTransfer.setData("application/json", JSON.stringify({ date, slot }));
             e.dataTransfer.effectAllowed = "move";
           }}
-          className="mt-1 flex-1 cursor-grab active:cursor-grabbing"
+          className={
+            "flex-1 cursor-grab rounded-lg border p-2 transition-all active:cursor-grabbing " +
+            (dragOver
+              ? "border-primary bg-primary/5"
+              : "border-transparent bg-secondary/50 hover:border-border hover:bg-secondary hover:shadow-soft")
+          }
         >
           <p className="line-clamp-2 text-sm font-medium leading-snug">{dish.name}</p>
           {isBatch && (
@@ -269,11 +271,11 @@ function SlotCell({
               <Repeat className="h-3 w-3" />batch
             </span>
           )}
-          <div className="absolute right-1 top-1 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
-            <button onClick={onOpen} aria-label="Changer" className="grid h-6 w-6 place-items-center rounded-md bg-card text-muted-foreground hover:text-foreground">
+          <div className="absolute right-1 top-4 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+            <button onClick={onOpen} aria-label="Changer" className="grid h-6 w-6 place-items-center rounded-md bg-card text-muted-foreground shadow-soft hover:text-foreground">
               <RefreshCw className="h-3 w-3" />
             </button>
-            <button onClick={onRemove} aria-label="Retirer" className="grid h-6 w-6 place-items-center rounded-md bg-card text-muted-foreground hover:text-destructive">
+            <button onClick={onRemove} aria-label="Retirer" className="grid h-6 w-6 place-items-center rounded-md bg-card text-muted-foreground shadow-soft hover:text-destructive">
               <X className="h-3 w-3" />
             </button>
           </div>
@@ -282,7 +284,10 @@ function SlotCell({
         <button
           onClick={onOpen}
           aria-label={`Suggérer un plat — ${slot}`}
-          className="mt-1 flex flex-1 items-center justify-center rounded-md border border-dashed border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+          className={
+            "flex flex-1 items-center justify-center rounded-lg border border-dashed text-muted-foreground transition-colors " +
+            (dragOver ? "border-primary bg-primary/5 text-primary" : "border-border hover:border-primary hover:text-primary")
+          }
         >
           <Sparkles className="h-3.5 w-3.5" />
         </button>
