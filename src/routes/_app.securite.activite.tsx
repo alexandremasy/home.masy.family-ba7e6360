@@ -98,7 +98,7 @@ function HealthStat({ icon, label, value, sub, tone = "default" }: {
 }) {
   return (
     <div className={`rounded-xl border p-4 ${tone === "warm" ? "border-warm/40 bg-warm/10" : "border-border/60 bg-card"}`}>
-      <div className={`flex items-center gap-2 text-xs uppercase tracking-[0.14em] ${tone === "warm" ? "text-warm" : "text-muted-foreground"}`}>
+      <div className={`flex items-center gap-2 text-xs uppercase tracking-[0.18em] ${tone === "warm" ? "text-warm" : "text-muted-foreground"}`}>
         {icon}{label}
       </div>
       <p className="mt-2 font-serif text-2xl">{value}{sub && <span className="ml-1 text-sm text-muted-foreground">{sub}</span>}</p>

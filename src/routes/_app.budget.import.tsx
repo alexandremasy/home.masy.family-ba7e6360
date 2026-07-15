@@ -3,6 +3,7 @@ import { useState } from "react";
 import { UploadCloud, FileSpreadsheet, Plus, RefreshCw, Equal, Lock, Check, Sparkles, History } from "lucide-react";
 import { importPreviewMock, importHistory, eur2 } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/budget/import")({
   component: ImportPage,
@@ -39,7 +40,7 @@ function ImportPage() {
   return (
     <div className="space-y-6 anim-slide-up">
       <div>
-        <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Budget · Import</p>
+        <Eyebrow size="xs">Budget · Import</Eyebrow>
         <h1 className="mt-1 font-serif text-2xl tracking-tight sm:text-4xl">Importer un export iSaveMoney</h1>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
           Déposez le fichier. Vous verrez exactement ce qui sera ajouté, ce qui change, et ce qui reste protégé — avant de valider.

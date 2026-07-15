@@ -8,6 +8,7 @@ import {
   type CourseItem, type StapleItem, type Unit,
 } from "@/lib/maison-data";
 import { Check, Plus, Minus, X, ShoppingBasket, Sparkles, PenLine, Undo2 } from "lucide-react";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/repas/courses")({
   component: CoursesPage,
@@ -113,7 +114,7 @@ function CoursesPage() {
             <div key={cat} className="rounded-xl border border-border/60 bg-card p-3">
               <div className="mb-2 flex items-center justify-between">
                 <h3 className="font-serif text-lg">{cat}</h3>
-                <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{list.length}</span>
+                <Eyebrow size="xs" as="span">{list.length}</Eyebrow>
               </div>
               <ul className="divide-y divide-border/50">
                 {list.map((it) => (
@@ -171,7 +172,7 @@ function StatCard({ label, value, icon, sub }: { label: string; value: number; i
   return (
     <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft">
       <div className="flex items-center justify-between">
-        <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
+        <Eyebrow size="xs">{label}</Eyebrow>
         <span className="grid h-7 w-7 place-items-center rounded-full bg-secondary">{icon}</span>
       </div>
       <p className="mt-2 font-serif text-3xl tabular-nums">{value}</p>

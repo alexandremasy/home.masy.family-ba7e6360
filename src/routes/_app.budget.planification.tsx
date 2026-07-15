@@ -14,6 +14,7 @@ import {
 } from "@/lib/budget-data";
 import { energie } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/budget/planification")({
   component: PlanificationPage,
@@ -106,19 +107,19 @@ function PlanificationPage() {
     <div className="space-y-6 anim-slide-up sm:space-y-8">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Budget · Planification</p>
+          <Eyebrow size="xs">Budget · Planification</Eyebrow>
           <h1 className="mt-1 font-serif text-2xl tracking-tight sm:text-4xl">L'atelier des budgets</h1>
         </div>
         <div className="flex items-center gap-3">
           {archive && (
-            <span className="flex items-center gap-1.5 rounded-full border border-border/60 bg-secondary/40 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <Eyebrow size="xs" as="span" className="flex items-center gap-1.5 rounded-full border border-border/60 bg-secondary/40 px-2.5 py-1">
               <Lock className="h-3 w-3" /> Archive · lecture seule
-            </span>
+            </Eyebrow>
           )}
           {draft && (
-            <span className="flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-primary">
+            <Eyebrow tone="current" size="xs" as="span" className="flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-1 text-primary">
               <PencilRuler className="h-3 w-3" /> Préparation
-            </span>
+            </Eyebrow>
           )}
           <div className="flex items-center gap-2">
             <Button onClick={() => setYear(y => Math.max(PLAN_MIN_YEAR, y - 1))}
@@ -165,9 +166,9 @@ function PlanificationPage() {
                           {/* Sticky sub-category header — carries the column labels */}
                           <div className="sticky top-[66px] z-10 flex items-stretch overflow-hidden rounded-t-xl border border-border/60 bg-card/95 shadow-soft backdrop-blur">
                             <div className={Z.left + " py-2 pl-3"}>
-                              <span className={Z.poste + " text-xs font-semibold uppercase tracking-[0.1em] text-foreground/80 truncate"}>{group}</span>
-                              <span className={Z.freq + " text-[10px] uppercase tracking-[0.12em] text-muted-foreground"}>Fréq.</span>
-                              <span className={Z.prevu + " text-[10px] uppercase tracking-[0.12em] text-muted-foreground"}>Prévu</span>
+                              <span className={Z.poste + " text-xs font-semibold uppercase tracking-[0.18em] text-foreground/80 truncate"}>{group}</span>
+                              <span className={Z.freq + " text-[10px] uppercase tracking-[0.18em] text-muted-foreground"}>Fréq.</span>
+                              <span className={Z.prevu + " text-[10px] uppercase tracking-[0.18em] text-muted-foreground"}>Prévu</span>
                             </div>
                             <div className={Z.center + " py-2"}>
                               <div className="grid min-w-0 flex-1 grid-cols-12 gap-x-1">
@@ -177,8 +178,8 @@ function PlanificationPage() {
                               </div>
                             </div>
                             <div className={Z.right + " py-2 pr-3"}>
-                              <span className={Z.reel + " text-[10px] uppercase tracking-[0.12em] text-muted-foreground"}>Réel</span>
-                              <span className={Z.ecart + " text-[10px] uppercase tracking-[0.12em] text-muted-foreground"}>Écart</span>
+                              <span className={Z.reel + " text-[10px] uppercase tracking-[0.18em] text-muted-foreground"}>Réel</span>
+                              <span className={Z.ecart + " text-[10px] uppercase tracking-[0.18em] text-muted-foreground"}>Écart</span>
                             </div>
                           </div>
                           {/* Rows */}
@@ -219,7 +220,7 @@ function PlanificationPage() {
                   )}
                   {groups.map(({ group, items }) => (
                     <div key={group} className="mb-3 overflow-hidden rounded-xl border border-border/50 bg-card">
-                      <p className="border-b border-border/40 bg-secondary/20 px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70">{group}</p>
+                      <Eyebrow tone="current" size="xs" className="border-b border-border/40 bg-secondary/20 px-3 py-1.5 text-muted-foreground/70">{group}</Eyebrow>
                       <div className="divide-y divide-border/30">
                         {items.map(p => (
                           <MobileRow key={p.id} poste={p} reel={showReal} onEdit={editable ? () => setEditingId(p.id) : undefined} />
@@ -247,7 +248,7 @@ function Cascade({ c, onJump }: { c: ReturnType<typeof planCascade>; onJump: (k:
   const margeBox = red ? "border-warm/50 bg-warm/5" : "border-success/50 bg-success/5";
   return (
     <section className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-6">
-      <p className="mb-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Équilibre du plan · sur l'année</p>
+      <Eyebrow size="xs" className="mb-3">Équilibre du plan · sur l'année</Eyebrow>
 
       {/* Desktop — inline equation with operators; provision after the margin (there's room) */}
       <div className="hidden flex-wrap items-stretch gap-3 sm:flex">
@@ -280,7 +281,7 @@ function ProvisionBox({ provision, auBesoin, className = "" }: { provision: numb
         <Coins className="h-5 w-5" />
       </span>
       <div className="min-w-0">
-        <p className="truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Provision /mois</p>
+        <Eyebrow size="xs" className="truncate">Provision /mois</Eyebrow>
         <p className="font-serif text-xl tabular-nums tracking-tight text-primary sm:text-2xl">{eur(provision)}</p>
         <p className="mt-1 text-[10px] leading-snug text-muted-foreground">L'au besoin ({eur(auBesoin)}/an) reste hors plan.</p>
       </div>
@@ -294,7 +295,7 @@ function Bucket({ label, value, tint, box, signed, onClick }: {
   const base = "min-w-0 flex-1 rounded-xl border px-3 py-3 text-left sm:px-4 " + (box ?? "border-border/40 bg-card/40");
   const inner = (
     <>
-      <p className="truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{label}</p>
+      <Eyebrow size="xs" className="truncate">{label}</Eyebrow>
       <p className={"mt-1.5 font-serif text-xl tabular-nums tracking-tight sm:text-2xl " + tint}>
         {signed && value >= 0 ? "+" : ""}<CountUp to={value} group /><span className="ml-0.5 text-xs text-muted-foreground">€/an</span>
       </p>
@@ -482,7 +483,7 @@ function PrevuReelCompare({ poste, year }: { poste: PlanPoste; year: number }) {
 
   return (
     <div>
-      <span className="mb-1.5 block text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Prévu vs réel · 12 mois</span>
+      <Eyebrow size="xs" as="span" className="mb-1.5 block">Prévu vs réel · 12 mois</Eyebrow>
       <div className="overflow-x-auto rounded-xl border border-border/40 bg-card/40 p-2 [scrollbar-width:thin]">
         <div className="space-y-1">
           {/* Month letters */}
@@ -537,7 +538,7 @@ function EditModal({ poste, onClose, onPatch, reel = true, year }: {
               {/* Fields — Ponctuel drops the single amount for a dated occurrence list */}
               <div className="grid grid-cols-2 gap-3">
                 <label className={ponctuel ? "col-span-2 block" : "block"}>
-                  <span className="mb-1 block text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Fréquence</span>
+                  <Eyebrow size="xs" as="span" className="mb-1 block">Fréquence</Eyebrow>
                   <select value={poste.recurrence}
                     onChange={(e) => {
                       const rec = e.target.value as PlanRecurrence;
@@ -555,7 +556,7 @@ function EditModal({ poste, onClose, onPatch, reel = true, year }: {
                 </label>
                 {!ponctuel && (
                   <label className="block">
-                    <span className="mb-1 block text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Montant prévu</span>
+                    <Eyebrow size="xs" as="span" className="mb-1 block">Montant prévu</Eyebrow>
                     <div className="flex items-center rounded-lg border border-border/60 bg-card px-2.5 py-2 focus-within:border-foreground/40">
                       <input type="number" value={poste.amount}
                         onChange={(e) => onPatch(poste.id, { amount: Math.max(0, Number(e.target.value) || 0) })}
@@ -566,7 +567,7 @@ function EditModal({ poste, onClose, onPatch, reel = true, year }: {
                 )}
                 {nonMensuel && (
                   <label className="block">
-                    <span className="mb-1 block text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Mois d'échéance</span>
+                    <Eyebrow size="xs" as="span" className="mb-1 block">Mois d'échéance</Eyebrow>
                     <select value={poste.months[0] ?? 0}
                       onChange={(e) => onPatch(poste.id, { months: defaultMonthsFor(poste.recurrence as Recurrence4, Number(e.target.value)) })}
                       className="w-full rounded-lg border border-border/60 bg-card px-2.5 py-2 text-sm outline-none focus:border-foreground/40">
@@ -580,7 +581,7 @@ function EditModal({ poste, onClose, onPatch, reel = true, year }: {
               {ponctuel && (
                 <div className="rounded-xl border border-border/50 bg-card/40 p-3">
                   <div className="mb-2 flex items-center justify-between">
-                    <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Échéances</span>
+                    <Eyebrow size="xs" as="span">Échéances</Eyebrow>
                     <span className="text-[11px] tabular-nums text-muted-foreground">total {eur(planPosteYear(poste))}/an</span>
                   </div>
                   <div className="space-y-2">

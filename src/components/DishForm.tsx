@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
 import { EFFORT_LEVELS, fmtMinutes, type Dish, type Base, type Role, type Unit, type Composant } from "@/lib/maison-data";
 import { cap } from "@/lib/utils";
+import { Eyebrow } from "@/components/Eyebrow";
 
 const BASES: Base[] = [
   "assiette", "pâtes", "bowl", "salade", "quiche", "pizza", "gratin",
@@ -29,7 +30,7 @@ export const EMPTY_DRAFT: DishDraft = {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{label}</span>
+      <Eyebrow size="xs" as="span">{label}</Eyebrow>
       <div className="mt-1.5">{children}</div>
     </label>
   );
@@ -156,7 +157,7 @@ export function DishForm({
 
       <div>
         <div className="flex items-center justify-between">
-          <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Composants</span>
+          <Eyebrow size="xs" as="span">Composants</Eyebrow>
           <Button type="button" size="sm" variant="outline" onClick={addMod} className="h-7 gap-1 text-xs">
             <Plus className="h-3 w-3" />Ajouter
           </Button>

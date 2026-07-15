@@ -8,6 +8,7 @@ import {
   DoorOpen, Lock, Warehouse, MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Eyebrow } from "@/components/Eyebrow";
 
 // Tab 1 — État: arming + presence. They belong together: the arming follows the presence.
 export const Route = createFileRoute("/_app/securite/etat")({
@@ -85,9 +86,9 @@ function ArmingHero({ verdict, openPoints }: { verdict: "secure" | "attention"; 
             <HeadIcon className="h-7 w-7 anim-breathe" />
           </span>
           <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            <Eyebrow>
               Mode {current.label}{armed && ` · depuis ${security.armedSince}`}
-            </p>
+            </Eyebrow>
             <p className="mt-1 font-serif text-3xl leading-tight tracking-tight">{headline}</p>
             <p className="mt-0.5 text-sm text-muted-foreground">{current.hint}</p>
           </div>
@@ -115,7 +116,7 @@ function ArmingHero({ verdict, openPoints }: { verdict: "secure" | "attention"; 
 
       {verdict === "attention" && (
         <div className="mt-5 flex flex-wrap items-center gap-2 rounded-xl border border-warm/30 bg-card/60 p-3">
-          <span className="text-xs uppercase tracking-[0.14em] text-warm">À vérifier</span>
+          <Eyebrow tone="current" as="span" className="text-warm">À vérifier</Eyebrow>
           {openPoints.map((p) => (
             <span key={p.name} className="inline-flex items-center gap-1 rounded-full bg-warm/10 px-2 py-0.5 text-xs text-warm">
               {p.type === "garage" ? <Warehouse className="h-3 w-3" /> : <DoorOpen className="h-3 w-3" />}

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRight, Droplet, Zap, Flame, TrendingDown, TrendingUp, Minus, AlertTriangle, CalendarDays, Sun, Moon, Sparkles, Pencil, Check, X, SunMedium } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/energie/")({
   component: EnergiePage,
@@ -160,7 +161,7 @@ function MetricCard({
       }
     >
       <div className="flex items-center justify-between">
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
+        <Eyebrow>{label}</Eyebrow>
         <span
           className={
             "grid h-9 w-9 place-items-center rounded-full " +
@@ -229,7 +230,7 @@ function EnergiePage() {
       {energie.monthlyDue ? (
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-warm p-6 text-warm-foreground sm:p-8 anim-pop-in">
           <div>
-            <p className="text-xs uppercase tracking-[0.18em] opacity-70">À faire</p>
+            <Eyebrow tone="current" className="opacity-70">À faire</Eyebrow>
             <p className="mt-1 font-serif text-2xl">Relevé mensuel à saisir</p>
           </div>
           <Button asChild variant="inverted" className="group gap-2 rounded-full">
@@ -471,7 +472,7 @@ function EnergiePage() {
             return (
               <div
                 key={g.year}
-                className="flex items-center justify-center border-t border-border/60 pt-1.5 text-[11px] uppercase tracking-[0.16em] text-muted-foreground"
+                className="flex items-center justify-center border-t border-border/60 pt-1.5 text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
                 style={{ flex: span }}
               >
                 {g.year}
@@ -587,7 +588,7 @@ function ReleveList() {
       <div className="overflow-x-auto">
         <table className="w-full text-xs sm:text-sm">
           <thead>
-            <tr className="border-b border-border/60 bg-secondary/40 text-left text-xs uppercase tracking-[0.12em] text-muted-foreground">
+            <tr className="border-b border-border/60 bg-secondary/40 text-left text-xs uppercase tracking-[0.18em] text-muted-foreground">
               <th className="px-1.5 py-1.5 sm:px-5 sm:py-2.5 font-medium">Date</th>
               {visibleCols.map((c) => (
                 <th key={c} className="px-1.5 py-1.5 sm:px-3 sm:py-2.5 font-medium text-right">

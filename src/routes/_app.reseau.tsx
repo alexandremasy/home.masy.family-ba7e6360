@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { Switch } from "@/components/ui/switch";
 import { reseau } from "@/lib/mock-data";
 import { Wifi, Cpu, HardDrive, MemoryStick, Shield, ExternalLink, Gauge, Users, Router, Globe, ShieldOff, Container, Network, BarChart3, Home, Film, KeyRound, Boxes } from "lucide-react";
+import { Eyebrow } from "@/components/Eyebrow";
 
 const serviceIcons: Record<string, typeof Container> = {
   Portainer: Container,
@@ -105,7 +106,7 @@ function ReseauPage() {
         <div className="mt-4 space-y-4">
           {reseau.serviceGroups.map((g) => (
             <div key={g.key}>
-              <p className="mb-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">{g.label}</p>
+              <Eyebrow className="mb-2">{g.label}</Eyebrow>
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 stagger">
                 {g.services.map((s) => {
                   const Icon = serviceIcons[s.name] ?? Boxes;
@@ -158,7 +159,7 @@ function WifiCard({ ssid, clients, initialOn }: { ssid: string; clients: number;
 function Meter({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
   return (
     <div className="rounded-xl border border-border/60 bg-card p-4">
-      <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">{icon}{label}</div>
+      <Eyebrow as="div" className="flex items-center gap-2">{icon}{label}</Eyebrow>
       <p className="mt-2 font-serif text-2xl">{value}<span className="text-sm text-muted-foreground">%</span></p>
       <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-muted">
         <div className={"h-full rounded-full transition-all duration-700 " + (value > 80 ? "bg-destructive" : value > 60 ? "bg-warm" : "bg-primary")} style={{ width: `${value}%` }} />
@@ -170,7 +171,7 @@ function Meter({ icon, label, value }: { icon: React.ReactNode; label: string; v
 function Stat({ icon, label, value, sub, tone = "default" }: { icon: React.ReactNode; label: string; value: string; sub?: string; tone?: "default" | "warm" }) {
   return (
     <div className="rounded-xl border border-border/60 bg-card p-4">
-      <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">{icon}{label}</div>
+      <Eyebrow as="div" className="flex items-center gap-2">{icon}{label}</Eyebrow>
       <p className={"mt-2 font-serif text-2xl tabular-nums " + (tone === "warm" ? "text-warm" : "text-foreground")}>{value}</p>
       {sub && <p className="mt-1 text-xs text-muted-foreground">{sub}</p>}
     </div>

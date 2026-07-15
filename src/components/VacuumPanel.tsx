@@ -1,5 +1,6 @@
 import { vacuum } from "@/lib/mock-data";
 import { Bot, BatteryCharging, Battery, Home, AlertTriangle, Trash2, CircleDashed, MoveRight, PauseCircle } from "lucide-react";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export function VacuumPanel({ compact = false }: { compact?: boolean }) {
   const v = vacuum;
@@ -29,7 +30,7 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
           <Bot className={"h-5 w-5 " + (cleaning ? "anim-breathe text-primary" : "")} />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Aspirateur</p>
+          <Eyebrow size="xs">Aspirateur</Eyebrow>
           <p className="mt-0.5 truncate font-serif text-lg leading-tight">{v.name}</p>
           <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
             <span className={`inline-flex items-center gap-1 ${batLow ? "text-warm" : ""}`}>
@@ -52,7 +53,7 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
     <div className="space-y-5">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{v.name}</p>
+          <Eyebrow>{v.name}</Eyebrow>
           <p className="mt-1 font-serif text-2xl">{status.text}</p>
           <p className="mt-0.5 text-sm text-muted-foreground">
             {cleaning || returning
@@ -60,7 +61,7 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
               : `Prochain passage · ${v.nextSchedule}`}
           </p>
         </div>
-        <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs uppercase tracking-[0.14em] ${status.tone}`}>
+        <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs uppercase tracking-[0.18em] ${status.tone}`}>
           <status.Icon className="h-3.5 w-3.5" />
           {status.text}
         </span>
@@ -96,24 +97,24 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <div className={`rounded-xl border p-3 ${batLow ? "border-warm/40 bg-warm/10" : "border-border/60 bg-card"}`}>
-          <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+          <Eyebrow size="xs" as="div" className="flex items-center gap-1.5">
             <BatteryIcon className="h-3.5 w-3.5" />Batterie
-          </div>
+          </Eyebrow>
           <p className={`mt-1 font-serif text-lg ${batLow ? "text-warm" : ""}`}>{v.batteryPct}%</p>
         </div>
         <div className={`rounded-xl border p-3 ${v.binFullPct > 80 ? "border-warm/40 bg-warm/10" : "border-border/60 bg-card"}`}>
-          <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+          <Eyebrow size="xs" as="div" className="flex items-center gap-1.5">
             <Trash2 className="h-3.5 w-3.5" />Bac
-          </div>
+          </Eyebrow>
           <p className="mt-1 font-serif text-lg">{v.binFullPct}% plein</p>
         </div>
         <div className="rounded-xl border border-border/60 bg-card p-3">
-          <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Dernier passage</p>
+          <Eyebrow size="xs">Dernier passage</Eyebrow>
           <p className="mt-1 truncate font-serif text-sm">{v.lastRun.when}</p>
           <p className="text-xs text-muted-foreground">{v.lastRun.areaM2} m² · {v.lastRun.durationMin} min</p>
         </div>
         <div className="rounded-xl border border-border/60 bg-card p-3">
-          <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Prochain</p>
+          <Eyebrow size="xs">Prochain</Eyebrow>
           <p className="mt-1 truncate font-serif text-sm">{v.nextSchedule}</p>
         </div>
       </div>

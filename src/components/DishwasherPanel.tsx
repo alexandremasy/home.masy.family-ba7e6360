@@ -1,5 +1,6 @@
 import { dishwasher } from "@/lib/mock-data";
 import { Droplet, Zap, AlertTriangle, DoorOpen, CheckCircle2, Pause, Play, CircleDashed } from "lucide-react";
+import { Eyebrow } from "@/components/Eyebrow";
 
 const PHASES: { key: string; label: string }[] = [
   { key: "Prélavage", label: "Prélavage" },
@@ -59,7 +60,7 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
           )}
         </ProgressRing>
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Lave-vaisselle</p>
+          <Eyebrow size="xs">Lave-vaisselle</Eyebrow>
           <p className="mt-0.5 truncate font-serif text-lg leading-tight">{d.program}</p>
           <p className="mt-0.5 text-xs text-muted-foreground truncate">
             {running || paused ? `${d.phase} · fin ${d.endsAt}` : idle ? d.lastRun : statusPill.text}
@@ -77,11 +78,11 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
     <div className="space-y-5">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{d.brand}</p>
+          <Eyebrow>{d.brand}</Eyebrow>
           <p className="mt-1 font-serif text-2xl">{d.program}</p>
           <p className="mt-0.5 text-sm text-muted-foreground">Démarré {d.startedAt} · fin prévue {d.endsAt}</p>
         </div>
-        <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs uppercase tracking-[0.14em] ${statusPill.tone}`}>
+        <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs uppercase tracking-[0.18em] ${statusPill.tone}`}>
           <statusPill.Icon className="h-3.5 w-3.5" />
           {statusPill.text}
         </span>
@@ -102,7 +103,7 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
               const active = i === currentIdx;
               const done = i < currentIdx;
               return (
-                <div key={p.key} className={`rounded-lg px-2 py-1.5 text-center text-[10px] uppercase tracking-[0.12em] transition-colors ${
+                <div key={p.key} className={`rounded-lg px-2 py-1.5 text-center text-[10px] uppercase tracking-[0.18em] transition-colors ${
                   active ? "bg-foreground text-background" :
                   done   ? "bg-primary/15 text-primary" :
                            "bg-card text-muted-foreground"
@@ -117,23 +118,23 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <div className="rounded-xl border border-border/60 bg-card p-3">
-          <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+          <Eyebrow size="xs" as="div" className="flex items-center gap-1.5">
             <Zap className="h-3.5 w-3.5" />Énergie
-          </div>
+          </Eyebrow>
           <p className="mt-1 font-serif text-lg">{d.energyKWh} <span className="text-xs text-muted-foreground">kWh</span></p>
         </div>
         <div className="rounded-xl border border-border/60 bg-card p-3">
-          <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+          <Eyebrow size="xs" as="div" className="flex items-center gap-1.5">
             <Droplet className="h-3.5 w-3.5" />Eau
-          </div>
+          </Eyebrow>
           <p className="mt-1 font-serif text-lg">{d.waterL} <span className="text-xs text-muted-foreground">L</span></p>
         </div>
         <div className="rounded-xl border border-border/60 bg-card p-3">
-          <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Cycles</p>
+          <Eyebrow size="xs">Cycles</Eyebrow>
           <p className="mt-1 font-serif text-lg">{d.cyclesThisMonth} <span className="text-xs text-muted-foreground">ce mois</span></p>
         </div>
         <div className={`rounded-xl border p-3 ${d.rinseAidLow || d.saltLow ? "border-warm/40 bg-warm/10" : "border-border/60 bg-card"}`}>
-          <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Consommables</p>
+          <Eyebrow size="xs">Consommables</Eyebrow>
           <div className="mt-1 flex flex-wrap gap-1 text-xs">
             <span className={d.saltLow ? "text-warm" : "text-muted-foreground"}>Sel {d.saltLow ? "faible" : "OK"}</span>
             <span className="text-muted-foreground">·</span>

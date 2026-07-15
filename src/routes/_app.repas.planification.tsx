@@ -16,6 +16,7 @@ import {
   ThermometerSun, ChevronLeft, ChevronRight, ChevronDown, SlidersHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/repas/planification")({
   component: RepasPage,
@@ -212,9 +213,9 @@ function DayCell({
       <div className="flex items-baseline justify-between gap-1 px-2.5 pt-2.5">
         <span className={"font-semibold leading-none tabular-nums " + (today ? "text-primary" : "")}>
           <span className="text-2xl">{date.getDate()}</span>
-          <span className="ml-1.5 text-xs uppercase tracking-[0.14em] text-muted-foreground lg:hidden">
+          <Eyebrow as="span" className="ml-1.5 lg:hidden">
             {date.toLocaleDateString("fr-BE", { weekday: "long" })}
-          </span>
+          </Eyebrow>
         </span>
         <span
           className="flex items-center gap-1 text-muted-foreground"
@@ -272,7 +273,7 @@ function SlotCell({
       className="group relative flex flex-1 flex-col"
     >
       {/* The label belongs to the slot, not to the dish — so it stays outside the box. */}
-      <div className="flex items-center justify-between px-1 pb-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+      <div className="flex items-center justify-between px-1 pb-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
         <span>{slot === "midi" ? "Midi" : "Soir"}</span>
         {!weekend && slot === "midi" && !entry && <Package className="h-3 w-3" aria-label="Emportable" />}
       </div>

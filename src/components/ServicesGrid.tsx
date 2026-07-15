@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Eyebrow } from "@/components/Eyebrow";
 
 type Service = {
   name: string;
@@ -99,7 +100,7 @@ export function ServicesGrid() {
   return (
     <section className="pt-2">
       <div className="mb-3 flex items-baseline justify-between px-1">
-        <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Services</p>
+        <Eyebrow size="xs">Services</Eyebrow>
         <span className="text-[11px] text-muted-foreground/60">{services.length}</span>
       </div>
       <div className="flex flex-wrap gap-1.5">

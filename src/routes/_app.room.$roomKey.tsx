@@ -65,6 +65,7 @@ function zoneIcon(name: string): LucideIcon {
   return Lightbulb;
 }
 import { RoomIcon } from "@/components/RoomIcon";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/room/$roomKey")({
   component: RoomPage,
@@ -219,7 +220,7 @@ function RoomPage() {
           {zones.length > 0 && (
             <div className={detail.lights.scenes.length > 0 ? "mt-6" : ""}>
               {detail.lights.scenes.length > 0 && (
-                <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Zones</p>
+                <Eyebrow className="mb-3">Zones</Eyebrow>
               )}
               <div className="flex flex-wrap gap-1.5">
                 {zones.map((z, i) => {
@@ -297,7 +298,7 @@ function RoomPage() {
         <Section
           title="Lave-vaisselle"
           action={
-            <Link to="/room/$roomKey" params={{ roomKey: "cuisine" }} className="text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground">
+            <Link to="/room/$roomKey" params={{ roomKey: "cuisine" }} className="text-xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground">
               détails
             </Link>
           }
@@ -344,7 +345,7 @@ function RoomPage() {
           <Section
             title="Caméra"
             action={
-              <Link to="/securite" className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground">
+              <Link to="/securite" className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground">
                 <ShieldCheck className="h-3.5 w-3.5" />toutes les caméras
               </Link>
             }
@@ -374,7 +375,7 @@ function RoomPage() {
         <Section title="Périphériques">
           {detail.devices.ink && (
             <div className="mb-6">
-              <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Imprimante · niveaux d'encre</p>
+              <Eyebrow className="mb-3">Imprimante · niveaux d'encre</Eyebrow>
               <div className="grid grid-cols-4 gap-3 stagger">
                 {([
                   ["Cyan", detail.devices.ink.c, "oklch(0.78 0.13 200)"],
@@ -395,11 +396,11 @@ function RoomPage() {
           )}
           {detail.devices.appliances && detail.devices.appliances.length > 0 && (
             <div className="mb-6">
-              <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Appareils</p>
+              <Eyebrow className="mb-3">Appareils</Eyebrow>
               <AppliancesGrid items={detail.devices.appliances} />
             </div>
           )}
-          <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Batteries</p>
+          <Eyebrow className="mb-3">Batteries</Eyebrow>
           <div className="grid gap-2 sm:grid-cols-2">
             {detail.devices.batteries.map((b) => {
               const { Icon, tone } = batteryFor(b.level);
@@ -469,7 +470,7 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
               <span className="h-2.5 w-2.5 rounded-full bg-background" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Spotify · en lecture</p>
+              <Eyebrow size="xs">Spotify · en lecture</Eyebrow>
               <p className="mt-0.5 truncate font-serif text-xl">{media.nowPlaying ?? "—"}</p>
               {media.artist && <p className="truncate text-sm text-muted-foreground">{media.artist}</p>}
               <div className="mt-2 flex h-3 items-end gap-0.5">
@@ -494,7 +495,7 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
               <Tv className="h-6 w-6 text-background" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Netflix</p>
+              <Eyebrow size="xs">Netflix</Eyebrow>
               <p className="mt-0.5 truncate font-serif text-xl">Téléviseur allumé</p>
               <p className="truncate text-sm text-muted-foreground">Source HDMI · Apple TV</p>
             </div>
@@ -512,7 +513,7 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
               <Power className="h-6 w-6 text-muted-foreground" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Aucun média</p>
+              <Eyebrow size="xs">Aucun média</Eyebrow>
               <p className="mt-0.5 font-serif text-xl">Tout est silencieux</p>
               <p className="text-sm text-muted-foreground">Choisis une source pour démarrer.</p>
             </div>

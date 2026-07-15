@@ -19,6 +19,7 @@ import {
   type TemporalState, type UpcomingBill, type BudgetView,
 } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/budget/vue")({
   component: VuePage,
@@ -50,9 +51,9 @@ function VuePage() {
       ><ArrowLeft className="h-4 w-4" /></Button>
           )}
           <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+            <Eyebrow size="xs">
               Budget · {zoom === null ? "Vue d'ensemble" : "Mois"}
-            </p>
+            </Eyebrow>
             <h1 className="mt-1 truncate font-serif text-2xl tracking-tight sm:text-4xl">
               {zoom === null
                 ? viewTitle(view)
@@ -142,7 +143,7 @@ function AxisStatus({ axis, to }: { axis: ReturnType<typeof annualVerdict>["axes
   const base = "block h-full w-full rounded-xl border border-border/50 bg-secondary/25 px-4 py-3.5 text-left";
   const inner = (
     <>
-      <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+      <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
         <span className={"h-1.5 w-1.5 rounded-full " + c.dot} /> {axis.label}
         {to && <ChevronRight className="ml-auto h-3.5 w-3.5 text-muted-foreground/60 transition-transform group-hover/axis:translate-x-0.5" />}
       </p>
@@ -225,7 +226,7 @@ function SecondaryReading({ label, primary, secondary, tone }: {
     : "text-foreground";
   return (
     <div className="rounded-xl bg-secondary/40 p-3 lg:bg-transparent lg:p-0">
-      <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{label}</p>
+      <Eyebrow size="xs">{label}</Eyebrow>
       <p className={"mt-1 font-serif text-xl leading-none tabular-nums sm:text-2xl " + cls}>{primary}</p>
       {secondary && <p className="mt-1.5 text-[11px] tabular-nums text-muted-foreground">{secondary}</p>}
     </div>
@@ -242,7 +243,7 @@ function MicroStat({ label, primary, secondary, tone }: {
     : "text-foreground";
   return (
     <div className="rounded-xl bg-secondary/40 p-2.5 lg:bg-transparent lg:p-0">
-      <p className="text-[9px] uppercase tracking-[0.16em] text-muted-foreground sm:text-[10px]">{label}</p>
+      <Eyebrow size="xs" className="sm:text-[10px]">{label}</Eyebrow>
       <p className={"mt-1 font-serif text-lg leading-none tabular-nums sm:text-xl " + cls}>{primary}</p>
       {secondary && <p className="mt-1 text-[10px] tabular-nums text-muted-foreground">{secondary}</p>}
     </div>
@@ -281,8 +282,8 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
       {/* One glissant view: past réel (solid) + futur projeté (dashed), présent marqué */}
       <div className="mt-6">
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-          <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Entrées · Dépenses · Épargne — par mois</p>
-          <div className="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+          <Eyebrow size="xs">Entrées · Dépenses · Épargne — par mois</Eyebrow>
+          <div className="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
             <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--success)" }} /> Entrées</span>
             <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--warm)" }} /> Dépenses</span>
             <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--primary)" }} /> Épargne</span>
@@ -318,7 +319,7 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
 
       {/* Month strip — each box: écart vs budget (réel importé / projeté atténué) */}
       <div className="mt-6 border-t border-border/40 pt-4">
-        <div className="mb-2 flex items-center justify-between text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+        <div className="mb-2 flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           <span>Mois · écart au budget</span>
           <span className="hidden sm:inline">Cliquez pour ouvrir</span>
         </div>
@@ -361,7 +362,7 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
       {/* Échéances strip — same compact language as the months: what's coming + coverage */}
       {upcoming.length > 0 && (
         <div className="mt-4 border-t border-border/40 pt-4">
-          <div className="mb-2 flex items-center justify-between text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+          <div className="mb-2 flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
             <span>Échéances à venir · couverture</span>
             <span className="hidden sm:inline">Cliquez pour ouvrir</span>
           </div>
@@ -619,7 +620,7 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
             <h3 className="font-serif text-xl tracking-tight">Réel à date + projection</h3>
             <p className="mt-1 text-sm text-muted-foreground">La barre marque la frontière entre les deux.</p>
           </div>
-          <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Jour {day}/{total}</p>
+          <Eyebrow size="xs">Jour {day}/{total}</Eyebrow>
         </header>
         <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
           {[...categories].sort((a,b)=>a.label.localeCompare(b.label,"fr")).map((c) => {
@@ -744,7 +745,7 @@ function FuturView({ monthIdx }: { monthIdx: number }) {
 function BillsBar({ bills, label }: { bills: { label: string; amount: number }[]; label: string }) {
   return (
     <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7">
-      <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
+      <Eyebrow size="xs">{label}</Eyebrow>
       <div className="mt-3 flex flex-wrap gap-2">
         {bills.map((b, i) => (
           <span key={i} className="inline-flex items-center gap-2 rounded-full border border-warm/30 bg-warm/10 px-3 py-1.5 text-sm text-warm">
@@ -761,7 +762,7 @@ function SmallStat({ label, value, tone, hint, signed }: { label: string; value:
   const cls = tone === "warm" ? "text-warm" : tone === "success" ? "text-success" : "text-foreground";
   return (
     <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft">
-      <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
+      <Eyebrow size="xs">{label}</Eyebrow>
       <p className={"mt-2 font-serif text-2xl tracking-tight tabular-nums " + cls}>
         {signed && value > 0 ? "+" : ""}<CountUp to={value} /><span className="ml-1 text-sm text-muted-foreground">€</span>
       </p>

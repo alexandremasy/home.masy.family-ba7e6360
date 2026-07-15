@@ -1,5 +1,6 @@
 import { Camera as CamIcon, Moon, WifiOff, Bell } from "lucide-react";
 import type { Camera, CameraScene } from "@/lib/mock-data";
+import { Eyebrow } from "@/components/Eyebrow";
 
 /**
  * A stylized "live" thumbnail — pure CSS/SVG. Not an actual video feed;
@@ -102,12 +103,12 @@ export function CameraFeed({ camera, size = "md", showChrome = true }: CameraFee
       {notInstalled ? (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-secondary text-muted-foreground">
           <Bell className="h-6 w-6 opacity-60" />
-          <span className="text-xs uppercase tracking-[0.18em]">Bientôt installée</span>
+          <Eyebrow tone="current" as="span">Bientôt installée</Eyebrow>
         </div>
       ) : offline ? (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-foreground/80 text-background/60">
           <WifiOff className="h-6 w-6" />
-          <span className="text-xs uppercase tracking-[0.18em]">Hors-ligne</span>
+          <Eyebrow tone="current" as="span">Hors-ligne</Eyebrow>
         </div>
       ) : (
         <>
@@ -116,7 +117,7 @@ export function CameraFeed({ camera, size = "md", showChrome = true }: CameraFee
           {showChrome && (
             <>
               {/* Bottom-left: badges */}
-              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-2 text-[10px] uppercase tracking-[0.16em] text-white/90">
+              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-2 text-[10px] uppercase tracking-[0.18em] text-white/90">
                 <span className="inline-flex items-center gap-1 rounded bg-black/40 px-1.5 py-0.5 backdrop-blur-sm">
                   <CamIcon className="h-3 w-3" />
                   {camera.name}

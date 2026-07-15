@@ -9,6 +9,7 @@ import {
   type Sliders,
 } from "@/lib/maison-data";
 import { ArrowLeft, Cake, Copy, RefreshCw, Sparkles, Check, History } from "lucide-react";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/anniversaires/$personId")({
   component: PersonStudio,
@@ -52,7 +53,7 @@ function PersonStudio() {
             <Cake className="h-6 w-6" />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{person.relation}</p>
+            <Eyebrow size="xs">{person.relation}</Eyebrow>
             <h1 className="font-serif text-3xl tracking-tight">{person.name}</h1>
             <p className="mt-1 text-sm text-muted-foreground">
               {frLongDay(nextBirthday(person))} · {upcomingAge(person)} ans · dans {daysUntil(nextBirthday(person))} j
@@ -107,9 +108,9 @@ function PersonStudio() {
               <ul className="space-y-2">
                 {person.history.map((h) => (
                   <li key={h.year} className="rounded-lg border border-border/60 bg-secondary/30 p-3">
-                    <p className="mb-1 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                    <Eyebrow size="xs" className="mb-1 inline-flex items-center gap-1.5">
                       <History className="h-3 w-3" /> {h.year}
-                    </p>
+                    </Eyebrow>
                     <p className="text-sm text-muted-foreground italic">« {h.message} »</p>
                   </li>
                 ))}
@@ -158,7 +159,7 @@ function SliderRow({
         <span className="tabular-nums text-muted-foreground">{value}</span>
       </div>
       <Slider min={0} max={100} step={1} value={[value]} onValueChange={([v]) => onChange(v)} />
-      <div className="mt-1 flex justify-between text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+      <div className="mt-1 flex justify-between text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
         <span>{left}</span><span>{right}</span>
       </div>
     </div>

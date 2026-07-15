@@ -3,6 +3,7 @@ import { Section } from "@/components/Card";
 import { people, nextBirthday, daysUntil, upcomingAge, frLongDay } from "@/lib/maison-data";
 import { Cake, ArrowRight, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/anniversaires/")({
   component: AnniversairesPage,
@@ -19,9 +20,9 @@ function AnniversairesPage() {
         <div className="rounded-2xl border border-warm/40 bg-warm/5 p-5 shadow-soft">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-[10px] uppercase tracking-[0.18em] text-warm inline-flex items-center gap-1.5">
+              <Eyebrow tone="current" size="xs" className="text-warm inline-flex items-center gap-1.5">
                 <Bell className="h-3 w-3" /> Prochain anniversaire
-              </p>
+              </Eyebrow>
               <p className="mt-1 font-serif text-2xl">{upcoming.name}</p>
               <p className="text-sm text-muted-foreground">
                 {frLongDay(nextBirthday(upcoming))} · {upcomingAge(upcoming)} ans · dans {daysUntil(nextBirthday(upcoming))} j
@@ -59,7 +60,7 @@ function AnniversairesPage() {
                   </div>
                   <div className="shrink-0 text-right">
                     <p className="font-serif text-lg tabular-nums">{days} <span className="text-xs text-muted-foreground">j</span></p>
-                    <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{p.history.length} msg{p.history.length !== 1 ? "s" : ""}</p>
+                    <Eyebrow size="xs">{p.history.length} msg{p.history.length !== 1 ? "s" : ""}</Eyebrow>
                   </div>
                   <ArrowRight className="ml-2 h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
                 </Link>

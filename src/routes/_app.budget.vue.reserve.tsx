@@ -10,6 +10,7 @@ import { PiggyBank, Pencil, Check, X } from "lucide-react";
 import { CountUp } from "@/components/CountUp";
 import { Section } from "@/components/Card";
 import { envelopes, eur, savingsStockSeries, envelopeHistory, MONTHS_FR, type BudgetView } from "@/lib/budget-data";
+import { Eyebrow } from "@/components/Eyebrow";
 
 // A MODAL with its own route (nested under /budget/vue), rendered with the SAME overlay system as
 // the Maison room pages: blurred backdrop + max-w-5xl panel + a fixed centered close pill, plus the
@@ -108,7 +109,7 @@ function ReserveOverlay() {
                     </span>
                     <h1 className="font-serif text-3xl tracking-tight sm:text-4xl">Réserve</h1>
                     <div className="ml-auto text-right">
-                      <p className="flex items-baseline justify-end gap-2 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                      <p className="flex items-baseline justify-end gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                         Total <span className="tabular-nums normal-case tracking-normal">+ {eur(contribTotal)}/mois</span>
                       </p>
                       <p className="mt-0.5 font-serif text-2xl tabular-nums text-foreground">
@@ -162,7 +163,7 @@ function ReserveOverlay() {
                     return (
                       <div key={env.key} className="group relative rounded-xl border border-border/50 bg-card/60 p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift">
                         <div className="flex items-start justify-between">
-                          <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{env.label}</p>
+                          <Eyebrow size="xs">{env.label}</Eyebrow>
                           {!editing && (
                             <button onClick={() => startEdit(env.key, env.balance, env.contrib)} aria-label="Modifier l'enveloppe"
                               className="opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100">

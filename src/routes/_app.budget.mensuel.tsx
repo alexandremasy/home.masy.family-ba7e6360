@@ -8,6 +8,7 @@ import {
   type Category, type CatKey,
 } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/budget/mensuel")({
   component: MensuelPage,
@@ -53,7 +54,7 @@ function MensuelPage() {
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Budget · Mensuel</p>
+          <Eyebrow size="xs">Budget · Mensuel</Eyebrow>
           <h1 className="mt-1 font-serif text-3xl tracking-tight sm:text-4xl capitalize">{monthLabel}</h1>
         </div>
         <div className="flex items-center gap-2">
@@ -174,7 +175,7 @@ function Kpi({ label, value, icon: Icon, tone, delta, invertDelta }: {
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card p-5 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
       <div className="flex items-center justify-between">
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
+        <Eyebrow>{label}</Eyebrow>
         <span className={"grid h-8 w-8 place-items-center rounded-full " + toneCls}>
           <Icon className="h-4 w-4" />
         </span>
@@ -299,13 +300,13 @@ function DonutPanel({ focusCat, onFocus }: { focusCat: CatKey | null; onFocus: (
           <div className="pointer-events-none absolute inset-0 grid place-items-center text-center">
             {focused ? (
               <div className="anim-pop-in">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{focused.label}</p>
+                <Eyebrow size="xs">{focused.label}</Eyebrow>
                 <p className="font-serif text-2xl tabular-nums">{eur(focused.value)}</p>
                 <p className="text-[11px] text-muted-foreground tabular-nums">{Math.round((focused.value/total)*100)}%</p>
               </div>
             ) : (
               <div>
-                <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Total</p>
+                <Eyebrow size="xs">Total</Eyebrow>
                 <p className="font-serif text-2xl tabular-nums">{eur(total)}</p>
               </div>
             )}

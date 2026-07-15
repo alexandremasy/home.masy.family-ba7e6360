@@ -21,6 +21,7 @@ import {
   Volume2,
   Lightbulb,
 } from "lucide-react";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/tesla")({
   component: TeslaPage,
@@ -177,7 +178,7 @@ function TeslaPage() {
 
 
 
-        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           <span className="inline-flex items-center gap-1.5"><Wifi className="h-3 w-3" /> Sync {tesla.lastSeen}</span>
           <span>Logiciel {tesla.software}</span>
         </div>
@@ -234,7 +235,7 @@ function TeslaPage() {
               <div key={`${q.key}-mobile`} className="rounded-xl border border-border/60 bg-background/45 p-3">
                 <div className="mb-3 flex items-start justify-between gap-3">
                   <div>
-                    <p className={"text-xs uppercase tracking-[0.14em] " + (isCurrent ? "text-primary" : "text-muted-foreground")}>
+                    <p className={"text-xs uppercase tracking-[0.18em] " + (isCurrent ? "text-primary" : "text-muted-foreground")}>
                       {qLabel(q.year, q.q)}{isCurrent ? " · estimé" : ""}
                     </p>
                     <p className={"mt-1 font-serif text-2xl leading-none " + (isCurrent ? "text-primary" : "text-foreground")}>
@@ -341,7 +342,7 @@ function TeslaPage() {
                     <div className={"absolute right-1 top-0 h-2 w-px " + (isCurrent ? "bg-primary" : "bg-border")} />
                   </div>
                   <div className="flex flex-col items-center gap-0.5">
-                    <span className={"text-[11px] uppercase tracking-[0.14em] " + (isCurrent ? "text-primary font-medium" : "text-muted-foreground")}>
+                    <span className={"text-[11px] uppercase tracking-[0.18em] " + (isCurrent ? "text-primary font-medium" : "text-muted-foreground")}>
                       {qLabel(q.year, q.q)}
                       {isCurrent && <span className="ml-1 normal-case tracking-normal opacity-70">(est.)</span>}
                     </span>
@@ -380,10 +381,10 @@ function FloatStat({
 }) {
   return (
     <div className="leading-tight">
-      <p className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+      <Eyebrow size="xs" className="inline-flex items-center gap-1">
         {icon}
         {label}
-      </p>
+      </Eyebrow>
       <p className={"font-serif text-lg " + (accent ? "text-primary" : "text-foreground")}>{value}</p>
     </div>
   );
@@ -530,10 +531,10 @@ function BigStat({
 }) {
   return (
     <div className="px-0 sm:px-4 first:sm:pl-0">
-      <div className="flex items-center gap-1 text-xs uppercase tracking-[0.16em] text-muted-foreground">
+      <Eyebrow as="div" className="flex items-center gap-1">
         {icon}
         {label}
-      </div>
+      </Eyebrow>
       <p className={"mt-2 font-serif text-3xl " + (accent ? "text-primary" : trend === "down" ? "text-success" : trend === "up" ? "text-warm" : "text-foreground")}>
         {value}
       </p>

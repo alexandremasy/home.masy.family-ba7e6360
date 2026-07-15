@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Search, X, Check, Pencil, ArrowUpDown } from "lucide-react";
 import { categories, transactionsSeed, RECURRENCES, eur2, type Transaction, type CatKey, type Recurrence } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/budget/transactions")({
   component: TransactionsPage,
@@ -69,12 +70,12 @@ function TransactionsPage() {
     <div className="space-y-6 anim-slide-up">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:flex sm:flex-wrap sm:justify-between sm:gap-4">
         <div className="min-w-0">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Budget · Transactions</p>
+          <Eyebrow size="xs">Budget · Transactions</Eyebrow>
           <h1 className="mt-1 truncate font-serif text-2xl tracking-tight sm:text-4xl">Le journal</h1>
           <p className="mt-1 hidden text-sm text-muted-foreground sm:block">Recherchez, recatégorisez, éditez. Vos modifications restent protégées à l'import.</p>
         </div>
         <div className="text-right">
-          <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Total filtré</p>
+          <Eyebrow size="xs">Total filtré</Eyebrow>
           <p className={"font-serif text-xl tabular-nums sm:text-2xl " + (runningTotal >= 0 ? "text-success" : "text-warm")}>
             {runningTotal >= 0 ? "+" : ""}{eur2(runningTotal)}
           </p>
@@ -136,7 +137,7 @@ function TransactionsPage() {
       <div className="overflow-x-auto rounded-2xl border border-border/60 bg-card shadow-soft">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border/60 text-left text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+            <tr className="border-b border-border/60 text-left text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
               <th className="w-10 px-3 py-3">
                 <input type="checkbox"
                   checked={selected.size === filtered.length && filtered.length > 0}

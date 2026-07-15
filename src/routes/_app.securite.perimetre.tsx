@@ -6,6 +6,7 @@ import {
   ShieldCheck, ShieldAlert, DoorOpen, DoorClosed, Lock, LockOpen, Warehouse,
   Moon, Bell, Camera as CamIcon, Eye, ChevronRight,
 } from "lucide-react";
+import { Eyebrow } from "@/components/Eyebrow";
 
 // Tab 2 — Périmètre: the physical shell (openings, locks) and the eyes on it (cameras).
 export const Route = createFileRoute("/_app/securite/perimetre")({
@@ -39,7 +40,7 @@ function PerimetreTab() {
                 <Icon className={`h-4 w-4 shrink-0 ${secure ? "text-muted-foreground" : "text-warm"}`} />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm">{p.name}</p>
-                  <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{p.zone}</p>
+                  <Eyebrow size="xs">{p.zone}</Eyebrow>
                 </div>
                 <span className={`shrink-0 text-xs ${secure ? "text-success" : "text-warm"}`}>
                   {p.state === "secure" ? "Fermé" : p.state === "open" ? "Ouvert" : "Déverrouillé"}
@@ -50,7 +51,7 @@ function PerimetreTab() {
         </div>
 
         <div className="mt-4">
-          <p className="mb-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">Serrures</p>
+          <Eyebrow className="mb-2">Serrures</Eyebrow>
           <div className="grid gap-2 sm:grid-cols-3">
             {locks.map((l) => (
               <LockRow key={l.name} name={l.name} initial={l.locked} />

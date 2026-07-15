@@ -12,6 +12,7 @@ import {
   type CatKey,
 } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/budget/annuel")({
   component: AnnuelPage,
@@ -61,7 +62,7 @@ function AnnuelPage() {
     <div className="space-y-8 anim-slide-up">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Budget · Annuel</p>
+          <Eyebrow size="xs">Budget · Annuel</Eyebrow>
           <h1 className="mt-1 font-serif text-3xl tracking-tight sm:text-4xl">Année {year}</h1>
         </div>
         <div className="flex items-center gap-2">
@@ -180,7 +181,7 @@ function AnnuelPage() {
                 }}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{m}</span>
+                  <Eyebrow size="xs" as="span">{m}</Eyebrow>
                   {cost > 0 && (
                     <span className="inline-block h-1.5 w-1.5 rounded-full"
                       style={{ background: `color-mix(in oklab, var(--warm) ${30 + intensity * 70}%, transparent)` }} />
@@ -203,13 +204,13 @@ function AnnuelPage() {
 
         <div className="mt-6 grid gap-4 border-t border-border/40 pt-5 sm:grid-cols-2">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Provision mensuelle</p>
+            <Eyebrow size="xs">Provision mensuelle</Eyebrow>
             <p className="mt-1 font-serif text-3xl tracking-tight tabular-nums">
               <CountUp to={monthlyAnnualProvision} /><span className="ml-1 text-sm text-muted-foreground">€/mois</span>
             </p>
           </div>
           <div className="rounded-xl bg-secondary/60 p-4">
-            <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Solde d'annualisation</p>
+            <Eyebrow size="xs">Solde d'annualisation</Eyebrow>
             <p className="mt-1 font-serif text-2xl tabular-nums">{eur(annualBalance)}</p>
             <p className="mt-2 text-xs text-muted-foreground">
               Lisse les grosses factures (mazout, assurance, taxes) pour qu'aucun mois ne soit écrasé.
@@ -288,7 +289,7 @@ function AnnuelPage() {
             return (
               <div key={env.key} className="group rounded-2xl border border-border/60 bg-card p-5 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
                 <div className="flex items-center justify-between">
-                  <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{env.label}</p>
+                  <Eyebrow>{env.label}</Eyebrow>
                   <span className={"grid h-8 w-8 place-items-center rounded-full " + toneRing}><PiggyBank className="h-4 w-4" /></span>
                 </div>
                 <p className="mt-3 font-serif text-2xl tracking-tight tabular-nums">
@@ -321,7 +322,7 @@ function BigStat({ label, value, suffix, tone }: { label: string; value: number;
   const cls = tone === "warm" ? "text-warm" : tone === "success" ? "text-success" : "text-foreground";
   return (
     <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft">
-      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
+      <Eyebrow>{label}</Eyebrow>
       <p className={"mt-2 font-serif text-3xl tracking-tight tabular-nums " + cls}>
         <CountUp to={value} /><span className="ml-1 text-base text-muted-foreground">{suffix}</span>
       </p>

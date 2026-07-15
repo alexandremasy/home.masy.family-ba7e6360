@@ -12,6 +12,7 @@ import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, ArrowUp, Activity, Drople
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/")({
   // Dashboard is rendered by the parent _app layout (so it stays visible
@@ -41,7 +42,7 @@ export function Dashboard() {
 
         {/* Row 1 — greeting left, events right. Nothing else on this row. */}
         <div className="col-span-2 flex h-full flex-col items-start justify-center px-2 py-4 sm:col-span-2 lg:col-span-4">
-          <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{dateStr}</p>
+          <Eyebrow size="xs">{dateStr}</Eyebrow>
           <h1 className="mt-1 font-serif text-2xl tracking-tight text-foreground sm:text-3xl">
             {greeting}.
           </h1>
@@ -51,7 +52,7 @@ export function Dashboard() {
         <Tile span={1} tone="mustard" className="relative overflow-hidden">
           <PMCBag className="pointer-events-none absolute -right-3 -top-3 h-[110%] w-auto opacity-90" />
           <div className="relative">
-            <p className="text-xs uppercase tracking-[0.18em] opacity-70">Auj.</p>
+            <Eyebrow tone="current" className="opacity-70">Auj.</Eyebrow>
             <p className="mt-1 font-serif text-lg leading-tight">{calendrier.poubelleToday.type}</p>
             <p className="mt-0.5 text-xs opacity-80">avant {calendrier.poubelleToday.time}</p>
           </div>
@@ -79,7 +80,7 @@ export function Dashboard() {
                   <div>
                     <p className="font-serif text-xl">{room.name}</p>
                     {room.scene && room.scene !== "Off" && (
-                      <p className="mt-0.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">{room.scene}</p>
+                      <Eyebrow className="mt-0.5">{room.scene}</Eyebrow>
                     )}
                   </div>
                 </div>
@@ -121,7 +122,7 @@ export function Dashboard() {
           <Tile span={2} tone="warm">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.18em] opacity-70">Énergie · à faire</p>
+                <Eyebrow tone="current" className="opacity-70">Énergie · à faire</Eyebrow>
                 <p className="mt-1 font-serif text-xl">Relevé mensuel à saisir</p>
                 <p className="mt-1 text-sm opacity-80">3 compteurs en attente — eau, électricité, mazout.</p>
               </div>
@@ -137,7 +138,7 @@ export function Dashboard() {
           <Tile span={2} to="/energie" className="flex flex-col">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Énergie</p>
+                <Eyebrow>Énergie</Eyebrow>
                 <p className="mt-1 font-serif text-xl">Vue d'ensemble</p>
               </div>
               {(() => {
@@ -195,7 +196,7 @@ export function Dashboard() {
           {/* Mobile compact layout */}
           <div className="sm:hidden">
             <div className="flex items-center justify-between gap-2">
-              <p className="text-xs uppercase tracking-[0.18em] opacity-60">Bernard</p>
+              <Eyebrow tone="current" className="opacity-60">Bernard</Eyebrow>
               <span className={"inline-flex items-center gap-1 text-[11px] " + (tesla.pluggedIn ? "text-primary" : "opacity-60")}>
                 <Plug className={"h-3 w-3 " + (tesla.pluggedIn ? "anim-breathe" : "")} />
                 {tesla.pluggedIn ? "Branchée" : "Débranchée"}
@@ -221,7 +222,7 @@ export function Dashboard() {
                 <Car className="h-4.5 w-4.5 icon-hover anim-drift" />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-xs uppercase tracking-[0.18em] opacity-60">Bernard</p>
+                <Eyebrow tone="current" className="opacity-60">Bernard</Eyebrow>
                 <p className="mt-1 font-serif text-xl">{tesla.inGarage ? "Au garage" : "En déplacement"}</p>
                 <p className="mt-0.5 inline-flex items-center gap-1 text-xs opacity-60">
                   <MapPin className="h-3 w-3" />{tesla.location}
@@ -327,7 +328,7 @@ function RepasTile() {
   return (
     <Tile span={2} to="/repas" className="flex flex-col">
       <div className="flex items-start justify-between gap-2">
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Repas</p>
+        <Eyebrow>Repas</Eyebrow>
         <UtensilsCrossed className="h-4.5 w-4.5 text-muted-foreground" />
       </div>
 
@@ -428,7 +429,7 @@ function ReseauTile() {
   return (
     <Tile span={2} to="/reseau" className="flex flex-col">
       <div className="flex items-start justify-between gap-2">
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Réseau</p>
+        <Eyebrow>Réseau</Eyebrow>
         <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
           <Wifi className="h-3 w-3" />
           <span className="text-[11px] font-medium">Stable</span>
@@ -441,7 +442,7 @@ function ReseauTile() {
           <p className="font-serif text-4xl leading-none tracking-tight tabular-nums">
             <CountUp to={st.downMbps} />
           </p>
-          <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Mbps ↓</p>
+          <Eyebrow size="xs" className="mt-1">Mbps ↓</Eyebrow>
         </div>
       </div>
 
@@ -477,7 +478,7 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
           <div>
             <p className="font-serif text-xl">{room.name}</p>
             {room.scene && room.scene !== "Off" && (
-              <p className="mt-0.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">{room.scene}</p>
+              <Eyebrow className="mt-0.5">{room.scene}</Eyebrow>
             )}
           </div>
         </div>
@@ -568,7 +569,7 @@ function NetBlock({
   return (
     <div className="rounded-xl bg-secondary/60 p-2.5 sm:p-3 transition-colors min-w-0">
       <div className="flex items-center justify-between gap-1">
-        <div className="flex min-w-0 items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] text-muted-foreground sm:text-xs">
+        <div className="flex min-w-0 items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-muted-foreground sm:text-xs">
           {icon}<span className="truncate">{label}</span>
         </div>
         <span className={"h-2 w-2 rounded-full " + (ok ? "bg-success/70" : "bg-muted-foreground/40")} />
@@ -577,7 +578,7 @@ function NetBlock({
         {value}
       </span>
       <p className="mt-1.5 truncate text-[11px] text-muted-foreground">{sub}</p>
-      <p className="mt-1 truncate text-[10px] uppercase tracking-[0.12em] text-muted-foreground/80">{foot}</p>
+      <Eyebrow tone="current" size="xs" className="mt-1 truncate text-muted-foreground/80">{foot}</Eyebrow>
     </div>
   );
 }
@@ -601,7 +602,7 @@ function BlockShell({
   return (
     <div className={"rounded-xl p-2.5 sm:p-3 transition-colors min-w-0 " + (alert ? "bg-warm/10 ring-1 ring-warm/30" : "bg-secondary/60")}>
       <div className="flex items-center justify-between gap-1">
-        <div className="flex min-w-0 items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] text-muted-foreground sm:text-xs">
+        <div className="flex min-w-0 items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-muted-foreground sm:text-xs">
           {icon}<span className="truncate">{label}</span>
         </div>
         <StatusDot status={status} />
@@ -718,7 +719,7 @@ function WeatherTile() {
           aria-label="Voir la météo détaillée"
         >
           <div className="flex items-start justify-between gap-2">
-            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{m.location}</p>
+            <Eyebrow>{m.location}</Eyebrow>
             <WeatherIcon cond={m.cond} className="h-6 w-6 text-foreground/80" />
           </div>
           <div className="mt-2 flex items-baseline gap-1">
@@ -758,7 +759,7 @@ function RepasLine() {
       <span className="min-w-0 space-y-0.5">
         {days.map((d) => (
           <span key={d.label} className="block">
-            <span className="uppercase tracking-[0.12em]">{d.label}</span>
+            <Eyebrow tone="current" size="xs" as="span">{d.label}</Eyebrow>
             {d.midi || d.soir ? (
               <>
                 {d.midi && <> · {d.midi}</>}
@@ -786,7 +787,7 @@ function WeatherDialog() {
         <div className="px-1">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Aujourd'hui</p>
+              <Eyebrow>Aujourd'hui</Eyebrow>
               <p className="mt-1 font-serif text-xl">{m.label}</p>
             </div>
             <WeatherIcon cond={m.cond} className="h-10 w-10 text-foreground/80" />
@@ -811,11 +812,11 @@ function WeatherDialog() {
 
         {/* Forecast */}
         <div>
-          <p className="mb-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">Prochains jours</p>
+          <Eyebrow className="mb-2">Prochains jours</Eyebrow>
           <div className="grid grid-cols-5 gap-1.5">
             {meteo.forecast.map((d) => (
               <div key={d.day} className="flex flex-col items-center rounded-xl bg-secondary/60 p-2 text-center">
-                <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{d.day}</span>
+                <Eyebrow size="xs" as="span">{d.day}</Eyebrow>
                 <WeatherIcon cond={d.cond} className="my-1.5 h-5 w-5" />
                 <span className="font-serif text-sm leading-tight">{d.maxC}°</span>
                 <span className="text-[10px] tabular-nums text-muted-foreground">{d.minC}°</span>
@@ -840,7 +841,7 @@ function EnergieRow({
   return (
     <div className={"flex flex-1 items-center gap-2 rounded-lg px-2.5 transition-colors " + (alert ? "bg-warm/10 ring-1 ring-warm/30" : "bg-secondary/60")}>
       <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-card text-foreground/80">{icon}</span>
-      <span className="min-w-0 flex-1 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{label}</span>
+      <Eyebrow size="xs" as="span" className="min-w-0 flex-1">{label}</Eyebrow>
       <span className="font-serif text-sm leading-none tabular-nums">{value}</span>
       {sub && <span className="text-[11px] tabular-nums text-muted-foreground">{sub}</span>}
       {trend && <TrendBadge trend={trend} pct={trendPct} hidePct />}
