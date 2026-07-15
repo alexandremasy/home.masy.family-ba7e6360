@@ -412,7 +412,8 @@ function SlotPicker({
         {filtersOpen && <DishFilters value={filter} onChange={setFilter} bases={bases} />}
       </div>
 
-      <div className="max-h-[55vh] space-y-7 overflow-y-auto">
+      {/* min-h-0 or the flex child refuses to shrink and the scroll never engages. */}
+      <div className="min-h-0 flex-1 space-y-7 overflow-y-auto">
         {shown.length === 0 && (
           <p className="px-1 py-6 text-sm text-muted-foreground">
             Aucun plat ne correspond — élargissez les critères.
