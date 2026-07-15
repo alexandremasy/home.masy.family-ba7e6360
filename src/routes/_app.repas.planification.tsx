@@ -92,7 +92,26 @@ function RepasPage() {
           </div>
         </div>
 
-        <div className="mb-2 grid grid-cols-7 gap-2 px-1">
+        {/* Coherence — it describes the weeks on screen, so it lives under their
+            navigation, not above it. Solid tones: at /10 these were unreadable. */}
+        <div className="mt-3 flex flex-wrap items-center gap-1.5">
+          {signals.slice(0, 4).map((s, i) => (
+            <span
+              key={i}
+              className={
+                "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs " +
+                (s.tone === "warn"
+                  ? "bg-warm text-warm-foreground"
+                  : "bg-secondary text-secondary-foreground")
+              }
+            >
+              {s.tone === "warn" ? <AlertTriangle className="h-3 w-3 shrink-0" /> : <Info className="h-3 w-3 shrink-0" />}
+              {s.text}
+            </span>
+          ))}
+        </div>
+
+        <div className="mb-2 mt-5 grid grid-cols-7 gap-2 px-1">
           {WEEKDAYS.map((d) => (
             <p key={d} className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{d}</p>
           ))}
