@@ -49,6 +49,11 @@
 :root {
   --radius: 0.75rem;
 
+  /* Height of the sticky TopNav — mirrors src/components/TopNav.tsx, which below
+     lg carries a second row of nav pills. Anything else that sticks in a
+     full-bleed page must offset by this, or it hides behind the nav. */
+  --nav-h: 109px;
+
   /* Warm cream background inspired by alexandremasy.com */
   --background: oklch(0.985 0.008 95);
   --foreground: oklch(0.22 0.025 220);
