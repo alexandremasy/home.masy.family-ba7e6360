@@ -300,10 +300,9 @@ function EnergieModule({ onClose }: { onClose: () => void }) {
                 const hpc = (x.mazout / max) * 100;
                 const last = i === hist.length - 1;
                 return (
-                  <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
+                  <div key={i} className="flex h-full flex-1 flex-col items-center gap-1.5">
                     <div className="flex w-full flex-1 items-end">
-                      <div className="bar w-full rounded-t-[4px]" style={{
-                        ["--p" as string]: "100%",
+                      <div className="w-full rounded-t-[4px]" style={{
                         height: `${hpc}%`,
                         background: last ? "var(--accent-deep)" : "color-mix(in oklab, var(--ink) 16%, transparent)",
                       }} />
