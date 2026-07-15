@@ -41,6 +41,12 @@ const budgetTabs: NavItem[] = [
   { to: "/budget/import",       label: "Import",         icon: <FileUp className="h-3.5 w-3.5" /> },
 ];
 
+const securiteTabs: NavItem[] = [
+  { to: "/securite/etat",      label: "État",      icon: <ShieldCheck className="h-3.5 w-3.5" /> },
+  { to: "/securite/perimetre", label: "Périmètre", icon: <DoorClosed className="h-3.5 w-3.5" /> },
+  { to: "/securite/activite",  label: "Activité",  icon: <Activity className="h-3.5 w-3.5" /> },
+];
+
 type ExternalItem = { href: string; label: string; icon: ReactNode };
 
 const externals: ExternalItem[] = [
