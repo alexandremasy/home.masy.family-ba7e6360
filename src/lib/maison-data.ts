@@ -430,7 +430,7 @@ export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: 
   return scored
     .filter((s) => s.score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 6);
+    .slice(0, limit);
 }
 
 export interface WeatherHint {
