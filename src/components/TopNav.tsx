@@ -26,7 +26,8 @@ const rooms: NavItem[] = [
 ];
 
 const domains: NavItem[] = [
-  { to: "/maison", label: "Maison", icon: <UtensilsCrossed className="h-3.5 w-3.5" /> },
+  { to: "/maison/repas", label: "Repas", icon: <UtensilsCrossed className="h-3.5 w-3.5" /> },
+  { to: "/maison/anniversaires", label: "Anniversaires", icon: <Cake className="h-3.5 w-3.5" /> },
   { to: "/tesla", label: "Bernard", icon: <Car className="h-3.5 w-3.5" /> },
   { to: "/reseau", label: "Réseau", icon: <Wifi className="h-3.5 w-3.5" /> },
   { to: "/energie", label: "Énergie", icon: <Zap className="h-3.5 w-3.5" /> },
