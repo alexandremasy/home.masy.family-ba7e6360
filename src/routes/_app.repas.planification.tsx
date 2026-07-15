@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
+import { cap } from "@/lib/utils";
 import {
   dishById, suggestFor, coherenceSignals, initialPlan, calWeeks, iso,
   isWeekend, frLongDay, addDays, dayWeather, weatherHintFor, TODAY,
@@ -21,9 +22,6 @@ export const Route = createFileRoute("/_app/repas/planification")({
 });
 
 const WEEKDAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
-
-/** fr locale yields "mardi 14 juillet" — a sentence start deserves its capital. */
-const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /** "13 → 26 juillet", collapsing the month when both ends share it. */
 function rangeLabel(weeks: Date[][]): string {
@@ -415,29 +413,12 @@ function DishSection({
   );
 }
 
-/** A facet — same shape and wording as the filter bar above, on purpose. */
-function Facet({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center gap-1 rounded-full border border-border/60 px-2 py-0.5 text-[10px] text-muted-foreground">
-      {children}
-    </span>
-  );
-}
-
 function SuggestionCard({
   dish, reason, leftover, exhausted, onPick,
 }: {
   dish: Dish; reason: string; leftover?: boolean; exhausted?: boolean;
   onPick: (dish: Dish, batch: boolean) => void;
 }) {
-  // Three kinds of information, three treatments:
-  //   identity      → the name
-  //   composition   → the base + its components. The base is the dish's skeleton,
-  //                   so it belongs here, not among the facets.
-  //   facets        → densité/température: axes of the filter bar, so they wear
-  //                   the filter bar's shape
-  // Status ("à écouler" / "déjà au plan") and the batch action sit apart.
-  //
   // The card is the pick target — no "Choisir" button, no score badge.
   return (
     <div
@@ -453,44 +434,27 @@ function SuggestionCard({
         (leftover ? "border-primary" : "border-border/60 hover:border-primary")
       }
     >
-      <div className="flex items-start justify-between gap-2">
-        <p className="min-w-0 flex-1 font-serif text-base leading-tight">{dish.name}</p>
-        {leftover && (
-          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium text-primary-foreground">
-            <Repeat className="h-3 w-3" />{reason}
-          </span>
-        )}
-        {/* Already covered — say so, but discreetly: it stays a valid pick. */}
-        {exhausted && (
-          <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground">
-            {reason}
-          </span>
-        )}
-      </div>
-
-      {/* Composition — the base is the dish's skeleton, so it opens the row. */}
-      <div className="mt-2 flex flex-wrap gap-1">
-        <Badge variant="secondary" className="text-[10px] font-normal">{dish.base}</Badge>
-        {dish.modifiers.map((m) => (
-          <Badge key={m.name} variant="secondary" className="text-[10px] font-normal">{m.name}</Badge>
-        ))}
-      </div>
-
-      {/* Facets — outlined, echoing the filter bar. A different family on purpose. */}
-      <div className="mt-2.5 flex flex-wrap items-center gap-1">
-        <Facet>{dish.densite}</Facet>
-        <Facet>{dish.temperature}</Facet>
-        {dish.rendement > 1 && !leftover && (
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onPick(dish, true); }}
-            title="Batch : une cuisson, deux créneaux"
-            className="ml-auto inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[10px] transition-colors hover:border-foreground hover:bg-foreground hover:text-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <Repeat className="h-3 w-3" />×2
-          </button>
-        )}
-      </div>
+      <DishCard
+        dish={dish}
+        status={
+          leftover ? <StatusPill tone="primary" icon={<Repeat className="h-3 w-3" />}>{reason}</StatusPill>
+          // Already covered — say so, but discreetly: it stays a valid pick.
+          : exhausted ? <StatusPill tone="muted">{reason}</StatusPill>
+          : undefined
+        }
+        actions={
+          dish.rendement > 1 && !leftover ? (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onPick(dish, true); }}
+              title="Batch : une cuisson, deux créneaux"
+              className="ml-auto inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[10px] transition-colors hover:border-foreground hover:bg-foreground hover:text-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Repeat className="h-3 w-3" />×2
+            </button>
+          ) : undefined
+        }
+      />
     </div>
   );
 }
