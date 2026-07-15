@@ -250,39 +250,8 @@ export function Dashboard() {
           </div>
         </Tile>
 
-        {/* PRIORITY 3 — Réseau (compact, mêmes proportions qu'Énergie) */}
-        <Tile span={2} to="/reseau" className="flex flex-col">
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Réseau</p>
-              <p className="mt-1 font-serif text-xl">Tout est en ligne</p>
-            </div>
-            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
-              <Wifi className="h-3 w-3" />
-              <span className="text-[11px] font-medium">Stable</span>
-            </span>
-          </div>
-          <div className="mt-4 flex flex-1 flex-col gap-2">
-            <ReseauRow
-              icon={<Gauge className="h-4 w-4 anim-glow" />}
-              label="Internet"
-              value={`${reseau.internet.lastSpeedtest.downMbps} Mbps`}
-              sub={`${reseau.internet.lastSpeedtest.pingMs} ms`}
-            />
-            <ReseauRow
-              icon={<Wifi className="h-4 w-4 anim-breathe" />}
-              label="WiFi"
-              value={`${reseau.wifi1.clients + reseau.wifi2.clients}`}
-              sub="clients"
-            />
-            <ReseauRow
-              icon={<Server className="h-4 w-4 anim-breathe" />}
-              label="Homelab"
-              value={`${reseau.homelab.cpu}%`}
-              sub={`up ${reseau.homelab.uptimeDays}j`}
-            />
-          </div>
-        </Tile>
+        {/* PRIORITY 3 — Réseau: the speed as a dial, everything else quiet */}
+        <ReseauTile />
 
       </div>
 
