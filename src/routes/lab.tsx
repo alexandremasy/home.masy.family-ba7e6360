@@ -219,6 +219,9 @@ function LabAmbience() {
       {/* ---- The module, over the home. The home stays the ground. ---- */}
       {openModule === "energie" && <EnergieModule onClose={() => setOpenModule(null)} />}
 
+      {/* ---- Launcher — the plan of the system: every module, every section ---- */}
+      {launcher && <Launcher onClose={() => setLauncher(false)} onGo={(k) => { setLauncher(false); setOpenModule(k === "energie" ? "energie" : null); }} />}
+
       {/* ---- Global module nav — stays reachable INSIDE a module: that's the jump ---- */}
       <nav className="lab-in dock fixed bottom-5 left-1/2 z-50 flex -translate-x-1/2 items-center gap-1 rounded-full px-2 py-2" style={{ ["--d" as string]: "460ms" }}>
         {MODULES.map((mod) => {
