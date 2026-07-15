@@ -146,10 +146,12 @@ function RepasPage() {
       <Dialog open={!!selected} onOpenChange={(o) => { if (!o) setSelected(null); }}>
         {/* The app's own background, so the white cards read as objects on it. */}
         <DialogContent
-          // Fills the viewport, minus 7rem: DialogContent hangs its close button
-          // at -top-12, so a true 100dvh would push it off-screen. flex + a
-          // flex-1 list is what lets the modal actually use that height.
-          className="flex max-h-[calc(100dvh-7rem)] max-w-2xl flex-col gap-5 bg-background sm:gap-7"
+          // Anchored at top-14 instead of vertically centred: the close button
+          // hangs at -top-12, so it needs room ABOVE — centring mirrored that gap
+          // at the bottom for nothing. Now the 3.5rem is the close button's, and
+          // the modal runs down to 1rem off the floor.
+          // flex + a flex-1 list is what lets it actually use that height.
+          className="top-14 flex max-h-[calc(100dvh-4.5rem)] max-w-2xl translate-y-0 flex-col gap-5 bg-background sm:gap-7"
           onOpenAutoFocus={(e) => {
             // Radix focuses the first field on open. On desktop that's what you
             // want; on a phone it throws the keyboard over the very suggestions
