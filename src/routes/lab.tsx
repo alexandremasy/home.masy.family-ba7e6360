@@ -156,13 +156,13 @@ function LabAmbience() {
 const CSS = `
 /* ---------- LIGHT (default) — warm, aurora present enough for glass to exist ---------- */
 .lab-root {
-  --bg0: oklch(0.97 0.022 82); --bg1: oklch(0.93 0.045 58);
+  --bg0: oklch(0.98 0.012 85); --bg1: oklch(0.955 0.028 62);
   --ink: oklch(0.26 0.03 40); --dim: oklch(0.52 0.03 50);
   --amber: oklch(0.82 0.13 68); --terra: oklch(0.64 0.16 33); --hot: oklch(0.58 0.16 35);
-  --glass-bg: rgba(255,255,255,0.50); --glass-br: rgba(255,255,255,0.75);
-  --glass-sh: 0 24px 60px -30px rgba(90,50,20,0.45); --glass-hl: rgba(255,255,255,0.9);
+  --glass-bg: rgba(255,255,255,0.55); --glass-br: rgba(255,255,255,0.8);
+  --glass-sh: 0 24px 60px -30px rgba(90,50,20,0.4); --glass-hl: rgba(255,255,255,0.9);
   --chip: rgba(0,0,0,0.05); --track: rgba(0,0,0,0.08);
-  --blob1: oklch(0.72 0.15 33 / 0.42); --blob2: oklch(0.85 0.13 70 / 0.45); --blob3: oklch(0.65 0.10 330 / 0.18);
+  --blob1: oklch(0.74 0.14 33 / 0.30); --blob2: oklch(0.86 0.12 72 / 0.32); --blob3: oklch(0.68 0.09 330 / 0.14);
   --ease: cubic-bezier(0.2,0.7,0.2,1);
   background: radial-gradient(130% 100% at 50% -10%, var(--bg0), var(--bg1) 75%);
   color: var(--ink);
