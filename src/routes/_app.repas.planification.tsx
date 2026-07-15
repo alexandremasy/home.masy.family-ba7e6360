@@ -337,40 +337,37 @@ function SlotPicker({
         </DialogDescription>
       </DialogHeader>
 
-      <div className="relative">
-        <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Chercher un plat, ou un reste à écouler…"
-          className="pl-8"
-        />
+      <div className="space-y-2.5">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Chercher un plat, ou un reste à écouler…"
+            className="pl-8"
+          />
+        </div>
+        <DishFilters value={filter} onChange={setFilter} bases={bases} />
       </div>
 
       <div className="max-h-[55vh] overflow-y-auto">
-        {searching ? (
-          results.length ? (
-            <div className="space-y-0.5">
-              {results.map((d) => (
-                <button
-                  key={d.id}
-                  onClick={() => onPick(d, false)}
-                  className="flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-sm transition-colors hover:bg-secondary"
-                >
-                  <span className="truncate">{d.name}</span>
-                  <span className="ml-2 shrink-0 text-[10px] text-muted-foreground">{d.base}</span>
-                </button>
+        {shown.length === 0 ? (
+          <p className="px-1 py-6 text-sm text-muted-foreground">
+            Aucun plat ne correspond — élargissez les critères.
+          </p>
+        ) : (
+          <>
+            <p className="mb-2 text-[11px] text-muted-foreground">
+              {browsing
+                ? `${shown.length} plat${shown.length > 1 ? "s" : ""} · classés par pertinence pour ce créneau`
+                : "Suggestions pour ce créneau"}
+            </p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {shown.map(({ dish, reason, score }) => (
+                <SuggestionCard key={dish.id} dish={dish} reason={reason} score={score} onPick={onPick} />
               ))}
             </div>
-          ) : (
-            <p className="px-1 py-4 text-sm text-muted-foreground">Rien ne correspond — essayez un autre composant.</p>
-          )
-        ) : (
-          <div className="grid gap-2 sm:grid-cols-2">
-            {suggestions.map(({ dish, reason, score }) => (
-              <SuggestionCard key={dish.id} dish={dish} reason={reason} score={score} onPick={onPick} />
-            ))}
-          </div>
+          </>
         )}
       </div>
     </>
