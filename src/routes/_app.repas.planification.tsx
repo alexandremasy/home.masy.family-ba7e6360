@@ -371,7 +371,7 @@ function SlotPicker({
             <p className="mb-2 text-[11px] text-muted-foreground">
               {browsing
                 ? `${shown.length} plat${shown.length > 1 ? "s" : ""} · classés par pertinence pour ce créneau`
-                : "Suggestions pour ce créneau"}
+                : `Suggestions ${slot === "midi" ? "complètes" : "légères"} pour ce créneau`}
             </p>
             <div className="grid gap-2 sm:grid-cols-2">
               {shown.map(({ dish, reason, score }) => (
