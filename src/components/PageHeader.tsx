@@ -28,11 +28,15 @@ export function PageHeader({
 }) {
   const bleed =
     variant === "page"
-      ? "-mx-4 -mt-6 px-4 pt-6 sm:-mx-6 sm:-mt-10 sm:px-6 sm:pt-10"
-      : "-mx-5 -mt-7 px-5 pt-7 sm:-mx-8 sm:-mt-10 sm:px-8 sm:pt-10";
+      // Sticks BELOW the TopNav. At top-0 it would stick behind it (z-20 vs z-30)
+      // and the fade would cut in the wrong place — or vanish entirely on mobile,
+      // where the nav is 109px tall.
+      ? "top-[var(--nav-h)] -mx-4 -mt-6 px-4 pt-6 sm:-mx-6 sm:-mt-10 sm:px-6 sm:pt-10"
+      // The overlay covers the TopNav, so there it really is the top.
+      : "top-0 -mx-5 -mt-7 px-5 pt-7 sm:-mx-8 sm:-mt-10 sm:px-8 sm:pt-10";
 
   return (
-    <div className={"page-header sticky top-0 z-20 pb-4 " + bleed}>
+    <div className={"page-header sticky z-20 pb-4 " + bleed}>
       <div className="page-header__bg pointer-events-none absolute inset-0 bg-background/85 backdrop-blur-xl" />
       <div className="page-header__fade pointer-events-none absolute inset-x-0 top-full h-8 bg-gradient-to-b from-background to-transparent" />
       <div className="relative flex items-end justify-between gap-4">
