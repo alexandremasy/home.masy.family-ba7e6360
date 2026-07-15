@@ -62,7 +62,7 @@ export function Dashboard() {
           const bureauCls = room.key === "bureau" ? "sm:col-span-2" : "";
           // A room nobody is in, with everything off, recedes: no fill, just a thin edge.
           const idle = !room.lightsOn && !room.occupied;
-          const idleCls = idle ? " !bg-transparent !shadow-none !border-4 !border-border/50" : "";
+          const idleCls = idle ? " !bg-transparent !shadow-none !border-[3px] !border-border/50" : "";
           return [
             <Tile key={room.key} span={1} to={`/room/${room.key}`} className={"flex flex-col " + bureauCls + idleCls}>
               <div className="flex items-start justify-between">
