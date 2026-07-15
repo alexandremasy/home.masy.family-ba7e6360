@@ -201,6 +201,20 @@ const CSS = `
 .lab-dock { background: var(--glass-bg); border:1px solid var(--glass-br); backdrop-filter: blur(24px) saturate(1.3); box-shadow: var(--glass-sh); }
 .lab-dock-btn { transition: background .25s var(--ease), color .25s var(--ease), transform .25s var(--ease); }
 .lab-dock-btn:hover { background: var(--chip); color: var(--hot); transform: translateY(-2px); }
+/* Tooltip — glass, rises on hover/focus */
+.lab-tip {
+  position:absolute; bottom: calc(100% + 10px); left:50%;
+  transform: translateX(-50%) translateY(4px) scale(.96);
+  padding: 5px 10px; border-radius: 999px; white-space: nowrap;
+  font-size: 12px; line-height: 1; color: var(--ink);
+  background: var(--glass-bg); border: 1px solid var(--glass-br);
+  backdrop-filter: blur(18px) saturate(1.3); box-shadow: var(--glass-sh);
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s var(--ease), transform .25s var(--ease);
+}
+.lab-dock-btn:hover .lab-tip, .lab-dock-btn:focus-visible .lab-tip {
+  opacity: 1; transform: translateX(-50%) translateY(0) scale(1);
+}
 /* Aurora */
 .lab-blob { position:absolute; border-radius:999px; filter: blur(90px); pointer-events:none; z-index:0; }
 .b1 { left:-14%; top:-8%; width:64vh; height:64vh; background: radial-gradient(circle, var(--blob1), transparent 70%); animation: lab-float 18s ease-in-out infinite; }
