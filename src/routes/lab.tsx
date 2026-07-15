@@ -244,6 +244,59 @@ function LabAmbience() {
   );
 }
 
+/* ---------- Launcher — idea A: the whole system in one gesture.
+   Search on top (idea B in germ), then every module with its real sections.
+   This is what the dock cannot do: express depth. ---------- */
+function Launcher({ onClose, onGo }: { onClose: () => void; onGo: (k: string) => void }) {
+  const [q, setQ] = useState("");
+  const ql = q.trim().toLowerCase();
+  const hits = SYSTEM.map((m) => ({
+    ...m,
+    sections: ql ? m.sections.filter((s) => s.toLowerCase().includes(ql) || m.label.toLowerCase().includes(ql)) : m.sections,
+  })).filter((m) => !ql || m.sections.length || m.label.toLowerCase().includes(ql));
+
+  return (
+    <div className="fixed inset-0 z-[60] overflow-y-auto">
+      <button aria-label="Fermer" onClick={onClose} className="fixed inset-0 bg-black/60 backdrop-blur-xl" />
+      <div className="lab-in relative mx-auto w-full max-w-3xl px-6 pb-32 pt-14" style={{ ["--d" as string]: "0ms" }}>
+        <div className="mb-6 flex items-center gap-3">
+          <div className="surface flex flex-1 items-center gap-3 rounded-full px-4 py-3">
+            <Search className="h-4 w-4 shrink-0 text-[color:var(--dim)]" />
+            <input autoFocus value={q} onChange={(e) => setQ(e.target.value)}
+              placeholder="Aller à… (planif, mazout, caméra)"
+              className="w-full bg-transparent text-[15px] text-[color:var(--ink)] outline-none placeholder:text-[color:var(--dim)]" />
+          </div>
+          <button onClick={onClose} className="orb h-11 w-11"><X className="h-4 w-4" /></button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {hits.map((m) => {
+            const Icon = m.icon;
+            return (
+              <div key={m.key} className="surface rounded-3xl p-4">
+                <button onClick={() => onGo(m.key)} className="group flex w-full items-center gap-2.5 text-left">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--hot)]"><Icon className="h-4 w-4" /></span>
+                  <span className="flex-1 font-serif text-lg tracking-tight text-[color:var(--ink)]">{m.label}</span>
+                  {m.alert && <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent-deep)]" />}
+                </button>
+                <div className="mt-3 space-y-0.5">
+                  {m.sections.map((s) => (
+                    <button key={s} onClick={() => onGo(m.key)}
+                      className="block w-full truncate rounded-lg px-2 py-1.5 text-left text-[12px] text-[color:var(--dim)] transition-colors hover:bg-[color:var(--chip)] hover:text-[color:var(--ink)]">
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        {!hits.length && <p className="mt-8 text-center text-[13px] text-[color:var(--dim)]">Rien pour « {q} ».</p>}
+      </div>
+    </div>
+  );
+}
+
 /* ---------- Module: Énergie — the extensibility test.
    Same vocabulary (sober bg, opaque tiles, the gauge, glass as exception) on a DENSE
    administrative screen: three energies, 13 months of history, readings. ---------- */
