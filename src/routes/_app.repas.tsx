@@ -26,6 +26,9 @@ const WEEKDAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 function RepasPage() {
   const [plan, setPlan] = useState<PlanEntry[]>(initialPlan);
   const [selected, setSelected] = useState<{ date: string; slot: Slot } | null>(null);
+  // Scrolls by one week — consecutive views share a week, like the sliding plan window.
+  const [weekOffset, setWeekOffset] = useState(0);
+  const weeks = useMemo(() => calWeeks(weekOffset), [weekOffset]);
 
   const remove = (date: string, slot: Slot) => setPlan((p) => p.filter((e) => !(e.date === date && e.slot === slot)));
   const upsert = (entry: PlanEntry) => setPlan((p) => [...p.filter((e) => !(e.date === entry.date && e.slot === entry.slot)), entry]);
