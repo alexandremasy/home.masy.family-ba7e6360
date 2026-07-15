@@ -83,7 +83,18 @@ function RepasPage() {
       {/* Calendar — 2 weeks shown, scrolled one week at a time */}
       <div>
         <div className="mb-3 flex items-center justify-between gap-3">
-          <p className="font-serif text-lg">{rangeLabel(weeks)}</p>
+          <div className="flex items-center gap-3">
+            <p className="font-serif text-lg">{rangeLabel(weeks)}</p>
+            {/* Only worth offering once you've drifted off the current week. */}
+            {weekOffset !== 0 && (
+              <button
+                onClick={() => setWeekOffset(0)}
+                className="rounded-full border border-border/60 px-3 py-1 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              >
+                Aujourd'hui
+              </button>
+            )}
+          </div>
           <div className="flex items-center gap-1">
             <button
               onClick={() => setWeekOffset((o) => o - 1)}
@@ -91,13 +102,6 @@ function RepasPage() {
               className="grid h-8 w-8 place-items-center rounded-full border border-border/60 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             >
               <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => setWeekOffset(0)}
-              disabled={weekOffset === 0}
-              className="rounded-full border border-border/60 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground disabled:opacity-40 disabled:hover:bg-transparent"
-            >
-              Aujourd'hui
             </button>
             <button
               onClick={() => setWeekOffset((o) => o + 1)}
