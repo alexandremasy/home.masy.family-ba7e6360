@@ -124,7 +124,7 @@ function verdictTone(status: ReturnType<typeof annualVerdict>["status"]) {
   return status === "ok"
     ? { ring: "ring-success/30", bg: "bg-success/10", fg: "text-success", Icon: ShieldCheck }
     : status === "absorbed"
-    ? { ring: "ring-accent/40", bg: "bg-accent/15", fg: "text-accent", Icon: ShieldCheck }
+    ? { ring: "ring-mustard/40", bg: "bg-mustard/15", fg: "text-mustard", Icon: ShieldCheck }
     : status === "warn"
     ? { ring: "ring-warm/40", bg: "bg-warm/15", fg: "text-warm", Icon: AlertTriangle }
     : { ring: "ring-destructive/40", bg: "bg-destructive/10", fg: "text-destructive", Icon: ShieldAlert };

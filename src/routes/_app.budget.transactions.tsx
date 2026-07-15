@@ -209,7 +209,7 @@ function TransactionsPage() {
                   <td className="px-3 py-2.5">
                     <span className={"inline-block rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider " +
                       (r.provenance === "Édité"
-                        ? "bg-accent/20 text-accent-foreground"
+                        ? "bg-mustard/20 text-mustard-foreground"
                         : "bg-secondary text-muted-foreground")}>
                       {r.provenance}
                     </span>

@@ -6,14 +6,14 @@ interface BaseProps {
   className?: string;
   span?: 1 | 2 | 3 | 4 | 6;
   rowSpan?: 2;
-  tone?: "default" | "primary" | "warm" | "accent" | "dark";
+  tone?: "default" | "primary" | "warm" | "mustard" | "dark";
 }
 
 const toneClasses: Record<NonNullable<BaseProps["tone"]>, string> = {
   default: "bg-card text-card-foreground",
   primary: "bg-primary text-primary-foreground",
   warm: "bg-warm text-warm-foreground",
-  accent: "bg-accent text-accent-foreground",
+  mustard: "bg-mustard text-mustard-foreground",
   dark: "bg-foreground text-background",
 };
 

@@ -76,7 +76,7 @@ export const calendarBills: Record<number, Bill[]> = {
 
 export const envelopes = [
   { key: "annualisation", label: "Annualisation", contrib: 650, balance: 4100, tone: "primary" as const },
-  { key: "projets",       label: "Projets",       contrib: 425, balance: 5100, tone: "accent"  as const },
+  { key: "projets",       label: "Projets",       contrib: 425, balance: 5100, tone: "mustard"  as const },
   { key: "loisirs",       label: "Loisirs",       contrib: 425, balance: 2300, tone: "warm"    as const },
   { key: "pension",       label: "Pension",       contrib: 170, balance: 2040, tone: "primary" as const },
 ];

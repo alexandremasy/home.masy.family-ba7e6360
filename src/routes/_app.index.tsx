@@ -47,7 +47,7 @@ export function Dashboard() {
           <RepasLine />
         </div>
 
-        <Tile span={1} tone="accent" className="relative overflow-hidden">
+        <Tile span={1} tone="mustard" className="relative overflow-hidden">
           <PMCBag className="pointer-events-none absolute -right-3 -top-3 h-[110%] w-auto opacity-90" />
           <div className="relative">
             <p className="text-xs uppercase tracking-[0.18em] opacity-70">Auj.</p>
@@ -72,7 +72,7 @@ export function Dashboard() {
             <Tile key={room.key} span={1} to={`/room/${room.key}`} className={"flex flex-col " + bureauCls}>
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-3">
-                  <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-accent/20 text-accent-foreground" : "bg-secondary text-muted-foreground")}>
+                  <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-mustard/20 text-mustard-foreground" : "bg-secondary text-muted-foreground")}>
                     <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
                   </span>
                   <div>
@@ -94,8 +94,8 @@ export function Dashboard() {
               )}
 
               <div className="mt-auto pt-3 flex items-center gap-3 text-xs text-muted-foreground">
-                <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-accent-foreground" : "")}>
-                  <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-accent-foreground" : "")} />
+                <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-mustard-foreground" : "")}>
+                  <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-mustard-foreground" : "")} />
                   {room.lightsOn ? "Allumé" : "Éteint"}
                 </span>
                 {room.climate && (
@@ -517,8 +517,8 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
       )}
 
       <div className="mt-auto pt-3 flex items-center gap-3 text-xs text-muted-foreground">
-        <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-accent-foreground" : "")}>
-          <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-accent-foreground" : "")} />
+        <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-mustard-foreground" : "")}>
+          <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-mustard-foreground" : "")} />
           {room.lightsOn ? "Allumé" : "Éteint"}
         </span>
         {variant === "idle" && (
@@ -535,9 +535,9 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
 function EqBars() {
   return (
     <span className="flex items-end gap-0.5 pb-1" aria-hidden>
-      <span className="eq-bar h-3 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "0ms" }} />
-      <span className="eq-bar h-4 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "150ms" }} />
-      <span className="eq-bar h-2.5 w-0.5 rounded-full bg-accent-foreground/70" style={{ animationDelay: "300ms" }} />
+      <span className="eq-bar h-3 w-0.5 rounded-full bg-mustard-foreground/70" style={{ animationDelay: "0ms" }} />
+      <span className="eq-bar h-4 w-0.5 rounded-full bg-mustard-foreground/70" style={{ animationDelay: "150ms" }} />
+      <span className="eq-bar h-2.5 w-0.5 rounded-full bg-mustard-foreground/70" style={{ animationDelay: "300ms" }} />
     </span>
   );
 }
@@ -560,7 +560,7 @@ function RoomStatus({ on, occupied }: { on: boolean; occupied: boolean }) {
     );
   }
   return (
-    <span className={"h-2.5 w-2.5 rounded-full " + (on ? "bg-accent" : "bg-muted-foreground/25")} />
+    <span className={"h-2.5 w-2.5 rounded-full " + (on ? "bg-mustard" : "bg-muted-foreground/25")} />
   );
 }
 

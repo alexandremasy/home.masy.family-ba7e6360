@@ -33,6 +33,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-mustard: var(--mustard);
+  --color-mustard-foreground: var(--mustard-foreground);
   --color-warm: var(--warm);
   --color-warm-foreground: var(--warm-foreground);
   --color-success: var(--success);
@@ -75,10 +77,16 @@
   --muted: oklch(0.945 0.010 90);
   --muted-foreground: oklch(0.50 0.020 220);
 
-  --accent: oklch(0.78 0.12 70); /* warm mustard */
+  /* shadcn's meaning: the neutral hover/focus surface every ui/* primitive
+     reaches for (bg-accent, focus:bg-accent, data-[highlighted]). Keep it
+     neutral — the decorative mustard lives in --mustard below. */
+  --accent: oklch(0.94 0.012 90);
   --accent-foreground: oklch(0.22 0.025 220);
 
-  --warm: oklch(0.74 0.13 35); /* terracotta */
+  --mustard: oklch(0.78 0.12 70); /* decorative warmth: PMC tile, lights on */
+  --mustard-foreground: oklch(0.22 0.025 220);
+
+  --warm: oklch(0.74 0.13 35); /* terracotta — THE ALERT TONE, nothing else */
   --warm-foreground: oklch(0.99 0.005 95);
 
   --success: oklch(0.65 0.13 150);
@@ -115,8 +123,11 @@
   --muted: oklch(0.27 0.018 230);
   --muted-foreground: oklch(0.70 0.020 220);
 
-  --accent: oklch(0.80 0.13 70);
-  --accent-foreground: oklch(0.18 0.015 230);
+  --accent: oklch(0.28 0.020 230);
+  --accent-foreground: oklch(0.95 0.008 95);
+
+  --mustard: oklch(0.80 0.13 70);
+  --mustard-foreground: oklch(0.18 0.015 230);
 
   --warm: oklch(0.72 0.14 35);
   --warm-foreground: oklch(0.18 0.015 230);

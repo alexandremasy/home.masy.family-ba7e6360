@@ -281,9 +281,9 @@ function AnnuelPage() {
             }));
             const toneRing =
               env.tone === "warm" ? "bg-warm/15 text-warm"
-              : env.tone === "accent" ? "bg-accent/20 text-accent-foreground"
+              : env.tone === "mustard" ? "bg-mustard/20 text-mustard-foreground"
               : "bg-primary/10 text-primary";
-            const stroke = env.tone === "warm" ? "var(--warm)" : env.tone === "accent" ? "var(--accent)" : "var(--primary)";
+            const stroke = env.tone === "warm" ? "var(--warm)" : env.tone === "mustard" ? "var(--mustard)" : "var(--primary)";
             return (
               <div key={env.key} className="group rounded-2xl border border-border/60 bg-card p-5 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
                 <div className="flex items-center justify-between">
