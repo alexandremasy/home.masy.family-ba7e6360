@@ -284,10 +284,8 @@ export function calWeeks(offsetWeeks: number): Date[][] {
   return [days.slice(0, 7), days.slice(7)];
 }
 
-/** A day before today is history — still editable, just rendered flatter. */
-export function isPast(d: Date): boolean {
-  return d.getTime() < TODAY.getTime();
-}
+// Note: no isPast()/isInWindow() helper on purpose — every day in the grid is fully
+// visible and editable. The sliding window is a planning concept, not a UI gate.
 
 // ------------------------------------------------------------
 // Per-day weather (mocked, deterministic from the date so SSR and client agree)
