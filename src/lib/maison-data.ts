@@ -364,13 +364,20 @@ export interface Suggestion {
   dish: Dish;
   reason: string;
   score: number;
+  /** An existing cook still covers slots — finishing it beats cooking something new. */
+  leftover?: boolean;
+  /** Slots this dish's current cook still has to fill. */
+  remaining?: number;
 }
 
 /**
  * Mock: rank dishes by suitability for a slot on a given date, given the plan.
  * - Filters by weekday emportable + rechauffable for midi
  * - Boosts season/weather-plausible dishes
- * - Penalises dishes/components already used a lot in the window
+ * - Rendement drives repetition: one cook covers N slots, so a dish already
+ *   planned but not yet exhausted ranks FIRST, and one that is exhausted drops
+ *   out entirely (MAISON-BRIEF: "a large dish cooked once covers N slots")
+ * - Penalises component overlap across the window (variété, at modifier level)
  * - Boosts batch tag on weekend
  */
 /** `limit` widens the ranked pool — 6 is the inspiration default, more when browsing/filtering. */
