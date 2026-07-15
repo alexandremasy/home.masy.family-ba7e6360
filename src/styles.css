@@ -6,7 +6,9 @@
 
 @theme inline {
   --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Bitter", ui-serif, Georgia, serif;
+  /* The display face. Barlow for now — headings and `.font-serif` read through
+     this token, so swapping the display font is this one line. */
+  --font-serif: "Barlow", ui-sans-serif, system-ui, sans-serif;
 
   --radius-sm: calc(var(--radius) - 6px);
   --radius-md: calc(var(--radius) - 3px);
