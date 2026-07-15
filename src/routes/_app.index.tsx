@@ -39,6 +39,7 @@ export function Dashboard() {
           <h1 className="mt-1 font-serif text-2xl tracking-tight text-foreground sm:text-3xl">
             {greeting}.
           </h1>
+          <RepasLine />
         </div>
 
         <Tile span={1} tone="accent" className="relative overflow-hidden">
