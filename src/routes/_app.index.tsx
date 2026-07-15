@@ -108,7 +108,10 @@ export function Dashboard() {
           ];
         })}
 
-        {/* Weather (top) + Repas (bottom) — one cell, floats into any hole */}
+        {/* Idle rooms — one shared slot, reduced */}
+        {idleRooms.length > 0 && <IdleRoomsTile rooms={idleRooms} />}
+
+        {/* Weather — single cell, no background, floats into any hole */}
         <WeatherTile />
 
         {/* Énergie */}
