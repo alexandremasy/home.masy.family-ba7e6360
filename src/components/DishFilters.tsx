@@ -20,7 +20,13 @@ export const EMPTY_FILTER: DishFilter = {
 };
 
 export function isFilterActive(f: DishFilter): boolean {
-  return !!f.base || !!f.densite || !!f.temperature || f.emportable || f.rapide || f.batch;
+  return countFilters(f) > 0;
+}
+
+/** How many axes are narrowed — so a collapsed filter bar can still say so. */
+export function countFilters(f: DishFilter): number {
+  return [f.base, f.densite, f.temperature, f.emportable || null, f.rapide || null, f.batch || null]
+    .filter(Boolean).length;
 }
 
 export function applyFilter(list: Dish[], f: DishFilter, query = ""): Dish[] {
