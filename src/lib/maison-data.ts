@@ -267,6 +267,17 @@ export const TODAY = (() => { const t = new Date(); t.setHours(0, 0, 0, 0); retu
 export const WINDOW_START = addDays(TODAY, 1);
 export const WINDOW_DAYS: Date[] = Array.from({ length: 10 }, (_, i) => addDays(WINDOW_START, i));
 
+// Calendar view: 2 full weeks, monday-first, anchored on the week containing TODAY.
+// The plan window (tomorrow → +10) always falls inside it.
+export const CAL_START = addDays(TODAY, -((TODAY.getDay() + 6) % 7));
+export const CAL_DAYS: Date[] = Array.from({ length: 14 }, (_, i) => addDays(CAL_START, i));
+export const CAL_WEEKS: Date[][] = [CAL_DAYS.slice(0, 7), CAL_DAYS.slice(7)];
+
+/** A day before today can't be planned — it's history. */
+export function isPast(d: Date): boolean {
+  return d.getTime() < TODAY.getTime();
+}
+
 // Seed plan — realistic weekday-lunch batch + varied dinners
 const PLAN_SEED: Array<{ dayOffset: number; slot: Slot; dishId: string; batchOffset?: number }> = [
   // Day 0 (tomorrow)
