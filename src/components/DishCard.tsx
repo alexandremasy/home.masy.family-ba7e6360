@@ -16,6 +16,33 @@ export function Facet({ children }: { children: ReactNode }) {
 }
 
 /**
+ * The pill that sits right of the dish name. `primary` for something to act on
+ * ("à écouler"), `muted` for a plain annotation ("batch", "déjà au plan").
+ * Never `warm` — that is the alert tone.
+ */
+export function StatusPill({
+  tone = "muted", icon, children,
+}: {
+  tone?: "primary" | "muted";
+  icon?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[10px] leading-tight",
+        tone === "primary"
+          ? "bg-primary font-medium text-primary-foreground"
+          : "border border-border text-muted-foreground",
+      )}
+    >
+      {icon}
+      {children}
+    </span>
+  );
+}
+
+/**
  * The one way a dish is displayed — calendar slot, slot picker, catalogue.
  *
  * Renders the BODY only: each caller owns its shell, because they genuinely
