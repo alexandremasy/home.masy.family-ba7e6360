@@ -2,11 +2,14 @@ import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 
 /**
- * Sticky page header for overlay pages. Sticks to the top of the viewport
- * as the modal content scrolls beneath it, with a soft fade mask so the
- * content gracefully dissolves under the header (alexandremasy.com style).
+ * Sticky page header. Sticks to the top of the viewport as the content scrolls
+ * beneath it, with a soft fade mask so the content gracefully dissolves under
+ * the header (alexandremasy.com style).
  *
- * Use as the first child of a page route inside the overlay.
+ * The header bleeds edge-to-edge via negative margins, so `variant` MUST match
+ * the shell's horizontal padding or the page overflows sideways:
+ *   - "overlay" — inside the overlay panel (`px-5 py-7 sm:px-8 sm:py-10`)
+ *   - "page"    — inside the full-bleed shell (`px-4 py-6 sm:px-6 sm:py-10`)
  */
 export function PageHeader({
   title,
@@ -14,15 +17,22 @@ export function PageHeader({
   back = "/",
   backLabel = "Cockpit",
   action,
+  variant = "overlay",
 }: {
   title: string;
   subtitle?: string;
   back?: string;
   backLabel?: string;
   action?: ReactNode;
+  variant?: "overlay" | "page";
 }) {
+  const bleed =
+    variant === "page"
+      ? "-mx-4 -mt-6 px-4 pt-6 sm:-mx-6 sm:-mt-10 sm:px-6 sm:pt-10"
+      : "-mx-5 -mt-7 px-5 pt-7 sm:-mx-8 sm:-mt-10 sm:px-8 sm:pt-10";
+
   return (
-    <div className="page-header sticky top-0 z-20 -mx-5 -mt-7 px-5 pt-7 pb-4 sm:-mx-8 sm:-mt-10 sm:px-8 sm:pt-10">
+    <div className={"page-header sticky top-0 z-20 pb-4 " + bleed}>
       <div className="page-header__bg pointer-events-none absolute inset-0 bg-background/85 backdrop-blur-xl" />
       <div className="page-header__fade pointer-events-none absolute inset-x-0 top-full h-8 bg-gradient-to-b from-background to-transparent" />
       <div className="relative flex items-end justify-between gap-4">
