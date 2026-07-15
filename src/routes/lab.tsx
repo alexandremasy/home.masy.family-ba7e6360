@@ -23,6 +23,17 @@ const MODULES = [
   { key: "budget", label: "Budget", icon: Coins },
 ];
 
+// The system's real depth — what a dock of icons can never express.
+const SYSTEM = [
+  { key: "maison", label: "Maison", icon: Home, sections: ["Aujourd'hui", "Repas", "Courses", "Anniversaires"] },
+  { key: "pieces", label: "Pièces", icon: Home, sections: ["Salon", "Bureau", "Cuisine", "Chambre", "Buanderie"] },
+  { key: "energie", label: "Énergie", icon: Zap, sections: ["Vue d'ensemble", "Saisie relevés"], alert: "mazout 22%" },
+  { key: "securite", label: "Sécurité", icon: ShieldCheck, sections: ["Caméras", "Ouvertures", "Historique"] },
+  { key: "reseau", label: "Réseau", icon: Wifi, sections: ["État", "Clients", "Homelab"] },
+  { key: "bernard", label: "Bernard", icon: Car, sections: ["État", "Trajets", "Charges"] },
+  { key: "budget", label: "Budget", icon: Coins, sections: ["Vue d'ensemble", "Mensuel", "Annuel", "Transactions", "Planification", "Import"] },
+];
+
 /** The ref's signature control: an arc of ticks with a marker on the value. */
 function Gauge({ pct, label }: { pct: number; label: string }) {
   const N = 34, cx = 100, cy = 96, r = 74;
