@@ -1,23 +1,25 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
-import { dishes, initialPlan, type Base, type Dish } from "@/lib/maison-data";
-import { Search, Package, Repeat, Zap, Flame } from "lucide-react";
+import { useDishes } from "@/lib/dishes-store";
+import { initialPlan, type Base, type Dish } from "@/lib/maison-data";
+import { Search, Package, Repeat, Zap, Flame, Plus } from "lucide-react";
 
-export const Route = createFileRoute("/_app/repas/plats")({
+export const Route = createFileRoute("/_app/repas/plats/")({
   component: PlatsPage,
   head: () => ({ meta: [{ title: "Plats — Repas" }] }),
 });
 
-const ALL_BASES = [...new Set(dishes.map((d) => d.base))].sort() as Base[];
-
 function PlatsPage() {
+  const { dishes } = useDishes();
   const [filter, setFilter] = useState<DishFilter>(EMPTY_FILTER);
   const [query, setQuery] = useState("");
 
-  const results = useMemo(() => applyFilter(dishes, filter, query), [filter, query]);
+  const allBases = useMemo(() => [...new Set(dishes.map((d) => d.base))].sort() as Base[], [dishes]);
+  const results = useMemo(() => applyFilter(dishes, filter, query), [dishes, filter, query]);
 
   // How often each dish is on the current plan — the catalogue's job is to show
   // what exists, but "never served" is the useful signal here.
