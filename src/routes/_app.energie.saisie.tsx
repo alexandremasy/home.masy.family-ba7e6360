@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { z } from "zod";
 import { Section } from "@/components/Card";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Check, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -99,8 +100,9 @@ function SaisiePage() {
           <Field label="Citerne à mazout" unit="%" value={form.mazout} onChange={(v) => update("mazout", v)} error={errors.mazout} disabled={submitting || done} />
 
           <div>
-            <label className="mb-1.5 block text-xs uppercase tracking-[0.18em] text-muted-foreground">Date</label>
+            <Label htmlFor="releve-date" className="mb-1.5 block text-xs uppercase tracking-[0.18em] text-muted-foreground">Date</Label>
             <input
+              id="releve-date"
               type="date"
               value={form.date}
               onChange={(e) => update("date", e.target.value)}
@@ -163,9 +165,12 @@ function Field({
   error?: string;
   disabled?: boolean;
 }) {
+  // The label is a SIBLING of the input, not its parent — so nesting doesn't
+  // associate them and clicking the label did nothing. htmlFor is what wires it.
+  const id = useId();
   return (
     <div>
-      <label className="mb-1.5 block text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</label>
+      <Label htmlFor={id} className="mb-1.5 block text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</Label>
       <div
         className={
           "flex overflow-hidden rounded-xl border bg-card focus-within:ring-2 focus-within:ring-ring " +
@@ -173,6 +178,7 @@ function Field({
         }
       >
         <input
+          id={id}
           type="number"
           inputMode="decimal"
           step="0.01"

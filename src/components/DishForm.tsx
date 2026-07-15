@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
 import { EFFORT_LEVELS, fmtMinutes, type Dish, type Base, type Role, type Unit, type Composant } from "@/lib/maison-data";
@@ -27,6 +28,7 @@ export const EMPTY_DRAFT: DishDraft = {
   rendement: 1,
 };
 
+/** A label wrapping its own input — the nesting is what associates them. */
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
@@ -36,30 +38,55 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-/** The project's segmented control (same shape as Énergie's tabs). */
+/** Same shape, but for a group of choices: a <label> around buttons associates nothing. */
+function FieldGroup({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="block">
+      <Eyebrow size="xs" as="span">{label}</Eyebrow>
+      <div className="mt-1.5">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * The project's segmented control, on ToggleGroup.
+ *
+ * It used to be a row of plain <button>s: no role, no keyboard nav, and wrapped
+ * in a <label> that associated nothing. Radix brings the arrow keys and the
+ * roving tabindex; the look stays the app's (bg-background + shadow on the
+ * active segment), because toggleVariants' data-[state=on]:bg-accent is now the
+ * neutral hover surface, not a selected state.
+ */
 function Segmented<T extends string | number | boolean>({
-  value, options, onChange,
+  value, options, onChange, label,
 }: {
   value: T;
-  options: Array<{ value: T; label: string }>;
+  options: ReadonlyArray<{ value: T; label: string }>;
   onChange: (v: T) => void;
+  label: string;
 }) {
   return (
-    <div className="inline-flex rounded-lg bg-secondary/70 p-1">
+    <ToggleGroup
+      type="single"
+      value={String(value)}
+      // type="single" lets you deselect; a dish axis always has a value.
+      onValueChange={(v) => {
+        const hit = options.find((o) => String(o.value) === v);
+        if (hit) onChange(hit.value);
+      }}
+      aria-label={label}
+      className="inline-flex justify-start gap-0 rounded-lg bg-secondary/70 p-1"
+    >
       {options.map((o) => (
-        <button
+        <ToggleGroupItem
           key={String(o.value)}
-          type="button"
-          onClick={() => onChange(o.value)}
-          className={
-            "rounded-md px-3 py-1 text-sm transition-all " +
-            (value === o.value ? "bg-background text-foreground shadow" : "text-muted-foreground hover:text-foreground")
-          }
+          value={String(o.value)}
+          className="h-auto rounded-md px-3 py-1 text-sm font-normal text-muted-foreground hover:bg-transparent hover:text-foreground data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow"
         >
           {o.label}
-        </button>
+        </ToggleGroupItem>
       ))}
-    </div>
+    </ToggleGroup>
   );
 }
 
@@ -114,33 +141,36 @@ export function DishForm({
 
       {/* Every axis of the dish reads the same way: a segmented choice. */}
       <div className="flex flex-wrap gap-x-8 gap-y-5">
-        <Field label="Densité">
+        <FieldGroup label="Densité">
           <Segmented
+            label="Densité"
             value={d.densite}
             options={[{ value: "complet", label: "Complet" }, { value: "léger", label: "Léger" }]}
             onChange={(v) => set("densite", v)}
           />
-        </Field>
-        <Field label="Température">
+        </FieldGroup>
+        <FieldGroup label="Température">
           <Segmented
+            label="Température"
             value={d.temperature}
             options={[{ value: "chaud", label: "Chaud" }, { value: "froid", label: "Froid" }]}
             onChange={(v) => set("temperature", v)}
           />
-        </Field>
-        <Field label="Emportable">
-          <Segmented value={d.emportable} options={YES_NO} onChange={(v) => set("emportable", v)} />
-        </Field>
-        <Field label="Réchauffable">
-          <Segmented value={d.rechauffable} options={YES_NO} onChange={(v) => set("rechauffable", v)} />
-        </Field>
+        </FieldGroup>
+        <FieldGroup label="Emportable">
+          <Segmented label="Emportable" value={d.emportable} options={YES_NO} onChange={(v) => set("emportable", v)} />
+        </FieldGroup>
+        <FieldGroup label="Réchauffable">
+          <Segmented label="Réchauffable" value={d.rechauffable} options={YES_NO} onChange={(v) => set("rechauffable", v)} />
+        </FieldGroup>
       </div>
       <div className="flex flex-wrap gap-x-8 gap-y-5">
-        <Field label="Effort">
-          <Segmented value={d.effort} options={EFFORT_OPTIONS} onChange={(v) => set("effort", v)} />
-        </Field>
-        <Field label="Une cuisson couvre">
+        <FieldGroup label="Effort">
+          <Segmented label="Effort" value={d.effort} options={EFFORT_OPTIONS} onChange={(v) => set("effort", v)} />
+        </FieldGroup>
+        <FieldGroup label="Une cuisson couvre">
           <Segmented
+            label="Une cuisson couvre"
             value={d.rendement}
             options={[
               { value: 1, label: "1 repas" },
@@ -149,7 +179,7 @@ export function DishForm({
             ] as Array<{ value: Dish["rendement"]; label: string }>}
             onChange={(v) => set("rendement", v)}
           />
-        </Field>
+        </FieldGroup>
       </div>
 
       <div>

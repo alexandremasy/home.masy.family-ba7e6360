@@ -4,6 +4,7 @@ import { Section } from "@/components/Card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   people, generateMessage, nextBirthday, upcomingAge, daysUntil, frLongDay,
   type Sliders,
@@ -82,12 +83,13 @@ function PersonStudio() {
             </div>
 
             <div className="mt-4">
-              <label className="mb-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Label htmlFor="refine-comment" className="mb-1.5 flex items-center gap-1.5 text-xs font-normal text-muted-foreground">
                 <Sparkles className="h-3 w-3 text-primary" />
                 Affiner par commentaire (ex. « plus court », « clin d'oeil à la guitare »)
-              </label>
+              </Label>
               <div className="flex items-start gap-2">
                 <Textarea
+                  id="refine-comment"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   placeholder="Un commentaire libre pour affiner…"
