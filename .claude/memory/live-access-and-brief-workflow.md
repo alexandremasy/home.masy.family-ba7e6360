@@ -5,14 +5,26 @@ metadata:
   type: project
 ---
 
-**Seeing the live mockup.** The mockup runs at `mockup.masy.family`, behind `auth.masy.family`
-(Traefik forward-auth) — curl/WebFetch get a 302 to the auth portal, no content. Claude Code
-sessions here run **on the homelab server** (cwd `/opt/apps/mockup`), so there is **no bridge to
-Alex's local Chrome** — the `mcp__claude-in-chrome__*` browser tools are NOT available in this
-session regardless of whether Alex's Chrome extension is on. Do not keep retrying the extension.
-→ To judge the live render (visual/UX), the working path is **Alex pastes screenshots into the
-chat** (drag & drop works, independent of the extension). Read the source for logic/state, but the
-rendered look is only visible via his screenshots.
+**Seeing the live mockup — SOLVED, use this.** The session runs **on the homelab server** (cwd
+`/opt/apps/mockup`): no Chrome bridge (`mcp__claude-in-chrome__*` absent), and Alex is on tmux+ssh
+so **pasting images into the chat does NOT work either**. The working method — screenshot the
+container from inside the Docker network, which **bypasses the `auth.masy.family` Traefik
+forward-auth** (auth is a Traefik middleware; hitting the container directly skips it):
+
+1. Get the container's internal address: `docker inspect apps-mockup-1` → IP on the `proxy`
+   network, port **5173** (vite). Direct hit `http://<IP>:5173/` returns 200 (no auth). IP can
+   change on restart — re-inspect; or use container-name DNS on the proxy network.
+2. Run a Playwright container on the same network, screenshot to a mounted scratchpad dir:
+   `docker run --rm --network proxy -v <scratch>:/out -w /out -e BASE=http://<IP>:5173 \
+     mcr.microsoft.com/playwright:v1.48.0-jammy bash -c \
+     "npm i playwright@1.48.0 --no-save --silent && node shot.js"`
+   (`shot.js` = launch chromium, `goto` waitUntil networkidle, `waitForTimeout(1500)` to settle
+   hydration/anim, `screenshot fullPage`; loop routes × viewports desktop 1440 / mobile 390.)
+3. `Read` the PNGs — Claude Code reads images. This is how you judge the real render.
+
+No chromium on the host and no sudo for `playwright install-deps`, so the self-contained Docker
+image is the reliable path. Script kept in this session's scratchpad; could be promoted to
+`scripts/shot.mjs` if this recurs (ask first — infra vs. deliverable).
 
 **"Brief" is ambiguous here — two things:**
 - The `*-BRIEF.md` files (PLANIFICATION-BRIEF, MAISON-BRIEF…) = **handoffs** to `api`/`cockpit`
