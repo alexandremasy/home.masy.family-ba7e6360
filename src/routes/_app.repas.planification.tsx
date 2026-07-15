@@ -330,7 +330,15 @@ function SlotPicker({
   );
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<DishFilter>(baseline);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const hint = useMemo(() => weatherHintFor(date), [date]);
+
+  // Autofocus is a desktop affordance: on a phone it throws the keyboard over
+  // the very suggestions the modal exists to show.
+  const searchRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (window.matchMedia("(min-width: 1024px)").matches) searchRef.current?.focus();
+  }, []);
 
   // One ranked pool for the whole modal: the engine orders it, filters narrow it.
   // Browsing never resurrects a dish the slot's hard rules rejected.
