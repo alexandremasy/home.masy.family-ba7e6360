@@ -30,7 +30,7 @@ export function applyFilter(list: Dish[], f: DishFilter, query = ""): Dish[] {
     if (f.densite && d.densite !== f.densite) return false;
     if (f.temperature && d.temperature !== f.temperature) return false;
     if (f.emportable && !d.emportable) return false;
-    if (f.rapide && d.effort > 2) return false;
+    if (f.rapide && d.effort > 1) return false;
     if (f.batch && d.rendement < 2) return false;
     if (q && !d.name.toLowerCase().includes(q) && !d.modifiers.some((m) => m.name.toLowerCase().includes(q))) return false;
     return true;
@@ -86,8 +86,11 @@ export function DishFilters({
       <Chip active={value.rapide} onClick={() => set("rapide", !value.rapide)}>
         <Zap className="h-3 w-3" />Rapide
       </Chip>
+      {/* Same wording as the card's "Couvre N repas" tag — it filters on the very
+          same property (rendement ≥ 2). "Batch" said nothing and collided with
+          two other meanings of the word. */}
       <Chip active={value.batch} onClick={() => set("batch", !value.batch)}>
-        <Repeat className="h-3 w-3" />Batch
+        <Repeat className="h-3 w-3" />Couvre 2+ repas
       </Chip>
 
       <span className="mx-0.5 h-4 w-px bg-border" />
