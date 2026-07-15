@@ -2,7 +2,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { ThemeToggle } from "./ThemeToggle";
 import { RoomIcon } from "./RoomIcon";
 import { ModeSwitcher } from "./ModeSwitcher";
-import { Car, Wifi, Zap, ChevronDown, MoreHorizontal, Settings, Wrench, ExternalLink, Home, LayoutDashboard, CalendarRange, Table2, FileUp, ShieldCheck, UtensilsCrossed } from "lucide-react";
+import { Car, Wifi, Zap, ChevronDown, MoreHorizontal, Settings, Wrench, ExternalLink, Home, LayoutDashboard, CalendarRange, Table2, FileUp, ShieldCheck, UtensilsCrossed, Cake } from "lucide-react";
 import type { ReactNode } from "react";
 import type { Room } from "@/lib/mock-data";
 import {
