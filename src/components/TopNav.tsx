@@ -2,7 +2,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { ThemeToggle } from "./ThemeToggle";
 import { RoomIcon } from "./RoomIcon";
 import { ModeSwitcher } from "./ModeSwitcher";
-import { Car, Wifi, Zap, ChevronDown, MoreHorizontal, Settings, Wrench, ExternalLink, Home, LayoutDashboard, CalendarRange, Table2, FileUp, ShieldCheck, UtensilsCrossed, Cake, DoorClosed, Activity } from "lucide-react";
+import { Car, Wifi, Zap, ChevronDown, MoreHorizontal, Settings, Wrench, ExternalLink, Home, LayoutDashboard, CalendarRange, Table2, FileUp, ShieldCheck, UtensilsCrossed, Cake, DoorClosed, Activity, ShoppingBasket } from "lucide-react";
 import type { ReactNode } from "react";
 import type { Room } from "@/lib/mock-data";
 import {
@@ -26,9 +26,9 @@ const rooms: NavItem[] = [
 ];
 
 // The Maison mode's own domains. Sécurité is NOT here — it's a mode of its own.
+// Neither is Courses — it hangs off the plan, so it's a tab inside /repas.
 const domains: NavItem[] = [
   { to: "/repas", label: "Repas", icon: <UtensilsCrossed className="h-3.5 w-3.5" /> },
-  { to: "/courses", label: "Courses", icon: <ShoppingBasket className="h-3.5 w-3.5" /> },
   { to: "/anniversaires", label: "Anniversaires", icon: <Cake className="h-3.5 w-3.5" /> },
   { to: "/tesla", label: "Bernard", icon: <Car className="h-3.5 w-3.5" /> },
   { to: "/reseau", label: "Réseau", icon: <Wifi className="h-3.5 w-3.5" /> },
