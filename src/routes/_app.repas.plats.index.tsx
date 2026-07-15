@@ -58,24 +58,18 @@ function PlatsPage() {
   );
 }
 
-/** The catalogue shell around the shared DishCard body. */
-function CatalogueCard({ dish, plannedCount }: { dish: Dish; plannedCount: number }) {
+/**
+ * The catalogue shell around the shared DishCard body. No status pill: the
+ * catalogue says what a dish IS, the plan is another view's business.
+ */
+function CatalogueCard({ dish }: { dish: Dish }) {
   return (
     <Link
       to="/repas/plats/$dishId"
       params={{ dishId: dish.id }}
       className="flex flex-col rounded-xl border border-border/60 bg-card p-3.5 transition-all hover:border-primary hover:bg-secondary/40 hover:shadow-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      <DishCard
-        dish={dish}
-        status={
-          // "Au plan · 2×" = it sits on the current plan twice. Not to be
-          // confused with the "Couvre 2 repas" tag, which is what one cook yields.
-          plannedCount > 0
-            ? <StatusPill tone="primary" title="Planifié sur la fenêtre courante">Au plan · {plannedCount}×</StatusPill>
-            : undefined
-        }
-      />
+      <DishCard dish={dish} />
     </Link>
   );
 }
