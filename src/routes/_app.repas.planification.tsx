@@ -111,15 +111,18 @@ function RepasPage() {
           ))}
         </div>
 
-        <div className="mb-2 mt-5 grid grid-cols-7 gap-2 px-1">
+        {/* Weekday columns only exist once there ARE columns. */}
+        <div className="mb-2 mt-5 hidden grid-cols-7 gap-2 px-1 lg:grid">
           {WEEKDAYS.map((d) => (
             <p key={d} className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{d}</p>
           ))}
         </div>
 
-        <div className="space-y-2">
+        {/* A 7×2 grid cannot survive a phone: below lg each day is a full-width
+            row instead, and the two slots sit side by side. Same cells, stacked. */}
+        <div className="mt-4 space-y-2 lg:mt-0">
           {weeks.map((week, wi) => (
-            <div key={wi} className="grid grid-cols-7 gap-2">
+            <div key={wi} className="grid gap-2 lg:grid-cols-7">
               {week.map((d) => (
                 <DayCell
                   key={iso(d)}
