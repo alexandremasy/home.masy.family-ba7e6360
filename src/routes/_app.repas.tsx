@@ -187,8 +187,7 @@ function DayCell({
   return (
     <div
       className={
-        "flex min-h-[12.5rem] flex-col overflow-hidden rounded-xl border transition-colors " +
-        (weekend ? "border-warm/40 bg-warm/5 " : "border-border/60 bg-card ") +
+        "flex min-h-[12.5rem] flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-colors " +
         (today ? "ring-2 ring-primary/50" : "")
       }
     >
