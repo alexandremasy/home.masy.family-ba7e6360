@@ -4,20 +4,20 @@ import { CountUp } from "@/components/CountUp";
 import { meteo, tesla, dishwasher } from "@/lib/mock-data";
 import { people } from "@/lib/maison-data";
 
-// Ambience proof v3 — voie B: warm-dark, glass that finally reads, editorial bento.
-// Keeps the wins: living "moment" (sun arc), "en ce moment" flux, motion cascade.
+// Ambience proof v4 — one merged attention zone (weather lives INSIDE it), eye-level greeting,
+// persistent module dock, light + dark following the browser.
 export const Route = createFileRoute("/lab")({
   component: LabAmbience,
   head: () => ({ meta: [{ title: "Épreuve d'ambiance — Accueil" }] }),
 });
 
 const MODULES = [
-  { key: "maison", label: "Maison", icon: Home, hint: "Repas ce soir" },
-  { key: "energie", label: "Énergie", icon: Zap, hint: "mazout 22%" },
-  { key: "securite", label: "Sécurité", icon: ShieldCheck, hint: "Tout est calme" },
-  { key: "reseau", label: "Réseau", icon: Wifi, hint: "Tout en ligne" },
-  { key: "bernard", label: "Bernard", icon: Car, hint: "En route · 74%" },
-  { key: "budget", label: "Budget", icon: Coins, hint: "+8 092 €" },
+  { key: "maison", label: "Maison", icon: Home },
+  { key: "energie", label: "Énergie", icon: Zap, alert: true },
+  { key: "securite", label: "Sécurité", icon: ShieldCheck },
+  { key: "reseau", label: "Réseau", icon: Wifi },
+  { key: "bernard", label: "Bernard", icon: Car },
+  { key: "budget", label: "Budget", icon: Coins },
 ];
 
 const hm = (s: string) => { const [h, m] = s.split(":").map(Number); return h + m / 60; };
@@ -38,30 +38,30 @@ function LabAmbience() {
     <div className="lab-root relative min-h-screen w-full overflow-hidden">
       <style>{CSS}</style>
 
-      {/* Warm-dark aurora */}
       <div className="lab-blob b1" /><div className="lab-blob b2" /><div className="lab-blob b3" />
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-2xl flex-col px-6 py-11 sm:py-14">
+      {/* Eye-level start: generous breathing room above the greeting */}
+      <div className="relative z-10 mx-auto w-full max-w-2xl px-6 pb-32 pt-[20vh] sm:pt-[24vh]">
 
-        {/* Header — small greeting + editorial title + round controls */}
-        <div className="lab-in" style={{ ["--d" as string]: "0ms" }}>
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-[13px] text-[color:var(--dim)]">{greeting}, Alexandre · {timeStr}</p>
-              <h1 className="mt-2 font-serif text-[2.1rem] leading-[1.06] tracking-tight text-[color:var(--ink)] sm:text-5xl">
-                La maison veille,<br /><em className="not-italic text-[color:var(--amber)] italic">tout est paisible.</em>
-              </h1>
-            </div>
-            <div className="flex gap-2">
-              <button className="lab-orb"><Search className="h-4 w-4" /></button>
-              <button className="lab-orb"><SlidersHorizontal className="h-4 w-4" /></button>
-            </div>
+        {/* Greeting */}
+        <div className="lab-in flex items-start justify-between" style={{ ["--d" as string]: "0ms" }}>
+          <div>
+            <p className="text-[13px] text-[color:var(--dim)]">{greeting}, Alexandre · {timeStr}</p>
+            <h1 className="mt-2 font-serif text-[2.1rem] leading-[1.06] tracking-tight text-[color:var(--ink)] sm:text-5xl">
+              La maison veille,<br /><span className="italic text-[color:var(--hot)]">tout est paisible.</span>
+            </h1>
+          </div>
+          <div className="flex gap-2">
+            <button className="lab-orb"><Search className="h-4 w-4" /></button>
+            <button className="lab-orb"><SlidersHorizontal className="h-4 w-4" /></button>
           </div>
         </div>
 
-        {/* HERO — the moment, on a saturated warm tile */}
-        <div className="lab-in mt-7" style={{ ["--d" as string]: "120ms" }}>
-          <div className="lab-hero relative overflow-hidden rounded-[30px] p-6 sm:p-7">
+        {/* ---- ONE attention zone — the weather lives inside the bento, not above it ---- */}
+        <div className="lab-in mt-9 grid grid-cols-2 gap-3" style={{ ["--d" as string]: "140ms" }}>
+
+          {/* Moment — wide hero */}
+          <div className="lab-hero col-span-2 relative overflow-hidden rounded-[30px] p-6">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-[11px] uppercase tracking-[0.18em] text-black/55">{m.location} · maintenant</p>
@@ -82,132 +82,140 @@ function LabAmbience() {
               </g>
             </svg>
           </div>
-        </div>
 
-        {/* EN CE MOMENT */}
-        <div className="lab-in mt-8" style={{ ["--d" as string]: "240ms" }}>
-          <p className="mb-3 text-[11px] uppercase tracking-[0.18em] text-[color:var(--dim)]">En ce moment</p>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-
-            {leo && (
-              <div className="lab-glass flex items-center gap-3.5 rounded-2xl p-4 sm:col-span-2">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-black" style={{ background: "linear-gradient(140deg, var(--amber), var(--terra))" }}><Cake className="h-5 w-5" /></span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-[10px] uppercase tracking-[0.16em] text-[color:var(--amber)]">Aujourd'hui</p>
-                  <p className="text-sm text-[color:var(--ink)]"><span className="font-medium">Léo a 34 ans.</span> <span className="text-[color:var(--dim)]">Un mot lui ferait plaisir.</span></p>
-                </div>
-                <button className="shrink-0 rounded-full bg-[color:var(--amber)] px-3.5 py-2 text-[13px] font-medium text-black transition-transform hover:scale-[1.03]">Écrire</button>
+          {/* Léo — tall tile (the asymmetry) */}
+          {leo && (
+            <div className="lab-glass row-span-2 flex flex-col justify-between rounded-3xl p-5">
+              <div>
+                <span className="grid h-11 w-11 place-items-center rounded-full text-black" style={{ background: "linear-gradient(140deg, var(--amber), var(--terra))" }}><Cake className="h-5 w-5" /></span>
+                <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-[color:var(--hot)]">Aujourd'hui</p>
+                <p className="mt-1 font-serif text-xl leading-tight text-[color:var(--ink)]">Léo a 34 ans</p>
+                <p className="mt-1.5 text-[12px] leading-relaxed text-[color:var(--dim)]">Un mot lui ferait plaisir.</p>
               </div>
-            )}
-
-            <div className="lab-glass flex items-center gap-3 rounded-2xl p-4">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-[color:var(--amber)]"><Music className="h-4 w-4" /></span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-[color:var(--ink)]">Linked · Bonobo</p>
-                <p className="text-[11px] text-[color:var(--dim)]">Salon · Spotify</p>
-              </div>
-              <div className="lab-eq" aria-hidden><i /><i /><i /><i /></div>
+              <button className="mt-4 w-full rounded-full bg-[color:var(--amber)] py-2 text-[13px] font-medium text-black transition-transform hover:scale-[1.02]">Écrire</button>
             </div>
+          )}
 
-            <div className="lab-glass flex items-center gap-3 rounded-2xl p-4">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-[color:var(--ink)]"><Car className="h-4 w-4" /></span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-[color:var(--ink)]">En déplacement</p>
-                <p className="text-[11px] text-[color:var(--dim)]">{tesla.location}</p>
-              </div>
-              <span className="inline-flex items-center gap-1 text-[13px] tabular-nums text-[color:var(--dim)]"><Plug className="h-3.5 w-3.5" /><CountUp to={tesla.charge} />%</span>
+          {/* Music */}
+          <div className="lab-glass flex items-center gap-3 rounded-3xl p-4">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--hot)]"><Music className="h-4 w-4" /></span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[13px] font-medium text-[color:var(--ink)]">Linked</p>
+              <p className="truncate text-[11px] text-[color:var(--dim)]">Bonobo · Salon</p>
             </div>
+            <div className="lab-eq" aria-hidden><i /><i /><i /><i /></div>
+          </div>
 
-            <div className="lab-glass rounded-2xl p-4 sm:col-span-2">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-[color:var(--ink)]">Lave-vaisselle · {dishwasher.phase}</p>
-                <p className="text-[11px] text-[color:var(--dim)]">fin ~20:30</p>
-              </div>
-              <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-white/8">
-                <div className="lab-bar h-full rounded-full" style={{ ["--p" as string]: `${dishwasher.progressPct}%`, background: "linear-gradient(90deg, var(--terra), var(--amber))" }} />
-              </div>
+          {/* Bernard */}
+          <div className="lab-glass flex items-center gap-3 rounded-3xl p-4">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--ink)]"><Car className="h-4 w-4" /></span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[13px] font-medium text-[color:var(--ink)]">En route</p>
+              <p className="truncate text-[11px] text-[color:var(--dim)]">Place Flagey</p>
+            </div>
+            <span className="inline-flex shrink-0 items-center gap-1 text-[12px] tabular-nums text-[color:var(--dim)]"><Plug className="h-3 w-3" /><CountUp to={tesla.charge} />%</span>
+          </div>
+
+          {/* Dishwasher — wide strip */}
+          <div className="lab-glass col-span-2 rounded-3xl p-4">
+            <div className="flex items-center justify-between">
+              <p className="text-[13px] font-medium text-[color:var(--ink)]">Lave-vaisselle · {dishwasher.phase}</p>
+              <p className="text-[11px] text-[color:var(--dim)]">fin ~20:30</p>
+            </div>
+            <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-[color:var(--track)]">
+              <div className="lab-bar h-full rounded-full" style={{ ["--p" as string]: `${dishwasher.progressPct}%`, background: "linear-gradient(90deg, var(--terra), var(--amber))" }} />
             </div>
           </div>
         </div>
 
-        {/* Modules */}
-        <div className="lab-in mt-9" style={{ ["--d" as string]: "380ms" }}>
-          <p className="mb-3 text-[11px] uppercase tracking-[0.18em] text-[color:var(--dim)]">La maison</p>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {MODULES.map((mod) => {
-              const Icon = mod.icon;
-              return (
-                <button key={mod.key} className="lab-glass lab-tile group relative flex flex-col gap-3 rounded-2xl p-4 text-left">
-                  <span className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-[color:var(--amber)]"><Icon className="h-4 w-4" /></span>
-                  <ArrowUpRight className="absolute right-3.5 top-3.5 h-4 w-4 text-[color:var(--dim)] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  <span>
-                    <span className="block text-sm font-medium text-[color:var(--ink)]">{mod.label}</span>
-                    <span className="block truncate text-[11px] text-[color:var(--dim)]">{mod.hint}</span>
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="lab-in mt-auto pt-8" style={{ ["--d" as string]: "480ms" }}>
-          <p className="text-[13px] text-[color:var(--dim)]">PMC à sortir avant 07:00 demain.</p>
-        </div>
+        <p className="lab-in mt-8 text-[13px] text-[color:var(--dim)]" style={{ ["--d" as string]: "320ms" }}>
+          PMC à sortir avant 07:00 demain.
+        </p>
       </div>
+
+      {/* ---- Global module nav — persistent, discreet, always one tap away ---- */}
+      <nav className="lab-in lab-dock fixed bottom-5 left-1/2 z-50 flex -translate-x-1/2 items-center gap-1 rounded-full px-2 py-2" style={{ ["--d" as string]: "460ms" }}>
+        {MODULES.map((mod) => {
+          const Icon = mod.icon;
+          return (
+            <button key={mod.key} title={mod.label} className="lab-dock-btn group relative grid h-11 w-11 place-items-center rounded-full text-[color:var(--dim)]">
+              <Icon className="h-[18px] w-[18px]" />
+              {mod.alert && <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[color:var(--terra)]" />}
+            </button>
+          );
+        })}
+      </nav>
     </div>
   );
 }
 
 const CSS = `
+/* ---------- LIGHT (default) — warm, aurora present enough for glass to exist ---------- */
 .lab-root {
-  --bg0: oklch(0.19 0.035 42); --bg1: oklch(0.13 0.028 32);
-  --ink: oklch(0.96 0.015 75); --dim: oklch(0.72 0.03 62);
-  --amber: oklch(0.82 0.13 68); --terra: oklch(0.66 0.15 33);
+  --bg0: oklch(0.97 0.022 82); --bg1: oklch(0.93 0.045 58);
+  --ink: oklch(0.26 0.03 40); --dim: oklch(0.52 0.03 50);
+  --amber: oklch(0.82 0.13 68); --terra: oklch(0.64 0.16 33); --hot: oklch(0.58 0.16 35);
+  --glass-bg: rgba(255,255,255,0.50); --glass-br: rgba(255,255,255,0.75);
+  --glass-sh: 0 24px 60px -30px rgba(90,50,20,0.45); --glass-hl: rgba(255,255,255,0.9);
+  --chip: rgba(0,0,0,0.05); --track: rgba(0,0,0,0.08);
+  --blob1: oklch(0.72 0.15 33 / 0.42); --blob2: oklch(0.85 0.13 70 / 0.45); --blob3: oklch(0.65 0.10 330 / 0.18);
   --ease: cubic-bezier(0.2,0.7,0.2,1);
-  background: radial-gradient(130% 100% at 50% -10%, var(--bg0), var(--bg1) 70%);
+  background: radial-gradient(130% 100% at 50% -10%, var(--bg0), var(--bg1) 75%);
   color: var(--ink);
 }
-.lab-orb { display:grid; place-items:center; width:40px; height:40px; border-radius:999px; color: var(--dim);
-  background: rgba(255,250,244,0.06); border: 1px solid rgba(255,240,225,0.12); backdrop-filter: blur(12px); }
-.lab-arrow, .lab-hero .lab-arrow { display:grid; place-items:center; width:36px; height:36px; border-radius:999px; color:#000;
-  background: rgba(0,0,0,0.14); }
-/* Warm-dark glass — reads because there's a lit aurora behind it */
+/* ---------- DARK — follows the browser, or a forced .dark class ---------- */
+@media (prefers-color-scheme: dark) {
+  .lab-root {
+    --bg0: oklch(0.19 0.035 42); --bg1: oklch(0.13 0.028 32);
+    --ink: oklch(0.96 0.015 75); --dim: oklch(0.72 0.03 62); --hot: oklch(0.82 0.13 68);
+    --glass-bg: rgba(255,248,240,0.055); --glass-br: rgba(255,238,222,0.13);
+    --glass-sh: 0 24px 60px -30px rgba(0,0,0,0.7); --glass-hl: rgba(255,244,232,0.14);
+    --chip: rgba(255,255,255,0.10); --track: rgba(255,255,255,0.10);
+    --blob1: oklch(0.66 0.15 33 / 0.55); --blob2: oklch(0.80 0.12 68 / 0.40); --blob3: oklch(0.50 0.13 330 / 0.28);
+  }
+}
+.dark .lab-root {
+  --bg0: oklch(0.19 0.035 42); --bg1: oklch(0.13 0.028 32);
+  --ink: oklch(0.96 0.015 75); --dim: oklch(0.72 0.03 62); --hot: oklch(0.82 0.13 68);
+  --glass-bg: rgba(255,248,240,0.055); --glass-br: rgba(255,238,222,0.13);
+  --glass-sh: 0 24px 60px -30px rgba(0,0,0,0.7); --glass-hl: rgba(255,244,232,0.14);
+  --chip: rgba(255,255,255,0.10); --track: rgba(255,255,255,0.10);
+  --blob1: oklch(0.66 0.15 33 / 0.55); --blob2: oklch(0.80 0.12 68 / 0.40); --blob3: oklch(0.50 0.13 330 / 0.28);
+}
 .lab-glass {
-  background: rgba(255,248,240,0.055);
-  border: 1px solid rgba(255,238,222,0.13);
+  background: var(--glass-bg); border: 1px solid var(--glass-br);
   backdrop-filter: blur(22px) saturate(1.25);
-  box-shadow: 0 24px 60px -30px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,244,232,0.14);
+  box-shadow: var(--glass-sh), inset 0 1px 0 var(--glass-hl);
 }
-.lab-tile { transition: transform .35s var(--ease), background .35s var(--ease); }
-.lab-tile:hover { transform: translateY(-3px); background: rgba(255,248,240,0.09); }
-/* Saturated warm hero tile — the pop */
-.lab-hero {
-  background: linear-gradient(150deg, var(--amber), var(--terra));
-  box-shadow: 0 30px 70px -28px oklch(0.66 0.15 33 / 0.6), inset 0 1px 0 rgba(255,255,255,0.35);
-}
-/* Aurora blobs */
+.lab-orb { display:grid; place-items:center; width:40px; height:40px; border-radius:999px; color:var(--dim);
+  background: var(--glass-bg); border:1px solid var(--glass-br); backdrop-filter: blur(12px); }
+.lab-arrow { display:grid; place-items:center; width:36px; height:36px; border-radius:999px; color:#000; background: rgba(0,0,0,0.14); }
+.lab-hero { background: linear-gradient(150deg, var(--amber), var(--terra));
+  box-shadow: 0 30px 70px -28px oklch(0.64 0.16 33 / 0.55), inset 0 1px 0 rgba(255,255,255,0.35); }
+/* Dock */
+.lab-dock { background: var(--glass-bg); border:1px solid var(--glass-br); backdrop-filter: blur(24px) saturate(1.3); box-shadow: var(--glass-sh); }
+.lab-dock-btn { transition: background .25s var(--ease), color .25s var(--ease), transform .25s var(--ease); }
+.lab-dock-btn:hover { background: var(--chip); color: var(--hot); transform: translateY(-2px); }
+/* Aurora */
 .lab-blob { position:absolute; border-radius:999px; filter: blur(90px); pointer-events:none; z-index:0; }
-.b1 { left:-14%; top:-10%; width:64vh; height:64vh; background: radial-gradient(circle, oklch(0.66 0.15 33 / 0.55), transparent 70%); animation: lab-float 18s ease-in-out infinite; }
-.b2 { right:-12%; top:2%; width:58vh; height:58vh; background: radial-gradient(circle, oklch(0.80 0.12 68 / 0.4), transparent 70%); animation: lab-float 24s ease-in-out infinite reverse; }
-.b3 { left:20%; bottom:-18%; width:60vh; height:60vh; background: radial-gradient(circle, oklch(0.50 0.13 330 / 0.28), transparent 70%); animation: lab-float 28s ease-in-out infinite; }
-@keyframes lab-float { 0%,100%{ transform: translate(0,0) scale(1);} 50%{ transform: translate(5%,4%) scale(1.1);} }
-/* Cascade */
+.b1 { left:-14%; top:-8%; width:64vh; height:64vh; background: radial-gradient(circle, var(--blob1), transparent 70%); animation: lab-float 18s ease-in-out infinite; }
+.b2 { right:-12%; top:4%; width:58vh; height:58vh; background: radial-gradient(circle, var(--blob2), transparent 70%); animation: lab-float 24s ease-in-out infinite reverse; }
+.b3 { left:18%; bottom:-16%; width:60vh; height:60vh; background: radial-gradient(circle, var(--blob3), transparent 70%); animation: lab-float 28s ease-in-out infinite; }
+@keyframes lab-float { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(5%,4%) scale(1.1);} }
+/* Motion */
 @keyframes lab-rise { from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:none;} }
 .lab-in { opacity:0; animation: lab-rise .7s var(--ease) forwards; animation-delay: var(--d,0ms); }
-/* Sun arc */
 @keyframes lab-draw { from{stroke-dashoffset:520;} to{stroke-dashoffset:0;} }
-.lab-arc { animation: lab-draw 1.6s var(--ease) .4s both; }
+.lab-arc { animation: lab-draw 1.6s var(--ease) .5s both; }
 @keyframes lab-sun-in { from{opacity:0; transform:scale(.4);} to{opacity:1; transform:scale(1);} }
-.lab-sun { transform-box: fill-box; transform-origin: center; animation: lab-sun-in .8s var(--ease) 1.1s both; }
+.lab-sun { transform-box: fill-box; transform-origin:center; animation: lab-sun-in .8s var(--ease) 1.2s both; }
 @keyframes lab-glow { 0%,100%{opacity:.5; r:15;} 50%{opacity:.85; r:19;} }
 .lab-sun-glow { animation: lab-glow 3.5s ease-in-out infinite 1.6s; }
-/* Equalizer */
-.lab-eq { display:flex; align-items:flex-end; gap:2.5px; height:18px; }
-.lab-eq i { width:3px; border-radius:2px; background: var(--amber); height:40%; animation: lab-bars 1s ease-in-out infinite; }
+.lab-eq { display:flex; align-items:flex-end; gap:2.5px; height:16px; }
+.lab-eq i { width:3px; border-radius:2px; background: var(--hot); height:40%; animation: lab-bars 1s ease-in-out infinite; }
 .lab-eq i:nth-child(2){animation-delay:.2s;} .lab-eq i:nth-child(3){animation-delay:.45s;} .lab-eq i:nth-child(4){animation-delay:.1s;}
 @keyframes lab-bars { 0%,100%{height:25%;} 50%{height:100%;} }
-/* Progress */
 @keyframes lab-fill { from{width:0;} to{width:var(--p);} }
-.lab-bar { width:var(--p); animation: lab-fill 1.4s var(--ease) .6s both; }
+.lab-bar { width:var(--p); animation: lab-fill 1.4s var(--ease) .7s both; }
 @media (prefers-reduced-motion: reduce){ .lab-in,.lab-arc,.lab-sun,.lab-bar{ animation:none; opacity:1; } }
 `;
