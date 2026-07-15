@@ -3,6 +3,8 @@ import { useMemo, useState } from "react";
 import { WeatherIcon } from "@/components/WeatherIcon";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { useIsDesktop } from "@/lib/use-media";
 import { DishFilters, applyFilter, countFilters, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
 import { DishCard, StatusPill } from "@/components/DishCard";
 import { cap } from "@/lib/utils";
@@ -24,6 +26,20 @@ export const Route = createFileRoute("/_app/repas/planification")({
 });
 
 const WEEKDAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+
+/** Title content only — the shell supplies DialogTitle or DrawerTitle around it. */
+function SlotTitle({ date, slot }: { date: Date; slot: Slot }) {
+  const w = dayWeather(date);
+  return (
+    <>
+      {cap(frLongDay(date))} · {slot === "midi" ? "Midi" : "Soir"}
+      <span className="inline-flex items-center gap-1 rounded-full border border-border/60 px-2 py-0.5 text-[11px] font-normal text-muted-foreground">
+        <WeatherIcon cond={w.cond} className="h-3 w-3" animated={false} />
+        {w.maxC}°
+      </span>
+    </>
+  );
+}
 
 /** "13 → 26 juillet", collapsing the month when both ends share it. */
 function rangeLabel(weeks: Date[][]): string {
@@ -58,6 +74,30 @@ function RepasPage() {
 
   const signals = useMemo(() => coherenceSignals(plan), [plan]);
   const selectedDate = selected ? new Date(selected.date) : null;
+  const isDesktop = useIsDesktop();
+
+  const closeSlot = (open: boolean) => { if (!open) setSelected(null); };
+
+  // Built once, mounted in whichever shell the viewport calls for.
+  const picker = selected && selectedDate ? (
+    <SlotPicker
+      date={selectedDate}
+      slot={selected.slot}
+      plan={plan}
+      onPick={(dish, batch) => {
+        upsert({ date: selected.date, slot: selected.slot, dishId: dish.id });
+        if (batch) {
+          upsert({
+            date: iso(addDays(selectedDate, 1)),
+            slot: selected.slot,
+            dishId: dish.id,
+            batchOfDate: selected.date,
+          });
+        }
+        setSelected(null);
+      }}
+    />
+  ) : null;
 
   return (
     <div className="space-y-6">
@@ -144,44 +184,41 @@ function RepasPage() {
         </p>
       </div>
 
-      {/* Suggestions — modal, opened from a slot */}
-      <Dialog open={!!selected} onOpenChange={(o) => { if (!o) setSelected(null); }}>
-        {/* The app's own background, so the white cards read as objects on it. */}
-        <DialogContent
-          // Anchored at top-14 instead of vertically centred: the close button
-          // hangs at -top-12, so it needs room ABOVE — centring mirrored that gap
-          // at the bottom for nothing. Now the 3.5rem is the close button's, and
-          // the modal runs down to 1rem off the floor.
-          // flex + a flex-1 list is what lets it actually use that height.
-          className="top-14 flex max-h-[calc(100dvh-4.5rem)] max-w-2xl translate-y-0 flex-col gap-5 bg-background sm:gap-7"
-          onOpenAutoFocus={(e) => {
-            // Radix focuses the first field on open. On desktop that's what you
-            // want; on a phone it throws the keyboard over the very suggestions
-            // the modal exists to show.
-            if (!window.matchMedia("(min-width: 1024px)").matches) e.preventDefault();
-          }}
-        >
-          {selected && selectedDate && (
-            <SlotPicker
-              date={selectedDate}
-              slot={selected.slot}
-              plan={plan}
-              onPick={(dish, batch) => {
-                upsert({ date: selected.date, slot: selected.slot, dishId: dish.id });
-                if (batch) {
-                  upsert({
-                    date: iso(addDays(selectedDate, 1)),
-                    slot: selected.slot,
-                    dishId: dish.id,
-                    batchOfDate: selected.date,
-                  });
-                }
-                setSelected(null);
-              }}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* Suggestions — a Dialog on desktop, a Drawer on a phone. The mobile
+          Dialog was a Drawer in disguise: anchored top-14 to make room for a
+          close button hanging at -top-12, capped at 100dvh-4.5rem. vaul does
+          that natively, from the bottom, with drag-to-dismiss. */}
+      {isDesktop ? (
+        <Dialog open={!!selected} onOpenChange={closeSlot}>
+          <DialogContent className="flex max-h-[calc(100dvh-7rem)] max-w-2xl flex-col gap-7 bg-background">
+            {picker && (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2 font-serif text-xl">
+                    <SlotTitle date={selectedDate!} slot={selected!.slot} />
+                  </DialogTitle>
+                </DialogHeader>
+                {picker}
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Drawer open={!!selected} onOpenChange={closeSlot}>
+          <DrawerContent className="max-h-[92dvh] bg-background px-4 pb-4">
+            {picker && (
+              <>
+                <DrawerHeader className="px-0 pb-2 text-left">
+                  <DrawerTitle className="flex items-center gap-2 font-serif text-xl">
+                    <SlotTitle date={selectedDate!} slot={selected!.slot} />
+                  </DrawerTitle>
+                </DrawerHeader>
+                {picker}
+              </>
+            )}
+          </DrawerContent>
+        </Drawer>
+      )}
     </div>
   );
 }
@@ -370,18 +407,10 @@ function SlotPicker({
 
   const w = dayWeather(date);
 
+  // The title lives in the shell, not here: DialogTitle and DrawerTitle come
+  // from different contexts (Radix vs vaul), so the body must stay neutral.
   return (
     <>
-      <DialogHeader>
-        <DialogTitle className="flex items-center gap-2 font-serif text-xl">
-          {cap(frLongDay(date))} · {slot === "midi" ? "Midi" : "Soir"}
-          <span className="inline-flex items-center gap-1 rounded-full border border-border/60 px-2 py-0.5 text-[11px] font-normal text-muted-foreground">
-            <WeatherIcon cond={w.cond} className="h-3 w-3" animated={false} />
-            {w.maxC}°
-          </span>
-        </DialogTitle>
-      </DialogHeader>
-
       <div className="space-y-2.5">
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
