@@ -7,7 +7,7 @@ import { RoomIcon } from "@/components/RoomIcon";
 
 import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, type WeatherCond } from "@/lib/mock-data";
 import { people, nextBirthday, upcomingAge, daysUntil, initialPlan, dishById, iso, addDays, frLongDay, TODAY } from "@/lib/maison-data";
-import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer, Server, Cast, Cake, UtensilsCrossed } from "lucide-react";
+import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, ArrowUp, Activity, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer, Server, Cast, Cake, UtensilsCrossed } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -724,7 +724,7 @@ function WeatherTile() {
   );
 }
 
-/** What we eat — one quiet line under the greeting, icon first. */
+/** What we eat — two quiet lines under the greeting: today, then tomorrow. */
 function RepasLine() {
   const dayPlan = (d: Date) => {
     const key = iso(d);
@@ -734,20 +734,32 @@ function RepasLine() {
     };
     return { midi: at("midi"), soir: at("soir") };
   };
-  const label = (o: number) => (o === 0 ? "Aujourd'hui" : o === 1 ? "Demain" : frLongDay(addDays(TODAY, o)));
-  const first = [0, 1, 2, 3].map((o) => ({ o, ...dayPlan(addDays(TODAY, o)) })).filter((d) => d.midi || d.soir)[0];
-  if (!first) return null;
+
+  const days = [
+    { label: "Aujourd'hui", ...dayPlan(TODAY) },
+    { label: "Demain", ...dayPlan(addDays(TODAY, 1)) },
+  ];
 
   return (
     <Link
       to="/maison/repas"
-      className="group mt-3 inline-flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
+      className="group mt-3 flex items-start gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
     >
-      <UtensilsCrossed className="h-3.5 w-3.5 shrink-0 text-muted-foreground/70 transition-colors group-hover:text-foreground" />
-      <span className="min-w-0">
-        <span className="uppercase tracking-[0.12em]">{label(first.o)}</span>
-        {first.midi && <> · {first.midi}</>}
-        {first.soir && <> · {first.soir}</>}
+      <UtensilsCrossed className="mt-[3px] h-3.5 w-3.5 shrink-0 text-muted-foreground/70 transition-colors group-hover:text-foreground" />
+      <span className="min-w-0 space-y-0.5">
+        {days.map((d) => (
+          <span key={d.label} className="block">
+            <span className="uppercase tracking-[0.12em]">{d.label}</span>
+            {d.midi || d.soir ? (
+              <>
+                {d.midi && <> · {d.midi}</>}
+                {d.soir && <> · {d.soir}</>}
+              </>
+            ) : (
+              <span className="italic text-muted-foreground/60"> · rien de prévu</span>
+            )}
+          </span>
+        ))}
       </span>
     </Link>
   );
