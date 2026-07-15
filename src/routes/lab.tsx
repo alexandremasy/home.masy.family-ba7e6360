@@ -93,7 +93,7 @@ function LabAmbience() {
       <style>{LAB_THEME_CSS}</style>
 
       <div className={"relative z-10 mx-auto w-full max-w-2xl px-6 pb-32 pt-[20vh] transition-all duration-500 sm:pt-[24vh] " +
-        (openModule ? "scale-[0.97] opacity-40 blur-[2px]" : "")}>
+        (openModule || launcher ? "scale-[0.97] opacity-40 blur-[2px]" : "")}>
 
         {/* Greeting */}
         <div className="lab-in flex items-start justify-between" style={{ ["--d" as string]: "0ms" }}>
