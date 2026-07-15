@@ -23,6 +23,16 @@ export const Route = createFileRoute("/_app/repas")({
 
 const WEEKDAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 
+/** "13 → 26 juillet", collapsing the month when both ends share it. */
+function rangeLabel(weeks: Date[][]): string {
+  const first = weeks[0][0];
+  const last = weeks[1][6];
+  const sameMonth = first.getMonth() === last.getMonth();
+  const fmt = (d: Date, withMonth: boolean) =>
+    d.toLocaleDateString("fr-BE", withMonth ? { day: "numeric", month: "long" } : { day: "numeric" });
+  return `${fmt(first, !sameMonth)} → ${fmt(last, true)}`;
+}
+
 function RepasPage() {
   const [plan, setPlan] = useState<PlanEntry[]>(initialPlan);
   const [selected, setSelected] = useState<{ date: string; slot: Slot } | null>(null);
