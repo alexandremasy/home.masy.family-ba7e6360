@@ -3,6 +3,7 @@ import { Home, Zap, ShieldCheck, Wifi, Car, Coins, ArrowUpRight, Cake, Music, Pl
 import { CountUp } from "@/components/CountUp";
 import { meteo, tesla, dishwasher } from "@/lib/mock-data";
 import { people } from "@/lib/maison-data";
+import { LAB_THEME_CSS, bez, hm } from "@/lib/lab-theme";
 
 // Ambience proof v6 — closing the gap with the Novo ref:
 // sober background (no aurora wash), OPAQUE saturated tiles that pop, glass as a single
