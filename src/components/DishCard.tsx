@@ -21,16 +21,21 @@ export function Facet({ children }: { children: ReactNode }) {
  * Never `warm` — that is the alert tone.
  */
 export function StatusPill({
-  tone = "muted", icon, children,
+  tone = "muted", icon, children, title,
 }: {
   tone?: "primary" | "muted";
   icon?: ReactNode;
-  children: ReactNode;
+  /** Omit in a calendar cell — the icon alone, so the name keeps its width. */
+  children?: ReactNode;
+  title?: string;
 }) {
   return (
     <span
+      title={title}
+      aria-label={title}
       className={cn(
-        "inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[10px] leading-tight",
+        "inline-flex shrink-0 items-center gap-1 rounded-full py-0.5 text-[10px] leading-tight",
+        children ? "px-2" : "px-1",
         tone === "primary"
           ? "bg-primary font-medium text-primary-foreground"
           : "border border-border text-muted-foreground",
