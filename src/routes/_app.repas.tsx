@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   dishes, dishById, suggestFor, coherenceSignals, initialPlan, calWeeks, iso,
   isWeekend, frLongDay, addDays, dayWeather, weatherHintFor, TODAY,
   type PlanEntry, type Slot, type Dish,
 } from "@/lib/maison-data";
 import {
-  Sparkles, X, RefreshCw, Search, Repeat, Flame, Info, AlertTriangle, Package, Move,
+  Sparkles, X, RefreshCw, Search, Repeat, Info, AlertTriangle, Package, Move,
   ThermometerSun, ChevronLeft, ChevronRight,
 } from "lucide-react";
 
@@ -62,6 +63,7 @@ function RepasPage() {
       <PageHeader
         title="Repas"
         subtitle="Fenêtre glissante de ~10 jours, cohérence évaluée sur 2 semaines."
+        variant="page"
       />
 
       {/* Coherence — one compact strip, not a column */}
