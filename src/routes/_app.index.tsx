@@ -6,7 +6,8 @@ import { PMCBag } from "@/components/PMCBag";
 import { RoomIcon } from "@/components/RoomIcon";
 
 import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, type WeatherCond } from "@/lib/mock-data";
-import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer, Gauge, Server, Cast } from "lucide-react";
+import { people, nextBirthday, upcomingAge, daysUntil, initialPlan, dishById, iso, addDays, TODAY } from "@/lib/maison-data";
+import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer, Gauge, Server, Cast, Cake, UtensilsCrossed } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
