@@ -12,10 +12,10 @@ export const Route = createFileRoute("/_app/maison")({
   }),
 });
 
+// Anniversaires is not a tab here — it's reachable from the Maison nav in the TopNav.
 const tabs = [
-  { to: "/maison/repas",           label: "Repas",         icon: UtensilsCrossed },
-  { to: "/maison/courses",         label: "Courses",       icon: ShoppingBasket },
-  { to: "/maison/anniversaires",   label: "Anniversaires", icon: Cake },
+  { to: "/maison/repas",   label: "Repas",   icon: UtensilsCrossed },
+  { to: "/maison/courses", label: "Courses", icon: ShoppingBasket },
 ];
 
 function MaisonLayout() {
