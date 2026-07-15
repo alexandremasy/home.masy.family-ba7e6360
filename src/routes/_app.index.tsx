@@ -291,37 +291,29 @@ export function Dashboard() {
 }
 
 
-/** The next birthday coming up — today's takes over the tile. */
+/**
+ * The next birthday — an event of row 1, same shape as the PMC notice beside it.
+ * What matters first is WHOSE birthday it is; the age comes second.
+ */
 function BirthdayTile() {
   const next = [...people]
-    .map((p) => ({ p, date: nextBirthday(p), days: daysUntil(nextBirthday(p)) }))
+    .map((p) => ({ p, days: daysUntil(nextBirthday(p)) }))
     .sort((a, b) => a.days - b.days)[0];
   if (!next) return null;
 
   const { p, days } = next;
   const today = days === 0;
-  const when = today ? "Aujourd'hui" : days === 1 ? "Demain" : `Dans ${days} jours`;
+  const when = today ? "Auj." : days === 1 ? "Demain" : `Dans ${days} j`;
 
   return (
-    <Tile span={1} to="/maison/anniversaires" tone={today ? "warm" : "default"} className="flex flex-col">
-      <div className="flex items-start justify-between gap-2">
-        <p className={"text-xs uppercase tracking-[0.18em] " + (today ? "opacity-70" : "text-muted-foreground")}>
-          Anniversaire
+    <Tile span={1} to="/maison/anniversaires" tone={today ? "warm" : "default"} className="relative overflow-hidden">
+      <Cake className={"pointer-events-none absolute -right-5 -top-5 h-28 w-28 " + (today ? "opacity-15" : "opacity-[0.06]")} />
+      <div className="relative">
+        <p className={"text-xs uppercase tracking-[0.18em] " + (today ? "opacity-70" : "text-muted-foreground")}>{when}</p>
+        <p className="mt-1 font-serif text-lg leading-tight">Anniversaire de {p.name}</p>
+        <p className={"mt-0.5 text-xs " + (today ? "opacity-80" : "text-muted-foreground")}>
+          {upcomingAge(p)} ans · {p.relation}
         </p>
-        <Cake className={"h-4.5 w-4.5 " + (today ? "anim-breathe" : "text-muted-foreground")} />
-      </div>
-
-      <p className="mt-4 font-serif text-3xl leading-none tracking-tight">
-        <CountUp to={upcomingAge(p)} /><span className="ml-1 text-base opacity-60">ans</span>
-      </p>
-      <p className={"mt-1 font-serif text-xl leading-tight " + (today ? "" : "text-foreground")}>{p.name}</p>
-
-      <div className="mt-auto pt-3">
-        <span className={"inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium " + (
-          today ? "bg-foreground/10" : "bg-secondary text-muted-foreground"
-        )}>
-          {when} · {p.relation}
-        </span>
       </div>
     </Tile>
   );
