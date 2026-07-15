@@ -6,7 +6,7 @@ import { PMCBag } from "@/components/PMCBag";
 import { RoomIcon } from "@/components/RoomIcon";
 
 import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, type WeatherCond } from "@/lib/mock-data";
-import { people, nextBirthday, upcomingAge, daysUntil, initialPlan, dishById, iso, addDays, TODAY } from "@/lib/maison-data";
+import { people, nextBirthday, upcomingAge, daysUntil, initialPlan, dishById, iso, addDays, frLongDay, TODAY } from "@/lib/maison-data";
 import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog, Sunrise, Sunset, Thermometer, Gauge, Server, Cast, Cake, UtensilsCrossed } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -33,8 +33,8 @@ export function Dashboard() {
     <div className="space-y-8">
       <div className="grid-bento stagger">
 
-        {/* Row 1 — greeting left, notifications right. Nothing else on this row. */}
-        <div className="col-span-1 flex h-full flex-col items-start justify-center px-2 py-4 sm:col-span-3 lg:col-span-5">
+        {/* Row 1 — greeting left, events right. Nothing else on this row. */}
+        <div className="col-span-2 flex h-full flex-col items-start justify-center px-2 py-4 sm:col-span-2 lg:col-span-4">
           <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{dateStr}</p>
           <h1 className="mt-1 font-serif text-2xl tracking-tight text-foreground sm:text-3xl">
             {greeting}.
@@ -49,6 +49,8 @@ export function Dashboard() {
             <p className="mt-0.5 text-xs opacity-80">avant {calendrier.poubelleToday.time}</p>
           </div>
         </Tile>
+
+        <BirthdayTile />
 
         {/* PRIORITY 2 — Rooms */}
         {visibleRooms.flatMap((room) => {
