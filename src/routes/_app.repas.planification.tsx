@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { WeatherIcon } from "@/components/WeatherIcon";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
+import { DishFilters, applyFilter, countFilters, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
 import { DishCard, StatusPill } from "@/components/DishCard";
 import { cap } from "@/lib/utils";
 import {
@@ -13,7 +13,7 @@ import {
 } from "@/lib/maison-data";
 import {
   Sparkles, X, RefreshCw, Search, Repeat, Info, AlertTriangle, Package, Move,
-  ThermometerSun, ChevronLeft, ChevronRight,
+  ThermometerSun, ChevronLeft, ChevronRight, ChevronDown, SlidersHorizontal,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_app/repas/planification")({
@@ -145,7 +145,15 @@ function RepasPage() {
       {/* Suggestions — modal, opened from a slot */}
       <Dialog open={!!selected} onOpenChange={(o) => { if (!o) setSelected(null); }}>
         {/* The app's own background, so the white cards read as objects on it. */}
-        <DialogContent className="max-w-2xl gap-7 bg-background">
+        <DialogContent
+          className="max-w-2xl gap-7 bg-background"
+          onOpenAutoFocus={(e) => {
+            // Radix focuses the first field on open. On desktop that's what you
+            // want; on a phone it throws the keyboard over the very suggestions
+            // the modal exists to show.
+            if (!window.matchMedia("(min-width: 1024px)").matches) e.preventDefault();
+          }}
+        >
           {selected && selectedDate && (
             <SlotPicker
               date={selectedDate}
@@ -357,6 +365,7 @@ function SlotPicker({
     () => [...new Set(ranked.map((s) => s.dish.base))].sort() as Base[],
     [ranked],
   );
+  const activeCount = countFilters(filter);
 
   const w = dayWeather(date);
 
