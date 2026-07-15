@@ -72,7 +72,6 @@ export function CursorFollower() {
     const onLeave = () => {
       active = null;
       svg.style.opacity = "0";
-      dot.style.opacity = "0";
     };
 
     const onScroll = () => {
