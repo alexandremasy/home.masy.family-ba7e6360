@@ -371,7 +371,7 @@ function RepasTile() {
  */
 function IdleRoomsTile({ rooms: idle }: { rooms: Room[] }) {
   return (
-    <div className="col-span-1 flex h-full flex-col gap-2">
+    <div className="col-span-2 flex h-full flex-col gap-2">
       {idle.map((r) => (
         <Link
           key={r.key}
