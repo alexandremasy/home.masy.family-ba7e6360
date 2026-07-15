@@ -64,14 +64,10 @@ function Segmented<T extends string | number | boolean>({
   );
 }
 
-// Effort is 1–5 in the model; nobody thinks in "3/5" when cooking.
-const EFFORT_OPTIONS: Array<{ value: Effort; label: string }> = [
-  { value: 1, label: "Rapide" },
-  { value: 2, label: "Facile" },
-  { value: 3, label: "Moyen" },
-  { value: 4, label: "Long" },
-  { value: 5, label: "Très long" },
-];
+const EFFORT_OPTIONS = EFFORT_LEVELS.map((l) => ({
+  value: l.value,
+  label: `${l.label} · ${fmtMinutes(l.minutes)}`,
+}));
 
 const YES_NO = [{ value: true, label: "Oui" }, { value: false, label: "Non" }];
 
