@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Home, Zap, ShieldCheck, Wifi, Car, Coins, ArrowUpRight, Cake, Music, Plug, Search, SlidersHorizontal } from "lucide-react";
+import { Home, Zap, ShieldCheck, Wifi, Car, Coins, ArrowUpRight, Cake, Music, Plug, Search, SlidersHorizontal, Flame } from "lucide-react";
 import { CountUp } from "@/components/CountUp";
-import { meteo, tesla, dishwasher } from "@/lib/mock-data";
+import { meteo, tesla, dishwasher, energie } from "@/lib/mock-data";
 import { people } from "@/lib/maison-data";
-import { LAB_THEME_CSS, bez, hm } from "@/lib/lab-theme";
+import { LAB_THEME_CSS, bez, sunProgress } from "@/lib/lab-theme";
 
-// Ambience proof v6 — closing the gap with the Novo ref:
-// sober background (no aurora wash), OPAQUE saturated tiles that pop, glass as a single
-// exception, and material (radial-gradient volumes) instead of flat icons.
+// Ambience proof v7 — console. Closer to the Novo ref:
+// arrows on every tile, a ticked gauge (its signature) on a subject that earns it (the oil tank),
+// a more varied bento. Sober bg, opaque saturated tiles, glass as the single exception.
 export const Route = createFileRoute("/lab")({
   component: LabAmbience,
   head: () => ({ meta: [{ title: "Épreuve d'ambiance — Accueil" }] }),
@@ -22,6 +22,43 @@ const MODULES = [
   { key: "budget", label: "Budget", icon: Coins },
 ];
 
+/** The ref's signature control: an arc of ticks with a marker on the value. */
+function Gauge({ pct, label }: { pct: number; label: string }) {
+  const N = 34, cx = 100, cy = 96, r = 74;
+  const ticks = Array.from({ length: N }, (_, i) => {
+    const t = i / (N - 1);
+    const a = Math.PI - t * Math.PI;
+    const on = t <= pct / 100;
+    const len = on ? 12 : 8;
+    return {
+      x1: cx + r * Math.cos(a), y1: cy - r * Math.sin(a),
+      x2: cx + (r - len) * Math.cos(a), y2: cy - (r - len) * Math.sin(a),
+      on, key: i,
+    };
+  });
+  const a = Math.PI - (pct / 100) * Math.PI;
+  const mx = cx + (r + 3) * Math.cos(a), my = cy - (r + 3) * Math.sin(a);
+  return (
+    <svg viewBox="0 0 200 108" className="w-full overflow-visible">
+      {ticks.map((t) => (
+        <line key={t.key} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} strokeWidth={t.on ? 2.2 : 1.4} strokeLinecap="round"
+          stroke={t.on ? "var(--accent-deep)" : "color-mix(in oklab, var(--ink) 22%, transparent)"} className="gauge-tick" />
+      ))}
+      <circle cx={mx} cy={my} r="3.5" fill="var(--accent-deep)" />
+      <text x={cx} y={cy - 26} textAnchor="middle" className="fill-[color:var(--ink)] font-serif" fontSize="30">{pct}%</text>
+      <text x={cx} y={cy - 8} textAnchor="middle" className="fill-[color:var(--dim)]" fontSize="9" letterSpacing="1.4">{label}</text>
+    </svg>
+  );
+}
+
+function Arrow() {
+  return (
+    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-[color:var(--ink)]/15 text-[color:var(--dim)] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+      <ArrowUpRight className="h-3.5 w-3.5" />
+    </span>
+  );
+}
+
 function LabAmbience() {
   const now = new Date();
   const h = now.getHours();
@@ -29,9 +66,10 @@ function LabAmbience() {
   const timeStr = now.toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" });
   const m = meteo.today;
   const leo = people.find((p) => p.id === "leo");
+  const oil = energie.oil;
 
-  const dayT = Math.min(1, Math.max(0, (h + now.getMinutes() / 60 - hm(m.sunrise)) / (hm(m.sunset) - hm(m.sunrise))));
-  const sunX = bez(dayT, 14, 160, 306), sunY = bez(dayT, 96, -34, 96);
+  const t = sunProgress(now, m.sunrise, m.sunset);
+  const sunX = bez(t, 14, 160, 306), sunY = bez(t, 96, -34, 96);
 
   return (
     <div className="lab-root relative min-h-screen w-full overflow-hidden">
@@ -44,7 +82,7 @@ function LabAmbience() {
           <div>
             <p className="text-[13px] text-[color:var(--dim)]">{greeting}, Alexandre · {timeStr}</p>
             <h1 className="mt-2 font-serif text-[2.1rem] leading-[1.06] tracking-tight text-[color:var(--ink)] sm:text-5xl">
-              La maison veille,<br /><span className="italic text-[color:var(--hot)]">tout est paisible.</span>
+              La maison veille,<br /><span className="italic text-[color:var(--hot)]">une chose t'attend.</span>
             </h1>
           </div>
           <div className="flex gap-2">
@@ -53,11 +91,11 @@ function LabAmbience() {
           </div>
         </div>
 
-        {/* ---- One attention zone. Rhythm: colour · dark · glass · dark ---- */}
+        {/* ---- One attention zone ---- */}
         <div className="lab-in mt-9 grid grid-cols-2 gap-3" style={{ ["--d" as string]: "140ms" }}>
 
-          {/* MOMENT — opaque saturated hero (the big colour tile) */}
-          <div className="tile-accent col-span-2 relative overflow-hidden rounded-[30px] p-6">
+          {/* MOMENT — big colour tile */}
+          <button className="tile-accent group col-span-2 relative overflow-hidden rounded-[30px] p-6 text-left">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-[11px] uppercase tracking-[0.18em] text-black/50">{m.location} · maintenant</p>
@@ -67,7 +105,7 @@ function LabAmbience() {
                 </div>
                 <p className="mt-2 text-[13px] text-black/50">Le jour décline · coucher {m.sunset}</p>
               </div>
-              <button className="arrow-btn"><ArrowUpRight className="h-4 w-4" /></button>
+              <span className="arrow-btn transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"><ArrowUpRight className="h-4 w-4" /></span>
             </div>
             <svg viewBox="0 0 320 108" className="mt-3 h-24 w-full overflow-visible">
               <defs>
@@ -84,14 +122,17 @@ function LabAmbience() {
                 <circle cx={sunX} cy={sunY} r="11" fill="url(#sunball)" />
               </g>
             </svg>
-          </div>
+          </button>
 
-          {/* LÉO — second colour tile, saturated, with an overflowing volume */}
+          {/* LÉO — second colour tile, tall */}
           {leo && (
-            <div className="tile-deep row-span-2 relative flex flex-col justify-between overflow-hidden rounded-3xl p-5">
+            <div className="tile-deep group row-span-2 relative flex flex-col justify-between overflow-hidden rounded-3xl p-5">
               <span className="volume" aria-hidden style={{ right: "-28%", bottom: "-16%", width: "74%", aspectRatio: "1", opacity: 0.5 }} />
               <div className="relative">
-                <span className="grid h-11 w-11 place-items-center rounded-full bg-black/20 text-white"><Cake className="h-5 w-5" /></span>
+                <div className="flex items-start justify-between">
+                  <span className="grid h-11 w-11 place-items-center rounded-full bg-black/20 text-white"><Cake className="h-5 w-5" /></span>
+                  <span className="grid h-7 w-7 place-items-center rounded-full border border-white/25 text-white/80"><ArrowUpRight className="h-3.5 w-3.5" /></span>
+                </div>
                 <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-white/70">Aujourd'hui</p>
                 <p className="mt-1 font-serif text-xl leading-tight text-white">Léo a 34 ans</p>
                 <p className="mt-1.5 text-[12px] leading-relaxed text-white/70">Un mot lui ferait plaisir.</p>
@@ -100,8 +141,20 @@ function LabAmbience() {
             </div>
           )}
 
-          {/* MUSIC — dark opaque surface */}
-          <div className="surface flex flex-col justify-between rounded-3xl p-4">
+          {/* MAZOUT — the ticked gauge, on a subject that earns it */}
+          <button className="surface group flex flex-col rounded-3xl p-4 text-left">
+            <div className="flex w-full items-start justify-between">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--accent-deep)]"><Flame className="h-4 w-4" /></span>
+              <Arrow />
+            </div>
+            <div className="mt-1">
+              <Gauge pct={oil.tankPct} label="CUVE" />
+            </div>
+            <p className="-mt-1 text-[11px] text-[color:var(--dim)]">{oil.tankLiters} L · ~{oil.autonomyDays} j d'autonomie</p>
+          </button>
+
+          {/* MUSIC */}
+          <button className="surface group flex flex-col justify-between rounded-3xl p-4 text-left">
             <div className="flex items-start justify-between">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--hot)]"><Music className="h-4 w-4" /></span>
               <div className="eq" aria-hidden><i /><i /><i /><i /></div>
@@ -110,10 +163,10 @@ function LabAmbience() {
               <p className="truncate text-[13px] font-medium text-[color:var(--ink)]">Linked</p>
               <p className="truncate text-[11px] text-[color:var(--dim)]">Bonobo · Salon</p>
             </div>
-          </div>
+          </button>
 
           {/* BERNARD — THE glass exception */}
-          <div className="glass flex flex-col justify-between rounded-3xl p-4">
+          <button className="glass group flex flex-col justify-between rounded-3xl p-4 text-left">
             <div className="flex items-start justify-between">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--ink)]"><Car className="h-4 w-4" /></span>
               <span className="inline-flex shrink-0 items-center gap-1 text-[12px] tabular-nums text-[color:var(--dim)]"><Plug className="h-3 w-3" /><CountUp to={tesla.charge} />%</span>
@@ -122,18 +175,22 @@ function LabAmbience() {
               <p className="truncate text-[13px] font-medium text-[color:var(--ink)]">En route</p>
               <p className="truncate text-[11px] text-[color:var(--dim)]">Place Flagey</p>
             </div>
-          </div>
+          </button>
 
-          {/* DISHWASHER — dark opaque strip */}
-          <div className="surface col-span-2 rounded-3xl p-4">
-            <div className="flex items-center justify-between">
-              <p className="text-[13px] font-medium text-[color:var(--ink)]">Lave-vaisselle · {dishwasher.phase}</p>
-              <p className="text-[11px] text-[color:var(--dim)]">fin ~20:30</p>
+          {/* DISHWASHER */}
+          <button className="surface group flex flex-col justify-between rounded-3xl p-4 text-left">
+            <div className="flex items-start justify-between">
+              <span className="text-[11px] uppercase tracking-[0.14em] text-[color:var(--dim)]">{dishwasher.phase}</span>
+              <Arrow />
             </div>
-            <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-[color:var(--track)]">
-              <div className="bar h-full rounded-full" style={{ ["--p" as string]: `${dishwasher.progressPct}%`, background: "linear-gradient(90deg, var(--accent-deep), var(--accent-lite))" }} />
+            <div className="mt-5">
+              <p className="text-[13px] font-medium text-[color:var(--ink)]">Lave-vaisselle</p>
+              <p className="mt-0.5 text-[11px] text-[color:var(--dim)]">fin ~20:30</p>
+              <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[color:var(--track)]">
+                <div className="bar h-full rounded-full" style={{ ["--p" as string]: `${dishwasher.progressPct}%`, background: "linear-gradient(90deg, var(--accent-deep), var(--accent-lite))" }} />
+              </div>
             </div>
-          </div>
+          </button>
         </div>
 
         <p className="lab-in mt-8 text-[13px] text-[color:var(--dim)]" style={{ ["--d" as string]: "320ms" }}>
