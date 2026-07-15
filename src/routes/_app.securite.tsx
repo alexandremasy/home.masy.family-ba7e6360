@@ -24,6 +24,7 @@ function SecuriteLayout() {
       <PageHeader
         title="Sécurité"
         subtitle="L'état de la maison, en un coup d'œil"
+        variant="page"
         action={
           <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs uppercase tracking-[0.14em] ${
             secure ? "bg-success/15 text-success" : "bg-warm/15 text-warm"
