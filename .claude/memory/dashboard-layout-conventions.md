@@ -23,9 +23,12 @@ TopNav (z-30)**. So a module can only show its own tabs in the TopNav if it is f
   and replaces the domain list.
 - Sécurité was made a mode on 2026-07-15: layout `_app.securite.tsx` + `/securite` → redirect to
   `/securite/etat`, tabs **État · Périmètre · Activité**. It is NOT in the Maison nav any more.
-- Maison's nav = Pièces · Repas · Anniversaires · Bernard · Réseau · Énergie. `/maison` is only a
-  redirect to `/maison/repas` — never label a nav entry "Maison". `/maison/courses` exists but is
-  in no nav (MAISON-BRIEF wants it attached to the meal plan).
+- Maison's nav = Pièces · Repas · Courses · Anniversaires · Bernard · Réseau · Énergie — all in the
+  TopNav, all full-bleed. **There is no `/maison` URL segment** (flattened 2026-07-15: `/repas`,
+  `/courses`, `/anniversaires`; the `_app.maison.tsx` layout and its inner tab nav are gone).
+  Maison is the mode, not a path — never reintroduce it into a URL.
+- `isFullBleed` in `_app.tsx` is an explicit prefix list. **Adding a route to the Maison nav means
+  adding its prefix there**, or it opens as an overlay and its page reads as a modal.
 
 **Idle rooms rule:** a room with `!lightsOn && !occupied` gives up its own slot — the idle ones share
 one `col-span-2` cell, each still its own card with a 3px border (not a merged group).
