@@ -2,7 +2,8 @@ import { useEffect, useRef } from "react";
 
 /**
  * Custom cursor inspired by alexandremasy.com:
- * - Always: a tiny dot replaces the native cursor, with a soft circle ring trailing it.
+ * - The native system cursor is kept (auto → pointer on interactive elements);
+ *   a soft circle ring trails it.
  * - On interactive elements (a, button, [data-cursor], [role="button"], inputs):
  *   the ring morphs into a wobbly rounded rectangle snapped to the element's bounds,
  *   distorted by an SVG fractal-noise displacement filter.
@@ -10,13 +11,11 @@ import { useEffect, useRef } from "react";
 export function CursorFollower() {
   const svgRef = useRef<SVGSVGElement>(null);
   const shapeRef = useRef<SVGRectElement>(null);
-  const dotRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const svg = svgRef.current;
     const shape = shapeRef.current;
-    const dot = dotRef.current;
-    if (!svg || !shape || !dot) return;
+    if (!svg || !shape) return;
 
     const INTERACTIVE = 'a, button, [role="button"], [data-cursor], input, select, textarea, summary, label';
     const PAD = 8;
