@@ -46,8 +46,8 @@ function MuralSurface() {
 
       {/* THE glance — one dominant tile: the room + its one gesture */}
       <div className="lab-in tile-accent relative mt-3 flex-1 overflow-hidden rounded-[22px] p-4" style={{ ["--d" as string]: "100ms" }}>
-        <span className="volume" style={{ right: "-22%", bottom: "-30%", width: "62%", aspectRatio: "1", opacity: 0.45 }} />
-        <div className="relative flex h-full flex-col justify-between">
+        <span className="volume" style={{ right: "-14%", bottom: "-22%", width: "40%", aspectRatio: "1", opacity: 0.28 }} />
+        <div className="relative flex h-full flex-col justify-center gap-1">
           <div>
             <p className="text-[10px] uppercase tracking-[0.18em] text-black/50">Il fait</p>
             <p className="font-serif text-5xl tracking-tight text-black">{cuisine?.temperature}°</p>
