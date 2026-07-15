@@ -435,7 +435,7 @@ export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: 
     if (leftover) {
       // Outranks the component-overlap penalty it necessarily incurs against itself.
       s += 40;
-      reason = `cuisson déjà prévue · ${remaining} créneau${remaining > 1 ? "x" : ""} à écouler`;
+      reason = `à écouler · ${remaining} créneau${remaining > 1 ? "x" : ""}`;
       return { dish, reason, score: s, leftover, remaining };
     }
 
