@@ -11,6 +11,7 @@ import {
 
 const modes = [
   { key: "maison", label: "Maison", icon: Home, to: "/" as const },
+  { key: "securite", label: "Sécurité", icon: ShieldCheck, to: "/securite" as const },
   { key: "budget", label: "Budget", icon: Wallet, to: "/budget" as const },
 ];
 
