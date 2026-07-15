@@ -104,7 +104,7 @@ function LabAmbience() {
             </h1>
           </div>
           <div className="flex gap-2">
-            <button className="orb h-10 w-10"><Search className="h-4 w-4" /></button>
+            <button onClick={() => setLauncher(true)} className="orb h-10 w-10"><Search className="h-4 w-4" /></button>
             <button className="orb h-10 w-10"><SlidersHorizontal className="h-4 w-4" /></button>
           </div>
         </div>
