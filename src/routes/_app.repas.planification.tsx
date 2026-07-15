@@ -316,17 +316,15 @@ function SlotPicker({
   // One ranked pool for the whole modal: the engine orders it, filters narrow it.
   // Browsing never resurrects a dish the slot's hard rules rejected.
   const ranked = useMemo(() => suggestFor(date, slot, plan, hint, 200), [date, slot, plan, hint]);
-  // Only count as "browsing" once the user moves off the slot's own default, so
-  // an untouched modal still opens on the curated shortlist rather than a full list.
-  const browsing =
-    query.trim().length > 0 ||
-    JSON.stringify(filter) !== JSON.stringify(baseline);
 
   const shown = useMemo(() => {
     const keep = new Set(applyFilter(ranked.map((s) => s.dish), filter, query).map((d) => d.id));
-    const matching = ranked.filter((s) => keep.has(s.dish.id));
-    return browsing ? matching : matching.slice(0, 6);
-  }, [ranked, filter, query, browsing]);
+    return ranked.filter((s) => keep.has(s.dish.id));
+  }, [ranked, filter, query]);
+
+  // The engine's shortlist, then everything else it would still accept.
+  const suggestions = shown.slice(0, 6);
+  const others = shown.slice(6);
 
   const bases = useMemo(
     () => [...new Set(ranked.map((s) => s.dish.base))].sort() as Base[],
