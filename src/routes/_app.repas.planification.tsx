@@ -1,12 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { PageHeader } from "@/components/PageHeader";
 import { WeatherIcon } from "@/components/WeatherIcon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   dishes, dishById, suggestFor, coherenceSignals, initialPlan, calWeeks, iso,
   isWeekend, frLongDay, addDays, dayWeather, weatherHintFor, TODAY,
@@ -247,7 +245,7 @@ function SlotCell({
       className={
         "group relative flex flex-1 flex-col rounded-lg border p-2 text-left transition-all " +
         (dragOver ? "border-primary bg-primary/5 " : "border-transparent ") +
-        (entry ? "bg-secondary/50 hover:border-border hover:bg-secondary" : "")
+        (entry ? "bg-secondary/50 hover:border-border hover:bg-secondary hover:shadow-soft" : "")
       }
     >
       <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
@@ -300,16 +298,24 @@ function SlotPicker({
   onPick: (dish: Dish, batch: boolean) => void;
 }) {
   const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<DishFilter>(EMPTY_FILTER);
   const hint = useMemo(() => weatherHintFor(date), [date]);
-  const suggestions = useMemo(() => suggestFor(date, slot, plan, hint), [date, slot, plan, hint]);
 
-  const searching = query.trim().length > 0;
-  const results = searching
-    ? dishes.filter((d) =>
-        d.name.toLowerCase().includes(query.toLowerCase()) ||
-        d.modifiers.some((m) => m.name.toLowerCase().includes(query.toLowerCase()))
-      ).slice(0, 12)
-    : [];
+  // One ranked pool for the whole modal: the engine orders it, filters narrow it.
+  // Browsing never resurrects a dish the slot's hard rules rejected.
+  const ranked = useMemo(() => suggestFor(date, slot, plan, hint, 200), [date, slot, plan, hint]);
+  const browsing = isFilterActive(filter) || query.trim().length > 0;
+
+  const shown = useMemo(() => {
+    if (!browsing) return ranked.slice(0, 6);
+    const keep = new Set(applyFilter(ranked.map((s) => s.dish), filter, query).map((d) => d.id));
+    return ranked.filter((s) => keep.has(s.dish.id));
+  }, [ranked, filter, query, browsing]);
+
+  const bases = useMemo(
+    () => [...new Set(ranked.map((s) => s.dish.base))].sort() as Base[],
+    [ranked],
+  );
 
   const w = dayWeather(date);
 
