@@ -362,7 +362,7 @@
     stroke-width: 1.5;
   }
   @media (hover: none), (pointer: coarse) {
-    .cursor-follower, .cursor-dot { display: none; }
+    .cursor-follower { display: none; }
   }
 
   /* ---- Animated mesh gradient ---- */
