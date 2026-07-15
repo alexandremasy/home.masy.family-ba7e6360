@@ -434,7 +434,9 @@ function SuggestionCard({
       }}
       className={
         "group relative flex cursor-pointer flex-col rounded-xl border p-3 text-left transition-all hover:border-primary hover:bg-secondary/40 hover:shadow-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-ring " +
-        (leftover ? "border-warm/50 bg-warm/5" : "border-border/60")
+        // `accent` (mustard), not `warm` (terracotta): a leftover to use up is a
+        // useful signal, not an alert. `warm` is the alert tone everywhere else.
+        (leftover ? "border-accent/50 bg-accent/[0.07]" : "border-border/60")
       }
     >
       <div className="min-w-0">
@@ -443,29 +445,30 @@ function SuggestionCard({
           {dish.base} · {dish.densite} · {dish.temperature}
         </p>
       </div>
-      <div className="mt-2 flex flex-wrap gap-1">
+
+      {/* One tag row: components, plus the batch action styled as a tag among them. */}
+      <div className="mt-2 flex flex-wrap items-center gap-1">
         {dish.modifiers.slice(0, 4).map((m) => (
           <Badge key={m.name} variant="secondary" className="text-[10px] font-normal">{m.name}</Badge>
         ))}
-      </div>
-      <div className="mt-2 flex items-end justify-between gap-2">
-        {/* Only an actionable reason earns a line — "the cook already exists". */}
-        {leftover ? (
-          <p className="inline-flex items-start gap-1 text-[11px] text-warm">
-            <Repeat className="mt-0.5 h-3 w-3 shrink-0" />{reason}
-          </p>
-        ) : <span />}
         {dish.rendement > 1 && !leftover && (
-          <Button
-            size="sm" variant="outline"
+          <button
+            type="button"
             onClick={(e) => { e.stopPropagation(); onPick(dish, true); }}
-            className="h-7 shrink-0 gap-1 text-xs"
             title="Batch : couvre aussi le créneau suivant"
+            className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2.5 py-0.5 text-[10px] transition-colors hover:border-foreground hover:bg-foreground hover:text-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Repeat className="h-3 w-3" />×2
-          </Button>
+          </button>
         )}
       </div>
+
+      {/* Only an actionable reason earns a line — "the cook already exists". */}
+      {leftover && (
+        <p className="mt-2 inline-flex items-start gap-1 text-[11px] text-accent-foreground">
+          <Repeat className="mt-0.5 h-3 w-3 shrink-0" />{reason}
+        </p>
+      )}
     </div>
   );
 }
