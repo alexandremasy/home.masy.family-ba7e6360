@@ -96,24 +96,28 @@ function LabAmbience() {
             </div>
           )}
 
-          {/* Music */}
-          <div className="lab-glass flex items-center gap-3 rounded-3xl p-4">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--hot)]"><Music className="h-4 w-4" /></span>
-            <div className="min-w-0 flex-1">
+          {/* Music — vertical compact tile */}
+          <div className="lab-glass flex flex-col justify-between rounded-3xl p-4">
+            <div className="flex items-start justify-between">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--hot)]"><Music className="h-4 w-4" /></span>
+              <div className="lab-eq" aria-hidden><i /><i /><i /><i /></div>
+            </div>
+            <div className="mt-5 min-w-0">
               <p className="truncate text-[13px] font-medium text-[color:var(--ink)]">Linked</p>
               <p className="truncate text-[11px] text-[color:var(--dim)]">Bonobo · Salon</p>
             </div>
-            <div className="lab-eq" aria-hidden><i /><i /><i /><i /></div>
           </div>
 
-          {/* Bernard */}
-          <div className="lab-glass flex items-center gap-3 rounded-3xl p-4">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--ink)]"><Car className="h-4 w-4" /></span>
-            <div className="min-w-0 flex-1">
+          {/* Bernard — vertical compact tile */}
+          <div className="lab-glass flex flex-col justify-between rounded-3xl p-4">
+            <div className="flex items-start justify-between">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--chip)] text-[color:var(--ink)]"><Car className="h-4 w-4" /></span>
+              <span className="inline-flex shrink-0 items-center gap-1 text-[12px] tabular-nums text-[color:var(--dim)]"><Plug className="h-3 w-3" /><CountUp to={tesla.charge} />%</span>
+            </div>
+            <div className="mt-5 min-w-0">
               <p className="truncate text-[13px] font-medium text-[color:var(--ink)]">En route</p>
               <p className="truncate text-[11px] text-[color:var(--dim)]">Place Flagey</p>
             </div>
-            <span className="inline-flex shrink-0 items-center gap-1 text-[12px] tabular-nums text-[color:var(--dim)]"><Plug className="h-3 w-3" /><CountUp to={tesla.charge} />%</span>
           </div>
 
           {/* Dishwasher — wide strip */}
