@@ -511,14 +511,17 @@ export function coherenceSignals(plan: PlanEntry[]): Array<{ tone: "warn" | "inf
   });
   // Batch info
   const batchDishes = new Set(plan.filter((p) => !p.batchOfDate).map((p) => p.dishId).filter((id) => (dishById(id)?.rendement ?? 1) >= 2));
-  if (batchDishes.size >= 2) out.push({ tone: "info", text: `${batchDishes.size} dishes en batch : couvrent plusieurs slots.` });
+  if (batchDishes.size >= 2) out.push({ tone: "info", text: `${batchDishes.size} plats en batch : ils couvrent plusieurs créneaux.` });
 
-  // Weekend load
-  const weekendEffort = plan
+  // Weekend load, in time at the stove — "8/15" was a scale with no unit.
+  const weekendMinutes = plan
     .filter((p) => isWeekend(new Date(p.date)) && !p.batchOfDate)
-    .reduce((a, p) => a + (dishById(p.dishId)?.effort ?? 0), 0);
-  if (weekendEffort >= 10) out.push({ tone: "warn", text: `Charge cuisson weekend élevée (${weekendEffort}/15).` });
-  else out.push({ tone: "info", text: `Charge cuisson weekend : ${weekendEffort}/15.` });
+    .reduce((a, p) => {
+      const d = dishById(p.dishId);
+      return a + (d ? effortLevel(d.effort).minutes : 0);
+    }, 0);
+  if (weekendMinutes >= 240) out.push({ tone: "warn", text: `Weekend chargé : ${fmtMinutes(weekendMinutes)} de cuisine.` });
+  else out.push({ tone: "info", text: `Cuisine du weekend : ${fmtMinutes(weekendMinutes)}.` });
 
   return out;
 }
