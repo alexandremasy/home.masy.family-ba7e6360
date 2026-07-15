@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { PageHeader } from "@/components/PageHeader";
-import { UtensilsCrossed, ShoppingBasket, Cake } from "lucide-react";
+import { UtensilsCrossed, ShoppingBasket } from "lucide-react";
 
 export const Route = createFileRoute("/_app/maison")({
   component: MaisonLayout,
