@@ -12,16 +12,20 @@ export const Route = createFileRoute("/_app/repas")({
   }),
 });
 
-// Courses lives here, not in the TopNav — it is derived from the plan, so it
-// belongs to the Repas module rather than being a domain of its own.
+// Same segmented control as Énergie's "Vue d'ensemble / Relevés", but each tab is
+// its own route (deep-linkable) rather than in-page state — hence Tabs driven by
+// the pathname instead of TabsContent.
+// Courses lives here, not in the TopNav: it is derived from the plan.
 const tabs = [
-  { to: "/repas/planification", label: "Planification", icon: CalendarRange },
-  { to: "/repas/plats",         label: "Plats",         icon: UtensilsCrossed },
-  { to: "/repas/courses",       label: "Courses",       icon: ShoppingBasket },
+  { to: "/repas/planification", label: "Planification" },
+  { to: "/repas/plats",         label: "Plats" },
+  { to: "/repas/courses",       label: "Courses" },
 ];
 
 function RepasLayout() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const current = tabs.find((t) => pathname.startsWith(t.to))?.to ?? tabs[0].to;
 
   return (
     <div className="space-y-6">
@@ -31,26 +35,13 @@ function RepasLayout() {
         variant="page"
       />
 
-      <nav className="flex gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {tabs.map(({ to, label, icon: Icon }) => {
-          const active = pathname === to || pathname.startsWith(to + "/");
-          return (
-            <Link
-              key={to}
-              to={to}
-              className={
-                "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm transition-colors " +
-                (active
-                  ? "bg-foreground text-background"
-                  : "border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground")
-              }
-            >
-              <Icon className="h-3.5 w-3.5" />
-              {label}
-            </Link>
-          );
-        })}
-      </nav>
+      <Tabs value={current} onValueChange={(to) => navigate({ to })}>
+        <TabsList className="h-10 bg-secondary/70 p-1">
+          {tabs.map((t) => (
+            <TabsTrigger key={t.to} value={t.to} className="px-4">{t.label}</TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       <Outlet />
     </div>
