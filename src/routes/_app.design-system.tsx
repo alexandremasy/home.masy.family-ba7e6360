@@ -240,8 +240,7 @@ function DesignSystemPage() {
                 <p className="font-mono text-xs text-foreground">tracking-eyebrow · 0.18em</p>
                 <p className="mt-1.5 text-xs text-muted-foreground">
                   Figma sets letter-spacing <b>0</b> on every token. The eyebrow is a dashboard
-                  pattern the brand set doesn't cover, so it keeps its spacing. If it ever moves
-                  into Figma, this is the line to reconcile.
+                  pattern the reference doesn't cover, so the app just owns its spacing.
                 </p>
               </Panel>
             </div>

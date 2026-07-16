@@ -216,11 +216,11 @@ the value *is* the token:
   text, a visible change on primary buttons, `StatusPill`, active badges.
 - **`--surface` deleted** — it had zero usages.
 
-**The dark theme is NOT ported.** The library has one neutral ramp, "Light", and no dark
-counterpart, so `.dark` stays as authored: navy-tinted, not the neutral grey an inverted Light ramp
-would give. This is the one invented block left in `styles.css`, marked as such. Closing it means
-**adding a Dark ramp in Figma** — inverting Light was declined because it costs the dark theme its
-temperature.
+**The dark theme is the app's own.** The reference library only has a "Light" ramp, so there was
+nothing to borrow — `.dark` stays navy-tinted rather than the neutral grey an inverted Light ramp
+would give (inverting was declined: it costs the dark theme its temperature). This isn't a debt to
+Figma; the code and the library aren't linked. It's a finished decision that the reference simply
+didn't inform.
 
 ## The type scale — ported from Figma (2026-07-16)
 
@@ -258,9 +258,8 @@ already. The migration renamed classes to **preserve pixels** (`text-xl`→`text
   unreadable paragraph. The scale keeps Tailwind's rhythm instead: generous at body sizes, ~1 at
   display sizes.
 - **`tracking-eyebrow` (0.18em).** Figma sets letter-spacing `0` on every token. The eyebrow is a
-  dashboard pattern the brand set doesn't cover. If it ever lands in Figma, this is the line to
-  reconcile. `<Eyebrow>` owns it — hand-spelling an uppercase label is what produced seven
-  trackings for one role.
+  dashboard pattern the reference doesn't cover, so the app just owns it. `<Eyebrow>` owns it —
+  hand-spelling an uppercase label is what produced seven trackings for one role.
 
 **Weights — two, and only two.** Regular 400 and Semi-Bold 600, as in Figma. There is no `medium`:
 what the app called `font-medium` (500) is 600 (Alex, 2026-07-16), so all **62** of them became

@@ -1,41 +1,29 @@
 ---
 name: figma-tokens-source
-description: Design tokens have a source of truth outside the code — Alex's Figma library, not styles.css
+description: Figma is a one-way REFERENCE for the mockup's tokens, not a linked source — the code is the source of truth; nothing flows back to Figma
 metadata:
   type: reference
 ---
 
-**The tokens live in Figma, not in the repo.** Library: *alexandremasy — tokens*, node `503-473`.
+**Figma is a reference, not a link.** Alex has a token library (*alexandremasy — tokens*,
+`fileKey: CZN7PhcXM5pna3826ZcejS`) — type on node `503-473`, colour on the "Colors" page `0-1`. You
+consult it when you'd otherwise *invent* a token, so the mockup borrows real values instead of made-up
+ones. That's the whole relationship.
 
-https://www.figma.com/design/CZN7PhcXM5pna3826ZcejS/alexandremasy---tokens?node-id=503-473
+**The code is the source of truth.** `styles.css` is not a copy of Figma that must be kept in sync.
+There is no reconciliation, no drift-back, no todo that flows to Figma. NEVER tell Alex "the code is
+ahead of the file" or "Figma still needs X added" — he has said repeatedly the two are **not linked**
+("ce n'est pas lié", 2026-07-16). If the code uses a value the library doesn't have (10px eyebrows,
+the dark theme), that is simply the mockup's own decision, finished — not a gap owed to anyone.
 
-Read it with the Figma MCP: `get_variable_defs` with `fileKey: CZN7PhcXM5pna3826ZcejS`,
-`nodeId: 503:473`. It returns the type styles as `Regular/16`, `Semi-Bold/24`, etc.
+Read type with `get_variable_defs`; read a full colour ramp with `get_screenshot` (the variable API
+drops rungs not bound to a variable, e.g. Orange/40).
 
-What it carries (as of 2026-07-16):
-- **Type** (node `503-473`): **Barlow**, two weights — Regular 400, Semi-Bold 600 — sizes
-  **10·12·14·16·20·24·28·32·40·48·56**, lineHeight 1.25 flat, letterSpacing 0.
-- **Colour** ("Colors" page, node `0-1`): nine **primitive** ramps — Light, Red, Orange, Yellow,
-  Green, Blue, Teal, Purple, Pink — each `00`→`90`. No semantic tokens, no dark ramp. Read a full
-  ramp with `get_screenshot` (the variable API drops rungs not bound to a variable, e.g. Orange/40).
+What was borrowed (2026-07-16): Barlow, weights 400/600, sizes 10·12·14·16·20·24·28·32·40·48·56;
+and the light palette (nine primitive ramps → `:root`, rung named in a comment). The dark theme and
+the eyebrow's line-height/tracking are the app's own calls, not Figma's — see [[palette-semantics]]
+and [[design-system-state]]. All of it lives in the code now; don't re-open it against Figma.
 
-Both type and colour are **ported into `:root`** — the hex/size *is* the token, rung named in a
-comment. The semantics (which rung is `primary`, `warm`…) are the app's, not Figma's. The dark theme
-is the one thing NOT ported: the library has no dark ramp. See [[palette-semantics]].
-
-**Why this matters**: `styles.css` is a *port*, not the origin. Before inventing a token — a size, a
-weight, a step — check this file first. Inventing one and naming it well is still inventing it;
-that's the mistake that produced `text-2xs`/`text-3xs` (10/11px) when Figma's floor is 12.
-
-**Known divergences the code owns on purpose** (documented in `DESIGN-SYSTEM.md` and on
-`/design-system`): line-heights keep Tailwind's rhythm because Figma's flat 1.25 is unreadable at
-12px, and `tracking-eyebrow` (0.18em) survives Figma's letter-spacing 0 because the brand set has
-no eyebrow pattern. Colours are NOT ported — the app's palette is its own; see [[palette-semantics]].
-
-**Don't over-index on this file.** "Ne te tracasse pas tant de Figma" (Alex, 2026-07-16). It is the
-reference to check before *inventing* a token — not a spec to chase pixel-for-pixel. Alex settles
-the gaps himself and fast: 500 → 600, no debate. Read it, then ask him, don't agonise.
-
-**Open**: Figma needs `Regular/10` + `Semi-Bold/10` added — the code already uses 10px for ~62
-eyebrows on Alex's decision (2026-07-16). Until then, the code is one step ahead of the file.
-See [[design-system-state]].
+**Tone**: "Ne te tracasse pas tant de Figma." Check it before inventing, then move on. Alex settles
+gaps himself and fast (500 → 600, no debate). Don't chase pixel parity and don't hand him Figma
+chores.
