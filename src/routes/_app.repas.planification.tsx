@@ -162,31 +162,31 @@ function RepasPage() {
           </div>
         )}
 
-        {/* Weekday columns only exist once there ARE columns. */}
-        {/* Desktop reads as one framed table, not a row of cards: a single 7-col
-            grid (weekday head + 14 days) whose 1px gaps show the border colour
-            behind, so cells share hairlines. A phone can't hold a 7×2 table, so
-            below lg the days stack as full-width cards. */}
-        <div className="mt-5 lg:overflow-hidden lg:rounded-xl lg:border lg:border-border/60">
-          <div className="space-y-2 lg:grid lg:grid-cols-7 lg:gap-px lg:space-y-0 lg:bg-border/60">
+        {/* Weekday labels sit above the frame, as column headers — not boxed in.
+            Desktop reads as one framed table (the 14 days), whose 1px grid gaps
+            show the border colour behind so cells share hairlines. A phone can't
+            hold a 7×2 table, so below lg the days stack as full-width cards. */}
+        <div className="mt-5">
+          <div className="hidden lg:grid lg:grid-cols-7 lg:gap-px">
             {WEEKDAYS.map((d) => (
-              <div
-                key={d}
-                className="hidden bg-background px-2.5 py-2 text-xs uppercase tracking-eyebrow text-muted-foreground lg:block"
-              >
+              <div key={d} className="px-2.5 pb-2 text-xs uppercase tracking-eyebrow text-muted-foreground">
                 {d}
               </div>
             ))}
-            {weeks.flat().map((d) => (
-              <DayCell
-                key={iso(d)}
-                date={d}
-                plan={plan}
-                onSelect={setSelected}
-                onRemove={remove}
-                onMove={move}
-              />
-            ))}
+          </div>
+          <div className="lg:mt-0 lg:overflow-hidden lg:rounded-xl lg:border lg:border-border/60">
+            <div className="space-y-2 lg:grid lg:grid-cols-7 lg:gap-px lg:space-y-0 lg:bg-border/60">
+              {weeks.flat().map((d) => (
+                <DayCell
+                  key={iso(d)}
+                  date={d}
+                  plan={plan}
+                  onSelect={setSelected}
+                  onRemove={remove}
+                  onMove={move}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
@@ -257,7 +257,7 @@ function DayCell({
       className={
         // Mobile: an outlined card. Desktop: a plain cell — the hairline comes
         // from the parent grid's 1px gap, so it drops its own border and radius.
-        "flex flex-col overflow-hidden rounded-xl border border-border/60 transition-colors lg:min-h-[12.5rem] lg:rounded-none lg:border-0 " +
+        "flex flex-col overflow-hidden rounded-xl border border-border/60 transition-colors hover:border-foreground/25 lg:min-h-[12.5rem] lg:rounded-none lg:border-0 lg:hover:ring-1 lg:hover:ring-inset lg:hover:ring-foreground/25 " +
         // Today and ahead are white; past days just take the page colour — no
         // added fill. bg-background (not transparent) so it still masks the
         // table hairline, but it reads as the page, not a tinted block.
@@ -343,10 +343,12 @@ function SlotCell({
             e.dataTransfer.effectAllowed = "move";
           }}
           className={
-            "flex-1 cursor-grab rounded-lg border p-2 transition-all active:cursor-grabbing " +
+            // No frame around a placed meal — it sits on the cell. Only the drop
+            // target and a subtle hover get a fill; the empty slot keeps its dashed box.
+            "flex-1 cursor-grab rounded-lg p-2 transition-colors active:cursor-grabbing " +
             (dragOver
-              ? "border-primary bg-primary/5"
-              : "border-border/60 bg-card hover:border-border hover:shadow-soft")
+              ? "bg-primary/5 ring-1 ring-inset ring-primary"
+              : "hover:bg-secondary/50")
           }
         >
           {/* Same card, stripped to what a calendar cell can hold. */}
