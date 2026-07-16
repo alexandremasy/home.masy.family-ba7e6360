@@ -337,9 +337,9 @@ function DayCell({
     >
       {/* Day header — date left, that day's weather right. The weather drives the
           suggestions. Without a weekday column below lg, the header carries the day. */}
-      <div className="flex items-baseline justify-between gap-1 px-2.5 pt-2.5">
+      <div className="flex items-baseline justify-between gap-1 px-2.5 pt-2 lg:pt-2.5">
         <span className={"font-semibold leading-none tabular-nums " + (today ? "text-primary" : "")}>
-          <span className="text-xl">{date.getDate()}</span>
+          <span className="text-lg lg:text-xl">{date.getDate()}</span>
           <Eyebrow as="span" className="ml-1.5 lg:hidden">
             {date.toLocaleDateString("fr-BE", { weekday: "long" })}
           </Eyebrow>
@@ -357,7 +357,7 @@ function DayCell({
 
       {/* Side by side on a phone row, stacked in a calendar column. The wider gap
           at lg is the breathing room above "soir". */}
-      <div className="mt-1.5 grid flex-1 grid-cols-2 gap-1.5 p-2 lg:flex lg:flex-col lg:gap-3">
+      <div className="mt-1 grid flex-1 grid-cols-2 gap-1 p-1.5 lg:mt-1.5 lg:flex lg:flex-col lg:gap-3 lg:p-2">
         {(["midi", "soir"] as Slot[]).map((slot) => {
           const entry = plan.find((e) => e.date === key && e.slot === slot);
           const batch = entry ? batches.get(batchKey(key, slot)) : undefined;
