@@ -239,7 +239,7 @@ function DayCell({
   return (
     <div
       className={
-        "flex flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-colors lg:min-h-[12.5rem] " +
+        "flex flex-col overflow-hidden rounded-xl border border-border/60 transition-colors lg:min-h-[12.5rem] " +
         (today ? "ring-2 ring-primary/50" : "")
       }
     >
@@ -263,8 +263,9 @@ function DayCell({
         </span>
       </div>
 
-      {/* Side by side on a phone row, stacked in a calendar column. */}
-      <div className="mt-1.5 grid flex-1 grid-cols-2 gap-1.5 p-2 lg:flex lg:flex-col">
+      {/* Side by side on a phone row, stacked in a calendar column. The wider gap
+          at lg is the breathing room above "soir". */}
+      <div className="mt-1.5 grid flex-1 grid-cols-2 gap-1.5 p-2 lg:flex lg:flex-col lg:gap-3">
         {(["midi", "soir"] as Slot[]).map((slot) => (
           <SlotCell
             key={slot}
@@ -324,7 +325,7 @@ function SlotCell({
             "flex-1 cursor-grab rounded-lg border p-2 transition-all active:cursor-grabbing " +
             (dragOver
               ? "border-primary bg-primary/5"
-              : "border-transparent bg-secondary/50 hover:border-border hover:bg-secondary hover:shadow-soft")
+              : "border-border/60 bg-card hover:border-border hover:shadow-soft")
           }
         >
           {/* Same card, stripped to what a calendar cell can hold. */}
