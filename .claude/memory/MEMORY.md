@@ -13,3 +13,4 @@
 - [Figma tokens source](figma-tokens-source.md) — Figma is a one-way REFERENCE, not linked to the code: consult it before inventing a token, nothing flows back. The code is the source of truth.
 - [Mockup stays exploration](mockup-stays-exploration.md) — deliberate call (2026-07-16): keep every domain on the mock, wire nothing to api/cockpit yet. Graduate a domain only when Alex says it stopped changing.
 - [Don't stack grey on light](dont-stack-grey-on-light.md) — the light page is already soft-grey; don't add bg-secondary/muted fills on it. Elements take the page colour; reserve white (bg-card) for the active zone.
+- [Mirror sibling patterns](mirror-sibling-patterns.md) — before inventing any UI construct, copy the route/component that already does it: routed tabs → /repas, forms → DishForm, edit pages → dish $dishId (delete behind AlertDialog). The system includes composition patterns, not just ui/* primitives.

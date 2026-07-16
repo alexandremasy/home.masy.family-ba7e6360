@@ -40,7 +40,6 @@ import { Route as AppBudgetPlanificationRouteImport } from './routes/_app.budget
 import { Route as AppBudgetMensuelRouteImport } from './routes/_app.budget.mensuel'
 import { Route as AppBudgetImportRouteImport } from './routes/_app.budget.import'
 import { Route as AppBudgetAnnuelRouteImport } from './routes/_app.budget.annuel'
-import { Route as AppAnniversairesPersonIdRouteImport } from './routes/_app.anniversaires.$personId'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as AppRepasPlatsIndexRouteImport } from './routes/_app.repas.plats.index'
 import { Route as AppRepasPlatsNouveauRouteImport } from './routes/_app.repas.plats.nouveau'
@@ -203,12 +202,6 @@ const AppBudgetAnnuelRoute = AppBudgetAnnuelRouteImport.update({
   path: '/annuel',
   getParentRoute: () => AppBudgetRoute,
 } as any)
-const AppAnniversairesPersonIdRoute =
-  AppAnniversairesPersonIdRouteImport.update({
-    id: '/$personId',
-    path: '/$personId',
-    getParentRoute: () => AppAnniversairesRoute,
-  } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
     id: '/.mcp/invoke-tool/$tool',
@@ -249,7 +242,6 @@ export interface FileRoutesByFullPath {
   '/securite': typeof AppSecuriteRouteWithChildren
   '/tesla': typeof AppTeslaRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/anniversaires/$personId': typeof AppAnniversairesPersonIdRoute
   '/budget/annuel': typeof AppBudgetAnnuelRoute
   '/budget/import': typeof AppBudgetImportRoute
   '/budget/mensuel': typeof AppBudgetMensuelRoute
@@ -283,7 +275,6 @@ export interface FileRoutesByTo {
   '/tesla': typeof AppTeslaRoute
   '/': typeof AppIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/anniversaires/$personId': typeof AppAnniversairesPersonIdRoute
   '/budget/annuel': typeof AppBudgetAnnuelRoute
   '/budget/import': typeof AppBudgetImportRoute
   '/budget/mensuel': typeof AppBudgetMensuelRoute
@@ -322,7 +313,6 @@ export interface FileRoutesById {
   '/_app/tesla': typeof AppTeslaRoute
   '/_app/': typeof AppIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/_app/anniversaires/$personId': typeof AppAnniversairesPersonIdRoute
   '/_app/budget/annuel': typeof AppBudgetAnnuelRoute
   '/_app/budget/import': typeof AppBudgetImportRoute
   '/_app/budget/mensuel': typeof AppBudgetMensuelRoute
@@ -362,7 +352,6 @@ export interface FileRouteTypes {
     | '/securite'
     | '/tesla'
     | '/.mcp/invoke-tool/$tool'
-    | '/anniversaires/$personId'
     | '/budget/annuel'
     | '/budget/import'
     | '/budget/mensuel'
@@ -396,7 +385,6 @@ export interface FileRouteTypes {
     | '/tesla'
     | '/'
     | '/.mcp/invoke-tool/$tool'
-    | '/anniversaires/$personId'
     | '/budget/annuel'
     | '/budget/import'
     | '/budget/mensuel'
@@ -434,7 +422,6 @@ export interface FileRouteTypes {
     | '/_app/tesla'
     | '/_app/'
     | '/.mcp/invoke-tool/$tool'
-    | '/_app/anniversaires/$personId'
     | '/_app/budget/annuel'
     | '/_app/budget/import'
     | '/_app/budget/mensuel'
@@ -687,13 +674,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBudgetAnnuelRouteImport
       parentRoute: typeof AppBudgetRoute
     }
-    '/_app/anniversaires/$personId': {
-      id: '/_app/anniversaires/$personId'
-      path: '/$personId'
-      fullPath: '/anniversaires/$personId'
-      preLoaderRoute: typeof AppAnniversairesPersonIdRouteImport
-      parentRoute: typeof AppAnniversairesRoute
-    }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
       path: '/.mcp/invoke-tool/$tool'
@@ -733,12 +713,10 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppAnniversairesRouteChildren {
-  AppAnniversairesPersonIdRoute: typeof AppAnniversairesPersonIdRoute
   AppAnniversairesIndexRoute: typeof AppAnniversairesIndexRoute
 }
 
 const AppAnniversairesRouteChildren: AppAnniversairesRouteChildren = {
-  AppAnniversairesPersonIdRoute: AppAnniversairesPersonIdRoute,
   AppAnniversairesIndexRoute: AppAnniversairesIndexRoute,
 }
 

@@ -783,6 +783,12 @@ export function daysUntil(d: Date, from: Date = TODAY): number {
   return Math.round((d.getTime() - from.getTime()) / 86_400_000);
 }
 
+/** A person can be tracked on day+month alone — the birth year is optional. */
+export const NO_BIRTH_YEAR = "0000";
+export function hasBirthYear(dob: string): boolean {
+  return dob.length >= 4 && dob.slice(0, 4) !== NO_BIRTH_YEAR;
+}
+
 /**
  * Mocked message generator. Produces a plausible personal draft that
  * visibly changes with the sliders and with the free-text comment.
