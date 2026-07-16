@@ -30,14 +30,15 @@ const WEEKDAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 
 // One style per batch (a dish spread over several days), from the Figma palette.
 // `shade` is the meal's background (teinte 10 light / 80 dark); `badge` is the
-// iteration badge in the same hue but deep enough to carry white (teinte 70-80).
+// iteration number's colour (teinte 70 light / 40 dark) — a quiet coloured digit
+// on a pale disc rather than a filled chip.
 const BATCH_STYLES = [
-  { shade: "bg-[#e7f8f9] dark:bg-[#116069]/50", badge: "bg-[#157a84] text-white" }, // Teal
-  { shade: "bg-[#e7f4fa] dark:bg-[#0e506e]/50", badge: "bg-[#11658c] text-white" }, // Blue
-  { shade: "bg-[#e6f4ef] dark:bg-[#10503e]/50", badge: "bg-[#14664f] text-white" }, // Green
-  { shade: "bg-[#e2dcee] dark:bg-[#44316e]/50", badge: "bg-[#44316e] text-white" }, // Purple
-  { shade: "bg-[#f9eaf5] dark:bg-[#732254]/50", badge: "bg-[#8e2c6b] text-white" }, // Pink
-  { shade: "bg-[#fcf8e7] dark:bg-[#815f18]/50", badge: "bg-[#815f18] text-white" }, // Yellow
+  { shade: "bg-[#e7f8f9] dark:bg-[#116069]/50", badge: "text-[#157a84] dark:text-[#56cad4]" }, // Teal
+  { shade: "bg-[#e7f4fa] dark:bg-[#0e506e]/50", badge: "text-[#11658c] dark:text-[#52b2de]" }, // Blue
+  { shade: "bg-[#e6f4ef] dark:bg-[#10503e]/50", badge: "text-[#14664f] dark:text-[#56b598]" }, // Green
+  { shade: "bg-[#e2dcee] dark:bg-[#44316e]/50", badge: "text-[#5f479e] dark:text-[#c4bade]" }, // Purple
+  { shade: "bg-[#f9eaf5] dark:bg-[#732254]/50", badge: "text-[#8e2c6b] dark:text-[#d76bb9]" }, // Pink
+  { shade: "bg-[#fcf8e7] dark:bg-[#815f18]/50", badge: "text-[#a07b1f] dark:text-[#ebce5e]" }, // Yellow
 ];
 
 type BatchInfo = Map<string, { shade: string; badge: string; iteration: number }>;
@@ -103,6 +104,8 @@ function rangeLabel(weeks: Date[][]): string {
 function RepasPage() {
   const [plan, setPlan] = useState<PlanEntry[]>(initialPlan);
   const [selected, setSelected] = useState<{ date: string; slot: Slot } | null>(null);
+  // Hovering a meal spotlights that dish: its other days stay lit, the rest dims.
+  const [hoveredDish, setHoveredDish] = useState<string | null>(null);
   // Scrolls by one week — consecutive views share a week, like the sliding plan window.
   const [weekOffset, setWeekOffset] = useState(0);
   const weeks = useMemo(() => calWeeks(weekOffset), [weekOffset]);
@@ -241,6 +244,8 @@ function RepasPage() {
                   date={d}
                   plan={plan}
                   batches={batches}
+                  hoveredDish={hoveredDish}
+                  onHover={setHoveredDish}
                   onSelect={setSelected}
                   onMove={move}
                 />
@@ -295,11 +300,13 @@ function RepasPage() {
 
 // ------------------------------------------------------------
 function DayCell({
-  date, plan, batches, onSelect, onMove,
+  date, plan, batches, hoveredDish, onHover, onSelect, onMove,
 }: {
   date: Date;
   plan: PlanEntry[];
   batches: BatchInfo;
+  hoveredDish: string | null;
+  onHover: (dishId: string | null) => void;
   onSelect: (s: { date: string; slot: Slot }) => void;
   onMove: (from: { date: string; slot: Slot }, to: { date: string; slot: Slot }) => void;
 }) {
@@ -348,6 +355,8 @@ function DayCell({
         {(["midi", "soir"] as Slot[]).map((slot) => {
           const entry = plan.find((e) => e.date === key && e.slot === slot);
           const batch = entry ? batches.get(batchKey(key, slot)) : undefined;
+          // Dimmed when another dish is being hovered elsewhere in the grid.
+          const dimmed = hoveredDish != null && entry?.dishId !== hoveredDish;
           return (
             <SlotCell
               key={slot}
@@ -355,6 +364,8 @@ function DayCell({
               slot={slot}
               entry={entry}
               batch={batch}
+              dimmed={dimmed}
+              onHover={onHover}
               onOpen={() => onSelect({ date: key, slot })}
               onDropFrom={(from) => onMove(from, { date: key, slot })}
             />
@@ -366,10 +377,12 @@ function DayCell({
 }
 
 function SlotCell({
-  date, slot, entry, batch, onOpen, onDropFrom,
+  date, slot, entry, batch, dimmed = false, onHover, onOpen, onDropFrom,
 }: {
   date: string; slot: Slot; entry?: PlanEntry;
   batch?: { shade: string; badge: string; iteration: number };
+  dimmed?: boolean;
+  onHover?: (dishId: string | null) => void;
   onOpen: () => void;
   onDropFrom: (from: { date: string; slot: Slot }) => void;
 }) {
@@ -388,7 +401,10 @@ function SlotCell({
         if (from.date === date && from.slot === slot) return;
         onDropFrom(from);
       }}
-      className="group relative flex flex-1 flex-col"
+      className={
+        "group relative flex flex-1 flex-col transition-opacity duration-200 " +
+        (dimmed ? "opacity-35" : "opacity-100")
+      }
     >
       {entry && dish ? (
         // Tap/click opens the picker — that's where you change or remove it, so it
@@ -396,6 +412,8 @@ function SlotCell({
         <button
           type="button"
           onClick={onOpen}
+          onMouseEnter={() => onHover?.(entry.dishId)}
+          onMouseLeave={() => onHover?.(null)}
           draggable
           onDragStart={(e) => {
             e.dataTransfer.setData("application/json", JSON.stringify({ date, slot }));
@@ -422,7 +440,7 @@ function SlotCell({
                 <span
                   title={`${batch.iteration}ᵉ fois cette fenêtre`}
                   className={
-                    "inline-grid h-5 w-5 shrink-0 place-items-center rounded-full text-2xs font-semibold tabular-nums " +
+                    "inline-grid h-4 w-4 shrink-0 place-items-center rounded-full bg-background/70 text-2xs font-semibold tabular-nums " +
                     batch.badge
                   }
                 >
