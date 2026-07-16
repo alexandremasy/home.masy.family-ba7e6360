@@ -35,7 +35,7 @@ function DishDetail() {
   if (!dish) {
     return (
       <div className="py-16 text-center">
-        <p className="font-semibold text-xl">Ce plat n'existe plus.</p>
+        <p className="font-semibold text-lg">Ce plat n'existe plus.</p>
         <Button asChild variant="outline" className="mt-4 gap-1.5">
           <Link to="/repas/plats"><ArrowLeft className="h-3.5 w-3.5" />Retour aux plats</Link>
         </Button>
@@ -54,7 +54,7 @@ function DishDetail() {
 
       <div className="rounded-2xl border border-border/60 bg-card p-5">
         <div className="mb-4 flex items-start justify-between gap-3">
-          <p className="font-semibold text-xl">{dish.name}</p>
+          <p className="font-semibold text-lg">{dish.name}</p>
           <Button
             variant="outline" onClick={() => setConfirming(true)}
             className="shrink-0 gap-1.5 text-destructive hover:text-destructive"

@@ -54,7 +54,7 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <Eyebrow>{v.name}</Eyebrow>
-          <p className="mt-1 font-serif text-2xl">{status.text}</p>
+          <p className="mt-1 font-serif text-xl">{status.text}</p>
           <p className="mt-0.5 text-sm text-muted-foreground">
             {cleaning || returning
               ? `${v.areaCleanedM2} / ${v.areaTargetM2} m² · ~${v.etaMin} min restantes`
@@ -81,7 +81,7 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
               const done = p.status === "done";
               const active = p.status === "active";
               return (
-                <span key={p.room} className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-2xs transition-colors ${
+                <span key={p.room} className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs transition-colors ${
                   active ? "bg-foreground text-background" :
                   done   ? "bg-primary/15 text-primary" :
                            "bg-card text-muted-foreground border border-border/60"

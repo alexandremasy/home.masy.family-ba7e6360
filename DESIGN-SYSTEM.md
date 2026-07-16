@@ -167,7 +167,8 @@ Phase 4 is free.
 | raw `<button>` | 73 | 53 — the legitimate ones (filter chips, clickable cards, external links) |
 | native `<select>` | 11, 4 visual formulas | **0** |
 | eyebrow trackings | **7** | 1 — `tracking-eyebrow` (+2 in tesla's documented squeeze) |
-| arbitrary `text-[…px]` | **157**, over 6 sizes | **3**, each commented with why |
+| arbitrary `text-[…px]` | **157**, over 6 sizes | **0** — the scale is Figma's, and it's the only one |
+| sizes off the Figma grid | **191** (10·11·18·30·36·72) | **0** |
 | `warm` occurrences | 225, ~6 were alerts | 190 — alerts, plus the token's own definition |
 
 ## The rules that hold
@@ -179,32 +180,50 @@ Phase 4 is free.
    `DishForm`, `DishFilters`, `PageHeader`, `WeatherIcon`, `CommandButton`.
 4. Never a fourth path.
 
-## The type scale — the other token drift
+## The type scale — ported from Figma (2026-07-16)
 
-Same disease as `--accent`, different organ: **there was no scale to appeal to.** Tailwind's own
-stops at `text-xs` (12px) and this dashboard is denser than that, so 157 sizes were written as
-arbitrary values — `text-[10px]` ×55, `text-[11px]` ×50, plus 8/9/12/13px — alongside **seven**
-letter-spacings for the single eyebrow role.
+**Source of truth: the Figma token library** — *alexandremasy — tokens*, node `503-473`. Not a
+scale invented here. Barlow, eleven steps:
 
-Two steps below `xs`, declared in `@theme`, cover the whole need:
+```
+10 · 12 · 14 · 16 · 20 · 24 · 28 · 32 · 40 · 48 · 56
+```
 
-| Token | Value | Role |
-|---|---|---|
-| `text-2xs` | 11px / 16px | **micro body** — metadata, tabular figures, captions. Sentence case. |
-| `text-3xs` | 10px / 14px | **the eyebrow** — always uppercase, always `tracking-eyebrow`. |
-| `tracking-eyebrow` | 0.18em | The eyebrow's spacing. Owned by `components/Eyebrow.tsx`. |
+Before the port there was no scale to appeal to, so **157 sizes were arbitrary values**
+(`text-[10px]` ×55, `text-[11px]` ×50, plus 8/9/12/13px) and **191 uses sat off the Figma grid**
+(18, 30, 36, 72px). Now: **zero arbitrary sizes in the repo.**
 
-**Why two steps a pixel apart is not drift.** Uppercase reads larger than sentence case at the same
-size, so the label step has to sit *below* the body step to weigh the same. `/design-system` shows
-the two side by side at their real sizes rather than asserting it.
+**`styles.css` wipes Tailwind's scale first** (`--text-*: initial`) and declares only these. So
+`text-7xl` and `text-[13px]` are not discouraged — they don't exist. That is the enforcement.
 
-**The rule**: sizes come from the scale. A `text-[…px]` is a bug **unless the line above it says
-why**. Three survive on those terms and are commented: a Netflix brand glyph sized optically inside
-a 36px disc (`index.tsx`), and a Tesla label squeezing below the scale to survive an 80px box on
-mobile, relaxing back onto it at `sm` (`tesla.tsx`).
+**The names are Tailwind's, the values are Figma's, and they disagree by one rung:**
 
-**Don't hand-spell an eyebrow.** `<Eyebrow>` owns `tracking-eyebrow`; typing the classes yourself is
-what produced seven trackings for one role.
+| Class | px | Class | px |
+|---|---|---|---|
+| `text-2xs` | 10 | `text-2xl` | 28 |
+| `text-xs` | 12 | `text-3xl` | 32 |
+| `text-sm` | 14 | `text-4xl` | 40 |
+| `text-base` | 16 | `text-5xl` | 48 |
+| `text-lg` | 20 | `text-6xl` | 56 |
+| `text-xl` | **24** (not Tailwind's 20) | | |
+
+Six rungs already coincided (12·14·16·20·24·48), which is why the app was mostly on this rhythm
+already. The migration renamed classes to **preserve pixels** (`text-xl`→`text-lg`, `text-2xl`→
+`text-xl`, 94 sites, 0px moved) rather than let every heading grow 4px. Read the value, not the name.
+
+**Two deliberate divergences from Figma**, both on `/design-system`:
+- **Line-height.** Figma sets `1.25` flat — a display ratio. At 12px that is 15px of leading and an
+  unreadable paragraph. The scale keeps Tailwind's rhythm instead: generous at body sizes, ~1 at
+  display sizes.
+- **`tracking-eyebrow` (0.18em).** Figma sets letter-spacing `0` on every token. The eyebrow is a
+  dashboard pattern the brand set doesn't cover. If it ever lands in Figma, this is the line to
+  reconcile. `<Eyebrow>` owns it — hand-spelling an uppercase label is what produced seven
+  trackings for one role.
+
+**Known gap — weights.** Figma has exactly two: Regular 400 and Semi-Bold 600. The app still has
+**62 `font-medium` (500)**, seven of them inside `ui/*` (button, input, label, tabs, toggle, table).
+Barlow 500 *is* loaded, so these really do render off-system. Not resolved — it is 62 judgements
+and a visible change to every button.
 
 ## Token semantics — the thing that broke everything
 

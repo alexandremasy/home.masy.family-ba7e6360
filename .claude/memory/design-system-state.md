@@ -20,10 +20,14 @@ overlay runs on Radix Dialog, the mobile picker on vaul Drawer.
    `DishFilters`, `PageHeader`, `WeatherIcon`, `CommandButton`.
 4. There is no fourth path.
 
-**Type**: the scale lives in `@theme` (`styles.css`). `text-2xs` (11px) = micro body; `text-3xs`
-(10px) = the eyebrow, always uppercase + `tracking-eyebrow` (0.18em). A `text-[…px]` is a bug
-unless a comment says why — three survive on those terms. Never hand-spell an eyebrow; use
-`<Eyebrow>`.
+**Type**: the scale is **ported from Figma** — *alexandremasy — tokens*, node `503-473`, the source
+of truth. Barlow, 10·12·14·16·20·24·28·32·40·48·56. `styles.css` wipes Tailwind's scale
+(`--text-*: initial`) and declares only these, so `text-7xl`/`text-[13px]` don't exist rather than
+being discouraged. **Names are Tailwind's, values are Figma's — they disagree by one rung:
+`text-xl` is 24px, not 20.** Read the value, not the name. Two deliberate divergences: line-heights
+keep Tailwind's rhythm (Figma's flat 1.25 is unreadable at 12px), and `tracking-eyebrow` (0.18em)
+survives Figma's letter-spacing 0 because the brand set has no eyebrow. Use `<Eyebrow>`, never the
+classes. Open gap: 62 `font-medium` (500) remain, and Figma has only 400/600.
 
 **Language**: the product UI is **French** (a French household's dashboard — that's content, and
 the routes `/repas`, `/plats` are French on purpose, so their derived identifiers are too).

@@ -90,7 +90,7 @@ export function Section({ title, children, action }: { title: string; children: 
   return (
     <Panel padding="lg" className="anim-slide-up">
       <header className="mb-5 flex items-end justify-between gap-4">
-        <h2 className="font-serif text-2xl tracking-tight text-foreground">{title}</h2>
+        <h2 className="font-serif text-xl tracking-tight text-foreground">{title}</h2>
         {action}
       </header>
       {children}

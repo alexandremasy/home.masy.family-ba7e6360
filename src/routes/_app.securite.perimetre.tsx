@@ -73,7 +73,7 @@ function PerimetreTab() {
                     <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${offline ? "bg-destructive" : "bg-success"}`} />
                   </div>
                   {c.night && (
-                    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-secondary px-1.5 py-0.5 text-3xs uppercase tracking-wider text-muted-foreground">
+                    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-secondary px-1.5 py-0.5 text-2xs uppercase tracking-wider text-muted-foreground">
                       <Moon className="h-2.5 w-2.5" />IR
                     </span>
                   )}
@@ -98,7 +98,7 @@ function PerimetreTab() {
               <p className="truncate text-sm">Sonnette vidéo</p>
               <p className="text-xs text-muted-foreground">Entrée principale</p>
             </div>
-            <span className="shrink-0 rounded-full bg-secondary px-2 py-0.5 text-3xs uppercase tracking-wider text-muted-foreground">À venir</span>
+            <span className="shrink-0 rounded-full bg-secondary px-2 py-0.5 text-2xs uppercase tracking-wider text-muted-foreground">À venir</span>
           </div>
         </div>
       </Section>

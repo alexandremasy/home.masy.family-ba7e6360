@@ -115,7 +115,7 @@ function MensuelPage() {
       <Panel className="anim-slide-up">
         <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="font-serif text-2xl tracking-tight">Prévu vs réel</h2>
+            <h2 className="font-serif text-xl tracking-tight">Prévu vs réel</h2>
             <p className="mt-1 text-sm text-muted-foreground">Triées par dépense — touchez pour explorer</p>
           </div>
           <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -135,7 +135,7 @@ function MensuelPage() {
       {bills.length > 0 && (
         <Panel className="anim-slide-up">
           <header className="mb-4">
-            <h2 className="font-serif text-xl tracking-tight">Pression du mois</h2>
+            <h2 className="font-serif text-lg tracking-tight">Pression du mois</h2>
             <p className="mt-0.5 text-xs text-muted-foreground">Grosses échéances non mensuelles qui atterrissent ce mois-ci</p>
           </header>
           <div className="flex flex-wrap gap-2">
@@ -215,10 +215,10 @@ function IncomePanel() {
     <Panel as="div">
       <header className="mb-4 flex items-end justify-between gap-3">
         <div>
-          <h2 className="font-serif text-2xl tracking-tight">Entrées</h2>
+          <h2 className="font-serif text-xl tracking-tight">Entrées</h2>
           <p className="mt-1 text-sm text-muted-foreground">Sources du mois</p>
         </div>
-        <p className="font-serif text-xl tabular-nums">{eur(total)}</p>
+        <p className="font-serif text-lg tabular-nums">{eur(total)}</p>
       </header>
       <ul className="space-y-3 stagger">
         {incomeSources.map((s) => {
@@ -266,10 +266,10 @@ function DonutPanel({ focusCat, onFocus }: { focusCat: CatKey | null; onFocus: (
     <Panel as="div">
       <header className="mb-4 flex items-end justify-between gap-3">
         <div>
-          <h2 className="font-serif text-2xl tracking-tight">Dépenses</h2>
+          <h2 className="font-serif text-xl tracking-tight">Dépenses</h2>
           <p className="mt-1 text-sm text-muted-foreground">Top 5 + Autres — touchez une part pour filtrer</p>
         </div>
-        <p className="font-serif text-xl tabular-nums">{eur(total)}</p>
+        <p className="font-serif text-lg tabular-nums">{eur(total)}</p>
       </header>
       <div className="grid gap-5 sm:grid-cols-[auto_1fr] sm:items-center">
         <div className="relative mx-auto" style={{ width: size, height: size }}>
@@ -303,13 +303,13 @@ function DonutPanel({ focusCat, onFocus }: { focusCat: CatKey | null; onFocus: (
             {focused ? (
               <div className="anim-pop-in">
                 <Eyebrow size="xs">{focused.label}</Eyebrow>
-                <p className="font-serif text-2xl tabular-nums">{eur(focused.value)}</p>
-                <p className="text-2xs text-muted-foreground tabular-nums">{Math.round((focused.value/total)*100)}%</p>
+                <p className="font-serif text-xl tabular-nums">{eur(focused.value)}</p>
+                <p className="text-xs text-muted-foreground tabular-nums">{Math.round((focused.value/total)*100)}%</p>
               </div>
             ) : (
               <div>
                 <Eyebrow size="xs">Total</Eyebrow>
-                <p className="font-serif text-2xl tabular-nums">{eur(total)}</p>
+                <p className="font-serif text-xl tabular-nums">{eur(total)}</p>
               </div>
             )}
           </div>
@@ -373,7 +373,7 @@ function CategoryRow({ cat, index, showPlanned, highlightOver }: {
           </div>
           <BudgetBar value={pct} overflow={over && showPlanned ? overflowPct : 0} />
           {showPlanned && (
-            <div className="mt-1.5 flex items-center justify-between text-2xs tabular-nums">
+            <div className="mt-1.5 flex items-center justify-between text-xs tabular-nums">
               <span className="text-muted-foreground">{Math.round((cat.actual / cat.budget) * 100)}% du budget</span>
               <span className={over ? "text-warm" : "text-success"}>
                 {over ? `+${eur(-remaining)} dépassement` : `${eur(remaining)} restant`}
@@ -392,7 +392,7 @@ function CategoryRow({ cat, index, showPlanned, highlightOver }: {
           ))}
           <Link
             to="/budget/transactions"
-            className="mt-2 inline-flex w-fit items-center gap-1 text-2xs text-primary underline-offset-4 hover:underline"
+            className="mt-2 inline-flex w-fit items-center gap-1 text-xs text-primary underline-offset-4 hover:underline"
           >Voir tout dans Transactions →</Link>
         </div>
       )}

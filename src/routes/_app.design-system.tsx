@@ -66,8 +66,8 @@ function Swatch({ token, note }: { token: string; note?: string }) {
       />
       <div className="min-w-0">
         <p className="truncate font-mono text-xs text-foreground">--{token}</p>
-        <p className="truncate font-mono text-3xs text-muted-foreground">{value || "—"}</p>
-        {note && <p className="mt-0.5 text-2xs text-muted-foreground">{note}</p>}
+        <p className="truncate font-mono text-2xs text-muted-foreground">{value || "—"}</p>
+        {note && <p className="mt-0.5 text-xs text-muted-foreground">{note}</p>}
       </div>
     </div>
   );
@@ -91,11 +91,11 @@ function TypeRow({ cls, role, sample }: { cls: string; role: string; sample: str
 
   return (
     <div className="grid gap-1 border-b border-border/40 py-3 last:border-0 sm:grid-cols-[12rem_7rem_minmax(0,1fr)] sm:items-baseline sm:gap-4">
-      <code className="font-mono text-2xs text-foreground">{cls}</code>
-      <span className="font-mono text-2xs text-muted-foreground">{metrics || "—"}</span>
+      <code className="font-mono text-xs text-foreground">{cls}</code>
+      <span className="font-mono text-xs text-muted-foreground">{metrics || "—"}</span>
       <p ref={ref} className={cls}>
         {sample}
-        <span className="ml-2 font-sans text-2xs font-normal normal-case tracking-normal text-muted-foreground/70">
+        <span className="ml-2 font-sans text-xs font-normal normal-case tracking-normal text-muted-foreground/70">
           {role}
         </span>
       </p>
@@ -194,48 +194,55 @@ function DesignSystemPage() {
       {/* ── TYPE ── */}
       <Section title="Type">
         <p className="mb-5 text-sm text-muted-foreground">
-          Every size below is measured off its own rendered node, like the swatches above —
-          the numbers can't drift from <code className="font-mono text-xs">styles.css</code>.
-          One face: Barlow. <code className="font-mono text-xs">--font-serif</code> points at it,
-          so swapping the display face is that single line.
+          The scale is <b>ported from Figma</b> — <i>alexandremasy — tokens</i>, node 503-473 — which
+          is the source of truth. Barlow, eleven steps, nothing else. Every size below is measured
+          off its own rendered node, like the swatches above, so this page can't drift from{" "}
+          <code className="font-mono text-xs">styles.css</code> and neither can drift from Figma
+          without someone noticing here.
         </p>
 
         <div className="space-y-6">
           <div>
-            <Eyebrow size="xs" className="mb-1">The scale</Eyebrow>
+            <Eyebrow size="xs" className="mb-1">The scale — 10 · 12 · 14 · 16 · 20 · 24 · 28 · 32 · 40 · 48 · 56</Eyebrow>
             <p className="mb-3 text-xs text-muted-foreground">
-              Tailwind's own scale, extended down by two steps. Sizes come from it —
-              a <code className="font-mono">text-[…px]</code> is a bug unless the line above it says why.
+              <code className="font-mono">styles.css</code> wipes Tailwind's own scale
+              (<code className="font-mono">--text-*: initial</code>) before declaring these, so they are
+              the only sizes that exist. <code className="font-mono">text-7xl</code> and{" "}
+              <code className="font-mono">text-[13px]</code> aren't discouraged — they're unwritable.
             </p>
             <div>
-              <TypeRow cls="font-serif text-4xl tracking-tight" role="page title" sample="Sixteen dishes" />
-              <TypeRow cls="font-serif text-2xl tracking-tight" role="section title" sample="This week" />
-              <TypeRow cls="text-lg font-semibold" role="the name of a thing" sample="Chili sin carne" />
-              <TypeRow cls="text-base" role="body, roomy" sample="Reads at arm's length." />
-              <TypeRow cls="text-sm" role="body — the default" sample="Reads at arm's length." />
-              <TypeRow cls="text-xs" role="secondary body" sample="Reads at arm's length." />
-              <TypeRow cls="text-2xs" role="micro body — metadata, figures" sample="Reads leaning in." />
-              <TypeRow cls="text-3xs uppercase tracking-eyebrow" role="the eyebrow" sample="Eyebrow" />
+              <TypeRow cls="text-6xl font-semibold" role="56 · display ceiling" sample="56" />
+              <TypeRow cls="text-5xl font-semibold" role="48" sample="Forty eight" />
+              <TypeRow cls="text-4xl font-semibold tracking-tight" role="40 · the big number" sample="21.4°" />
+              <TypeRow cls="font-serif text-3xl tracking-tight" role="32 · page title" sample="Sixteen dishes" />
+              <TypeRow cls="font-serif text-2xl tracking-tight" role="28" sample="Twenty eight" />
+              <TypeRow cls="font-serif text-xl tracking-tight" role="24 · section title" sample="This week" />
+              <TypeRow cls="text-lg font-semibold" role="20 · the name of a thing" sample="Chili sin carne" />
+              <TypeRow cls="text-base" role="16 · body, roomy" sample="Reads at arm's length." />
+              <TypeRow cls="text-sm" role="14 · body, the default" sample="Reads at arm's length." />
+              <TypeRow cls="text-xs" role="12 · the body floor" sample="Metadata, figures, captions." />
+              <TypeRow cls="text-2xs uppercase tracking-eyebrow" role="10 · the eyebrow, uppercase only" sample="Eyebrow" />
             </div>
           </div>
 
           <div>
-            <Eyebrow size="xs" className="mb-1">Why two steps below xs</Eyebrow>
-            <p className="mb-3 text-xs text-muted-foreground">
-              Not one role split by a pixel. Uppercase reads larger than sentence case at the
-              same size, so the label step sits <i>below</i> the body step to weigh the same.
-              Side by side, at their real sizes:
-            </p>
+            <Eyebrow size="xs" className="mb-1">Two things here are not from Figma</Eyebrow>
             <div className="grid gap-3 sm:grid-cols-2">
               <Panel padding="sm">
-                <p className="text-3xs uppercase tracking-eyebrow text-muted-foreground">Yield per batch</p>
-                <p className="mt-2 font-mono text-2xs text-muted-foreground">text-3xs · 10px</p>
-                <p className="mt-1 text-xs">Always uppercase, always <code className="font-mono">tracking-eyebrow</code>. Use <code className="font-mono">&lt;Eyebrow&gt;</code>, not the classes.</p>
+                <p className="font-mono text-xs text-foreground">line-height</p>
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  Figma sets <b>1.25 flat</b>. That's a display ratio: at 12px it gives 15px of
+                  leading and a paragraph you can't read. These keep Tailwind's rhythm — generous
+                  at body sizes, ~1 at display sizes. Deliberate divergence.
+                </p>
               </Panel>
               <Panel padding="sm">
-                <p className="text-2xs text-muted-foreground">Last reading · 2 slots left</p>
-                <p className="mt-2 font-mono text-2xs text-muted-foreground">text-2xs · 11px</p>
-                <p className="mt-1 text-xs">Sentence case: captions, tabular figures, the line under a value.</p>
+                <p className="font-mono text-xs text-foreground">tracking-eyebrow · 0.18em</p>
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  Figma sets letter-spacing <b>0</b> on every token. The eyebrow is a dashboard
+                  pattern the brand set doesn't cover, so it keeps its spacing. If it ever moves
+                  into Figma, this is the line to reconcile.
+                </p>
               </Panel>
             </div>
           </div>
@@ -244,7 +251,7 @@ function DesignSystemPage() {
             <Eyebrow size="xs" className="mb-3">Eyebrow — the component</Eyebrow>
             <div className="space-y-1">
               <Eyebrow>size sm (default) · text-xs</Eyebrow>
-              <Eyebrow size="xs">size xs · text-3xs, for cramped boxes</Eyebrow>
+              <Eyebrow size="xs">size xs · text-2xs, for cramped boxes</Eyebrow>
               <Eyebrow tone="foreground">tone foreground · when the label carries meaning</Eyebrow>
             </div>
           </div>
@@ -253,11 +260,10 @@ function DesignSystemPage() {
         <Panel padding="sm" className="mt-6 border-warm/40 bg-warm/5">
           <Eyebrow size="xs" tone="current" className="text-warm">The trap</Eyebrow>
           <p className="mt-1.5 text-sm">
-            There is no <code className="font-mono text-xs">tracking-eyebrow</code> on anything but an
-            eyebrow, and no eyebrow spelled by hand. Hand-spacing an uppercase label is what produced{" "}
-            <b>seven</b> different trackings for <b>one</b> role, and{" "}
-            <code className="font-mono text-xs">text-[10px]</code> is what produced{" "}
-            <b>six</b> sizes below <code className="font-mono text-xs">text-xs</code>. Both are back to one.
+            <b>The names are Tailwind's, the values are Figma's, and they disagree by one rung.</b>{" "}
+            <code className="font-mono text-xs">text-xl</code> is <b>24px</b> here, not Tailwind's 20.
+            Six rungs already coincided (12·14·16·20·24·48), which is why the app was mostly on this
+            rhythm before the port. Read the value, not the name — or read this page.
           </p>
         </Panel>
       </Section>
@@ -424,7 +430,7 @@ function DesignSystemPage() {
           {(["sun", "partly", "cloud", "rain", "storm", "snow", "fog"] as const).map((c) => (
             <span key={c} className="flex flex-col items-center gap-1 text-muted-foreground">
               <WeatherIcon cond={c} className="h-5 w-5" />
-              <span className="text-3xs">{c}</span>
+              <span className="text-2xs">{c}</span>
             </span>
           ))}
         </Row>
@@ -436,7 +442,7 @@ function DesignSystemPage() {
           <Dialog>
             <DialogTrigger asChild><Button variant="outline">Open a Dialog</Button></DialogTrigger>
             <DialogContent>
-              <DialogHeader><DialogTitle className="font-serif text-xl">A Dialog</DialogTitle></DialogHeader>
+              <DialogHeader><DialogTitle className="font-serif text-lg">A Dialog</DialogTitle></DialogHeader>
               <p className="text-sm text-muted-foreground">Centred, traps focus, Escape closes.</p>
             </DialogContent>
           </Dialog>
@@ -445,7 +451,7 @@ function DesignSystemPage() {
           <Drawer>
             <DrawerTrigger asChild><Button variant="outline">Open a Drawer</Button></DrawerTrigger>
             <DrawerContent className="bg-background px-4 pb-6">
-              <DrawerHeader className="px-0 text-left"><DrawerTitle className="font-serif text-xl">A Drawer</DrawerTitle></DrawerHeader>
+              <DrawerHeader className="px-0 text-left"><DrawerTitle className="font-serif text-lg">A Drawer</DrawerTitle></DrawerHeader>
               <p className="text-sm text-muted-foreground">From the bottom, drag to dismiss. This is the meal picker on mobile.</p>
             </DrawerContent>
           </Drawer>
@@ -497,7 +503,7 @@ function DesignSystemPage() {
         <div className="overflow-hidden rounded-xl border border-border/60">
           <Table>
             <TableHeader>
-              <TableRow className="text-left text-2xs uppercase tracking-eyebrow text-muted-foreground hover:bg-transparent">
+              <TableRow className="text-left text-xs uppercase tracking-eyebrow text-muted-foreground hover:bg-transparent">
                 <TableHead className="px-3 py-3">Dish</TableHead>
                 <TableHead className="px-3 py-3">Base</TableHead>
                 <TableHead className="px-3 py-3 text-right">Yield</TableHead>

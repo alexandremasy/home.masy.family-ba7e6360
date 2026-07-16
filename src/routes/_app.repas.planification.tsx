@@ -33,7 +33,7 @@ function SlotTitle({ date, slot }: { date: Date; slot: Slot }) {
   return (
     <>
       {cap(frLongDay(date))} · {slot === "midi" ? "Midi" : "Soir"}
-      <span className="inline-flex items-center gap-1 rounded-full border border-border/60 px-2 py-0.5 text-2xs font-normal text-muted-foreground">
+      <span className="inline-flex items-center gap-1 rounded-full border border-border/60 px-2 py-0.5 text-xs font-normal text-muted-foreground">
         <WeatherIcon cond={w.cond} className="h-3 w-3" animated={false} />
         {w.maxC}°
       </span>
@@ -194,7 +194,7 @@ function RepasPage() {
             {picker && (
               <>
                 <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2 font-serif text-xl">
+                  <DialogTitle className="flex items-center gap-2 font-serif text-lg">
                     <SlotTitle date={selectedDate!} slot={selected!.slot} />
                   </DialogTitle>
                 </DialogHeader>
@@ -209,7 +209,7 @@ function RepasPage() {
             {picker && (
               <>
                 <DrawerHeader className="px-0 pb-2 text-left">
-                  <DrawerTitle className="flex items-center gap-2 font-serif text-xl">
+                  <DrawerTitle className="flex items-center gap-2 font-serif text-lg">
                     <SlotTitle date={selectedDate!} slot={selected!.slot} />
                   </DrawerTitle>
                 </DrawerHeader>
@@ -249,7 +249,7 @@ function DayCell({
           suggestions. Without a weekday column below lg, the header carries the day. */}
       <div className="flex items-baseline justify-between gap-1 px-2.5 pt-2.5">
         <span className={"font-semibold leading-none tabular-nums " + (today ? "text-primary" : "")}>
-          <span className="text-2xl">{date.getDate()}</span>
+          <span className="text-xl">{date.getDate()}</span>
           <Eyebrow as="span" className="ml-1.5 lg:hidden">
             {date.toLocaleDateString("fr-BE", { weekday: "long" })}
           </Eyebrow>
@@ -310,7 +310,7 @@ function SlotCell({
       className="group relative flex flex-1 flex-col"
     >
       {/* The label belongs to the slot, not to the dish — so it stays outside the box. */}
-      <div className="flex items-center justify-between px-1 pb-1 text-3xs uppercase tracking-eyebrow text-muted-foreground">
+      <div className="flex items-center justify-between px-1 pb-1 text-2xs uppercase tracking-eyebrow text-muted-foreground">
         <span>{slot === "midi" ? "Midi" : "Soir"}</span>
         {!weekend && slot === "midi" && !entry && <Package className="h-3 w-3" aria-label="Emportable" />}
       </div>
@@ -485,8 +485,8 @@ function DishSection({
   return (
     <section>
       <div className="mb-2 flex items-baseline gap-2">
-        <h3 className="text-3xs uppercase tracking-eyebrow text-foreground">{title}</h3>
-        <p className="text-2xs text-muted-foreground">{hint}</p>
+        <h3 className="text-2xs uppercase tracking-eyebrow text-foreground">{title}</h3>
+        <p className="text-xs text-muted-foreground">{hint}</p>
       </div>
       <div className="grid gap-2 sm:grid-cols-2">
         {items.map(({ dish, reason, leftover, exhausted }) => (
@@ -537,7 +537,7 @@ function SuggestionCard({
               title="Batch : une cuisson, deux créneaux"
               // Shaped like the attribute tags it sits with, but it acts — hence
               // the border and the hover.
-              className="ml-auto inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-0.5 text-3xs transition-colors hover:border-foreground hover:bg-foreground hover:text-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="ml-auto inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-0.5 text-2xs transition-colors hover:border-foreground hover:bg-foreground hover:text-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Repeat className="h-3 w-3" />×2
             </button>

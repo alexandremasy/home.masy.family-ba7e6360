@@ -131,13 +131,13 @@ function TeslaPage() {
 
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="font-serif text-xl text-foreground">{tesla.model}</p>
+            <p className="font-serif text-lg text-foreground">{tesla.model}</p>
             <p className="mt-0.5 text-xs text-muted-foreground">
               <MapPin className="mr-1 inline h-3 w-3" />
               {tesla.location}
             </p>
           </div>
-          <span className={"inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-2xs " + (tesla.charging ? "bg-primary text-primary-foreground" : tesla.pluggedIn ? "bg-secondary text-foreground" : "bg-secondary/60 text-muted-foreground")}>
+          <span className={"inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs " + (tesla.charging ? "bg-primary text-primary-foreground" : tesla.pluggedIn ? "bg-secondary text-foreground" : "bg-secondary/60 text-muted-foreground")}>
             {tesla.charging ? <BatteryCharging className="h-3.5 w-3.5 anim-breathe" /> : <Plug className="h-3.5 w-3.5" />}
             {tesla.charging ? "En charge" : tesla.pluggedIn ? "Branchée" : "Débranchée"}
           </span>
@@ -178,7 +178,7 @@ function TeslaPage() {
 
 
 
-        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-3xs uppercase tracking-eyebrow text-muted-foreground">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-2xs uppercase tracking-eyebrow text-muted-foreground">
           <span className="inline-flex items-center gap-1.5"><Wifi className="h-3 w-3" /> Sync {tesla.lastSeen}</span>
           <span>Logiciel {tesla.software}</span>
         </div>
@@ -186,7 +186,7 @@ function TeslaPage() {
 
       {/* ============ 2. TRIMESTRE EN COURS ============ */}
       <section className="space-y-3 pt-6">
-        <h2 className="font-serif text-xl text-foreground">Trimestre en cours <span className="text-muted-foreground">· {qLabel(currentY, currentQ)}</span></h2>
+        <h2 className="font-serif text-lg text-foreground">Trimestre en cours <span className="text-muted-foreground">· {qLabel(currentY, currentQ)}</span></h2>
         <div className="grid gap-6 sm:grid-cols-3 sm:divide-x sm:divide-border/60">
           <BigStat
             icon={<Zap className="h-4 w-4" />}
@@ -220,7 +220,7 @@ function TeslaPage() {
         }
       >
         {/* Legend */}
-        <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-2xs text-muted-foreground">
+        <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-secondary" />trimestres clos</span>
           <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-primary" />trimestre en cours</span>
           <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-primary/30 ring-1 ring-primary/50" />projection (N-1)</span>
@@ -238,7 +238,7 @@ function TeslaPage() {
                     <p className={"text-xs uppercase tracking-eyebrow " + (isCurrent ? "text-primary" : "text-muted-foreground")}>
                       {qLabel(q.year, q.q)}{isCurrent ? " · estimé" : ""}
                     </p>
-                    <p className={"mt-1 font-serif text-2xl leading-none " + (isCurrent ? "text-primary" : "text-foreground")}>
+                    <p className={"mt-1 font-serif text-xl leading-none " + (isCurrent ? "text-primary" : "text-foreground")}>
                       {q.kWh}<span className="ml-1 text-xs font-sans text-muted-foreground">kWh</span>
                     </p>
                   </div>
@@ -263,7 +263,7 @@ function TeslaPage() {
                             style={{ height: `${Math.max((m.kWh / maxMonth) * 100, 8)}%` }}
                           />
                         </div>
-                        <div className="mt-1 flex items-baseline justify-between gap-1 text-3xs">
+                        <div className="mt-1 flex items-baseline justify-between gap-1 text-2xs">
                           <span className={projected ? "truncate italic text-muted-foreground/60" : "truncate text-muted-foreground"}>{m.month}</span>
                           <span className="shrink-0 tabular-nums text-foreground">{m.kWh}</span>
                         </div>
@@ -283,7 +283,7 @@ function TeslaPage() {
               className="absolute left-0 right-0 border-t border-dashed border-foreground/30"
               style={{ bottom: `${(medianMonth / maxMonth) * 100}%` }}
             >
-              <span className="absolute -top-4 right-0 rounded bg-background/80 px-1 text-3xs tabular-nums text-muted-foreground">
+              <span className="absolute -top-4 right-0 rounded bg-background/80 px-1 text-2xs tabular-nums text-muted-foreground">
                 médiane
               </span>
             </div>
@@ -308,7 +308,7 @@ function TeslaPage() {
                             }
                             style={{ height: `${(m.kWh / maxMonth) * 100}%` }}
                           />
-                          <div className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-3xs text-background opacity-0 transition-opacity group-hover:opacity-100">
+                          <div className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-2xs text-background opacity-0 transition-opacity group-hover:opacity-100">
                             {m.kWh} kWh{projected ? " · projection" : ""}
                           </div>
                         </div>
@@ -330,7 +330,7 @@ function TeslaPage() {
                     {q.months.map((m) => (
                       <div
                         key={`${m.year}-${m.month}-l`}
-                        className={"flex-1 text-center text-2xs " + (m.projected ? "text-muted-foreground/60 italic" : "text-muted-foreground")}
+                        className={"flex-1 text-center text-xs " + (m.projected ? "text-muted-foreground/60 italic" : "text-muted-foreground")}
                       >
                         {m.month.slice(0, 3)}
                       </div>
@@ -342,15 +342,15 @@ function TeslaPage() {
                     <div className={"absolute right-1 top-0 h-2 w-px " + (isCurrent ? "bg-primary" : "bg-border")} />
                   </div>
                   <div className="flex flex-col items-center gap-0.5">
-                    <span className={"text-2xs uppercase tracking-eyebrow " + (isCurrent ? "text-primary font-medium" : "text-muted-foreground")}>
+                    <span className={"text-xs uppercase tracking-eyebrow " + (isCurrent ? "text-primary font-medium" : "text-muted-foreground")}>
                       {qLabel(q.year, q.q)}
                       {isCurrent && <span className="ml-1 normal-case tracking-normal opacity-70">(est.)</span>}
                     </span>
-                    <span className={"font-serif text-xl leading-none " + (isCurrent ? "text-primary" : "text-foreground")}>
+                    <span className={"font-serif text-lg leading-none " + (isCurrent ? "text-primary" : "text-foreground")}>
                       {q.kWh}
-                      <span className="ml-1 text-2xs font-sans text-muted-foreground">kWh</span>
+                      <span className="ml-1 text-xs font-sans text-muted-foreground">kWh</span>
                     </span>
-                    <span className="text-2xs tabular-nums text-muted-foreground">{fmtEur(cost(q.kWh))}</span>
+                    <span className="text-xs tabular-nums text-muted-foreground">{fmtEur(cost(q.kWh))}</span>
                   </div>
                 </div>
               );
@@ -358,7 +358,7 @@ function TeslaPage() {
           </div>
         </div>
 
-        <p className="mt-4 text-2xs text-muted-foreground">
+        <p className="mt-4 text-xs text-muted-foreground">
           Médiane <span className="text-foreground">mensuelle</span> ({medianMonth} kWh) sur {previousFull.length} trimestres clos · moyenne trimestrielle {avgPrevKWh} kWh ({fmtEur(cost(avgPrevKWh))}). Les mois manquants du trimestre en cours sont projetés sur base de l'année précédente.
         </p>
       </Section>
@@ -390,24 +390,6 @@ function FloatStat({
   );
 }
 
-function ActionBtn({ icon, label, active }: { icon: React.ReactNode; label: string; active?: boolean }) {
-  return (
-    <button
-      type="button"
-      className={
-        "group flex min-h-20 min-w-20 shrink-0 flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-3 text-center transition-all duration-300 sm:min-w-0 sm:px-3 sm:py-4 " +
-        (active
-          ? "border-foreground bg-foreground text-background shadow-lift -translate-y-0.5"
-          : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
-      }
-    >
-      <span className={active ? "anim-breathe" : "opacity-60"}>{icon}</span>
-      {/* Off-scale on purpose: a long uppercase label has to survive an 80px box
-          on mobile, so it squeezes below the scale and relaxes back onto it at sm. */}
-      <span className="max-w-full break-words text-[8px] uppercase leading-tight tracking-[0.04em] sm:text-3xs sm:tracking-[0.14em]">{label}</span>
-    </button>
-  );
-}
 
 function TeslaCar({ charging, locked }: { charging: boolean; locked: boolean }) {
   // Playful Tesla Model 3 illustration — red body, chunky wheels, sparkles
@@ -508,7 +490,7 @@ function TeslaCar({ charging, locked }: { charging: boolean; locked: boolean }) 
           <circle cx="130" cy="52" r="2.5" className={locked ? "fill-success" : "fill-warm"} />
         </g>
       </svg>
-      <span className={"mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-3xs " + (locked ? "bg-success/10 text-success" : "bg-warm/10 text-warm")}>
+      <span className={"mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-2xs " + (locked ? "bg-success/10 text-success" : "bg-warm/10 text-warm")}>
         {locked ? <Lock className="h-3 w-3" /> : <LockOpen className="h-3 w-3" />}
         {locked ? "Verrouillée" : "Ouverte"}
       </span>
@@ -540,7 +522,7 @@ function BigStat({
       <p className={"mt-2 font-serif text-3xl " + (accent ? "text-primary" : trend === "down" ? "text-success" : trend === "up" ? "text-mustard" : "text-foreground")}>
         {value}
       </p>
-      {sub && <p className="mt-1 text-2xs text-muted-foreground">{sub}</p>}
+      {sub && <p className="mt-1 text-xs text-muted-foreground">{sub}</p>}
     </div>
   );
 }

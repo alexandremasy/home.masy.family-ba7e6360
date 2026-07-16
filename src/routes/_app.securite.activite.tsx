@@ -101,7 +101,7 @@ function HealthStat({ icon, label, value, sub, tone = "default" }: {
       <div className={`flex items-center gap-2 text-xs uppercase tracking-eyebrow ${tone === "warm" ? "text-warm" : "text-muted-foreground"}`}>
         {icon}{label}
       </div>
-      <p className="mt-2 font-serif text-2xl">{value}{sub && <span className="ml-1 text-sm text-muted-foreground">{sub}</span>}</p>
+      <p className="mt-2 font-serif text-xl">{value}{sub && <span className="ml-1 text-sm text-muted-foreground">{sub}</span>}</p>
     </div>
   );
 }

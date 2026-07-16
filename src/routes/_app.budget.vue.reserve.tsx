@@ -110,10 +110,10 @@ function ReserveOverlay() {
                     </span>
                     <h1 className="font-serif text-3xl tracking-tight sm:text-4xl">Réserve</h1>
                     <div className="ml-auto text-right">
-                      <p className="flex items-baseline justify-end gap-2 text-3xs uppercase tracking-eyebrow text-muted-foreground">
+                      <p className="flex items-baseline justify-end gap-2 text-2xs uppercase tracking-eyebrow text-muted-foreground">
                         Total <span className="tabular-nums normal-case tracking-normal">+ {eur(contribTotal)}/mois</span>
                       </p>
-                      <p className="mt-0.5 font-serif text-2xl tabular-nums text-foreground">
+                      <p className="mt-0.5 font-serif text-xl tabular-nums text-foreground">
                         {/* key on total → re-count when an envelope edit changes it (CountUp only animates once per mount) */}
                         <CountUp key={total} to={total} /><span className="ml-1 text-sm text-muted-foreground">€</span>
                       </p>
@@ -176,14 +176,14 @@ function ReserveOverlay() {
                         {editing ? (
                           <div className="mt-2 space-y-2">
                             <label className="block">
-                              <span className="mb-0.5 block text-3xs uppercase tracking-wide text-muted-foreground">Montant · nouveau point ({nextM})</span>
+                              <span className="mb-0.5 block text-2xs uppercase tracking-wide text-muted-foreground">Montant · nouveau point ({nextM})</span>
                               <input autoFocus value={draftBal} onChange={(e) => setDraftBal(e.target.value)}
                                 onKeyDown={(e) => { if (e.key === "Enter") commitEdit(env.key); if (e.key === "Escape") setEditKey(null); }}
                                 inputMode="decimal"
                                 className="w-full rounded-md border border-border bg-background px-2 py-1 font-serif text-lg tabular-nums focus:border-primary focus:outline-none" />
                             </label>
                             <label className="block">
-                              <span className="mb-0.5 block text-3xs uppercase tracking-wide text-muted-foreground">Épargne / mois</span>
+                              <span className="mb-0.5 block text-2xs uppercase tracking-wide text-muted-foreground">Épargne / mois</span>
                               <input value={draftContrib} onChange={(e) => setDraftContrib(e.target.value)}
                                 onKeyDown={(e) => { if (e.key === "Enter") commitEdit(env.key); if (e.key === "Escape") setEditKey(null); }}
                                 inputMode="decimal"
@@ -200,10 +200,10 @@ function ReserveOverlay() {
                           </div>
                         ) : (
                           <>
-                            <p className="mt-2 font-serif text-xl tabular-nums">
+                            <p className="mt-2 font-serif text-lg tabular-nums">
                               <CountUp to={env.balance} /><span className="ml-1 text-xs text-muted-foreground">€</span>
                             </p>
-                            <p className="mt-0.5 text-2xs text-muted-foreground tabular-nums">+ {eur(env.contrib)} / mois</p>
+                            <p className="mt-0.5 text-xs text-muted-foreground tabular-nums">+ {eur(env.contrib)} / mois</p>
                           </>
                         )}
 

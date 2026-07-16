@@ -56,7 +56,7 @@ function VuePage() {
             <Eyebrow size="xs">
               Budget · {zoom === null ? "Vue d'ensemble" : "Mois"}
             </Eyebrow>
-            <h1 className="mt-1 truncate font-serif text-2xl tracking-tight sm:text-4xl">
+            <h1 className="mt-1 truncate font-serif text-xl tracking-tight sm:text-4xl">
               {zoom === null
                 ? viewTitle(view)
                 : <>
@@ -145,12 +145,12 @@ function AxisStatus({ axis, to }: { axis: ReturnType<typeof annualVerdict>["axes
   const base = "block h-full w-full rounded-xl border border-border/50 bg-secondary/25 px-4 py-3.5 text-left";
   const inner = (
     <>
-      <p className="flex items-center gap-1.5 text-3xs uppercase tracking-eyebrow text-muted-foreground">
+      <p className="flex items-center gap-1.5 text-2xs uppercase tracking-eyebrow text-muted-foreground">
         <span className={"h-1.5 w-1.5 rounded-full " + c.dot} /> {axis.label}
         {to && <ChevronRight className="ml-auto h-3.5 w-3.5 text-muted-foreground/60 transition-transform group-hover/axis:translate-x-0.5" />}
       </p>
       <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-        <span className="font-serif text-2xl leading-none tabular-nums text-foreground sm:text-3xl">{axis.value}</span>
+        <span className="font-serif text-xl leading-none tabular-nums text-foreground sm:text-3xl">{axis.value}</span>
         {axis.pct && <span className="text-sm tabular-nums text-muted-foreground">· {axis.pct}</span>}
         <span className={"inline-flex items-center self-center rounded-full px-2.5 py-0.5 text-xs font-medium " + c.bg + " " + c.fg}>{axis.tag}</span>
       </div>
@@ -202,7 +202,7 @@ function VerdictHeader({ verdict, view }: { verdict: ReturnType<typeof annualVer
   const freshness = dataFreshness();
   return (
     <div>
-      <h2 className="font-serif text-2xl tracking-tight sm:text-3xl">Santé de l'année</h2>
+      <h2 className="font-serif text-xl tracking-tight sm:text-3xl">Santé de l'année</h2>
       <p className="mt-1 text-sm text-muted-foreground">
         Sur base des imports jusqu'à {freshness.lastMonth} — la suite est projetée.
       </p>
@@ -229,8 +229,8 @@ function SecondaryReading({ label, primary, secondary, tone }: {
   return (
     <div className="rounded-xl bg-secondary/40 p-3 lg:bg-transparent lg:p-0">
       <Eyebrow size="xs">{label}</Eyebrow>
-      <p className={"mt-1 font-serif text-xl leading-none tabular-nums sm:text-2xl " + cls}>{primary}</p>
-      {secondary && <p className="mt-1.5 text-2xs tabular-nums text-muted-foreground">{secondary}</p>}
+      <p className={"mt-1 font-serif text-lg leading-none tabular-nums sm:text-xl " + cls}>{primary}</p>
+      {secondary && <p className="mt-1.5 text-xs tabular-nums text-muted-foreground">{secondary}</p>}
     </div>
   );
 }
@@ -245,9 +245,9 @@ function MicroStat({ label, primary, secondary, tone }: {
     : "text-foreground";
   return (
     <div className="rounded-xl bg-secondary/40 p-2.5 lg:bg-transparent lg:p-0">
-      <Eyebrow size="xs" className="sm:text-3xs">{label}</Eyebrow>
-      <p className={"mt-1 font-serif text-lg leading-none tabular-nums sm:text-xl " + cls}>{primary}</p>
-      {secondary && <p className="mt-1 text-3xs tabular-nums text-muted-foreground">{secondary}</p>}
+      <Eyebrow size="xs" className="sm:text-2xs">{label}</Eyebrow>
+      <p className={"mt-1 font-serif text-lg leading-none tabular-nums sm:text-lg " + cls}>{primary}</p>
+      {secondary && <p className="mt-1 text-2xs tabular-nums text-muted-foreground">{secondary}</p>}
     </div>
   );
 }
@@ -285,7 +285,7 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
       <div className="mt-6">
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
           <Eyebrow size="xs">Entrées · Dépenses · Épargne — par mois</Eyebrow>
-          <div className="flex flex-wrap items-center gap-3 text-3xs uppercase tracking-eyebrow text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-3 text-2xs uppercase tracking-eyebrow text-muted-foreground">
             <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--success)" }} /> Entrées</span>
             <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--warm)" }} /> Dépenses</span>
             <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--primary)" }} /> Épargne</span>
@@ -321,7 +321,7 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
 
       {/* Month strip — each box: écart vs budget (réel importé / projeté atténué) */}
       <div className="mt-6 border-t border-border/40 pt-4">
-        <div className="mb-2 flex items-center justify-between text-3xs uppercase tracking-eyebrow text-muted-foreground">
+        <div className="mb-2 flex items-center justify-between text-2xs uppercase tracking-eyebrow text-muted-foreground">
           <span>Mois · écart au budget</span>
           <span className="hidden sm:inline">Cliquez pour ouvrir</span>
         </div>
@@ -348,7 +348,7 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
                       stroke="var(--border)" strokeOpacity={0.7} strokeWidth={1} strokeDasharray="5 4" />
                   </svg>
                 )}
-                <span className="flex items-center gap-1 text-2xs uppercase tracking-wide text-muted-foreground">
+                <span className="flex items-center gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                   {f.isLastImport && <span className="h-1.5 w-1.5 rounded-full bg-foreground" title="dernier import" />}
                   {f.m}
                 </span>
@@ -364,7 +364,7 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
       {/* Échéances strip — same compact language as the months: what's coming + coverage */}
       {upcoming.length > 0 && (
         <div className="mt-4 border-t border-border/40 pt-4">
-          <div className="mb-2 flex items-center justify-between text-3xs uppercase tracking-eyebrow text-muted-foreground">
+          <div className="mb-2 flex items-center justify-between text-2xs uppercase tracking-eyebrow text-muted-foreground">
             <span>Échéances à venir · couverture</span>
             <span className="hidden sm:inline">Cliquez pour ouvrir</span>
           </div>
@@ -379,7 +379,7 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
                   <span className={"h-1.5 w-1.5 shrink-0 rounded-full " + dot} />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-medium leading-tight">{b.label}</span>
-                    <span className="block text-2xs uppercase tracking-wide text-muted-foreground">
+                    <span className="block text-xs uppercase tracking-wide text-muted-foreground">
                       {MONTHS_FR[b.monthIdx]} · <span className="tabular-nums text-warm">−{eur(b.amount)}</span>
                     </span>
                   </span>
@@ -407,7 +407,7 @@ function CategoriesGrid() {
     <section className="anim-slide-up">
       <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="font-serif text-xl tracking-tight sm:text-2xl">Catégories</h2>
+          <h2 className="font-serif text-lg tracking-tight sm:text-xl">Catégories</h2>
           <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
             Tendance sur 12 mois glissants (plein = réel, pointillé = anticipé) · le chip = écart au budget. Clic pour le détail.
           </p>
@@ -449,15 +449,15 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
           </span>
           <div className="min-w-0">
             <p className="truncate text-sm font-medium">{cat.label}</p>
-            <p className="truncate text-3xs tabular-nums text-muted-foreground">Budget {eur(cat.budget)}/mois</p>
+            <p className="truncate text-2xs tabular-nums text-muted-foreground">Budget {eur(cat.budget)}/mois</p>
           </div>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
-          <span className={"rounded-full px-1.5 py-0.5 text-3xs font-medium tabular-nums " + budgetChip}
+          <span className={"rounded-full px-1.5 py-0.5 text-2xs font-medium tabular-nums " + budgetChip}
             title="Écart au budget, moyenne sur 12 mois">
             {vsBudget >= 0 ? "+" : "−"}{Math.abs(vsBudget)}%
           </span>
-          <span className="text-3xs tabular-nums text-muted-foreground" title={`Vs ${currentYear - 1}`}>
+          <span className="text-2xs tabular-nums text-muted-foreground" title={`Vs ${currentYear - 1}`}>
             vs {currentYear - 1} {yoy >= 0 ? "+" : "−"}{Math.abs(yoy)}%
           </span>
         </div>
@@ -484,7 +484,7 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
         </ResponsiveContainer>
       </div>
 
-      <p className="mt-1 flex items-center justify-end gap-1 text-2xs tabular-nums text-muted-foreground" title="Évolution sur la période affichée">
+      <p className="mt-1 flex items-center justify-end gap-1 text-xs tabular-nums text-muted-foreground" title="Évolution sur la période affichée">
         <TrendIcon className="h-3 w-3" /> Période {periodDelta >= 0 ? "+" : "−"}{Math.abs(periodDelta)}%
       </p>
     </Link>
@@ -558,7 +558,7 @@ function PasseView({ monthIdx }: { monthIdx: number }) {
 
       <Panel>
         <header className="mb-4">
-          <h3 className="font-serif text-xl tracking-tight">Prévu vs réel</h3>
+          <h3 className="font-serif text-lg tracking-tight">Prévu vs réel</h3>
           <p className="mt-1 text-sm text-muted-foreground">Variance par catégorie pour ce mois clos.</p>
         </header>
         <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
@@ -616,7 +616,7 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
       <Panel>
         <header className="mb-4 flex items-end justify-between gap-3">
           <div>
-            <h3 className="font-serif text-xl tracking-tight">Réel à date + projection</h3>
+            <h3 className="font-serif text-lg tracking-tight">Réel à date + projection</h3>
             <p className="mt-1 text-sm text-muted-foreground">La barre marque la frontière entre les deux.</p>
           </div>
           <Eyebrow size="xs">Jour {day}/{total}</Eyebrow>
@@ -683,7 +683,7 @@ function FuturView({ monthIdx }: { monthIdx: number }) {
       <section className="rounded-2xl border border-dashed border-border/60 bg-card/60 p-5 shadow-soft sm:p-7">
         <header className="mb-4 flex items-end justify-between gap-3">
           <div>
-            <h3 className="font-serif text-xl tracking-tight">Postes prévus</h3>
+            <h3 className="font-serif text-lg tracking-tight">Postes prévus</h3>
             <p className="mt-1 text-sm text-muted-foreground">Projection issue de la Planification — aucune réelle dépense.</p>
           </div>
           <Link to="/budget/planification" className="text-xs text-primary underline-offset-4 hover:underline">Modifier →</Link>
@@ -707,7 +707,7 @@ function FuturView({ monthIdx }: { monthIdx: number }) {
                         <p className="truncate font-medium">{g.label}</p>
                         <p className="shrink-0 text-sm tabular-nums text-warm">{eur(g.total)}</p>
                       </div>
-                      <p className="mt-0.5 text-2xs text-muted-foreground">{g.postes.map(p=>p.label).join(" · ")}</p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">{g.postes.map(p=>p.label).join(" · ")}</p>
                     </div>
                   </div>
                 </li>
@@ -757,10 +757,10 @@ function SmallStat({ label, value, tone, hint, signed }: { label: string; value:
   return (
     <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft">
       <Eyebrow size="xs">{label}</Eyebrow>
-      <p className={"mt-2 font-serif text-2xl tracking-tight tabular-nums " + cls}>
+      <p className={"mt-2 font-serif text-xl tracking-tight tabular-nums " + cls}>
         {signed && value > 0 ? "+" : ""}<CountUp to={value} /><span className="ml-1 text-sm text-muted-foreground">€</span>
       </p>
-      {hint && <p className="mt-0.5 text-2xs text-muted-foreground">{hint}</p>}
+      {hint && <p className="mt-0.5 text-xs text-muted-foreground">{hint}</p>}
     </div>
   );
 }

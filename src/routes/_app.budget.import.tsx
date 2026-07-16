@@ -42,7 +42,7 @@ function ImportPage() {
     <div className="space-y-6 anim-slide-up">
       <div>
         <Eyebrow size="xs">Budget · Import</Eyebrow>
-        <h1 className="mt-1 font-serif text-2xl tracking-tight sm:text-4xl">Importer un export iSaveMoney</h1>
+        <h1 className="mt-1 font-serif text-xl tracking-tight sm:text-4xl">Importer un export iSaveMoney</h1>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
           Déposez le fichier. Vous verrez exactement ce qui sera ajouté, ce qui change, et ce qui reste protégé — avant de valider.
         </p>
@@ -156,7 +156,7 @@ function ImportPage() {
               <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-success/15 text-success">
                 <Sparkles className="h-5 w-5" />
               </span>
-              <p className="mt-3 font-serif text-2xl tracking-tight">Import appliqué</p>
+              <p className="mt-3 font-serif text-xl tracking-tight">Import appliqué</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 {t.nouvelles} transactions ajoutées, {Object.values(choices).filter((c) => c === "maj").length} mises à jour.
               </p>
@@ -172,7 +172,7 @@ function ImportPage() {
       <Panel>
         <header className="mb-4 flex items-center gap-2">
           <History className="h-4 w-4 text-muted-foreground" />
-          <h2 className="font-serif text-xl tracking-tight">Historique des imports</h2>
+          <h2 className="font-serif text-lg tracking-tight">Historique des imports</h2>
         </header>
         <ul className="divide-y divide-border/40">
           {importHistory.map((h) => (
@@ -211,12 +211,12 @@ function DropZone({ dragOver, setDragOver, onDrop }: {
         <UploadCloud className="h-6 w-6" />
       </span>
       <div>
-        <p className="font-serif text-xl tracking-tight">Déposez un export ici</p>
+        <p className="font-serif text-lg tracking-tight">Déposez un export ici</p>
         <p className="mt-1 text-sm text-muted-foreground">.xlsx ou .csv depuis iSaveMoney — ou cliquez pour parcourir</p>
       </div>
       <input type="file" accept=".xlsx,.csv" className="hidden"
         onChange={(e) => onDrop(e.target.files?.[0] ?? undefined)} />
-      <p className="mt-2 text-2xs text-muted-foreground">Prototype : tout fichier déposé déclenche un aperçu simulé.</p>
+      <p className="mt-2 text-xs text-muted-foreground">Prototype : tout fichier déposé déclenche un aperçu simulé.</p>
     </label>
   );
 }
@@ -233,8 +233,8 @@ function StatBadge({ icon: Icon, tone, n, label }: {
     <div className={"flex items-center gap-3 rounded-2xl border p-4 shadow-soft " + cls}>
       <Icon className="h-5 w-5 shrink-0" />
       <div>
-        <p className="font-serif text-2xl tabular-nums leading-none">{n}</p>
-        <p className="text-2xs uppercase tracking-wider opacity-80">{label}</p>
+        <p className="font-serif text-xl tabular-nums leading-none">{n}</p>
+        <p className="text-xs uppercase tracking-wider opacity-80">{label}</p>
       </div>
     </div>
   );
@@ -244,7 +244,7 @@ function DiffSection({ title, subtitle, children }: { title: string; subtitle: s
   return (
     <Panel>
       <header className="mb-3">
-        <h2 className="font-serif text-xl tracking-tight">{title}</h2>
+        <h2 className="font-serif text-lg tracking-tight">{title}</h2>
         <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>
       </header>
       {children}

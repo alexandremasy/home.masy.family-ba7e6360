@@ -133,7 +133,7 @@ function CoursesPage() {
                         {it.name}
                       </p>
                       {it.fromDishes && (
-                        <p className="truncate text-3xs text-muted-foreground">
+                        <p className="truncate text-2xs text-muted-foreground">
                           <Sparkles className="mr-0.5 inline h-2.5 w-2.5 text-primary" />
                           {it.fromDishes.join(" · ")}
                         </p>

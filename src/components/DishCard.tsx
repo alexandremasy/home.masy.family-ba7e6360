@@ -22,7 +22,7 @@ export function StatusPill({
       title={title}
       aria-label={title}
       className={cn(
-        "inline-flex shrink-0 items-center gap-1 rounded-full py-0.5 text-3xs leading-tight",
+        "inline-flex shrink-0 items-center gap-1 rounded-full py-0.5 text-2xs leading-tight",
         children ? "px-2" : "px-1",
         tone === "primary"
           ? "bg-primary font-medium text-primary-foreground"
@@ -101,7 +101,7 @@ export function DishCard({
       {!compact && (
         <div className="mt-2 flex flex-wrap items-center gap-1">
           {attributesOf(dish).map((a) => (
-            <Badge key={a} variant="secondary" className="text-3xs font-normal">{a}</Badge>
+            <Badge key={a} variant="secondary" className="text-2xs font-normal">{a}</Badge>
           ))}
           {actions}
         </div>

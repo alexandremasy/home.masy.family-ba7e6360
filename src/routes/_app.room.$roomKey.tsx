@@ -280,8 +280,8 @@ function RoomPage() {
                         : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
                     }
                   >
-                    <span className="font-serif text-2xl leading-none">{label}</span>
-                    <span className={"text-3xs uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
+                    <span className="font-serif text-xl leading-none">{label}</span>
+                    <span className={"text-2xs uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
                       {sub}
                     </span>
                   </CommandButton>
@@ -385,7 +385,7 @@ function RoomPage() {
                 ] as const).map(([name, val, color]) => (
                   <div key={name} className="rounded-xl border border-border/60 bg-card p-3">
                     <div className="flex items-center gap-1 text-xs text-muted-foreground"><Droplet className="h-3 w-3" />{name}</div>
-                    <p className="mt-1.5 font-serif text-xl">{val}%</p>
+                    <p className="mt-1.5 font-serif text-lg">{val}%</p>
                     <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-muted">
                       <div className="h-full rounded-full transition-all duration-700" style={{ width: `${val}%`, background: color }} />
                     </div>
@@ -471,7 +471,7 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
             </div>
             <div className="min-w-0 flex-1">
               <Eyebrow size="xs">Spotify · en lecture</Eyebrow>
-              <p className="mt-0.5 truncate font-serif text-xl">{media.nowPlaying ?? "—"}</p>
+              <p className="mt-0.5 truncate font-serif text-lg">{media.nowPlaying ?? "—"}</p>
               {media.artist && <p className="truncate text-sm text-muted-foreground">{media.artist}</p>}
               <div className="mt-2 flex h-3 items-end gap-0.5">
                 {[0.6, 0.9, 0.4, 1, 0.7, 0.5, 0.85].map((h, i) => (
@@ -496,7 +496,7 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
             </div>
             <div className="min-w-0 flex-1">
               <Eyebrow size="xs">Netflix</Eyebrow>
-              <p className="mt-0.5 truncate font-serif text-xl">Téléviseur allumé</p>
+              <p className="mt-0.5 truncate font-serif text-lg">Téléviseur allumé</p>
               <p className="truncate text-sm text-muted-foreground">Source HDMI · Apple TV</p>
             </div>
             <CommandButton onCommand={() => setPlaying(!playing)}
@@ -514,7 +514,7 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
             </div>
             <div className="min-w-0 flex-1">
               <Eyebrow size="xs">Aucun média</Eyebrow>
-              <p className="mt-0.5 font-serif text-xl">Tout est silencieux</p>
+              <p className="mt-0.5 font-serif text-lg">Tout est silencieux</p>
               <p className="text-sm text-muted-foreground">Choisis une source pour démarrer.</p>
             </div>
           </div>
@@ -548,7 +548,7 @@ function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
               <Icon className={"h-3.5 w-3.5 " + (a.on ? "anim-breathe" : "opacity-50")} />
               {a.name}
             </span>
-            <span className={"text-3xs uppercase tracking-wider " + (a.on ? "opacity-70" : "text-muted-foreground")}>{a.on ? "On" : "Off"}</span>
+            <span className={"text-2xs uppercase tracking-wider " + (a.on ? "opacity-70" : "text-muted-foreground")}>{a.on ? "On" : "Off"}</span>
           </CommandButton>
         );
       })}
@@ -658,8 +658,8 @@ function DualClimate({
                     : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
                 }
               >
-                <span className="font-serif text-2xl leading-none">{isOff ? (system === "heat" ? "Auto" : "Off") : `${p}°`}</span>
-                <span className={"text-3xs uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
+                <span className="font-serif text-xl leading-none">{isOff ? (system === "heat" ? "Auto" : "Off") : `${p}°`}</span>
+                <span className={"text-2xs uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
                   {isOff ? "éteint" : "on"}
                 </span>
               </CommandButton>

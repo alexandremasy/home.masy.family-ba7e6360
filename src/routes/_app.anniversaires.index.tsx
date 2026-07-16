@@ -23,7 +23,7 @@ function AnniversairesPage() {
               <Eyebrow tone="current" size="xs" className="text-mustard inline-flex items-center gap-1.5">
                 <Bell className="h-3 w-3" /> Prochain anniversaire
               </Eyebrow>
-              <p className="mt-1 font-serif text-2xl">{upcoming.name}</p>
+              <p className="mt-1 font-serif text-xl">{upcoming.name}</p>
               <p className="text-sm text-muted-foreground">
                 {frLongDay(nextBirthday(upcoming))} · {upcomingAge(upcoming)} ans · dans {daysUntil(nextBirthday(upcoming))} j
               </p>

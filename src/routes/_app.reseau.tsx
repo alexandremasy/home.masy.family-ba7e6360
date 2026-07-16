@@ -160,7 +160,7 @@ function Meter({ icon, label, value }: { icon: React.ReactNode; label: string; v
   return (
     <div className="rounded-xl border border-border/60 bg-card p-4">
       <Eyebrow as="div" className="flex items-center gap-2">{icon}{label}</Eyebrow>
-      <p className="mt-2 font-serif text-2xl">{value}<span className="text-sm text-muted-foreground">%</span></p>
+      <p className="mt-2 font-serif text-xl">{value}<span className="text-sm text-muted-foreground">%</span></p>
       <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-muted">
         <div className={"h-full rounded-full transition-all duration-700 " + (value > 80 ? "bg-destructive" : value > 60 ? "bg-warm" : "bg-primary")} style={{ width: `${value}%` }} />
       </div>
@@ -172,7 +172,7 @@ function Stat({ icon, label, value, sub, tone = "default" }: { icon: React.React
   return (
     <div className="rounded-xl border border-border/60 bg-card p-4">
       <Eyebrow as="div" className="flex items-center gap-2">{icon}{label}</Eyebrow>
-      <p className={"mt-2 font-serif text-2xl tabular-nums " + (tone === "warm" ? "text-warm" : "text-foreground")}>{value}</p>
+      <p className={"mt-2 font-serif text-xl tabular-nums " + (tone === "warm" ? "text-warm" : "text-foreground")}>{value}</p>
       {sub && <p className="mt-1 text-xs text-muted-foreground">{sub}</p>}
     </div>
   );

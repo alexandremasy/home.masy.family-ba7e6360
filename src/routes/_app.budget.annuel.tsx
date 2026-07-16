@@ -89,7 +89,7 @@ function AnnuelPage() {
       <Panel className="anim-slide-up">
         <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="font-serif text-2xl tracking-tight">Flux mensuels</h2>
+            <h2 className="font-serif text-xl tracking-tight">Flux mensuels</h2>
             <p className="mt-1 text-sm text-muted-foreground">Entrées vs dépenses — les pics sont les mois lourds</p>
           </div>
         </header>
@@ -117,7 +117,7 @@ function AnnuelPage() {
       <Panel className="anim-slide-up">
         <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="font-serif text-2xl tracking-tight">Évolution</h2>
+            <h2 className="font-serif text-xl tracking-tight">Évolution</h2>
             <p className="mt-1 text-sm text-muted-foreground">12 mois glissants — moyenne {eur(avgSpend)}/mois</p>
           </div>
         </header>
@@ -155,7 +155,7 @@ function AnnuelPage() {
       <Panel className="anim-slide-up">
         <header className="mb-4 flex items-end justify-between">
           <div>
-            <h2 className="font-serif text-2xl tracking-tight">Pression de l'année</h2>
+            <h2 className="font-serif text-xl tracking-tight">Pression de l'année</h2>
             <p className="mt-1 text-sm text-muted-foreground">Cellules de chaleur + chips des grosses échéances</p>
           </div>
           <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/10 text-primary">
@@ -189,12 +189,12 @@ function AnnuelPage() {
                   )}
                 </div>
                 <div className="mt-1.5 flex flex-1 flex-col gap-1">
-                  {bills.length === 0 && <span className="text-3xs text-muted-foreground/50">—</span>}
+                  {bills.length === 0 && <span className="text-2xs text-muted-foreground/50">—</span>}
                   {bills.map((b) => (
                     <span key={b.label}
                       // An expense is not an alert — a paid rent was painted with
                       // the alert tone. Income stays green; everything else is neutral.
-                      className={"truncate rounded-md px-1.5 py-0.5 text-3xs font-medium leading-tight " +
+                      className={"truncate rounded-md px-1.5 py-0.5 text-2xs font-medium leading-tight " +
                         (b.kind === "income" ? "bg-success/15 text-success" : "bg-secondary text-muted-foreground")}
                       title={`${b.label} · ${eur(b.amount)}`}
                     >{b.label}</span>
@@ -214,7 +214,7 @@ function AnnuelPage() {
           </div>
           <div className="rounded-xl bg-secondary/60 p-4">
             <Eyebrow size="xs">Solde d'annualisation</Eyebrow>
-            <p className="mt-1 font-serif text-2xl tabular-nums">{eur(annualBalance)}</p>
+            <p className="mt-1 font-serif text-xl tabular-nums">{eur(annualBalance)}</p>
             <p className="mt-2 text-xs text-muted-foreground">
               Lisse les grosses factures (mazout, assurance, taxes) pour qu'aucun mois ne soit écrasé.
             </p>
@@ -226,7 +226,7 @@ function AnnuelPage() {
       <Panel className="anim-slide-up">
         <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="font-serif text-2xl tracking-tight">Zoom sur une catégorie</h2>
+            <h2 className="font-serif text-xl tracking-tight">Zoom sur une catégorie</h2>
             <p className="mt-1 text-sm text-muted-foreground">Tendance 12 mois — moyenne {eur(zoomAvg)}/mois</p>
           </div>
           <div className="flex flex-wrap gap-1">
@@ -276,7 +276,7 @@ function AnnuelPage() {
       {/* Envelopes */}
       <section className="anim-slide-up">
         <header className="mb-4 flex items-end justify-between">
-          <h2 className="font-serif text-2xl tracking-tight">Enveloppes d'épargne</h2>
+          <h2 className="font-serif text-xl tracking-tight">Enveloppes d'épargne</h2>
           <p className="text-xs text-muted-foreground tabular-nums">{eur(envelopes.reduce((s,e)=>s+e.contrib,0))}/mois</p>
         </header>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -294,7 +294,7 @@ function AnnuelPage() {
                   <Eyebrow>{env.label}</Eyebrow>
                   <span className={"grid h-8 w-8 place-items-center rounded-full " + toneRing}><PiggyBank className="h-4 w-4" /></span>
                 </div>
-                <p className="mt-3 font-serif text-2xl tracking-tight tabular-nums">
+                <p className="mt-3 font-serif text-xl tracking-tight tabular-nums">
                   <CountUp to={env.balance} /><span className="ml-1 text-sm text-muted-foreground">€</span>
                 </p>
                 <p className="mt-0.5 text-xs text-muted-foreground tabular-nums">+ {eur(env.contrib)} / mois</p>

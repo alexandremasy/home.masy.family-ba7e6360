@@ -35,7 +35,7 @@ export function ModeSwitcher() {
         <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-56">
-        <DropdownMenuLabel className="text-3xs uppercase tracking-eyebrow text-muted-foreground">
+        <DropdownMenuLabel className="text-2xs uppercase tracking-eyebrow text-muted-foreground">
           Modes
         </DropdownMenuLabel>
         {modes.map((m) => {
@@ -60,7 +60,7 @@ export function ModeSwitcher() {
           );
         })}
         <DropdownMenuSeparator />
-        <DropdownMenuLabel className="text-3xs uppercase tracking-eyebrow text-muted-foreground">
+        <DropdownMenuLabel className="text-2xs uppercase tracking-eyebrow text-muted-foreground">
           Bientôt
         </DropdownMenuLabel>
         {upcoming.map((m) => {
@@ -75,7 +75,7 @@ export function ModeSwitcher() {
                 <I className="h-3 w-3" />
               </span>
               <span className="flex-1">{m.label}</span>
-              <span className="rounded-full bg-secondary px-1.5 py-0.5 text-3xs uppercase tracking-wider">Bientôt</span>
+              <span className="rounded-full bg-secondary px-1.5 py-0.5 text-2xs uppercase tracking-wider">Bientôt</span>
             </div>
           );
         })}

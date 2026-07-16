@@ -109,7 +109,7 @@ function PlanificationPage() {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
           <Eyebrow size="xs">Budget · Planification</Eyebrow>
-          <h1 className="mt-1 font-serif text-2xl tracking-tight sm:text-4xl">L'atelier des budgets</h1>
+          <h1 className="mt-1 font-serif text-xl tracking-tight sm:text-4xl">L'atelier des budgets</h1>
         </div>
         <div className="flex items-center gap-3">
           {archive && (
@@ -168,19 +168,19 @@ function PlanificationPage() {
                           <div className="sticky top-[66px] z-10 flex items-stretch overflow-hidden rounded-t-xl border border-border/60 bg-card/95 shadow-soft backdrop-blur">
                             <div className={Z.left + " py-2 pl-3"}>
                               <span className={Z.poste + " text-xs font-semibold uppercase tracking-eyebrow text-foreground/80 truncate"}>{group}</span>
-                              <span className={Z.freq + " text-3xs uppercase tracking-eyebrow text-muted-foreground"}>Fréq.</span>
-                              <span className={Z.prevu + " text-3xs uppercase tracking-eyebrow text-muted-foreground"}>Prévu</span>
+                              <span className={Z.freq + " text-2xs uppercase tracking-eyebrow text-muted-foreground"}>Fréq.</span>
+                              <span className={Z.prevu + " text-2xs uppercase tracking-eyebrow text-muted-foreground"}>Prévu</span>
                             </div>
                             <div className={Z.center + " py-2"}>
                               <div className="grid min-w-0 flex-1 grid-cols-12 gap-x-1">
                                 {MONTHS_FR.map((m, i) => (
-                                  <span key={i} className="text-center text-3xs uppercase text-muted-foreground/60">{m[0]}</span>
+                                  <span key={i} className="text-center text-2xs uppercase text-muted-foreground/60">{m[0]}</span>
                                 ))}
                               </div>
                             </div>
                             <div className={Z.right + " py-2 pr-3"}>
-                              <span className={Z.reel + " text-3xs uppercase tracking-eyebrow text-muted-foreground"}>Réel</span>
-                              <span className={Z.ecart + " text-3xs uppercase tracking-eyebrow text-muted-foreground"}>Écart</span>
+                              <span className={Z.reel + " text-2xs uppercase tracking-eyebrow text-muted-foreground"}>Réel</span>
+                              <span className={Z.ecart + " text-2xs uppercase tracking-eyebrow text-muted-foreground"}>Écart</span>
                             </div>
                           </div>
                           {/* Rows */}
@@ -283,8 +283,8 @@ function ProvisionBox({ provision, auBesoin, className = "" }: { provision: numb
       </span>
       <div className="min-w-0">
         <Eyebrow size="xs" className="truncate">Provision /mois</Eyebrow>
-        <p className="font-serif text-xl tabular-nums tracking-tight text-primary sm:text-2xl">{eur(provision)}</p>
-        <p className="mt-1 text-3xs leading-snug text-muted-foreground">L'au besoin ({eur(auBesoin)}/an) reste hors plan.</p>
+        <p className="font-serif text-lg tabular-nums tracking-tight text-primary sm:text-xl">{eur(provision)}</p>
+        <p className="mt-1 text-2xs leading-snug text-muted-foreground">L'au besoin ({eur(auBesoin)}/an) reste hors plan.</p>
       </div>
     </div>
   );
@@ -297,7 +297,7 @@ function Bucket({ label, value, tint, box, signed, onClick }: {
   const inner = (
     <>
       <Eyebrow size="xs" className="truncate">{label}</Eyebrow>
-      <p className={"mt-1.5 font-serif text-xl tabular-nums tracking-tight sm:text-2xl " + tint}>
+      <p className={"mt-1.5 font-serif text-lg tabular-nums tracking-tight sm:text-xl " + tint}>
         {signed && value >= 0 ? "+" : ""}<CountUp to={value} group /><span className="ml-0.5 text-xs text-muted-foreground">€/an</span>
       </p>
     </>
@@ -354,7 +354,7 @@ function PosteRow({ poste, onEdit, reel = true }: { poste: PlanPoste; onEdit?: (
           {mazout && <Fuel className="h-3 w-3 shrink-0 text-warm" />}
         </span>
         <span className={Z.freq}>
-          <span className="rounded-full bg-secondary/70 px-1.5 py-0.5 text-3xs text-muted-foreground">{recShort(poste.recurrence)}</span>
+          <span className="rounded-full bg-secondary/70 px-1.5 py-0.5 text-2xs text-muted-foreground">{recShort(poste.recurrence)}</span>
         </span>
         <span className={Z.prevu + " text-sm tabular-nums"}>{eur(prevu)}</span>
       </div>
@@ -383,16 +383,16 @@ function PosteRow({ poste, onEdit, reel = true }: { poste: PlanPoste; onEdit?: (
           <>
             <span className={Z.reel + " flex flex-col items-end leading-tight"}>
               <span className="text-sm tabular-nums text-foreground/70">{eur(realYear)}</span>
-              <span className="text-3xs tabular-nums text-muted-foreground/60">méd. {eur(realMedian)}</span>
+              <span className="text-2xs tabular-nums text-muted-foreground/60">méd. {eur(realMedian)}</span>
             </span>
             <span className={Z.ecart}>
-              <span className={"inline-block rounded-md px-1.5 py-0.5 text-2xs font-medium tabular-nums " + ecartCls}>
+              <span className={"inline-block rounded-md px-1.5 py-0.5 text-xs font-medium tabular-nums " + ecartCls}>
                 {auBesoin ? "—" : (ecart >= 0 ? "+" : "−") + eur(Math.abs(ecart))}
               </span>
             </span>
           </>
         ) : (
-          <span className="flex-1 text-right text-2xs italic text-muted-foreground/50">à venir</span>
+          <span className="flex-1 text-right text-xs italic text-muted-foreground/50">à venir</span>
         )}
       </div>
     </button>
@@ -430,24 +430,24 @@ function MobileRow({ poste, onEdit, reel = true }: { poste: PlanPoste; onEdit?: 
           <span className="truncate text-sm">{poste.label}</span>
           {mazout && <Fuel className="h-3 w-3 shrink-0 text-warm" />}
         </div>
-        <div className="mt-1 flex items-center gap-1.5 text-2xs text-muted-foreground">
-          <span className="rounded-full bg-secondary/70 px-1.5 py-0.5 text-3xs">{recShort(poste.recurrence)}</span>
+        <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span className="rounded-full bg-secondary/70 px-1.5 py-0.5 text-2xs">{recShort(poste.recurrence)}</span>
           {ponctuel
             ? <span>{(poste.occurrences ?? []).map(o => MONTHS_FR[o.m].slice(0, 3).toLowerCase()).join(" · ")}</span>
             : hasEcheance && <span>éch. {MONTHS_FR[poste.months[0] ?? 0]}</span>}
         </div>
       </div>
       <div className="shrink-0 text-right">
-        <div className="text-sm tabular-nums">{eur(prevu)}<span className="ml-0.5 text-3xs text-muted-foreground">prévu</span></div>
+        <div className="text-sm tabular-nums">{eur(prevu)}<span className="ml-0.5 text-2xs text-muted-foreground">prévu</span></div>
         {reel ? (
           <div className="mt-1 flex items-center justify-end gap-1.5">
-            <span className="text-2xs tabular-nums text-muted-foreground">réel {eur(realYear)} · méd. {eur(realMedian)}</span>
-            <span className={"rounded-md px-1.5 py-0.5 text-3xs font-medium tabular-nums " + ecartCls}>
+            <span className="text-xs tabular-nums text-muted-foreground">réel {eur(realYear)} · méd. {eur(realMedian)}</span>
+            <span className={"rounded-md px-1.5 py-0.5 text-2xs font-medium tabular-nums " + ecartCls}>
               {auBesoin ? "—" : (ecart >= 0 ? "+" : "−") + eur(Math.abs(ecart))}
             </span>
           </div>
         ) : (
-          <div className="mt-1 text-2xs italic text-muted-foreground/50">à venir</div>
+          <div className="mt-1 text-xs italic text-muted-foreground/50">à venir</div>
         )}
       </div>
     </button>
@@ -468,7 +468,7 @@ function PrevuReelCompare({ poste, year }: { poste: PlanPoste; year: number }) {
 
   const row = (label: string, values: number[], cls: string) => (
     <div className="flex items-center">
-      <span className={"w-12 shrink-0 pr-2 text-right text-2xs " + cls}>{label}</span>
+      <span className={"w-12 shrink-0 pr-2 text-right text-xs " + cls}>{label}</span>
       <div className="grid min-w-[540px] flex-1 grid-cols-12 gap-1">
         {values.map((v, i) => (
           <span key={i}
@@ -492,7 +492,7 @@ function PrevuReelCompare({ poste, year }: { poste: PlanPoste; year: number }) {
             <span className="w-12 shrink-0" />
             <div className="grid min-w-[540px] flex-1 grid-cols-12 gap-1">
               {MONTHS_FR.map((m, i) => (
-                <span key={i} className="text-center text-3xs uppercase text-muted-foreground/50">{m[0]}</span>
+                <span key={i} className="text-center text-2xs uppercase text-muted-foreground/50">{m[0]}</span>
               ))}
             </div>
           </div>
@@ -531,7 +531,7 @@ function EditModal({ poste, onClose, onPatch, reel = true, year }: {
         {poste && (
           <>
             <DialogHeader>
-              <DialogTitle className="font-serif text-xl">{poste.label}</DialogTitle>
+              <DialogTitle className="font-serif text-lg">{poste.label}</DialogTitle>
               <p className="text-xs text-muted-foreground">{poste.cat} › {poste.group}</p>
             </DialogHeader>
 
@@ -592,7 +592,7 @@ function EditModal({ poste, onClose, onPatch, reel = true, year }: {
                 <div className="rounded-xl border border-border/50 bg-card/40 p-3">
                   <div className="mb-2 flex items-center justify-between">
                     <Eyebrow size="xs" as="span">Échéances</Eyebrow>
-                    <span className="text-2xs tabular-nums text-muted-foreground">total {eur(planPosteYear(poste))}/an</span>
+                    <span className="text-xs tabular-nums text-muted-foreground">total {eur(planPosteYear(poste))}/an</span>
                   </div>
                   <div className="space-y-2">
                     {(poste.occurrences ?? []).map((o, i) => (
@@ -632,13 +632,13 @@ function EditModal({ poste, onClose, onPatch, reel = true, year }: {
               {reel ? (
                 <PrevuReelCompare poste={poste} year={year} />
               ) : (
-                <p className="rounded-xl border border-dashed border-border/50 bg-card/40 px-3 py-4 text-center text-2xs italic text-muted-foreground/60">
+                <p className="rounded-xl border border-dashed border-border/50 bg-card/40 px-3 py-4 text-center text-xs italic text-muted-foreground/60">
                   Aucun réel importé — cette année n'a pas encore commencé.
                 </p>
               )}
 
               {poste.sensor === "mazout" && (
-                <p className="flex items-start gap-1.5 rounded-lg bg-warm/5 px-3 py-2 text-2xs text-warm">
+                <p className="flex items-start gap-1.5 rounded-lg bg-warm/5 px-3 py-2 text-xs text-warm">
                   <Fuel className="mt-0.5 h-3 w-3 shrink-0" />
                   Cuve à {energie.oil.tankPct}% — un plein approche (~{energie.oil.tankCapacity - energie.oil.tankLiters} L). Ajuste l'échéance en conséquence.
                 </p>

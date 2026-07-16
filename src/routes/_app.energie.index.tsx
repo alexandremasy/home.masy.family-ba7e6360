@@ -231,7 +231,7 @@ function EnergiePage() {
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-warm p-6 text-warm-foreground sm:p-8 anim-pop-in">
           <div>
             <Eyebrow tone="current" className="opacity-70">À faire</Eyebrow>
-            <p className="mt-1 font-serif text-2xl">Relevé mensuel à saisir</p>
+            <p className="mt-1 font-serif text-xl">Relevé mensuel à saisir</p>
           </div>
           <Button asChild variant="inverted" className="group gap-2 rounded-full">
             <Link to="/energie/saisie">Saisir <ArrowRight className="h-4 w-4 icon-hover-x transition-transform" /></Link>
@@ -277,13 +277,13 @@ function EnergiePage() {
               <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Sun className="h-3.5 w-3.5 text-warm" /> Jour
               </p>
-              <p className="mt-1 font-serif text-xl tabular-nums">{electricity.dayTotal}<span className="ml-1 text-xs text-muted-foreground">kWh</span></p>
+              <p className="mt-1 font-serif text-lg tabular-nums">{electricity.dayTotal}<span className="ml-1 text-xs text-muted-foreground">kWh</span></p>
             </div>
             <div className="rounded-xl bg-secondary/60 p-3">
               <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Moon className="h-3.5 w-3.5 text-foreground/70" /> Nuit
               </p>
-              <p className="mt-1 font-serif text-xl tabular-nums">{electricity.nightTotal}<span className="ml-1 text-xs text-muted-foreground">kWh</span></p>
+              <p className="mt-1 font-serif text-lg tabular-nums">{electricity.nightTotal}<span className="ml-1 text-xs text-muted-foreground">kWh</span></p>
             </div>
           </div>
 
@@ -344,11 +344,11 @@ function EnergiePage() {
           <div className="mt-4 grid grid-cols-2 gap-2">
             <div className="rounded-xl bg-secondary/60 p-3">
               <p className="text-xs text-muted-foreground">30 derniers jours</p>
-              <p className="mt-1 font-serif text-xl tabular-nums">{oil.last30dLiters}<span className="ml-1 text-xs text-muted-foreground">L</span></p>
+              <p className="mt-1 font-serif text-lg tabular-nums">{oil.last30dLiters}<span className="ml-1 text-xs text-muted-foreground">L</span></p>
             </div>
             <div className="rounded-xl bg-secondary/60 p-3">
               <p className="text-xs text-muted-foreground">Autonomie</p>
-              <p className={"mt-1 font-serif text-xl tabular-nums " + (oil.status === "alert" ? "text-warm" : "")}>~{oil.autonomyDays}<span className="ml-1 text-xs text-muted-foreground">j</span></p>
+              <p className={"mt-1 font-serif text-lg tabular-nums " + (oil.status === "alert" ? "text-warm" : "")}>~{oil.autonomyDays}<span className="ml-1 text-xs text-muted-foreground">j</span></p>
             </div>
           </div>
 
@@ -362,7 +362,7 @@ function EnergiePage() {
       <div className="rounded-2xl border border-border/60 bg-card p-6 shadow-soft sm:p-8 anim-slide-up">
         <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="font-serif text-2xl tracking-tight">Historique {cfg.label.toLowerCase()}</h2>
+            <h2 className="font-serif text-xl tracking-tight">Historique {cfg.label.toLowerCase()}</h2>
             <p className="mt-1 text-sm text-muted-foreground">12 derniers mois — vue glissante</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -457,7 +457,7 @@ function EnergiePage() {
                     {h.projected ? " · projeté" : ""}
                   </p>
                 </div>
-                <p className={"mt-1 w-full text-center text-2xs sm:text-xs " + (isCurrent ? "font-medium text-foreground" : "text-muted-foreground")}>
+                <p className={"mt-1 w-full text-center text-xs sm:text-xs " + (isCurrent ? "font-medium text-foreground" : "text-muted-foreground")}>
                   {h.label}
                 </p>
               </div>
@@ -472,7 +472,7 @@ function EnergiePage() {
             return (
               <div
                 key={g.year}
-                className="flex items-center justify-center border-t border-border/60 pt-1.5 text-2xs uppercase tracking-eyebrow text-muted-foreground"
+                className="flex items-center justify-center border-t border-border/60 pt-1.5 text-xs uppercase tracking-eyebrow text-muted-foreground"
                 style={{ flex: span }}
               >
                 {g.year}
@@ -566,7 +566,7 @@ function ReleveList() {
     <div className="rounded-2xl border border-border/60 bg-card shadow-soft overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-5 py-4">
         <div>
-          <h2 className="font-serif text-xl tracking-tight">Historique des relevés</h2>
+          <h2 className="font-serif text-lg tracking-tight">Historique des relevés</h2>
           <p className="text-xs text-muted-foreground mt-0.5">{rows.length} entrées — modifiables</p>
         </div>
         <div className="flex items-center gap-2">
@@ -597,8 +597,8 @@ function ReleveList() {
                       {typeMeta[c].icon}
                       {typeMeta[c].label}
                     </span>
-                    <span className="sm:hidden text-2xs">{typeMeta[c].label}</span>
-                    <span className="text-3xs sm:text-xs text-muted-foreground/70 font-normal">{typeMeta[c].unit}</span>
+                    <span className="sm:hidden text-xs">{typeMeta[c].label}</span>
+                    <span className="text-2xs sm:text-xs text-muted-foreground/70 font-normal">{typeMeta[c].unit}</span>
                   </div>
                 </th>
               ))}
@@ -617,7 +617,7 @@ function ReleveList() {
                       <span className="hidden sm:inline">{monthNames[covered.getMonth()]} {covered.getFullYear()}</span>
                       <span className="sm:hidden">{covered.toLocaleDateString("fr-BE", { month: "short", year: "numeric" })}</span>
                     </p>
-                    <p className="text-2xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       <span className="hidden sm:inline">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}</span>
                       <span className="sm:hidden">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short" })}</span>
                     </p>

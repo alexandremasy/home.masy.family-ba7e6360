@@ -74,12 +74,12 @@ function TransactionsPage() {
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:flex sm:flex-wrap sm:justify-between sm:gap-4">
         <div className="min-w-0">
           <Eyebrow size="xs">Budget · Transactions</Eyebrow>
-          <h1 className="mt-1 truncate font-serif text-2xl tracking-tight sm:text-4xl">Le journal</h1>
+          <h1 className="mt-1 truncate font-serif text-xl tracking-tight sm:text-4xl">Le journal</h1>
           <p className="mt-1 hidden text-sm text-muted-foreground sm:block">Recherchez, recatégorisez, éditez. Vos modifications restent protégées à l'import.</p>
         </div>
         <div className="text-right">
           <Eyebrow size="xs">Total filtré</Eyebrow>
-          <p className={"font-serif text-xl tabular-nums sm:text-2xl " + (runningTotal >= 0 ? "text-success" : "text-warm")}>
+          <p className={"font-serif text-lg tabular-nums sm:text-xl " + (runningTotal >= 0 ? "text-success" : "text-warm")}>
             {runningTotal >= 0 ? "+" : ""}{eur2(runningTotal)}
           </p>
         </div>
@@ -151,7 +151,7 @@ function TransactionsPage() {
       <div className="overflow-hidden rounded-2xl border border-border/60 bg-card shadow-soft">
         <Table>
           <TableHeader>
-            <TableRow className="border-b border-border/60 text-left text-2xs uppercase tracking-eyebrow text-muted-foreground hover:bg-transparent">
+            <TableRow className="border-b border-border/60 text-left text-xs uppercase tracking-eyebrow text-muted-foreground hover:bg-transparent">
               <TableHead className="w-10 px-3 py-3">
                 <Checkbox
                   aria-label="Tout sélectionner"
@@ -187,7 +187,7 @@ function TransactionsPage() {
                   <TableCell className="px-3 py-2.5 tabular-nums text-muted-foreground">{r.date.slice(8,10)}/{r.date.slice(5,7)}</TableCell>
                   <TableCell className="px-3 py-2.5">
                     <span className="font-medium">{r.label}</span>
-                    {isUncat && <span className="ml-2 inline-block rounded-full bg-warm/10 px-1.5 py-0.5 text-3xs uppercase tracking-wider text-warm">À trier</span>}
+                    {isUncat && <span className="ml-2 inline-block rounded-full bg-warm/10 px-1.5 py-0.5 text-2xs uppercase tracking-wider text-warm">À trier</span>}
                   </TableCell>
                   <TableCell className="px-3 py-2.5">
                     {editing?.id === r.id && editing.field === "category" ? (
@@ -237,7 +237,7 @@ function TransactionsPage() {
                   </TableCell>
                   <TableCell className="px-3 py-2.5 text-muted-foreground">{r.recurrence}</TableCell>
                   <TableCell className="px-3 py-2.5">
-                    <span className={"inline-block rounded-full px-2 py-0.5 text-3xs uppercase tracking-wider " +
+                    <span className={"inline-block rounded-full px-2 py-0.5 text-2xs uppercase tracking-wider " +
                       (r.provenance === "Édité"
                         ? "bg-mustard/20 text-mustard"
                         : "bg-secondary text-muted-foreground")}>

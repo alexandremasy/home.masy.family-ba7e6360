@@ -52,8 +52,8 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
         <ProgressRing pct={running || paused ? d.progressPct : finished ? 100 : 0}>
           {running || paused ? (
             <>
-              <p className="font-serif text-xl leading-none">{d.remainingMin}</p>
-              <p className="text-3xs uppercase tracking-wider text-muted-foreground">min</p>
+              <p className="font-serif text-lg leading-none">{d.remainingMin}</p>
+              <p className="text-2xs uppercase tracking-wider text-muted-foreground">min</p>
             </>
           ) : (
             <statusPill.Icon className="h-5 w-5 opacity-70" />
@@ -65,7 +65,7 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
           <p className="mt-0.5 text-xs text-muted-foreground truncate">
             {running || paused ? `${d.phase} · fin ${d.endsAt}` : idle ? d.lastRun : statusPill.text}
           </p>
-          <span className={`mt-1.5 inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-3xs uppercase tracking-wider ${statusPill.tone}`}>
+          <span className={`mt-1.5 inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-2xs uppercase tracking-wider ${statusPill.tone}`}>
             <statusPill.Icon className="h-3 w-3" />
             {statusPill.text}
           </span>
@@ -79,7 +79,7 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <Eyebrow>{d.brand}</Eyebrow>
-          <p className="mt-1 font-serif text-2xl">{d.program}</p>
+          <p className="mt-1 font-serif text-xl">{d.program}</p>
           <p className="mt-0.5 text-sm text-muted-foreground">Démarré {d.startedAt} · fin prévue {d.endsAt}</p>
         </div>
         <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs uppercase tracking-eyebrow ${statusPill.tone}`}>
@@ -103,7 +103,7 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
               const active = i === currentIdx;
               const done = i < currentIdx;
               return (
-                <div key={p.key} className={`rounded-lg px-2 py-1.5 text-center text-3xs uppercase tracking-eyebrow transition-colors ${
+                <div key={p.key} className={`rounded-lg px-2 py-1.5 text-center text-2xs uppercase tracking-eyebrow transition-colors ${
                   active ? "bg-foreground text-background" :
                   done   ? "bg-primary/15 text-primary" :
                            "bg-card text-muted-foreground"
