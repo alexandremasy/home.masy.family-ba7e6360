@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
 
-export function ThemeToggle() {
+export function ThemeToggle({ asSidebarItem = false }: { asSidebarItem?: boolean }) {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
@@ -19,6 +20,17 @@ export function ThemeToggle() {
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("theme", next ? "dark" : "light");
   };
+
+  const label = dark ? "Thème clair" : "Thème sombre";
+
+  if (asSidebarItem) {
+    return (
+      <SidebarMenuButton onClick={toggle} tooltip={label}>
+        {dark ? <Sun /> : <Moon />}
+        <span>{label}</span>
+      </SidebarMenuButton>
+    );
+  }
 
   return (
     <Button variant="outline" size="iconRound" onClick={toggle} aria-label="Toggle theme">

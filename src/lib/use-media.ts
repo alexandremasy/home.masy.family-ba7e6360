@@ -23,3 +23,24 @@ export function useIsDesktop(): boolean {
     () => true,
   );
 }
+
+const MOBILE_QUERY = "(max-width: 767.98px)";
+
+function subscribeMobile(onChange: () => void) {
+  const mq = window.matchMedia(MOBILE_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+
+/**
+ * True below `md` (768px). Used by the sidebar to swap the desktop rail for an
+ * off-canvas drawer. Server snapshot says "not mobile" (desktop-first), matching
+ * useIsDesktop's assumption.
+ */
+export function useIsMobile(): boolean {
+  return useSyncExternalStore(
+    subscribeMobile,
+    () => window.matchMedia(MOBILE_QUERY).matches,
+    () => false,
+  );
+}

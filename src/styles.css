@@ -5,10 +5,16 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
-  /* The display face. Barlow for now — headings and `.font-serif` read through
-     this token, so swapping the display font is this one line. */
-  --font-serif: "Barlow", ui-sans-serif, system-ui, sans-serif;
+  /* Native system UI font — the OS decides the actual face (SF on Apple, Segoe UI
+     on Windows, Roboto on Android). No webfont to load. */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  /* The display face reads through this token — headings and `.font-serif`. Kept as
+     the same native stack so the whole app stays on the OS font. */
+  --font-serif: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
   /* ---- Type scale ----
      THE scale, not a scale. Ported from the Figma token library
@@ -87,6 +93,17 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
+  /* Sidebar surface — its own scale so the rail can read distinct from the page
+     without hardcoding. Mapped to the same Figma rungs as card/secondary. */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
   --shadow-soft: 0 1px 2px oklch(0.2 0.02 200 / 0.04), 0 8px 24px -12px oklch(0.2 0.02 200 / 0.08);
   --shadow-lift: 0 2px 4px oklch(0.2 0.02 200 / 0.05), 0 16px 40px -16px oklch(0.2 0.02 200 / 0.12);
 }
@@ -94,10 +111,10 @@
 :root {
   --radius: 0.75rem;
 
-  /* Height of the sticky TopNav — mirrors src/components/TopNav.tsx, which below
-     lg carries a second row of nav pills. Anything else that sticks in a
-     full-bleed page must offset by this, or it hides behind the nav. */
-  --nav-h: 109px;
+  /* Height of the slim sticky bar in the sidebar inset — mirrors the header in
+     src/routes/_app.tsx (h-14). Anything else that sticks in a full-bleed page
+     must offset by this, or it hides behind that bar. */
+  --nav-h: 56px;
 
   /* ---- Light theme — every value is a step of the Figma ramps ----
      Source of truth: alexandremasy — tokens, page "Colors" (node 0-1). The hex
@@ -146,11 +163,16 @@
   --border: #cfd3d5;                /* Light/20 */
   --input: #cfd3d5;                 /* Light/20 */
   --ring: #1995a0;                  /* Teal/60 */
-}
 
-/* From lg the nav pills move up into the single bar — see TopNav. */
-@media (min-width: 1024px) {
-  :root { --nav-h: 69px; }
+  /* Sidebar — white rail on the soft-grey page, active/hover on Light/10. */
+  --sidebar: #ffffff;                    /* White */
+  --sidebar-foreground: #131415;         /* Light/90 */
+  --sidebar-primary: #1995a0;            /* Teal/60 */
+  --sidebar-primary-foreground: #131415; /* Light/90 */
+  --sidebar-accent: #ecedee;             /* Light/10 */
+  --sidebar-accent-foreground: #131415;  /* Light/90 */
+  --sidebar-border: #cfd3d5;             /* Light/20 */
+  --sidebar-ring: #1995a0;               /* Teal/60 */
 }
 
 /* ---- Dark theme — NOT from Figma. The only invented colour left ----
@@ -195,6 +217,15 @@
   --border: oklch(1 0 0 / 8%);
   --input: oklch(1 0 0 / 12%);
   --ring: oklch(0.72 0.12 195);
+
+  --sidebar: oklch(0.235 0.020 230);            /* = card */
+  --sidebar-foreground: oklch(0.95 0.008 95);
+  --sidebar-primary: oklch(0.72 0.12 195);
+  --sidebar-primary-foreground: oklch(0.18 0.015 230);
+  --sidebar-accent: oklch(0.28 0.020 230);      /* = secondary */
+  --sidebar-accent-foreground: oklch(0.95 0.008 95);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.72 0.12 195);
 }
 
 @layer base {
@@ -205,7 +236,6 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, .font-serif {

@@ -165,7 +165,7 @@ function PlanificationPage() {
                       {groups.map(({ group, items }) => (
                         <div key={group}>
                           {/* Sticky sub-category header — carries the column labels */}
-                          <div className="sticky top-[66px] z-10 flex items-stretch overflow-hidden rounded-t-xl border border-border/60 bg-card/95 shadow-soft backdrop-blur">
+                          <div className="sticky top-[var(--nav-h)] z-10 flex items-stretch overflow-hidden rounded-t-xl border border-border/60 bg-card/95 shadow-soft backdrop-blur">
                             <div className={Z.left + " py-2 pl-3"}>
                               <span className={Z.poste + " text-xs font-semibold uppercase tracking-eyebrow text-foreground/80 truncate"}>{group}</span>
                               <span className={Z.freq + " text-2xs uppercase tracking-eyebrow text-muted-foreground"}>Fréq.</span>

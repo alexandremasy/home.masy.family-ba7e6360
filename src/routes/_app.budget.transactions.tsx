@@ -130,7 +130,7 @@ function TransactionsPage() {
 
       {/* Bulk action bar */}
       {selected.size > 0 && (
-        <div className="sticky top-[68px] z-20 flex flex-wrap items-center gap-3 rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 shadow-soft anim-slide-up">
+        <div className="sticky top-[var(--nav-h)] z-20 flex flex-wrap items-center gap-3 rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 shadow-soft anim-slide-up">
           <span className="text-sm font-semibold">{selected.size} sélection{selected.size > 1 ? "s" : ""}</span>
           <Select value={bulkCat} onValueChange={(v) => setBulkCat(v as CatKey)}>
             <SelectTrigger aria-label="Recatégoriser la sélection" className="h-8 w-auto gap-2 rounded-full bg-background">
