@@ -236,6 +236,9 @@ function DayCell({
   const key = iso(date);
   const weekend = isWeekend(date);
   const today = key === iso(TODAY);
+  // Today and everything ahead is the live planning surface — white. Past days
+  // are done, so they sit back on the page colour.
+  const past = date.getTime() < TODAY.getTime();
   const w = dayWeather(date);
 
   return (
@@ -243,7 +246,11 @@ function DayCell({
       className={
         // Mobile: an outlined card. Desktop: a plain cell — the hairline comes
         // from the parent grid's 1px gap, so it drops its own border and radius.
-        "flex flex-col overflow-hidden rounded-xl border border-border/60 bg-background transition-colors lg:min-h-[12.5rem] lg:rounded-none lg:border-0 " +
+        "flex flex-col overflow-hidden rounded-xl border border-border/60 transition-colors lg:min-h-[12.5rem] lg:rounded-none lg:border-0 " +
+        // Past recedes on a muted fill, today and ahead are white. The fill stays
+        // opaque so it masks the table hairline; dark: keeps the past darker (not
+        // lighter) than the white future in both themes.
+        (past ? "bg-muted dark:bg-background " : "bg-card ") +
         (today ? "ring-2 ring-primary/50 lg:ring-inset" : "")
       }
     >
