@@ -152,29 +152,31 @@ function RepasPage() {
         )}
 
         {/* Weekday columns only exist once there ARE columns. */}
-        <div className="mb-2 mt-5 hidden grid-cols-7 gap-2 px-1 lg:grid">
-          {WEEKDAYS.map((d) => (
-            <p key={d} className="text-xs uppercase tracking-eyebrow text-muted-foreground">{d}</p>
-          ))}
-        </div>
-
-        {/* A 7×2 grid cannot survive a phone: below lg each day is a full-width
-            row instead, and the two slots sit side by side. Same cells, stacked. */}
-        <div className="mt-4 space-y-2 lg:mt-0">
-          {weeks.map((week, wi) => (
-            <div key={wi} className="grid gap-2 lg:grid-cols-7">
-              {week.map((d) => (
-                <DayCell
-                  key={iso(d)}
-                  date={d}
-                  plan={plan}
-                  onSelect={setSelected}
-                  onRemove={remove}
-                  onMove={move}
-                />
-              ))}
-            </div>
-          ))}
+        {/* Desktop reads as one framed table, not a row of cards: a single 7-col
+            grid (weekday head + 14 days) whose 1px gaps show the border colour
+            behind, so cells share hairlines. A phone can't hold a 7×2 table, so
+            below lg the days stack as full-width cards. */}
+        <div className="mt-5 lg:overflow-hidden lg:rounded-xl lg:border lg:border-border/60">
+          <div className="space-y-2 lg:grid lg:grid-cols-7 lg:gap-px lg:space-y-0 lg:bg-border/60">
+            {WEEKDAYS.map((d) => (
+              <div
+                key={d}
+                className="hidden bg-secondary/60 px-2.5 py-2 text-xs uppercase tracking-eyebrow text-muted-foreground lg:block"
+              >
+                {d}
+              </div>
+            ))}
+            {weeks.flat().map((d) => (
+              <DayCell
+                key={iso(d)}
+                date={d}
+                plan={plan}
+                onSelect={setSelected}
+                onRemove={remove}
+                onMove={move}
+              />
+            ))}
+          </div>
         </div>
 
         <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -239,8 +241,10 @@ function DayCell({
   return (
     <div
       className={
-        "flex flex-col overflow-hidden rounded-xl border border-border/60 transition-colors lg:min-h-[12.5rem] " +
-        (today ? "ring-2 ring-primary/50" : "")
+        // Mobile: an outlined card. Desktop: a plain cell — the hairline comes
+        // from the parent grid's 1px gap, so it drops its own border and radius.
+        "flex flex-col overflow-hidden rounded-xl border border-border/60 bg-background transition-colors lg:min-h-[12.5rem] lg:rounded-none lg:border-0 " +
+        (today ? "ring-2 ring-primary/50 lg:ring-inset" : "")
       }
     >
       {/* Day header — date left, that day's weather right. The weather drives the
