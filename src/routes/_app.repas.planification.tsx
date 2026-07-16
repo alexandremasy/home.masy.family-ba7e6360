@@ -171,19 +171,23 @@ function RepasPage() {
                 <TooltipTrigger asChild>
                   <button
                     type="button"
-                    aria-label="Remarques sur la période"
-                    className="text-warm transition-opacity hover:opacity-70"
+                    aria-label={`${signals.length} remarque${signals.length > 1 ? "s" : ""} sur la période`}
+                    className="inline-flex items-center gap-1 text-warm transition-opacity hover:opacity-70"
                   >
                     <AlertTriangle className="h-4 w-4" />
+                    <span className="text-xs font-semibold tabular-nums">{signals.length}</span>
                   </button>
                 </TooltipTrigger>
-                <TooltipContent align="start" className="max-w-xs">
-                  <div className="space-y-2 text-xs">
+                <TooltipContent
+                  align="start"
+                  className="max-w-xs border border-border bg-popover p-3 text-popover-foreground shadow-lift"
+                >
+                  <div className="space-y-2.5">
                     {signals.map((s, i) => (
-                      <div key={i}>
-                        <p className="font-semibold">{s.text}</p>
+                      <div key={i} className="space-y-1">
+                        <p className="text-xs font-semibold text-foreground">{s.text}</p>
                         {s.items && (
-                          <ul className="mt-0.5 list-disc space-y-0.5 pl-3.5">
+                          <ul className="list-disc space-y-0.5 pl-3.5 text-xs text-muted-foreground">
                             {s.items.map((it) => <li key={it}>{it}</li>)}
                           </ul>
                         )}
@@ -195,39 +199,41 @@ function RepasPage() {
             )}
           </div>
           <div className="flex items-center gap-2">
-            {/* Only worth offering once you've drifted off the current week. */}
+            {/* Only worth offering once you've drifted off the current week.
+                Same height (h-9) as the chevrons it sits with. */}
             {weekOffset !== 0 && (
-              <button
+              <Button
+                variant="outline"
                 onClick={() => setWeekOffset(0)}
-                className="rounded-full border border-border/60 px-3 py-1 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                className="h-9 rounded-full text-muted-foreground"
               >
                 Aujourd'hui
-              </button>
+              </Button>
             )}
             <div className="flex items-center gap-1">
               <Button
-        onClick={() => setWeekOffset((o) => o - 1)}
-        aria-label="Semaine précédente"
-        variant="outline" size="iconRound"
-       >
-        <ChevronLeft className="h-4 w-4" />
-       </Button>
+                onClick={() => setWeekOffset((o) => o - 1)}
+                aria-label="Semaine précédente"
+                variant="outline" size="iconRound"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
               <Button
-        onClick={() => setWeekOffset((o) => o + 1)}
-        aria-label="Semaine suivante"
-        variant="outline" size="iconRound"
-       >
-        <ChevronRight className="h-4 w-4" />
-       </Button>
+                onClick={() => setWeekOffset((o) => o + 1)}
+                aria-label="Semaine suivante"
+                variant="outline" size="iconRound"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
             </div>
           </div>
         </div>
 
 
-        {/* Weekday labels sit above the frame, as column headers — not boxed in.
-            Desktop reads as one framed table (the 14 days), whose 1px grid gaps
-            show the border colour behind so cells share hairlines. A phone can't
-            hold a 7×2 table, so below lg the days stack as full-width cards. */}
+        {/* One framed table in both layouts. Weekday labels sit above it as column
+            headers (desktop only). The 1px grid gaps show the border colour behind,
+            so every cell shares hairlines with its neighbours: 7 columns on desktop,
+            a single column of stacked cells on a phone — same table, same 1px gaps. */}
         <div className="mt-5">
           <div className="hidden lg:grid lg:grid-cols-7 lg:gap-px">
             {WEEKDAYS.map((d) => (
@@ -236,8 +242,8 @@ function RepasPage() {
               </div>
             ))}
           </div>
-          <div className="lg:mt-0 lg:overflow-hidden lg:rounded-xl lg:border lg:border-border/60">
-            <div className="space-y-2 lg:grid lg:grid-cols-7 lg:gap-px lg:space-y-0 lg:bg-border/60">
+          <div className="overflow-hidden rounded-xl border border-border/60">
+            <div className="grid gap-px bg-border/60 lg:grid-cols-7">
               {weeks.flat().map((d) => (
                 <DayCell
                   key={iso(d)}
@@ -320,9 +326,9 @@ function DayCell({
   return (
     <div
       className={
-        // Mobile: an outlined card. Desktop: a plain cell — the hairline comes
-        // from the parent grid's 1px gap, so it drops its own border and radius.
-        "flex flex-col overflow-hidden rounded-xl border border-border/60 transition-colors hover:border-foreground/25 lg:min-h-[12.5rem] lg:rounded-none lg:border-0 lg:hover:ring-1 lg:hover:ring-inset lg:hover:ring-foreground/25 " +
+        // A plain table cell in both layouts — the hairline between cells comes
+        // from the parent grid's 1px gap, so the cell carries no border of its own.
+        "flex flex-col overflow-hidden transition-colors lg:min-h-[12.5rem] lg:hover:ring-1 lg:hover:ring-inset lg:hover:ring-foreground/25 " +
         // Today and ahead are white; past days just take the page colour — no
         // added fill. bg-background (not transparent) so it still masks the
         // table hairline, but it reads as the page, not a tinted block.
