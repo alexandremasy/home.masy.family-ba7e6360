@@ -261,8 +261,7 @@ function DayCell({
         // Today and ahead are white; past days just take the page colour — no
         // added fill. bg-background (not transparent) so it still masks the
         // table hairline, but it reads as the page, not a tinted block.
-        (past ? "bg-background " : "bg-card ") +
-        (today ? "ring-2 ring-primary/50 lg:ring-inset" : "")
+        (past ? "bg-background" : "bg-card")
       }
     >
       {/* Day header — date left, that day's weather right. The weather drives the
