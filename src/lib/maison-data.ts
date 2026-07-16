@@ -337,44 +337,56 @@ export function condLabel(c: WeatherCond): string {
   }[c];
 }
 
-// Seed plan — realistic weekday-lunch batch + varied dinners
+// Seed plan — anchored on CAL_START (Monday of the current week), so the default
+// two-week view opens already planned from its first day, past days included.
+// It fills through the second Wednesday and leaves the final weekend (days 12–13)
+// empty on purpose, so the suggestion slots have somewhere to show.
+// dayOffset: 0 = Monday, 5–6 = this weekend, 7 = next Monday, 12–13 = next weekend.
 const PLAN_SEED: Array<{ dayOffset: number; slot: Slot; dishId: string; batchOffset?: number }> = [
-  // Day 0 (tomorrow)
+  // Day 0 — Monday
   { dayOffset: 0, slot: "midi", dishId: "chili" },
   { dayOffset: 0, slot: "soir", dishId: "soupe-potiron" },
-  // Day 1
+  // Day 1 — Tuesday
   { dayOffset: 1, slot: "midi", dishId: "chili", batchOffset: 0 },
   { dayOffset: 1, slot: "soir", dishId: "tarte-tomate-mozza" },
-  // Day 2
+  // Day 2 — Wednesday
   { dayOffset: 2, slot: "midi", dishId: "quiche-saumon-epinards" },
   { dayOffset: 2, slot: "soir", dishId: "wrap-thon" },
-  // Day 3
+  // Day 3 — Thursday
   { dayOffset: 3, slot: "midi", dishId: "quiche-saumon-epinards", batchOffset: 2 },
   { dayOffset: 3, slot: "soir", dishId: "gratin-courgettes" },
-  // Day 4 (weekend cook day)
+  // Day 4 — Friday
   { dayOffset: 4, slot: "midi", dishId: "pates-pesto-poulet" },
   { dayOffset: 4, slot: "soir", dishId: "lasagne" },
-  // Day 5 (weekend)
+  // Day 5 — Saturday (weekend cook day)
   { dayOffset: 5, slot: "midi", dishId: "salade-poulet-avocat" },
   { dayOffset: 5, slot: "soir", dishId: "raclette" },
-  // Day 6
+  // Day 6 — Sunday
   { dayOffset: 6, slot: "midi", dishId: "lasagne", batchOffset: 4 },
   { dayOffset: 6, slot: "soir", dishId: "soupe-potiron" },
-  // Day 7
+  // Day 7 — Monday (week 2)
   { dayOffset: 7, slot: "midi", dishId: "curry-poulet" },
   { dayOffset: 7, slot: "soir", dishId: "bowl-saumon-avocat" },
-  // Day 8
+  // Day 8 — Tuesday
   { dayOffset: 8, slot: "midi", dishId: "curry-poulet", batchOffset: 7 },
   { dayOffset: 8, slot: "soir", dishId: "tarte-tomate-mozza" },
-  // Day 9
+  // Day 9 — Wednesday
   { dayOffset: 9, slot: "midi", dishId: "risotto-champignons" },
+  { dayOffset: 9, slot: "soir", dishId: "saumon-riz-epinards" },
+  // Day 10 — Thursday
+  { dayOffset: 10, slot: "midi", dishId: "roti-haricots-croquettes" },
+  { dayOffset: 10, slot: "soir", dishId: "soupe-potiron" },
+  // Day 11 — Friday
+  { dayOffset: 11, slot: "midi", dishId: "roti-haricots-croquettes", batchOffset: 10 },
+  { dayOffset: 11, slot: "soir", dishId: "pizza-poulet-oignon" },
+  // Days 12–13 (next weekend) left open for suggestions.
 ];
 
 export const initialPlan: PlanEntry[] = PLAN_SEED.map((p) => ({
-  date: iso(addDays(WINDOW_START, p.dayOffset)),
+  date: iso(addDays(CAL_START, p.dayOffset)),
   slot: p.slot,
   dishId: p.dishId,
-  batchOfDate: p.batchOffset !== undefined ? iso(addDays(WINDOW_START, p.batchOffset)) : undefined,
+  batchOfDate: p.batchOffset !== undefined ? iso(addDays(CAL_START, p.batchOffset)) : undefined,
 }));
 
 // ------------------------------------------------------------
@@ -653,11 +665,24 @@ export interface Person {
 // Fixed reference year used to compute "next birthday" — keeps mock stable.
 export const REF_YEAR = TODAY.getFullYear();
 
+/**
+ * Build an ISO dob whose month-day lands `offsetDays` from TODAY, in the birth
+ * year `REF_YEAR - age`. Keeps the "coming month" grid populated and one
+ * birthday exactly on today, whatever day the mock is viewed.
+ */
+function dobInDays(age: number, offsetDays: number): string {
+  const d = new Date(TODAY);
+  d.setDate(d.getDate() + offsetDays);
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${REF_YEAR - age}-${mm}-${dd}`;
+}
+
 export const people: Person[] = [
   {
     id: "leo",
     name: "Léo",
-    dob: `${REF_YEAR - 34}-07-15`,
+    dob: dobInDays(34, 0),
     langue: "fr",
     relation: "frère",
     defaultSliders: { registre: 78, chaleur: 60, humour: 80, longueur: 45 },
@@ -684,7 +709,7 @@ export const people: Person[] = [
   {
     id: "sophie",
     name: "Sophie",
-    dob: `${REF_YEAR - 39}-08-22`,
+    dob: dobInDays(39, 8),
     langue: "fr",
     relation: "amie d'enfance",
     defaultSliders: { registre: 90, chaleur: 55, humour: 95, longueur: 35 },
@@ -709,7 +734,7 @@ export const people: Person[] = [
   {
     id: "clara",
     name: "Clara",
-    dob: `${REF_YEAR - 8}-04-11`,
+    dob: dobInDays(8, 17),
     langue: "fr",
     relation: "filleule",
     defaultSliders: { registre: 60, chaleur: 95, humour: 70, longueur: 25 },
@@ -722,7 +747,7 @@ export const people: Person[] = [
   {
     id: "tom",
     name: "Tom",
-    dob: `${REF_YEAR - 42}-12-01`,
+    dob: dobInDays(42, 26),
     langue: "fr",
     relation: "beau-frère",
     defaultSliders: { registre: 55, chaleur: 50, humour: 60, longueur: 30 },
