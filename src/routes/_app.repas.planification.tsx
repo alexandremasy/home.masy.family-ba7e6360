@@ -427,21 +427,15 @@ function SlotPicker({
   const activeCount = countFilters(filter);
 
   const w = dayWeather(date);
+  // The meal already on this slot, if any — its presence is what makes this the
+  // "edit" modal rather than the "add" one.
+  const current = plan.find((e) => e.date === iso(date) && e.slot === slot);
+  const currentDish = current ? dishById(current.dishId) : undefined;
 
   // The title lives in the shell, not here: DialogTitle and DrawerTitle come
   // from different contexts (Radix vs vaul), so the body must stay neutral.
   return (
     <>
-      {/* When the slot is already filled, opening it is how you change or clear it. */}
-      {onRemove && (
-        <button
-          type="button"
-          onClick={onRemove}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-border/60 py-2 text-sm text-muted-foreground transition-colors hover:border-destructive/40 hover:bg-destructive/5 hover:text-destructive"
-        >
-          <Trash2 className="h-4 w-4" /> Retirer ce repas
-        </button>
-      )}
       <div className="space-y-2.5">
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
@@ -475,6 +469,33 @@ function SlotPicker({
 
         {filtersOpen && <DishFilters value={filter} onChange={setFilter} bases={bases} />}
       </div>
+
+      {/* Edit modal only: the meal already planned, with its remove action, sits
+          under the filters — above the list you'd pick a replacement from. */}
+      {currentDish && onRemove && (
+        <div className="space-y-2">
+          <Eyebrow size="xs">Repas planifié</Eyebrow>
+          <div className="rounded-xl border border-border/60 bg-card p-3">
+            <DishCard
+              dish={currentDish}
+              status={
+                current?.batchOfDate
+                  ? <StatusPill icon={<Repeat className="h-3 w-3" />} title="Batch — cuisson d'un autre jour" />
+                  : undefined
+              }
+            />
+            <div className="mt-3 flex justify-end border-t border-border/40 pt-3">
+              <Button
+                variant="outline"
+                onClick={onRemove}
+                className="gap-1.5 text-destructive hover:text-destructive"
+              >
+                <Trash2 className="h-3.5 w-3.5" /> Retirer ce repas
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* min-h-0 or the flex child refuses to shrink and the scroll never engages. */}
       <div className="min-h-0 flex-1 space-y-7 overflow-y-auto">
