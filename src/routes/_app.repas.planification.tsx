@@ -18,6 +18,7 @@ import {
   ThermometerSun, ChevronLeft, ChevronRight, ChevronDown, SlidersHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/repas/planification")({
@@ -135,23 +136,20 @@ function RepasPage() {
         </div>
 
         {/* Coherence — it describes the weeks on screen, so it lives under their
-            navigation, not above it. Solid tones: at /10 these were unreadable. */}
-        <div className="mt-3 flex flex-wrap items-center gap-1.5">
-          {signals.slice(0, 4).map((s, i) => (
-            <span
-              key={i}
-              className={
-                "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs " +
-                (s.tone === "warn"
-                  ? "bg-warm text-warm-foreground"
-                  : "bg-secondary text-secondary-foreground")
-              }
-            >
-              {s.tone === "warn" ? <AlertTriangle className="h-3 w-3 shrink-0" /> : <Info className="h-3 w-3 shrink-0" />}
-              {s.text}
-            </span>
-          ))}
-        </div>
+            navigation. Each remark is an Alert: warn carries the terracotta tone,
+            the rest are neutral notes. */}
+        {signals.length > 0 && (
+          <div className="mt-3 space-y-2">
+            {signals.slice(0, 4).map((s, i) => (
+              <Alert key={i} variant={s.tone === "warn" ? "warn" : "default"}>
+                {s.tone === "warn" ? <AlertTriangle /> : <Info />}
+                <AlertDescription className={s.tone === "warn" ? "text-foreground" : undefined}>
+                  {s.text}
+                </AlertDescription>
+              </Alert>
+            ))}
+          </div>
+        )}
 
         {/* Weekday columns only exist once there ARE columns. */}
         <div className="mb-2 mt-5 hidden grid-cols-7 gap-2 px-1 lg:grid">

@@ -493,25 +493,28 @@ export interface WeatherHint {
 
 // Mocked coherence signals for the current window
 export function coherenceSignals(plan: PlanEntry[]): Array<{ tone: "warn" | "info"; text: string }> {
-  const compCount = new Map<string, number>();
   const proteinCount = new Map<string, number>();
   for (const p of plan) {
     const d = dishById(p.dishId);
     d?.modifiers.forEach((m) => {
-      compCount.set(m.name, (compCount.get(m.name) ?? 0) + 1);
       if (m.role === "protéine") proteinCount.set(m.name, (proteinCount.get(m.name) ?? 0) + 1);
     });
   }
 
   const out: Array<{ tone: "warn" | "info"; text: string }> = [];
-  proteinCount.forEach((n, name) => {
-    if (n >= 4) out.push({ tone: "warn", text: `Beaucoup de ${name} cette fenêtre (${n} slots).` });
-  });
-  // Batch info
-  const batchDishes = new Set(plan.filter((p) => !p.batchOfDate).map((p) => p.dishId).filter((id) => (dishById(id)?.rendement ?? 1) >= 2));
-  if (batchDishes.size >= 2) out.push({ tone: "info", text: `${batchDishes.size} plats couvrent plusieurs repas.` });
 
-  // Weekend load, in time at the stove — "8/15" was a scale with no unit.
+  // One alert for all over-used proteins, not one per protein.
+  const heavy = [...proteinCount.entries()].filter(([, n]) => n >= 4);
+  if (heavy.length) {
+    const parts = heavy.map(([name, n]) => `${name} (${n})`);
+    const list =
+      parts.length === 1
+        ? parts[0]
+        : parts.slice(0, -1).join(", ") + " et " + parts[parts.length - 1];
+    out.push({ tone: "warn", text: `Beaucoup de ${list} cette fenêtre.` });
+  }
+
+  // Weekend load only when it's actually heavy — a normal weekend is not a remark.
   const weekendMinutes = plan
     .filter((p) => isWeekend(new Date(p.date)) && !p.batchOfDate)
     .reduce((a, p) => {
@@ -519,7 +522,6 @@ export function coherenceSignals(plan: PlanEntry[]): Array<{ tone: "warn" | "inf
       return a + (d ? effortLevel(d.effort).minutes : 0);
     }, 0);
   if (weekendMinutes >= 240) out.push({ tone: "warn", text: `Weekend chargé : ${fmtMinutes(weekendMinutes)} de cuisine.` });
-  else out.push({ tone: "info", text: `Cuisine du weekend : ${fmtMinutes(weekendMinutes)}.` });
 
   return out;
 }
