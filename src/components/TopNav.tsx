@@ -2,7 +2,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { ThemeToggle } from "./ThemeToggle";
 import { RoomIcon } from "./RoomIcon";
 import { ModeSwitcher } from "./ModeSwitcher";
-import { Car, Wifi, Zap, ChevronDown, MoreHorizontal, Settings, Wrench, ExternalLink, Home, LayoutDashboard, CalendarRange, Table2, FileUp, ShieldCheck, UtensilsCrossed, Cake, DoorClosed, Activity } from "lucide-react";
+import { Car, Wifi, Zap, ChevronDown, MoreHorizontal, Settings, Wrench, ExternalLink, Home, LayoutDashboard, CalendarRange, Table2, FileUp, ShieldCheck, UtensilsCrossed, Cake, DoorClosed, Activity, Palette } from "lucide-react";
 import type { ReactNode } from "react";
 import type { Room } from "@/lib/mock-data";
 import {
@@ -148,6 +148,14 @@ export function TopNav() {
               <MoreHorizontal className="h-4 w-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="min-w-48">
+              {/* Internal first — it's a route, not a service to open elsewhere. */}
+              <DropdownMenuItem asChild>
+                <Link to="/design-system" className="flex items-center gap-2">
+                  <Palette className="h-4 w-4" />
+                  <span className="flex-1">Design system</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuLabel>Outils externes</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {externals.map((item) => (
