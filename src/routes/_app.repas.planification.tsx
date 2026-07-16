@@ -14,7 +14,7 @@ import {
   type PlanEntry, type Slot, type Dish, type Base, type Suggestion,
 } from "@/lib/maison-data";
 import {
-  Sparkles, X, RefreshCw, Search, Repeat, Info, AlertTriangle, Package, Move,
+  Sparkles, Search, Repeat, Info, AlertTriangle, Package, Move, Trash2,
   ThermometerSun, ChevronLeft, ChevronRight, ChevronDown, SlidersHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -85,6 +85,11 @@ function RepasPage() {
       date={selectedDate}
       slot={selected.slot}
       plan={plan}
+      onRemove={
+        plan.some((e) => e.date === selected.date && e.slot === selected.slot)
+          ? () => { remove(selected.date, selected.slot); setSelected(null); }
+          : undefined
+      }
       onPick={(dish, batch) => {
         upsert({ date: selected.date, slot: selected.slot, dishId: dish.id });
         if (batch) {
@@ -182,7 +187,6 @@ function RepasPage() {
                   date={d}
                   plan={plan}
                   onSelect={setSelected}
-                  onRemove={remove}
                   onMove={move}
                 />
               ))}
@@ -236,12 +240,11 @@ function RepasPage() {
 
 // ------------------------------------------------------------
 function DayCell({
-  date, plan, onSelect, onRemove, onMove,
+  date, plan, onSelect, onMove,
 }: {
   date: Date;
   plan: PlanEntry[];
   onSelect: (s: { date: string; slot: Slot }) => void;
-  onRemove: (date: string, slot: Slot) => void;
   onMove: (from: { date: string; slot: Slot }, to: { date: string; slot: Slot }) => void;
 }) {
   const key = iso(date);
@@ -295,7 +298,6 @@ function DayCell({
             entry={plan.find((e) => e.date === key && e.slot === slot)}
             weekend={weekend}
             onOpen={() => onSelect({ date: key, slot })}
-            onRemove={() => onRemove(key, slot)}
             onDropFrom={(from) => onMove(from, { date: key, slot })}
           />
         ))}
@@ -305,10 +307,10 @@ function DayCell({
 }
 
 function SlotCell({
-  date, slot, entry, weekend, onOpen, onRemove, onDropFrom,
+  date, slot, entry, weekend, onOpen, onDropFrom,
 }: {
   date: string; slot: Slot; entry?: PlanEntry; weekend: boolean;
-  onOpen: () => void; onRemove: () => void;
+  onOpen: () => void;
   onDropFrom: (from: { date: string; slot: Slot }) => void;
 }) {
   const [dragOver, setDragOver] = useState(false);
@@ -336,7 +338,11 @@ function SlotCell({
       </div>
 
       {entry && dish ? (
-        <div
+        // Tap/click opens the picker — that's where you change or remove it, so it
+        // works the same on a phone as with a mouse. Drag is a desktop bonus.
+        <button
+          type="button"
+          onClick={onOpen}
           draggable
           onDragStart={(e) => {
             e.dataTransfer.setData("application/json", JSON.stringify({ date, slot }));
@@ -345,7 +351,7 @@ function SlotCell({
           className={
             // No frame around a placed meal — it sits on the cell. Only the drop
             // target and a subtle hover get a fill; the empty slot keeps its dashed box.
-            "flex-1 cursor-grab rounded-lg p-2 transition-colors active:cursor-grabbing " +
+            "flex-1 cursor-grab rounded-lg p-2 text-left transition-colors active:cursor-grabbing " +
             (dragOver
               ? "bg-primary/5 ring-1 ring-inset ring-primary"
               : "hover:bg-secondary/50")
@@ -361,15 +367,7 @@ function SlotCell({
                 : undefined
             }
           />
-          <div className="absolute right-1 top-4 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
-            <button onClick={onOpen} aria-label="Changer" className="grid h-6 w-6 place-items-center rounded-md bg-card text-muted-foreground shadow-soft hover:text-foreground">
-              <RefreshCw className="h-3 w-3" />
-            </button>
-            <button onClick={onRemove} aria-label="Retirer" className="grid h-6 w-6 place-items-center rounded-md bg-card text-muted-foreground shadow-soft hover:text-destructive">
-              <X className="h-3 w-3" />
-            </button>
-          </div>
-        </div>
+        </button>
       ) : (
         <button
           onClick={onOpen}
@@ -391,10 +389,11 @@ function SlotCell({
 
 // ------------------------------------------------------------
 function SlotPicker({
-  date, slot, plan, onPick,
+  date, slot, plan, onPick, onRemove,
 }: {
   date: Date; slot: Slot; plan: PlanEntry[];
   onPick: (dish: Dish, batch: boolean) => void;
+  onRemove?: () => void; // present only when the slot already holds a meal
 }) {
   // The slot's density default (MAISON-BRIEF: complet → midi, léger → soir) opens
   // as an active, removable filter — a default, not a law.
@@ -433,6 +432,16 @@ function SlotPicker({
   // from different contexts (Radix vs vaul), so the body must stay neutral.
   return (
     <>
+      {/* When the slot is already filled, opening it is how you change or clear it. */}
+      {onRemove && (
+        <button
+          type="button"
+          onClick={onRemove}
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-border/60 py-2 text-sm text-muted-foreground transition-colors hover:border-destructive/40 hover:bg-destructive/5 hover:text-destructive"
+        >
+          <Trash2 className="h-4 w-4" /> Retirer ce repas
+        </button>
+      )}
       <div className="space-y-2.5">
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
