@@ -1,7 +1,10 @@
-# Design system — refactoring plan
+# Design system
 
-Audited 2026-07-15. **Decision: shadcn/ui is the system. Not optional.**
-The rule from here on: *use it, extend it, never re-invent it.*
+**shadcn/ui is the system. Not optional.** Rule: *use it, extend it, never re-invent it.*
+
+> Audited 2026-07-15, refactor executed 2026-07-16. The phases below are **done** — kept as the
+> record of what was wrong and why, because every decision here was paid for once. See "Where it
+> landed" at the bottom for the current state and the rules that hold going forward.
 
 Everything below is measured, not estimated. Commands to reproduce are in each section.
 
@@ -152,3 +155,57 @@ Phase 3 (`warm`) is the biggest *meaning* gain and the biggest diff; it is indep
 and can run in parallel.
 Phases 1 and 2 are mechanical and low-risk.
 Phase 4 is free.
+
+---
+
+# Where it landed (2026-07-16)
+
+| | before | after |
+|---|---|---|
+| `ui/*` alive | 46 (33 never imported) | **19** — all used |
+| `<Button>` | 11 | **39** |
+| raw `<button>` | 73 | 53 — the legitimate ones (filter chips, clickable cards, external links) |
+| native `<select>` | 11, 4 visual formulas | **0** |
+| eyebrow trackings | **7** | 1 (+2 deliberate: tesla's 8px responsive squeeze) |
+| `warm` occurrences | 225, ~6 were alerts | 190 — alerts, plus the token's own definition |
+
+## The rules that hold
+
+1. Need a control? **Check `src/components/ui/` first.** 19 primitives, all live.
+2. It exists but fights the palette? **Edit `ui/*`.** We own it. Do not build a sibling.
+3. It is genuinely this app's vocabulary? Build it **once** in `components/`, share it:
+   `Eyebrow`, `Panel`/`Section`/`Tile`, `DishCard`+`StatusPill`, `BudgetBar`, `OverlayCloseLink`,
+   `DishForm`, `DishFilters`, `PageHeader`, `WeatherIcon`, `CommandButton`.
+4. Never a fourth path.
+
+## Token semantics — the thing that broke everything
+
+- **`--accent` belongs to shadcn**: it is the neutral hover/focus surface every primitive reaches
+  for (`bg-accent`, `focus:bg-accent`, `data-[highlighted]`). Redefining it is what silently broke
+  4 of 6 button variants and made the TopNav dropdown highlight mustard in production.
+- **`--mustard`** — decorative warmth and data series. **`--warm`** — the alert tone, nothing else.
+  **`--primary`** — the positive signal (today's ring, StatusPill, links).
+- **`-foreground` tokens only work on their own solid fill.** `--accent-foreground` is navy in both
+  themes; `--warm-foreground` *inverts* between them. For text: `text-warm` / `text-mustard`.
+
+## What we deliberately did NOT do
+
+- **`CommandButton` on `Button`** — tried, reverted. Its 13 call sites use `grid`/`flex-col` boxes at
+  h-7/h-11/h-16 against Button's `inline-flex justify-center h-9`, and Button's `[&_svg]:size-4`
+  outranks an icon's own `h-3.5` on specificity: every icon on the room page would have silently
+  jumped to 16px. Only worth it if those 13 boxes get redesigned first.
+- **`ui/navigation-menu`** — a Radix mega-menu with a viewport layer. TopNav is pills plus one
+  `DropdownMenu`, which is already the right tool. Deleted.
+- **`ui/sheet` for the overlay** — sheet is a side panel. The overlay scrolls its whole container
+  with the panel flowing inside, so it took Dialog's primitives with our own shape.
+- **`ui/progress` / `ui/radio-group`** — deleted. `BudgetBar` builds on the Radix primitive because
+  the wrapper's single-indicator shape didn't fit; the choice groups are segmented, not radios.
+
+## Known, left open
+
+- The overlay backdrop carries the same `aria-label="Fermer"` as the close pill — a screen reader
+  hears "Fermer" twice on every overlay.
+- A hydration warning on date formatting (`toLocaleDateString` server ≠ client). Benign; React
+  re-renders client-side.
+- `--nav-h` (109px, 69px ≥`lg`) **mirrors** a height TopNav computes from its content. If the nav
+  changes padding or gains a row, the variable lies. See [[pageheader-bleed-gotcha]].
