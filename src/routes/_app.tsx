@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { createFileRoute, Outlet, useLocation, useNavigate, Link } from "@tanstack/react-router";
 import { TopNav } from "@/components/TopNav";
 import { footerLines } from "@/lib/mock-data";
@@ -26,24 +26,6 @@ function AppLayout() {
   const start = new Date(new Date().getFullYear(), 0, 0);
   const diff = (Number(new Date()) - Number(start)) / 86_400_000;
   const line = footerLines[Math.floor(diff) % footerLines.length];
-
-  // Close overlay on Escape
-  useEffect(() => {
-    if (!isOverlay) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") navigate({ to: "/" });
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [isOverlay, navigate]);
-
-  // Lock body scroll while overlay is open
-  useEffect(() => {
-    if (!isOverlay) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
-  }, [isOverlay]);
 
   // Full-bleed shell — no Maison backdrop, no overlay. The route owns the whole page.
   if (isFullBleed) {
@@ -78,28 +60,46 @@ function AppLayout() {
         <p className="font-serif text-sm italic text-muted-foreground">{line}</p>
       </footer>
 
-      {isOverlay && (
-        <div
-          key={pathname}
-          className="fixed inset-0 z-40 overflow-y-auto overflow-x-hidden overlay-enter [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          role="dialog"
-          aria-modal="true"
-        >
-          <Link
-            to="/"
-            aria-label="Fermer"
-            className="overlay-backdrop fixed inset-0 z-0 bg-foreground/30 backdrop-blur-md"
-          />
-          <div className="overlay-panel relative z-10 mx-0 mt-16 mb-8 w-screen max-w-none sm:mx-auto sm:mt-24 sm:w-full sm:max-w-5xl sm:px-6">
-            <div className="relative overflow-clip border border-border/60 bg-background shadow-lift sm:rounded-3xl">
-              <div className="px-5 py-7 sm:px-8 sm:py-10">
-                <Outlet />
+      {/* On Radix Dialog, not by hand. The hand-rolled version claimed
+          aria-modal="true" but never trapped focus — the first Tab left for the
+          TopNav behind it — and re-implemented Escape and the scroll lock in two
+          useEffects. Radix gives all three, so they're deleted rather than kept.
+
+          Not ui/sheet: that is a side panel. Not ui/dialog either: DialogContent
+          is a fixed centred box, while this overlay scrolls its whole container
+          with the panel flowing inside. So the primitives, with our own shape. */}
+      <DialogPrimitive.Root
+        open={isOverlay}
+        onOpenChange={(o) => { if (!o) navigate({ to: "/" }); }}
+      >
+        <DialogPrimitive.Portal>
+          <DialogPrimitive.Content
+            key={pathname}
+            className="overlay-enter fixed inset-0 z-40 overflow-y-auto overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            aria-describedby={undefined}
+          >
+            {/* Radix needs a title to announce; the real one is inside the route. */}
+            <DialogPrimitive.Title className="sr-only">Détail</DialogPrimitive.Title>
+
+            {/* The backdrop lives inside the scroll container, so it scrolls with
+                it — and closing is a navigation, not just a state change. */}
+            <Link
+              to="/"
+              aria-label="Fermer"
+              tabIndex={-1}
+              className="overlay-backdrop fixed inset-0 z-0 bg-foreground/30 backdrop-blur-md"
+            />
+            <div className="overlay-panel relative z-10 mx-0 mt-16 mb-8 w-screen max-w-none sm:mx-auto sm:mt-24 sm:w-full sm:max-w-5xl sm:px-6">
+              <div className="relative overflow-clip border border-border/60 bg-background shadow-lift sm:rounded-3xl">
+                <div className="px-5 py-7 sm:px-8 sm:py-10">
+                  <Outlet />
+                </div>
               </div>
             </div>
-          </div>
-          <OverlayCloseLink to="/" />
-        </div>
-      )}
+            <OverlayCloseLink to="/" />
+          </DialogPrimitive.Content>
+        </DialogPrimitive.Portal>
+      </DialogPrimitive.Root>
     </div>
   );
 }
