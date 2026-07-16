@@ -77,9 +77,9 @@ export const dishes: Dish[] = [
   {
     id: "saumon-riz-epinards", name: "Saumon riz épinards", base: "assiette",
     modifiers: [
-      { name: "saumon", role: "protéine", qty: 400, unit: "g" },
-      { name: "riz", role: "féculent", qty: 300, unit: "g" },
-      { name: "épinards", role: "légume", qty: 300, unit: "g" },
+      { name: "Saumon", role: "protéine", qty: 400, unit: "g" },
+      { name: "Riz", role: "féculent", qty: 300, unit: "g" },
+      { name: "Épinards", role: "légume", qty: 300, unit: "g" },
     ],
     densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 1,
     dernierServiLe: "2026-06-30",
@@ -87,9 +87,9 @@ export const dishes: Dish[] = [
   {
     id: "roti-haricots-croquettes", name: "Rôti haricots croquettes", base: "assiette",
     modifiers: [
-      { name: "rôti de porc", role: "protéine", qty: 500, unit: "g" },
-      { name: "haricots verts", role: "légume", qty: 400, unit: "g" },
-      { name: "croquettes", role: "féculent", qty: 12, unit: "pièce" },
+      { name: "Rôti de porc", role: "protéine", qty: 500, unit: "g" },
+      { name: "Haricots verts", role: "légume", qty: 400, unit: "g" },
+      { name: "Croquettes", role: "féculent", qty: 12, unit: "pièce" },
     ],
     densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 2,
     dernierServiLe: "2026-06-22",
@@ -97,72 +97,72 @@ export const dishes: Dish[] = [
   {
     id: "poulet-moutarde-gratin", name: "Poulet moutarde gratin dauphinois", base: "assiette",
     modifiers: [
-      { name: "cuisses de poulet", role: "protéine", qty: 4, unit: "pièce" },
-      { name: "haricots verts", role: "légume", qty: 300, unit: "g" },
-      { name: "pommes de terre", role: "féculent", qty: 1000, unit: "g" },
-      { name: "moutarde", role: "sauce", qty: 2, unit: "pièce" },
+      { name: "Cuisses de poulet", role: "protéine", qty: 4, unit: "pièce" },
+      { name: "Haricots verts", role: "légume", qty: 300, unit: "g" },
+      { name: "Pommes de terre", role: "féculent", qty: 1000, unit: "g" },
+      { name: "Moutarde", role: "sauce", qty: 2, unit: "pièce" },
     ],
     densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 3, rendement: 2,
   },
   {
     id: "quiche-saumon-epinards", name: "Quiche saumon épinards", base: "quiche",
     modifiers: [
-      { name: "saumon", role: "protéine", qty: 250, unit: "g" },
-      { name: "épinards", role: "légume", qty: 250, unit: "g" },
-      { name: "pâte brisée", role: "féculent", qty: 1, unit: "pièce" },
+      { name: "Saumon", role: "protéine", qty: 250, unit: "g" },
+      { name: "Épinards", role: "légume", qty: 250, unit: "g" },
+      { name: "Pâte brisée", role: "féculent", qty: 1, unit: "pièce" },
     ],
     densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 2,
   },
   {
     id: "pizza-poulet-oignon", name: "Pizza poulet oignon", base: "pizza",
     modifiers: [
-      { name: "blanc de poulet", role: "protéine", qty: 300, unit: "g" },
-      { name: "oignon", role: "légume", qty: 2, unit: "pièce" },
-      { name: "pâte à pizza", role: "féculent", qty: 2, unit: "pièce" },
-      { name: "tomate", role: "sauce", qty: 1, unit: "pièce" },
-      { name: "mozzarella", role: "garniture", qty: 250, unit: "g" },
+      { name: "Blanc de poulet", role: "protéine", qty: 300, unit: "g" },
+      { name: "Oignon", role: "légume", qty: 2, unit: "pièce" },
+      { name: "Pâte à pizza", role: "féculent", qty: 2, unit: "pièce" },
+      { name: "Tomate", role: "sauce", qty: 1, unit: "pièce" },
+      { name: "Mozzarella", role: "garniture", qty: 250, unit: "g" },
     ],
     densite: "complet", temperature: "chaud", emportable: false, rechauffable: true, effort: 1, rendement: 1,
   },
   {
     id: "chili", name: "Chili con carne", base: "chili",
     modifiers: [
-      { name: "boeuf haché", role: "protéine", qty: 600, unit: "g" },
-      { name: "haricots rouges", role: "légume", qty: 500, unit: "g" },
-      { name: "tomate", role: "sauce", qty: 3, unit: "pièce" },
-      { name: "oignon", role: "légume", qty: 2, unit: "pièce" },
-      { name: "poivron", role: "légume", qty: 2, unit: "pièce" },
+      { name: "Boeuf haché", role: "protéine", qty: 600, unit: "g" },
+      { name: "Haricots rouges", role: "légume", qty: 500, unit: "g" },
+      { name: "Tomate", role: "sauce", qty: 3, unit: "pièce" },
+      { name: "Oignon", role: "légume", qty: 2, unit: "pièce" },
+      { name: "Poivron", role: "légume", qty: 2, unit: "pièce" },
     ],
     densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 3,
   },
   {
     id: "curry-poulet", name: "Curry de poulet", base: "curry",
     modifiers: [
-      { name: "blanc de poulet", role: "protéine", qty: 500, unit: "g" },
-      { name: "courgette", role: "légume", qty: 2, unit: "pièce" },
-      { name: "riz", role: "féculent", qty: 300, unit: "g" },
-      { name: "curry", role: "sauce", qty: 1, unit: "pièce" },
-      { name: "lait de coco", role: "sauce", qty: 1, unit: "pièce" },
+      { name: "Blanc de poulet", role: "protéine", qty: 500, unit: "g" },
+      { name: "Courgette", role: "légume", qty: 2, unit: "pièce" },
+      { name: "Riz", role: "féculent", qty: 300, unit: "g" },
+      { name: "Curry", role: "sauce", qty: 1, unit: "pièce" },
+      { name: "Lait de coco", role: "sauce", qty: 1, unit: "pièce" },
     ],
     densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 2,
   },
   {
     id: "lasagne", name: "Lasagne bolognaise", base: "lasagne",
     modifiers: [
-      { name: "boeuf haché", role: "protéine", qty: 500, unit: "g" },
-      { name: "tomate", role: "sauce", qty: 4, unit: "pièce" },
-      { name: "pâte lasagne", role: "féculent", qty: 1, unit: "pièce" },
-      { name: "mozzarella", role: "garniture", qty: 300, unit: "g" },
+      { name: "Boeuf haché", role: "protéine", qty: 500, unit: "g" },
+      { name: "Tomate", role: "sauce", qty: 4, unit: "pièce" },
+      { name: "Pâte lasagne", role: "féculent", qty: 1, unit: "pièce" },
+      { name: "Mozzarella", role: "garniture", qty: 300, unit: "g" },
     ],
     densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 3, rendement: 3,
   },
   {
     id: "salade-poulet-avocat", name: "Salade repas poulet avocat", base: "salade",
     modifiers: [
-      { name: "blanc de poulet", role: "protéine", qty: 300, unit: "g" },
-      { name: "avocat", role: "légume", qty: 2, unit: "pièce" },
-      { name: "salade", role: "légume", qty: 1, unit: "pièce" },
-      { name: "tomate", role: "légume", qty: 3, unit: "pièce" },
+      { name: "Blanc de poulet", role: "protéine", qty: 300, unit: "g" },
+      { name: "Avocat", role: "légume", qty: 2, unit: "pièce" },
+      { name: "Salade", role: "légume", qty: 1, unit: "pièce" },
+      { name: "Tomate", role: "légume", qty: 3, unit: "pièce" },
     ],
     densite: "complet", temperature: "froid", emportable: true, rechauffable: false, effort: 1, rendement: 1,
     tags: ["été"],
@@ -170,48 +170,48 @@ export const dishes: Dish[] = [
   {
     id: "wrap-thon", name: "Wrap thon crudités", base: "wrap",
     modifiers: [
-      { name: "thon", role: "protéine", qty: 2, unit: "pièce" },
-      { name: "salade", role: "légume", qty: 1, unit: "pièce" },
-      { name: "tomate", role: "légume", qty: 2, unit: "pièce" },
-      { name: "wraps", role: "féculent", qty: 4, unit: "pièce" },
+      { name: "Thon", role: "protéine", qty: 2, unit: "pièce" },
+      { name: "Salade", role: "légume", qty: 1, unit: "pièce" },
+      { name: "Tomate", role: "légume", qty: 2, unit: "pièce" },
+      { name: "Wraps", role: "féculent", qty: 4, unit: "pièce" },
     ],
     densite: "léger", temperature: "froid", emportable: true, rechauffable: false, effort: 1, rendement: 1,
   },
   {
     id: "bowl-saumon-avocat", name: "Bowl saumon avocat riz", base: "bowl",
     modifiers: [
-      { name: "saumon", role: "protéine", qty: 300, unit: "g" },
-      { name: "avocat", role: "légume", qty: 2, unit: "pièce" },
-      { name: "riz", role: "féculent", qty: 250, unit: "g" },
-      { name: "concombre", role: "légume", qty: 1, unit: "pièce" },
+      { name: "Saumon", role: "protéine", qty: 300, unit: "g" },
+      { name: "Avocat", role: "légume", qty: 2, unit: "pièce" },
+      { name: "Riz", role: "féculent", qty: 250, unit: "g" },
+      { name: "Concombre", role: "légume", qty: 1, unit: "pièce" },
     ],
     densite: "complet", temperature: "froid", emportable: true, rechauffable: false, effort: 1, rendement: 1,
   },
   {
     id: "soupe-potiron", name: "Soupe de potiron", base: "soupe",
     modifiers: [
-      { name: "potiron", role: "légume", qty: 1000, unit: "g" },
-      { name: "oignon", role: "légume", qty: 1, unit: "pièce" },
-      { name: "crème", role: "sauce", qty: 1, unit: "pièce" },
+      { name: "Potiron", role: "légume", qty: 1000, unit: "g" },
+      { name: "Oignon", role: "légume", qty: 1, unit: "pièce" },
+      { name: "Crème", role: "sauce", qty: 1, unit: "pièce" },
     ],
     densite: "léger", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 2,
   },
   {
     id: "tarte-tomate-mozza", name: "Tarte tomate mozzarella", base: "tarte",
     modifiers: [
-      { name: "tomate", role: "légume", qty: 5, unit: "pièce" },
-      { name: "mozzarella", role: "garniture", qty: 250, unit: "g" },
-      { name: "pâte brisée", role: "féculent", qty: 1, unit: "pièce" },
+      { name: "Tomate", role: "légume", qty: 5, unit: "pièce" },
+      { name: "Mozzarella", role: "garniture", qty: 250, unit: "g" },
+      { name: "Pâte brisée", role: "féculent", qty: 1, unit: "pièce" },
     ],
     densite: "léger", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 2,
   },
   {
     id: "raclette", name: "Raclette", base: "raclette",
     modifiers: [
-      { name: "fromage à raclette", role: "protéine", qty: 600, unit: "g" },
-      { name: "charcuterie", role: "protéine", qty: 400, unit: "g" },
-      { name: "pommes de terre", role: "féculent", qty: 1500, unit: "g" },
-      { name: "cornichons", role: "garniture", qty: 1, unit: "pièce" },
+      { name: "Fromage à raclette", role: "protéine", qty: 600, unit: "g" },
+      { name: "Charcuterie", role: "protéine", qty: 400, unit: "g" },
+      { name: "Pommes de terre", role: "féculent", qty: 1500, unit: "g" },
+      { name: "Cornichons", role: "garniture", qty: 1, unit: "pièce" },
     ],
     densite: "complet", temperature: "chaud", emportable: false, rechauffable: false, effort: 1, rendement: 1,
     tags: ["hiver", "convivial"],
@@ -219,39 +219,39 @@ export const dishes: Dish[] = [
   {
     id: "risotto-champignons", name: "Risotto champignons", base: "risotto",
     modifiers: [
-      { name: "riz arborio", role: "féculent", qty: 300, unit: "g" },
-      { name: "champignons", role: "légume", qty: 400, unit: "g" },
-      { name: "parmesan", role: "garniture", qty: 100, unit: "g" },
-      { name: "oignon", role: "légume", qty: 1, unit: "pièce" },
+      { name: "Riz arborio", role: "féculent", qty: 300, unit: "g" },
+      { name: "Champignons", role: "légume", qty: 400, unit: "g" },
+      { name: "Parmesan", role: "garniture", qty: 100, unit: "g" },
+      { name: "Oignon", role: "légume", qty: 1, unit: "pièce" },
     ],
     densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 2,
   },
   {
     id: "pates-pesto-poulet", name: "Pâtes pesto poulet", base: "pâtes",
     modifiers: [
-      { name: "pâtes", role: "féculent", qty: 400, unit: "g" },
-      { name: "blanc de poulet", role: "protéine", qty: 300, unit: "g" },
-      { name: "pesto", role: "sauce", qty: 1, unit: "pièce" },
-      { name: "tomate cerise", role: "légume", qty: 250, unit: "g" },
+      { name: "Pâtes", role: "féculent", qty: 400, unit: "g" },
+      { name: "Blanc de poulet", role: "protéine", qty: 300, unit: "g" },
+      { name: "Pesto", role: "sauce", qty: 1, unit: "pièce" },
+      { name: "Tomate cerise", role: "légume", qty: 250, unit: "g" },
     ],
     densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 1,
   },
   {
     id: "gratin-courgettes", name: "Gratin de courgettes", base: "gratin",
     modifiers: [
-      { name: "courgette", role: "légume", qty: 4, unit: "pièce" },
-      { name: "oeuf", role: "protéine", qty: 4, unit: "pièce" },
-      { name: "gruyère", role: "garniture", qty: 200, unit: "g" },
+      { name: "Courgette", role: "légume", qty: 4, unit: "pièce" },
+      { name: "Oeuf", role: "protéine", qty: 4, unit: "pièce" },
+      { name: "Gruyère", role: "garniture", qty: 200, unit: "g" },
     ],
     densite: "léger", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 2,
   },
   {
     id: "potee", name: "Potée liégeoise", base: "potée",
     modifiers: [
-      { name: "saucisse", role: "protéine", qty: 4, unit: "pièce" },
-      { name: "chou vert", role: "légume", qty: 1, unit: "pièce" },
-      { name: "pommes de terre", role: "féculent", qty: 800, unit: "g" },
-      { name: "carotte", role: "légume", qty: 4, unit: "pièce" },
+      { name: "Saucisse", role: "protéine", qty: 4, unit: "pièce" },
+      { name: "Chou vert", role: "légume", qty: 1, unit: "pièce" },
+      { name: "Pommes de terre", role: "féculent", qty: 800, unit: "g" },
+      { name: "Carotte", role: "légume", qty: 4, unit: "pièce" },
     ],
     densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 3,
     tags: ["hiver"],
@@ -557,14 +557,14 @@ export interface StapleItem {
 }
 
 export const staples: StapleItem[] = [
-  { name: "pain", qty: 2, unit: "pièce", category: "Base", checked: true },
-  { name: "lait", qty: 2, unit: "pièce", category: "Base", checked: true },
-  { name: "café", qty: 1, unit: "pièce", category: "Base", checked: true },
-  { name: "oeufs", qty: 12, unit: "pièce", category: "Base", checked: true },
-  { name: "beurre", qty: 1, unit: "pièce", category: "Base", checked: true },
-  { name: "yaourt", qty: 8, unit: "pièce", category: "Base", checked: false },
-  { name: "banane", qty: 6, unit: "pièce", category: "Fruits", checked: true },
-  { name: "pomme", qty: 6, unit: "pièce", category: "Fruits", checked: false },
+  { name: "Pain", qty: 2, unit: "pièce", category: "Base", checked: true },
+  { name: "Lait", qty: 2, unit: "pièce", category: "Base", checked: true },
+  { name: "Café", qty: 1, unit: "pièce", category: "Base", checked: true },
+  { name: "Oeufs", qty: 12, unit: "pièce", category: "Base", checked: true },
+  { name: "Beurre", qty: 1, unit: "pièce", category: "Base", checked: true },
+  { name: "Yaourt", qty: 8, unit: "pièce", category: "Base", checked: false },
+  { name: "Banane", qty: 6, unit: "pièce", category: "Fruits", checked: true },
+  { name: "Pomme", qty: 6, unit: "pièce", category: "Fruits", checked: false },
 ];
 
 export type ItemSource = "derived" | "staple" | "manual";
@@ -579,12 +579,12 @@ export interface CourseItem {
   fromDishes?: string[]; // dish names contributing
 }
 
-const componentCategory = (role: Role, name: string): string => {
+export const componentCategory = (role: Role, name: string): string => {
   if (role === "protéine") return "Protéines";
   if (role === "légume") return "Fruits & légumes";
   if (role === "féculent") return "Épicerie";
   if (role === "sauce" || role === "garniture") {
-    if (["mozzarella", "gruyère", "parmesan", "fromage à raclette", "crème"].includes(name)) return "Frais";
+    if (["mozzarella", "gruyère", "parmesan", "fromage à raclette", "crème"].includes(name.toLowerCase())) return "Frais";
     return "Épicerie";
   }
   return "Autres";
@@ -636,6 +636,57 @@ export function deriveCourses(plan: PlanEntry[], stapleState: StapleItem[], manu
   }));
 
   return [...derived, ...stapleItems, ...manual];
+}
+
+// ------------------------------------------------------------
+// Courses — the "by meal" perspective
+//
+// A different lens on the same plan: instead of one flat aggregate, the user
+// sees each upcoming meal and toggles its components in or out. Each toggled
+// component contributes ONE unit to a global list keyed by ingredient name, so
+// "2 meals with avocado" reads as "avocado ×2" — a count of meals, not recipe
+// grams (deliberately simpler than deriveCourses for this exploration).
+// ------------------------------------------------------------
+export interface MealComponent {
+  name: string;
+  role: Role;
+  qty: number;   // recipe quantity, shown as context only
+  unit: Unit;
+}
+export interface UpcomingMeal {
+  key: string;        // `${date}|${slot}` — stable per planned slot
+  date: string;
+  slot: Slot;
+  dishId: string;
+  dishName: string;
+  dish: Dish;         // the full dish, so callers can reuse <DishCard>
+  components: MealComponent[];
+}
+
+/**
+ * The cook events (batch leftovers excluded — the same cook is not shopped
+ * twice) from `from` through `from + days`, each with its components. This is
+ * the left column of the courses page: the meals you can toggle against.
+ */
+export function upcomingMeals(plan: PlanEntry[], from: Date = TODAY, days = 10): UpcomingMeal[] {
+  const fromIso = iso(from);
+  const toIso = iso(addDays(from, days));
+  return plan
+    .filter((p) => !p.batchOfDate && p.date >= fromIso && p.date < toIso)
+    .flatMap((p) => {
+      const d = dishById(p.dishId);
+      if (!d || !d.modifiers.length) return [];
+      return [{
+        key: `${p.date}|${p.slot}`,
+        date: p.date,
+        slot: p.slot,
+        dishId: p.dishId,
+        dishName: d.name,
+        dish: d,
+        components: d.modifiers.map((m) => ({ name: m.name, role: m.role, qty: m.qty, unit: m.unit })),
+      }];
+    })
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.slot === "midi" ? -1 : 1));
 }
 
 // ------------------------------------------------------------
