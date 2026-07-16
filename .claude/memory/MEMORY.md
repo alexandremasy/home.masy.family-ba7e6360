@@ -11,3 +11,5 @@
 - [Home OS vision](home-os-vision.md) — the reframe: this is a unified "home OS" (console + wall touchscreens + TV), not a HA dashboard. Emotion = a calm presence that knows (aurora + liquid glass, ambience on surface / admin in depth).
 - [Dashboard design direction](dashboard-design-direction.md) — tactical layer under the vision: attention-first home, living module access, navigation by module (Accueil = default).
 - [Figma tokens source](figma-tokens-source.md) — Figma is a one-way REFERENCE, not linked to the code: consult it before inventing a token, nothing flows back. The code is the source of truth.
+- [Mockup stays exploration](mockup-stays-exploration.md) — deliberate call (2026-07-16): keep every domain on the mock, wire nothing to api/cockpit yet. Graduate a domain only when Alex says it stopped changing.
+- [Don't stack grey on light](dont-stack-grey-on-light.md) — the light page is already soft-grey; don't add bg-secondary/muted fills on it. Elements take the page colour; reserve white (bg-card) for the active zone.
