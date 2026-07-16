@@ -127,7 +127,7 @@ function TeslaPage() {
 
       {/* ============ 1. ÉTAT DE LA VOITURE ============ */}
       <section className="space-y-4">
-        <h2 className="text-xs uppercase tracking-[0.18em] text-muted-foreground">État de la voiture</h2>
+        <h2 className="text-xs uppercase tracking-eyebrow text-muted-foreground">État de la voiture</h2>
 
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -137,7 +137,7 @@ function TeslaPage() {
               {tesla.location}
             </p>
           </div>
-          <span className={"inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] " + (tesla.charging ? "bg-primary text-primary-foreground" : tesla.pluggedIn ? "bg-secondary text-foreground" : "bg-secondary/60 text-muted-foreground")}>
+          <span className={"inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-2xs " + (tesla.charging ? "bg-primary text-primary-foreground" : tesla.pluggedIn ? "bg-secondary text-foreground" : "bg-secondary/60 text-muted-foreground")}>
             {tesla.charging ? <BatteryCharging className="h-3.5 w-3.5 anim-breathe" /> : <Plug className="h-3.5 w-3.5" />}
             {tesla.charging ? "En charge" : tesla.pluggedIn ? "Branchée" : "Débranchée"}
           </span>
@@ -178,7 +178,7 @@ function TeslaPage() {
 
 
 
-        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-3xs uppercase tracking-eyebrow text-muted-foreground">
           <span className="inline-flex items-center gap-1.5"><Wifi className="h-3 w-3" /> Sync {tesla.lastSeen}</span>
           <span>Logiciel {tesla.software}</span>
         </div>
@@ -220,7 +220,7 @@ function TeslaPage() {
         }
       >
         {/* Legend */}
-        <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+        <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-2xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-secondary" />trimestres clos</span>
           <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-primary" />trimestre en cours</span>
           <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-primary/30 ring-1 ring-primary/50" />projection (N-1)</span>
@@ -235,7 +235,7 @@ function TeslaPage() {
               <div key={`${q.key}-mobile`} className="rounded-xl border border-border/60 bg-background/45 p-3">
                 <div className="mb-3 flex items-start justify-between gap-3">
                   <div>
-                    <p className={"text-xs uppercase tracking-[0.18em] " + (isCurrent ? "text-primary" : "text-muted-foreground")}>
+                    <p className={"text-xs uppercase tracking-eyebrow " + (isCurrent ? "text-primary" : "text-muted-foreground")}>
                       {qLabel(q.year, q.q)}{isCurrent ? " · estimé" : ""}
                     </p>
                     <p className={"mt-1 font-serif text-2xl leading-none " + (isCurrent ? "text-primary" : "text-foreground")}>
@@ -263,7 +263,7 @@ function TeslaPage() {
                             style={{ height: `${Math.max((m.kWh / maxMonth) * 100, 8)}%` }}
                           />
                         </div>
-                        <div className="mt-1 flex items-baseline justify-between gap-1 text-[10px]">
+                        <div className="mt-1 flex items-baseline justify-between gap-1 text-3xs">
                           <span className={projected ? "truncate italic text-muted-foreground/60" : "truncate text-muted-foreground"}>{m.month}</span>
                           <span className="shrink-0 tabular-nums text-foreground">{m.kWh}</span>
                         </div>
@@ -283,7 +283,7 @@ function TeslaPage() {
               className="absolute left-0 right-0 border-t border-dashed border-foreground/30"
               style={{ bottom: `${(medianMonth / maxMonth) * 100}%` }}
             >
-              <span className="absolute -top-4 right-0 rounded bg-background/80 px-1 text-[9px] tabular-nums text-muted-foreground">
+              <span className="absolute -top-4 right-0 rounded bg-background/80 px-1 text-3xs tabular-nums text-muted-foreground">
                 médiane
               </span>
             </div>
@@ -308,7 +308,7 @@ function TeslaPage() {
                             }
                             style={{ height: `${(m.kWh / maxMonth) * 100}%` }}
                           />
-                          <div className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-[10px] text-background opacity-0 transition-opacity group-hover:opacity-100">
+                          <div className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-3xs text-background opacity-0 transition-opacity group-hover:opacity-100">
                             {m.kWh} kWh{projected ? " · projection" : ""}
                           </div>
                         </div>
@@ -330,7 +330,7 @@ function TeslaPage() {
                     {q.months.map((m) => (
                       <div
                         key={`${m.year}-${m.month}-l`}
-                        className={"flex-1 text-center text-[11px] " + (m.projected ? "text-muted-foreground/60 italic" : "text-muted-foreground")}
+                        className={"flex-1 text-center text-2xs " + (m.projected ? "text-muted-foreground/60 italic" : "text-muted-foreground")}
                       >
                         {m.month.slice(0, 3)}
                       </div>
@@ -342,15 +342,15 @@ function TeslaPage() {
                     <div className={"absolute right-1 top-0 h-2 w-px " + (isCurrent ? "bg-primary" : "bg-border")} />
                   </div>
                   <div className="flex flex-col items-center gap-0.5">
-                    <span className={"text-[11px] uppercase tracking-[0.18em] " + (isCurrent ? "text-primary font-medium" : "text-muted-foreground")}>
+                    <span className={"text-2xs uppercase tracking-eyebrow " + (isCurrent ? "text-primary font-medium" : "text-muted-foreground")}>
                       {qLabel(q.year, q.q)}
                       {isCurrent && <span className="ml-1 normal-case tracking-normal opacity-70">(est.)</span>}
                     </span>
                     <span className={"font-serif text-xl leading-none " + (isCurrent ? "text-primary" : "text-foreground")}>
                       {q.kWh}
-                      <span className="ml-1 text-[11px] font-sans text-muted-foreground">kWh</span>
+                      <span className="ml-1 text-2xs font-sans text-muted-foreground">kWh</span>
                     </span>
-                    <span className="text-[11px] tabular-nums text-muted-foreground">{fmtEur(cost(q.kWh))}</span>
+                    <span className="text-2xs tabular-nums text-muted-foreground">{fmtEur(cost(q.kWh))}</span>
                   </div>
                 </div>
               );
@@ -358,7 +358,7 @@ function TeslaPage() {
           </div>
         </div>
 
-        <p className="mt-4 text-[11px] text-muted-foreground">
+        <p className="mt-4 text-2xs text-muted-foreground">
           Médiane <span className="text-foreground">mensuelle</span> ({medianMonth} kWh) sur {previousFull.length} trimestres clos · moyenne trimestrielle {avgPrevKWh} kWh ({fmtEur(cost(avgPrevKWh))}). Les mois manquants du trimestre en cours sont projetés sur base de l'année précédente.
         </p>
       </Section>
@@ -402,7 +402,9 @@ function ActionBtn({ icon, label, active }: { icon: React.ReactNode; label: stri
       }
     >
       <span className={active ? "anim-breathe" : "opacity-60"}>{icon}</span>
-      <span className="max-w-full break-words text-[8px] uppercase leading-tight tracking-[0.04em] sm:text-[10px] sm:tracking-[0.14em]">{label}</span>
+      {/* Off-scale on purpose: a long uppercase label has to survive an 80px box
+          on mobile, so it squeezes below the scale and relaxes back onto it at sm. */}
+      <span className="max-w-full break-words text-[8px] uppercase leading-tight tracking-[0.04em] sm:text-3xs sm:tracking-[0.14em]">{label}</span>
     </button>
   );
 }
@@ -506,7 +508,7 @@ function TeslaCar({ charging, locked }: { charging: boolean; locked: boolean }) 
           <circle cx="130" cy="52" r="2.5" className={locked ? "fill-success" : "fill-warm"} />
         </g>
       </svg>
-      <span className={"mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] " + (locked ? "bg-success/10 text-success" : "bg-warm/10 text-warm")}>
+      <span className={"mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-3xs " + (locked ? "bg-success/10 text-success" : "bg-warm/10 text-warm")}>
         {locked ? <Lock className="h-3 w-3" /> : <LockOpen className="h-3 w-3" />}
         {locked ? "Verrouillée" : "Ouverte"}
       </span>
@@ -538,7 +540,7 @@ function BigStat({
       <p className={"mt-2 font-serif text-3xl " + (accent ? "text-primary" : trend === "down" ? "text-success" : trend === "up" ? "text-mustard" : "text-foreground")}>
         {value}
       </p>
-      {sub && <p className="mt-1 text-[11px] text-muted-foreground">{sub}</p>}
+      {sub && <p className="mt-1 text-2xs text-muted-foreground">{sub}</p>}
     </div>
   );
 }

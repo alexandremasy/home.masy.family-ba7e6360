@@ -216,7 +216,7 @@ function DropZone({ dragOver, setDragOver, onDrop }: {
       </div>
       <input type="file" accept=".xlsx,.csv" className="hidden"
         onChange={(e) => onDrop(e.target.files?.[0] ?? undefined)} />
-      <p className="mt-2 text-[11px] text-muted-foreground">Prototype : tout fichier déposé déclenche un aperçu simulé.</p>
+      <p className="mt-2 text-2xs text-muted-foreground">Prototype : tout fichier déposé déclenche un aperçu simulé.</p>
     </label>
   );
 }
@@ -234,7 +234,7 @@ function StatBadge({ icon: Icon, tone, n, label }: {
       <Icon className="h-5 w-5 shrink-0" />
       <div>
         <p className="font-serif text-2xl tabular-nums leading-none">{n}</p>
-        <p className="text-[11px] uppercase tracking-wider opacity-80">{label}</p>
+        <p className="text-2xs uppercase tracking-wider opacity-80">{label}</p>
       </div>
     </div>
   );

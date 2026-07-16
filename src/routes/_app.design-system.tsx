@@ -66,8 +66,8 @@ function Swatch({ token, note }: { token: string; note?: string }) {
       />
       <div className="min-w-0">
         <p className="truncate font-mono text-xs text-foreground">--{token}</p>
-        <p className="truncate font-mono text-[10px] text-muted-foreground">{value || "—"}</p>
-        {note && <p className="mt-0.5 text-[11px] text-muted-foreground">{note}</p>}
+        <p className="truncate font-mono text-3xs text-muted-foreground">{value || "—"}</p>
+        {note && <p className="mt-0.5 text-2xs text-muted-foreground">{note}</p>}
       </div>
     </div>
   );
@@ -345,7 +345,7 @@ function DesignSystemPage() {
           {(["sun", "partly", "cloud", "rain", "storm", "snow", "fog"] as const).map((c) => (
             <span key={c} className="flex flex-col items-center gap-1 text-muted-foreground">
               <WeatherIcon cond={c} className="h-5 w-5" />
-              <span className="text-[10px]">{c}</span>
+              <span className="text-3xs">{c}</span>
             </span>
           ))}
         </Row>
@@ -418,7 +418,7 @@ function DesignSystemPage() {
         <div className="overflow-hidden rounded-xl border border-border/60">
           <Table>
             <TableHeader>
-              <TableRow className="text-left text-[11px] uppercase tracking-[0.18em] text-muted-foreground hover:bg-transparent">
+              <TableRow className="text-left text-2xs uppercase tracking-eyebrow text-muted-foreground hover:bg-transparent">
                 <TableHead className="px-3 py-3">Plat</TableHead>
                 <TableHead className="px-3 py-3">Base</TableHead>
                 <TableHead className="px-3 py-3 text-right">Rendement</TableHead>

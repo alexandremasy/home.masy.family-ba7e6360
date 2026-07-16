@@ -457,7 +457,7 @@ function EnergiePage() {
                     {h.projected ? " · projeté" : ""}
                   </p>
                 </div>
-                <p className={"mt-1 w-full text-center text-[11px] sm:text-xs " + (isCurrent ? "font-medium text-foreground" : "text-muted-foreground")}>
+                <p className={"mt-1 w-full text-center text-2xs sm:text-xs " + (isCurrent ? "font-medium text-foreground" : "text-muted-foreground")}>
                   {h.label}
                 </p>
               </div>
@@ -472,7 +472,7 @@ function EnergiePage() {
             return (
               <div
                 key={g.year}
-                className="flex items-center justify-center border-t border-border/60 pt-1.5 text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
+                className="flex items-center justify-center border-t border-border/60 pt-1.5 text-2xs uppercase tracking-eyebrow text-muted-foreground"
                 style={{ flex: span }}
               >
                 {g.year}
@@ -588,7 +588,7 @@ function ReleveList() {
       <div className="overflow-x-auto">
         <table className="w-full text-xs sm:text-sm">
           <thead>
-            <tr className="border-b border-border/60 bg-secondary/40 text-left text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            <tr className="border-b border-border/60 bg-secondary/40 text-left text-xs uppercase tracking-eyebrow text-muted-foreground">
               <th className="px-1.5 py-1.5 sm:px-5 sm:py-2.5 font-medium">Date</th>
               {visibleCols.map((c) => (
                 <th key={c} className="px-1.5 py-1.5 sm:px-3 sm:py-2.5 font-medium text-right">
@@ -597,8 +597,8 @@ function ReleveList() {
                       {typeMeta[c].icon}
                       {typeMeta[c].label}
                     </span>
-                    <span className="sm:hidden text-[11px]">{typeMeta[c].label}</span>
-                    <span className="text-[10px] sm:text-xs text-muted-foreground/70 font-normal">{typeMeta[c].unit}</span>
+                    <span className="sm:hidden text-2xs">{typeMeta[c].label}</span>
+                    <span className="text-3xs sm:text-xs text-muted-foreground/70 font-normal">{typeMeta[c].unit}</span>
                   </div>
                 </th>
               ))}
@@ -617,7 +617,7 @@ function ReleveList() {
                       <span className="hidden sm:inline">{monthNames[covered.getMonth()]} {covered.getFullYear()}</span>
                       <span className="sm:hidden">{covered.toLocaleDateString("fr-BE", { month: "short", year: "numeric" })}</span>
                     </p>
-                    <p className="text-[11px] text-muted-foreground">
+                    <p className="text-2xs text-muted-foreground">
                       <span className="hidden sm:inline">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}</span>
                       <span className="sm:hidden">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short" })}</span>
                     </p>

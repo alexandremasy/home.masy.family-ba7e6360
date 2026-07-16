@@ -61,7 +61,7 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
               : `Prochain passage · ${v.nextSchedule}`}
           </p>
         </div>
-        <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs uppercase tracking-[0.18em] ${status.tone}`}>
+        <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs uppercase tracking-eyebrow ${status.tone}`}>
           <status.Icon className="h-3.5 w-3.5" />
           {status.text}
         </span>
@@ -81,7 +81,7 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
               const done = p.status === "done";
               const active = p.status === "active";
               return (
-                <span key={p.room} className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] transition-colors ${
+                <span key={p.room} className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-2xs transition-colors ${
                   active ? "bg-foreground text-background" :
                   done   ? "bg-primary/15 text-primary" :
                            "bg-card text-muted-foreground border border-border/60"

@@ -189,12 +189,12 @@ function AnnuelPage() {
                   )}
                 </div>
                 <div className="mt-1.5 flex flex-1 flex-col gap-1">
-                  {bills.length === 0 && <span className="text-[10px] text-muted-foreground/50">—</span>}
+                  {bills.length === 0 && <span className="text-3xs text-muted-foreground/50">—</span>}
                   {bills.map((b) => (
                     <span key={b.label}
                       // An expense is not an alert — a paid rent was painted with
                       // the alert tone. Income stays green; everything else is neutral.
-                      className={"truncate rounded-md px-1.5 py-0.5 text-[10px] font-medium leading-tight " +
+                      className={"truncate rounded-md px-1.5 py-0.5 text-3xs font-medium leading-tight " +
                         (b.kind === "income" ? "bg-success/15 text-success" : "bg-secondary text-muted-foreground")}
                       title={`${b.label} · ${eur(b.amount)}`}
                     >{b.label}</span>

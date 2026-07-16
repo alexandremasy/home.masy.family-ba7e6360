@@ -117,7 +117,7 @@ export function CameraFeed({ camera, size = "md", showChrome = true }: CameraFee
           {showChrome && (
             <>
               {/* Bottom-left: badges */}
-              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-2 text-[10px] uppercase tracking-[0.18em] text-white/90">
+              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-2 text-3xs uppercase tracking-eyebrow text-white/90">
                 <span className="inline-flex items-center gap-1 rounded bg-black/40 px-1.5 py-0.5 backdrop-blur-sm">
                   <CamIcon className="h-3 w-3" />
                   {camera.name}

@@ -304,7 +304,7 @@ function DonutPanel({ focusCat, onFocus }: { focusCat: CatKey | null; onFocus: (
               <div className="anim-pop-in">
                 <Eyebrow size="xs">{focused.label}</Eyebrow>
                 <p className="font-serif text-2xl tabular-nums">{eur(focused.value)}</p>
-                <p className="text-[11px] text-muted-foreground tabular-nums">{Math.round((focused.value/total)*100)}%</p>
+                <p className="text-2xs text-muted-foreground tabular-nums">{Math.round((focused.value/total)*100)}%</p>
               </div>
             ) : (
               <div>
@@ -373,7 +373,7 @@ function CategoryRow({ cat, index, showPlanned, highlightOver }: {
           </div>
           <BudgetBar value={pct} overflow={over && showPlanned ? overflowPct : 0} />
           {showPlanned && (
-            <div className="mt-1.5 flex items-center justify-between text-[11px] tabular-nums">
+            <div className="mt-1.5 flex items-center justify-between text-2xs tabular-nums">
               <span className="text-muted-foreground">{Math.round((cat.actual / cat.budget) * 100)}% du budget</span>
               <span className={over ? "text-warm" : "text-success"}>
                 {over ? `+${eur(-remaining)} dépassement` : `${eur(remaining)} restant`}
@@ -392,7 +392,7 @@ function CategoryRow({ cat, index, showPlanned, highlightOver }: {
           ))}
           <Link
             to="/budget/transactions"
-            className="mt-2 inline-flex w-fit items-center gap-1 text-[11px] text-primary underline-offset-4 hover:underline"
+            className="mt-2 inline-flex w-fit items-center gap-1 text-2xs text-primary underline-offset-4 hover:underline"
           >Voir tout dans Transactions →</Link>
         </div>
       )}

@@ -99,7 +99,7 @@ function PersonStudio() {
                   <RefreshCw className="h-3.5 w-3.5" /> Appliquer
                 </Button>
               </div>
-              <p className="mt-2 text-[10px] text-muted-foreground">
+              <p className="mt-2 text-3xs text-muted-foreground">
                 Généré localement. Rien n'est envoyé — copiez et envoyez-le vous-même.
               </p>
             </div>
@@ -130,7 +130,7 @@ function PersonStudio() {
               <SliderRow label="Humour"   left="sincère" right="taquin"    value={sliders.humour}   onChange={(v) => set("humour", v)} />
               <SliderRow label="Longueur" left="bref"    right="développé" value={sliders.longueur} onChange={(v) => set("longueur", v)} />
             </div>
-            <p className="mt-4 text-[10px] text-muted-foreground">
+            <p className="mt-4 text-3xs text-muted-foreground">
               Un plancher <b>sincère</b> est toujours appliqué — aucun réglage ne rend le message générique.
             </p>
           </Section>
@@ -161,7 +161,7 @@ function SliderRow({
         <span className="tabular-nums text-muted-foreground">{value}</span>
       </div>
       <Slider min={0} max={100} step={1} value={[value]} onValueChange={([v]) => onChange(v)} />
-      <div className="mt-1 flex justify-between text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+      <div className="mt-1 flex justify-between text-3xs uppercase tracking-eyebrow text-muted-foreground">
         <span>{left}</span><span>{right}</span>
       </div>
     </div>

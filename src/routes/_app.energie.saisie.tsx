@@ -100,7 +100,7 @@ function SaisiePage() {
           <Field label="Citerne à mazout" unit="%" value={form.mazout} onChange={(v) => update("mazout", v)} error={errors.mazout} disabled={submitting || done} />
 
           <div>
-            <Label htmlFor="releve-date" className="mb-1.5 block text-xs uppercase tracking-[0.18em] text-muted-foreground">Date</Label>
+            <Label htmlFor="releve-date" className="mb-1.5 block text-xs uppercase tracking-eyebrow text-muted-foreground">Date</Label>
             <input
               id="releve-date"
               type="date"
@@ -170,7 +170,7 @@ function Field({
   const id = useId();
   return (
     <div>
-      <Label htmlFor={id} className="mb-1.5 block text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</Label>
+      <Label htmlFor={id} className="mb-1.5 block text-xs uppercase tracking-eyebrow text-muted-foreground">{label}</Label>
       <div
         className={
           "flex overflow-hidden rounded-xl border bg-card focus-within:ring-2 focus-within:ring-ring " +

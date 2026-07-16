@@ -150,12 +150,12 @@ export function Dashboard() {
                 return anyAlert ? (
                   <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-warm/15 px-2 py-0.5 text-warm">
                     <AlertTriangle className="h-3 w-3" />
-                    <span className="text-[11px] font-medium">{alerts[0]}{alerts.length > 1 ? ` +${alerts.length - 1}` : ""}</span>
+                    <span className="text-2xs font-medium">{alerts[0]}{alerts.length > 1 ? ` +${alerts.length - 1}` : ""}</span>
                   </span>
                 ) : (
                   <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
                     <Sparkles className="h-3 w-3" />
-                    <span className="text-[11px] font-medium">OK</span>
+                    <span className="text-2xs font-medium">OK</span>
                   </span>
                 );
               })()}
@@ -197,7 +197,7 @@ export function Dashboard() {
           <div className="sm:hidden">
             <div className="flex items-center justify-between gap-2">
               <Eyebrow tone="current" className="opacity-60">Bernard</Eyebrow>
-              <span className={"inline-flex items-center gap-1 text-[11px] " + (tesla.pluggedIn ? "text-primary" : "opacity-60")}>
+              <span className={"inline-flex items-center gap-1 text-2xs " + (tesla.pluggedIn ? "text-primary" : "opacity-60")}>
                 <Plug className={"h-3 w-3 " + (tesla.pluggedIn ? "anim-breathe" : "")} />
                 {tesla.pluggedIn ? "Branchée" : "Débranchée"}
               </span>
@@ -210,7 +210,7 @@ export function Dashboard() {
             <div className="relative mt-2 h-1 w-full overflow-hidden rounded-full bg-background/15">
               <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${tesla.charge}%` }} />
             </div>
-            <p className="mt-3 inline-flex items-center gap-1 text-[11px] opacity-70">
+            <p className="mt-3 inline-flex items-center gap-1 text-2xs opacity-70">
               <MapPin className="h-3 w-3" />{tesla.location}
             </p>
           </div>
@@ -283,7 +283,7 @@ function BirthdayTile() {
     <Tile span={1} to="/anniversaires" tone={today ? "warm" : "default"} className="relative flex flex-col overflow-hidden">
       <Cake className={"pointer-events-none absolute -right-5 -top-5 h-28 w-28 " + (today ? "opacity-15" : "opacity-[0.06]")} />
       <div className="relative">
-        <p className={"text-xs uppercase tracking-[0.18em] " + (today ? "opacity-70" : "text-muted-foreground")}>{when}</p>
+        <p className={"text-xs uppercase tracking-eyebrow " + (today ? "opacity-70" : "text-muted-foreground")}>{when}</p>
         <p className="mt-1 font-serif text-lg leading-tight">Anniversaire de {first.p.name}</p>
         <p className={"mt-0.5 text-xs " + (today ? "opacity-80" : "text-muted-foreground")}>
           {upcomingAge(first.p)} ans · {first.p.relation}
@@ -292,7 +292,7 @@ function BirthdayTile() {
 
       {/* the one after — a quiet footnote */}
       {second && (
-        <div className={"relative mt-auto border-t pt-2 text-[11px] " + (today ? "border-foreground/15 opacity-70" : "border-border/60 text-muted-foreground")}>
+        <div className={"relative mt-auto border-t pt-2 text-2xs " + (today ? "border-foreground/15 opacity-70" : "border-border/60 text-muted-foreground")}>
           Puis {second.p.name} · dans {second.days} j
         </div>
       )}
@@ -432,7 +432,7 @@ function ReseauTile() {
         <Eyebrow>Réseau</Eyebrow>
         <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
           <Wifi className="h-3 w-3" />
-          <span className="text-[11px] font-medium">Stable</span>
+          <span className="text-2xs font-medium">Stable</span>
         </span>
       </div>
 
@@ -503,6 +503,8 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
           {variant === "netflix" && (
             <>
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[oklch(0.32_0.18_25)] text-white" aria-hidden>
+                {/* Off-scale on purpose: this is a brand glyph, not text — 13px is
+                    what centres the N optically in a 36px disc. */}
                 <span className="font-serif text-[13px] font-bold leading-none">N</span>
               </span>
               <div className="min-w-0 flex-1">
@@ -569,7 +571,7 @@ function NetBlock({
   return (
     <div className="rounded-xl bg-secondary/60 p-2.5 sm:p-3 transition-colors min-w-0">
       <div className="flex items-center justify-between gap-1">
-        <div className="flex min-w-0 items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-muted-foreground sm:text-xs">
+        <div className="flex min-w-0 items-center gap-1.5 text-2xs uppercase tracking-eyebrow text-muted-foreground sm:text-xs">
           {icon}<span className="truncate">{label}</span>
         </div>
         <span className={"h-2 w-2 rounded-full " + (ok ? "bg-success/70" : "bg-muted-foreground/40")} />
@@ -577,7 +579,7 @@ function NetBlock({
       <span className="mt-2 flex items-baseline gap-1 font-serif text-lg leading-none sm:text-xl tabular-nums">
         {value}
       </span>
-      <p className="mt-1.5 truncate text-[11px] text-muted-foreground">{sub}</p>
+      <p className="mt-1.5 truncate text-2xs text-muted-foreground">{sub}</p>
       <Eyebrow tone="current" size="xs" className="mt-1 truncate text-muted-foreground/80">{foot}</Eyebrow>
     </div>
   );
@@ -602,7 +604,7 @@ function BlockShell({
   return (
     <div className={"rounded-xl p-2.5 sm:p-3 transition-colors min-w-0 " + (alert ? "bg-warm/10 ring-1 ring-warm/30" : "bg-secondary/60")}>
       <div className="flex items-center justify-between gap-1">
-        <div className="flex min-w-0 items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-muted-foreground sm:text-xs">
+        <div className="flex min-w-0 items-center gap-1.5 text-2xs uppercase tracking-eyebrow text-muted-foreground sm:text-xs">
           {icon}<span className="truncate">{label}</span>
         </div>
         <StatusDot status={status} />
@@ -726,7 +728,7 @@ function WeatherTile() {
             <span className="font-serif text-3xl tracking-tight text-foreground">{m.tempC}</span>
             <span className="text-sm text-muted-foreground">°</span>
           </div>
-          <p className="mt-0.5 text-[11px] text-muted-foreground">{m.minC}° / {m.maxC}° · {m.label}</p>
+          <p className="mt-0.5 text-2xs text-muted-foreground">{m.minC}° / {m.maxC}° · {m.label}</p>
         </button>
       </DialogTrigger>
       <WeatherDialog />
@@ -819,8 +821,8 @@ function WeatherDialog() {
                 <Eyebrow size="xs" as="span">{d.day}</Eyebrow>
                 <WeatherIcon cond={d.cond} className="my-1.5 h-5 w-5" />
                 <span className="font-serif text-sm leading-tight">{d.maxC}°</span>
-                <span className="text-[10px] tabular-nums text-muted-foreground">{d.minC}°</span>
-                <span className="mt-1 inline-flex items-center gap-0.5 text-[9px] text-muted-foreground">
+                <span className="text-3xs tabular-nums text-muted-foreground">{d.minC}°</span>
+                <span className="mt-1 inline-flex items-center gap-0.5 text-3xs text-muted-foreground">
                   <Droplet className="h-2.5 w-2.5" />{d.rainProb}%
                 </span>
               </div>
@@ -843,7 +845,7 @@ function EnergieRow({
       <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-card text-foreground/80">{icon}</span>
       <Eyebrow size="xs" as="span" className="min-w-0 flex-1">{label}</Eyebrow>
       <span className="font-serif text-sm leading-none tabular-nums">{value}</span>
-      {sub && <span className="text-[11px] tabular-nums text-muted-foreground">{sub}</span>}
+      {sub && <span className="text-2xs tabular-nums text-muted-foreground">{sub}</span>}
       {trend && <TrendBadge trend={trend} pct={trendPct} hidePct />}
       <StatusDot status={status} />
     </div>

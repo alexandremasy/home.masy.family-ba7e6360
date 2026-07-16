@@ -33,7 +33,7 @@ function SlotTitle({ date, slot }: { date: Date; slot: Slot }) {
   return (
     <>
       {cap(frLongDay(date))} · {slot === "midi" ? "Midi" : "Soir"}
-      <span className="inline-flex items-center gap-1 rounded-full border border-border/60 px-2 py-0.5 text-[11px] font-normal text-muted-foreground">
+      <span className="inline-flex items-center gap-1 rounded-full border border-border/60 px-2 py-0.5 text-2xs font-normal text-muted-foreground">
         <WeatherIcon cond={w.cond} className="h-3 w-3" animated={false} />
         {w.maxC}°
       </span>
@@ -156,7 +156,7 @@ function RepasPage() {
         {/* Weekday columns only exist once there ARE columns. */}
         <div className="mb-2 mt-5 hidden grid-cols-7 gap-2 px-1 lg:grid">
           {WEEKDAYS.map((d) => (
-            <p key={d} className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{d}</p>
+            <p key={d} className="text-xs uppercase tracking-eyebrow text-muted-foreground">{d}</p>
           ))}
         </div>
 
@@ -310,7 +310,7 @@ function SlotCell({
       className="group relative flex flex-1 flex-col"
     >
       {/* The label belongs to the slot, not to the dish — so it stays outside the box. */}
-      <div className="flex items-center justify-between px-1 pb-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+      <div className="flex items-center justify-between px-1 pb-1 text-3xs uppercase tracking-eyebrow text-muted-foreground">
         <span>{slot === "midi" ? "Midi" : "Soir"}</span>
         {!weekend && slot === "midi" && !entry && <Package className="h-3 w-3" aria-label="Emportable" />}
       </div>
@@ -485,8 +485,8 @@ function DishSection({
   return (
     <section>
       <div className="mb-2 flex items-baseline gap-2">
-        <h3 className="text-[10px] uppercase tracking-[0.18em] text-foreground">{title}</h3>
-        <p className="text-[11px] text-muted-foreground">{hint}</p>
+        <h3 className="text-3xs uppercase tracking-eyebrow text-foreground">{title}</h3>
+        <p className="text-2xs text-muted-foreground">{hint}</p>
       </div>
       <div className="grid gap-2 sm:grid-cols-2">
         {items.map(({ dish, reason, leftover, exhausted }) => (
@@ -537,7 +537,7 @@ function SuggestionCard({
               title="Batch : une cuisson, deux créneaux"
               // Shaped like the attribute tags it sits with, but it acts — hence
               // the border and the hover.
-              className="ml-auto inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-0.5 text-[10px] transition-colors hover:border-foreground hover:bg-foreground hover:text-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="ml-auto inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-0.5 text-3xs transition-colors hover:border-foreground hover:bg-foreground hover:text-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Repeat className="h-3 w-3" />×2
             </button>

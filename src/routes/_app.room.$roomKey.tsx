@@ -146,7 +146,7 @@ function RoomPage() {
               commandLabel={roomOn ? "Tout éteindre" : "Tout allumer"}
               aria-pressed={roomOn}
               aria-label={roomOn ? "Tout éteindre" : "Tout allumer"}
-              className={"ml-auto inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs uppercase tracking-[0.18em] transition-all " + (roomOn
+              className={"ml-auto inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs uppercase tracking-eyebrow transition-all " + (roomOn
                 ? "border-foreground bg-foreground text-background shadow-lift"
                 : "border-border/60 bg-card text-muted-foreground hover:border-border")}
             >
@@ -206,7 +206,7 @@ function RoomPage() {
 
           {scene !== "Off" && !detail.lights.hideBrightness && detail.lights.scenes.length > 0 && (
             <div className="mt-6">
-              <div className="mb-2 flex justify-between text-xs uppercase tracking-[0.18em] text-muted-foreground">
+              <div className="mb-2 flex justify-between text-xs uppercase tracking-eyebrow text-muted-foreground">
                 <span>Luminosité</span><span>{brightness}%</span>
               </div>
               <input
@@ -281,7 +281,7 @@ function RoomPage() {
                     }
                   >
                     <span className="font-serif text-2xl leading-none">{label}</span>
-                    <span className={"text-[10px] uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
+                    <span className={"text-3xs uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
                       {sub}
                     </span>
                   </CommandButton>
@@ -298,7 +298,7 @@ function RoomPage() {
         <Section
           title="Lave-vaisselle"
           action={
-            <Link to="/room/$roomKey" params={{ roomKey: "cuisine" }} className="text-xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground">
+            <Link to="/room/$roomKey" params={{ roomKey: "cuisine" }} className="text-xs uppercase tracking-eyebrow text-muted-foreground hover:text-foreground">
               détails
             </Link>
           }
@@ -345,7 +345,7 @@ function RoomPage() {
           <Section
             title="Caméra"
             action={
-              <Link to="/securite" className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground">
+              <Link to="/securite" className="inline-flex items-center gap-1.5 text-xs uppercase tracking-eyebrow text-muted-foreground hover:text-foreground">
                 <ShieldCheck className="h-3.5 w-3.5" />toutes les caméras
               </Link>
             }
@@ -548,7 +548,7 @@ function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
               <Icon className={"h-3.5 w-3.5 " + (a.on ? "anim-breathe" : "opacity-50")} />
               {a.name}
             </span>
-            <span className={"text-[10px] uppercase tracking-wider " + (a.on ? "opacity-70" : "text-muted-foreground")}>{a.on ? "On" : "Off"}</span>
+            <span className={"text-3xs uppercase tracking-wider " + (a.on ? "opacity-70" : "text-muted-foreground")}>{a.on ? "On" : "Off"}</span>
           </CommandButton>
         );
       })}
@@ -659,7 +659,7 @@ function DualClimate({
                 }
               >
                 <span className="font-serif text-2xl leading-none">{isOff ? (system === "heat" ? "Auto" : "Off") : `${p}°`}</span>
-                <span className={"text-[10px] uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
+                <span className={"text-3xs uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
                   {isOff ? "éteint" : "on"}
                 </span>
               </CommandButton>
