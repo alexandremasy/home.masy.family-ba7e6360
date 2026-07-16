@@ -10,3 +10,4 @@
 - [Mock data is not the brief](mock-data-is-not-the-brief.md) — mock-data.ts mixes Alex's real household with Lovable filler (Sam, Léa, the garage door are INVENTED). FOYER-BRIEF.md is cited in CLAUDE.md but missing — ask Alex about the household, never infer it.
 - [Home OS vision](home-os-vision.md) — the reframe: this is a unified "home OS" (console + wall touchscreens + TV), not a HA dashboard. Emotion = a calm presence that knows (aurora + liquid glass, ambience on surface / admin in depth).
 - [Dashboard design direction](dashboard-design-direction.md) — tactical layer under the vision: attention-first home, living module access, navigation by module (Accueil = default).
+- [Figma tokens source](figma-tokens-source.md) — the tokens live in Figma, not in styles.css: check the library before inventing a size or a weight. Barlow, 400/600, 10→56.
