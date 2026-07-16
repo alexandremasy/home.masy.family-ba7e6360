@@ -14,11 +14,11 @@ import {
   type PlanEntry, type Slot, type Dish, type Base, type Suggestion,
 } from "@/lib/maison-data";
 import {
-  Sparkles, Search, Info, AlertTriangle, Package, Move, X,
+  Sparkles, Search, AlertTriangle, Move, X, Sun, Moon,
   ThermometerSun, ChevronLeft, ChevronRight, ChevronDown, SlidersHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/repas/planification")({
@@ -27,6 +27,54 @@ export const Route = createFileRoute("/_app/repas/planification")({
 });
 
 const WEEKDAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+
+// One style per batch (a dish spread over several days), from the Figma palette.
+// `shade` is the meal's background (teinte 10 light / 80 dark); `badge` is the
+// iteration badge in the same hue but deep enough to carry white (teinte 70-80).
+const BATCH_STYLES = [
+  { shade: "bg-[#e7f8f9] dark:bg-[#116069]/50", badge: "bg-[#157a84] text-white" }, // Teal
+  { shade: "bg-[#e7f4fa] dark:bg-[#0e506e]/50", badge: "bg-[#11658c] text-white" }, // Blue
+  { shade: "bg-[#e6f4ef] dark:bg-[#10503e]/50", badge: "bg-[#14664f] text-white" }, // Green
+  { shade: "bg-[#e2dcee] dark:bg-[#44316e]/50", badge: "bg-[#44316e] text-white" }, // Purple
+  { shade: "bg-[#f9eaf5] dark:bg-[#732254]/50", badge: "bg-[#8e2c6b] text-white" }, // Pink
+  { shade: "bg-[#fcf8e7] dark:bg-[#815f18]/50", badge: "bg-[#815f18] text-white" }, // Yellow
+];
+
+type BatchInfo = Map<string, { shade: string; badge: string; iteration: number }>;
+const batchKey = (date: string, slot: Slot) => `${date}|${slot}`;
+
+/** For every dish that appears on more than one slot in the visible window: one
+    shade for the dish, and an iteration number per occurrence in date order — the
+    first is 1, the second 2… Single-day dishes get nothing. */
+function computeBatches(plan: PlanEntry[], windowDates: string[]): BatchInfo {
+  const inWindow = new Set(windowDates);
+  const byDish = new Map<string, PlanEntry[]>();
+  for (const e of plan) {
+    if (!inWindow.has(e.date)) continue;
+    (byDish.get(e.dishId) ?? byDish.set(e.dishId, []).get(e.dishId)!).push(e);
+  }
+  const map: BatchInfo = new Map();
+  let dishN = 0;
+  for (const entries of byDish.values()) {
+    if (entries.length < 2) continue; // single-day dish → no shade, no number
+    dishN += 1;
+    const style = BATCH_STYLES[(dishN - 1) % BATCH_STYLES.length];
+    const ordered = [...entries].sort((a, b) =>
+      a.date === b.date ? (a.slot === "midi" ? -1 : 1) : a.date < b.date ? -1 : 1,
+    );
+    ordered.forEach((e, i) =>
+      map.set(batchKey(e.date, e.slot), { shade: style.shade, badge: style.badge, iteration: i + 1 }),
+    );
+  }
+  return map;
+}
+
+/** The slot's time-of-day marker: sun for midi, moon for soir. Replaces the
+    "Midi"/"Soir" text label, sitting before the dish name instead. */
+function SlotIcon({ slot, className = "" }: { slot: Slot; className?: string }) {
+  const Icon = slot === "midi" ? Sun : Moon;
+  return <Icon className={"h-3.5 w-3.5 shrink-0 " + className} aria-label={slot === "midi" ? "Midi" : "Soir"} />;
+}
 
 /** Title content only — the shell supplies DialogTitle or DrawerTitle around it. */
 function SlotTitle({ date, slot }: { date: Date; slot: Slot }) {
@@ -58,6 +106,7 @@ function RepasPage() {
   // Scrolls by one week — consecutive views share a week, like the sliding plan window.
   const [weekOffset, setWeekOffset] = useState(0);
   const weeks = useMemo(() => calWeeks(weekOffset), [weekOffset]);
+  const batches = useMemo(() => computeBatches(plan, weeks.flat().map(iso)), [plan, weeks]);
 
   const remove = (date: string, slot: Slot) => setPlan((p) => p.filter((e) => !(e.date === date && e.slot === slot)));
   const upsert = (entry: PlanEntry) => setPlan((p) => [...p.filter((e) => !(e.date === entry.date && e.slot === entry.slot)), entry]);
@@ -110,7 +159,38 @@ function RepasPage() {
       {/* Calendar — 2 weeks shown, scrolled one week at a time */}
       <div>
         <div className="flex items-center justify-between gap-3">
-          <p className="font-semibold text-lg">{rangeLabel(weeks)}</p>
+          <div className="flex items-center gap-2">
+            <p className="font-semibold text-lg">{rangeLabel(weeks)}</p>
+            {/* Coherence remarks are a warm alert icon by the period; the messages
+                are the tooltip, so they don't take a full-width block on screen. */}
+            {signals.length > 0 && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label="Remarques sur la période"
+                    className="text-warm transition-opacity hover:opacity-70"
+                  >
+                    <AlertTriangle className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent align="start" className="max-w-xs">
+                  <div className="space-y-2 text-xs">
+                    {signals.map((s, i) => (
+                      <div key={i}>
+                        <p className="font-semibold">{s.text}</p>
+                        {s.items && (
+                          <ul className="mt-0.5 list-disc space-y-0.5 pl-3.5">
+                            {s.items.map((it) => <li key={it}>{it}</li>)}
+                          </ul>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             {/* Only worth offering once you've drifted off the current week. */}
             {weekOffset !== 0 && (
@@ -140,32 +220,6 @@ function RepasPage() {
           </div>
         </div>
 
-        {/* Coherence — it describes the weeks on screen, so it lives under their
-            navigation. Each remark is an Alert: warn carries the terracotta tone,
-            the rest are neutral notes. */}
-        {signals.length > 0 && (
-          <div className="mt-3 space-y-2">
-            {signals.slice(0, 4).map((s, i) => (
-              <Alert key={i} variant={s.tone === "warn" ? "warn" : "default"}>
-                {s.tone === "warn" ? <AlertTriangle /> : <Info />}
-                {s.items ? (
-                  <>
-                    <AlertTitle>{s.text}</AlertTitle>
-                    <AlertDescription>
-                      <ul className="mt-0.5 list-disc space-y-0.5 pl-4">
-                        {s.items.map((it) => <li key={it}>{it}</li>)}
-                      </ul>
-                    </AlertDescription>
-                  </>
-                ) : (
-                  <AlertDescription className={s.tone === "warn" ? "text-foreground" : undefined}>
-                    {s.text}
-                  </AlertDescription>
-                )}
-              </Alert>
-            ))}
-          </div>
-        )}
 
         {/* Weekday labels sit above the frame, as column headers — not boxed in.
             Desktop reads as one framed table (the 14 days), whose 1px grid gaps
@@ -186,6 +240,7 @@ function RepasPage() {
                   key={iso(d)}
                   date={d}
                   plan={plan}
+                  batches={batches}
                   onSelect={setSelected}
                   onMove={move}
                 />
@@ -240,15 +295,15 @@ function RepasPage() {
 
 // ------------------------------------------------------------
 function DayCell({
-  date, plan, onSelect, onMove,
+  date, plan, batches, onSelect, onMove,
 }: {
   date: Date;
   plan: PlanEntry[];
+  batches: BatchInfo;
   onSelect: (s: { date: string; slot: Slot }) => void;
   onMove: (from: { date: string; slot: Slot }, to: { date: string; slot: Slot }) => void;
 }) {
   const key = iso(date);
-  const weekend = isWeekend(date);
   const today = key === iso(TODAY);
   // Today and everything ahead is the live planning surface — white. Past days
   // are done, so they sit back on the page colour.
@@ -292,24 +347,14 @@ function DayCell({
       <div className="mt-1.5 grid flex-1 grid-cols-2 gap-1.5 p-2 lg:flex lg:flex-col lg:gap-3">
         {(["midi", "soir"] as Slot[]).map((slot) => {
           const entry = plan.find((e) => e.date === key && e.slot === slot);
-          // A batch cook whose portions aren't all placed yet still has meals to
-          // spend — that's the "à écouler" signal, shown on the cook, not reheats.
-          let leftover = 0;
-          if (entry && !entry.batchOfDate) {
-            const d = dishById(entry.dishId);
-            if (d && d.rendement > 1) {
-              const placed = plan.filter((e) => e.dishId === entry.dishId).length;
-              leftover = Math.max(0, d.rendement - placed);
-            }
-          }
+          const batch = entry ? batches.get(batchKey(key, slot)) : undefined;
           return (
             <SlotCell
               key={slot}
               date={key}
               slot={slot}
               entry={entry}
-              leftover={leftover}
-              weekend={weekend}
+              batch={batch}
               onOpen={() => onSelect({ date: key, slot })}
               onDropFrom={(from) => onMove(from, { date: key, slot })}
             />
@@ -321,9 +366,10 @@ function DayCell({
 }
 
 function SlotCell({
-  date, slot, entry, leftover = 0, weekend, onOpen, onDropFrom,
+  date, slot, entry, batch, onOpen, onDropFrom,
 }: {
-  date: string; slot: Slot; entry?: PlanEntry; leftover?: number; weekend: boolean;
+  date: string; slot: Slot; entry?: PlanEntry;
+  batch?: { shade: string; badge: string; iteration: number };
   onOpen: () => void;
   onDropFrom: (from: { date: string; slot: Slot }) => void;
 }) {
@@ -344,12 +390,6 @@ function SlotCell({
       }}
       className="group relative flex flex-1 flex-col"
     >
-      {/* The label belongs to the slot, not to the dish — so it stays outside the box. */}
-      <div className="flex items-center justify-between px-1 pb-1 text-2xs uppercase tracking-eyebrow text-muted-foreground">
-        <span>{slot === "midi" ? "Midi" : "Soir"}</span>
-        {!weekend && slot === "midi" && !entry && <Package className="h-3 w-3" aria-label="Emportable" />}
-      </div>
-
       {entry && dish ? (
         // Tap/click opens the picker — that's where you change or remove it, so it
         // works the same on a phone as with a mouse. Drag is a desktop bonus.
@@ -362,23 +402,33 @@ function SlotCell({
             e.dataTransfer.effectAllowed = "move";
           }}
           className={
-            // No frame around a placed meal — it sits on the cell. Only the drop
-            // target and a subtle hover get a fill; the empty slot keeps its dashed box.
+            // A dish spread over several days wears its batch shade; a single-day
+            // dish gets a faint primary wash (≈ Teal/00–10). The midi/soir marker
+            // leads the name.
             "flex-1 cursor-grab rounded-lg p-2 text-left transition-colors active:cursor-grabbing " +
             (dragOver
-              ? "bg-primary/5 ring-1 ring-inset ring-primary"
-              : "hover:bg-secondary/50")
+              ? "ring-1 ring-inset ring-primary " + (batch ? batch.shade : "bg-primary/10")
+              : batch
+                ? batch.shade + " hover:brightness-[0.97]"
+                : "bg-primary/[0.06] hover:bg-primary/10")
           }
         >
-          {/* Same card, stripped to what a calendar cell can hold. A batch cook
-              with meals still to place gets the "à écouler" pill; reheats get nothing. */}
           <DishCard
             dish={dish}
             variant="compact"
+            leading={<SlotIcon slot={slot} className="text-muted-foreground" />}
             status={
-              leftover > 0
-                ? <StatusPill tone="primary">à écouler</StatusPill>
-                : undefined
+              batch ? (
+                <span
+                  title={`${batch.iteration}ᵉ fois cette fenêtre`}
+                  className={
+                    "inline-grid h-5 w-5 shrink-0 place-items-center rounded-full text-2xs font-semibold tabular-nums " +
+                    batch.badge
+                  }
+                >
+                  {batch.iteration}
+                </span>
+              ) : undefined
             }
           />
         </button>
@@ -393,8 +443,8 @@ function SlotCell({
             (dragOver ? "border-primary bg-primary/5 text-primary" : "border-border hover:border-primary hover:text-primary")
           }
         >
+          <SlotIcon slot={slot} className="opacity-60" />
           <Sparkles className="h-3.5 w-3.5" />
-          <span className="lg:hidden">Ajouter</span>
         </button>
       )}
     </div>

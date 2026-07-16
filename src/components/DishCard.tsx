@@ -72,7 +72,7 @@ function attributesOf(dish: Dish): string[] {
  * cell has room for the name and nothing else.
  */
 export function DishCard({
-  dish, variant = "full", status, actions, footer,
+  dish, variant = "full", status, actions, footer, leading,
 }: {
   dish: Dish;
   variant?: "full" | "compact";
@@ -81,12 +81,15 @@ export function DishCard({
   /** Appended to the attribute row, right-aligned. */
   actions?: ReactNode;
   footer?: ReactNode;
+  /** Small icon before the name — e.g. the slot's midi/soir marker. */
+  leading?: ReactNode;
 }) {
   const compact = variant === "compact";
 
   return (
     <>
-      <div className={cn("flex items-start justify-between", compact ? "gap-1" : "gap-2")}>
+      <div className={cn("flex items-start", compact ? "gap-1.5" : "gap-2")}>
+        {leading && <span className="mt-px shrink-0">{leading}</span>}
         <p
           className={cn(
             "min-w-0 flex-1 font-semibold leading-tight",
