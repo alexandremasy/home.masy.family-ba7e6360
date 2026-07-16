@@ -148,16 +148,14 @@ export function TopNav() {
               <MoreHorizontal className="h-4 w-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="min-w-48">
-              {/* Internal first — it's a route, not a service to open elsewhere. */}
+              {/* The ExternalLink icon already says which ones leave the app —
+                  a heading to repeat it would be noise. */}
               <DropdownMenuItem asChild>
                 <Link to="/design-system" className="flex items-center gap-2">
                   <Palette className="h-4 w-4" />
                   <span className="flex-1">Design system</span>
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel>Outils externes</DropdownMenuLabel>
-              <DropdownMenuSeparator />
               {externals.map((item) => (
                 <DropdownMenuItem key={item.href} asChild>
                   <a
