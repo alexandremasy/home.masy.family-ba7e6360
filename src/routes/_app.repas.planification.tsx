@@ -14,7 +14,7 @@ import {
   type PlanEntry, type Slot, type Dish, type Base, type Suggestion,
 } from "@/lib/maison-data";
 import {
-  Sparkles, Search, Repeat, Info, AlertTriangle, Package, Move, X,
+  Sparkles, Search, Info, AlertTriangle, Package, Move, X,
   ThermometerSun, ChevronLeft, ChevronRight, ChevronDown, SlidersHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -290,32 +290,45 @@ function DayCell({
       {/* Side by side on a phone row, stacked in a calendar column. The wider gap
           at lg is the breathing room above "soir". */}
       <div className="mt-1.5 grid flex-1 grid-cols-2 gap-1.5 p-2 lg:flex lg:flex-col lg:gap-3">
-        {(["midi", "soir"] as Slot[]).map((slot) => (
-          <SlotCell
-            key={slot}
-            date={key}
-            slot={slot}
-            entry={plan.find((e) => e.date === key && e.slot === slot)}
-            weekend={weekend}
-            onOpen={() => onSelect({ date: key, slot })}
-            onDropFrom={(from) => onMove(from, { date: key, slot })}
-          />
-        ))}
+        {(["midi", "soir"] as Slot[]).map((slot) => {
+          const entry = plan.find((e) => e.date === key && e.slot === slot);
+          // A batch cook whose portions aren't all placed yet still has meals to
+          // spend — that's the "à écouler" signal, shown on the cook, not reheats.
+          let leftover = 0;
+          if (entry && !entry.batchOfDate) {
+            const d = dishById(entry.dishId);
+            if (d && d.rendement > 1) {
+              const placed = plan.filter((e) => e.dishId === entry.dishId).length;
+              leftover = Math.max(0, d.rendement - placed);
+            }
+          }
+          return (
+            <SlotCell
+              key={slot}
+              date={key}
+              slot={slot}
+              entry={entry}
+              leftover={leftover}
+              weekend={weekend}
+              onOpen={() => onSelect({ date: key, slot })}
+              onDropFrom={(from) => onMove(from, { date: key, slot })}
+            />
+          );
+        })}
       </div>
     </div>
   );
 }
 
 function SlotCell({
-  date, slot, entry, weekend, onOpen, onDropFrom,
+  date, slot, entry, leftover = 0, weekend, onOpen, onDropFrom,
 }: {
-  date: string; slot: Slot; entry?: PlanEntry; weekend: boolean;
+  date: string; slot: Slot; entry?: PlanEntry; leftover?: number; weekend: boolean;
   onOpen: () => void;
   onDropFrom: (from: { date: string; slot: Slot }) => void;
 }) {
   const [dragOver, setDragOver] = useState(false);
   const dish = entry ? dishById(entry.dishId) : undefined;
-  const isBatch = !!entry?.batchOfDate;
 
   return (
     <div
@@ -357,13 +370,14 @@ function SlotCell({
               : "hover:bg-secondary/50")
           }
         >
-          {/* Same card, stripped to what a calendar cell can hold. */}
+          {/* Same card, stripped to what a calendar cell can hold. A batch cook
+              with meals still to place gets the "à écouler" pill; reheats get nothing. */}
           <DishCard
             dish={dish}
             variant="compact"
             status={
-              isBatch
-                ? <StatusPill icon={<Repeat className="h-3 w-3" />} title="Batch — cuisson d'un autre jour" />
+              leftover > 0
+                ? <StatusPill tone="primary">à écouler</StatusPill>
                 : undefined
             }
           />
@@ -486,14 +500,7 @@ function SlotPicker({
           <Eyebrow size="xs">Repas planifié</Eyebrow>
           <div className="flex items-start justify-between gap-2 rounded-xl border border-border/60 bg-card p-3">
             <div className="min-w-0 flex-1">
-              <DishCard
-                dish={currentDish}
-                status={
-                  current?.batchOfDate
-                    ? <StatusPill icon={<Repeat className="h-3 w-3" />} title="Batch — cuisson d'un autre jour" />
-                    : undefined
-                }
-              />
+              <DishCard dish={currentDish} />
             </div>
             <button
               type="button"
@@ -585,7 +592,7 @@ function SuggestionCard({
       <DishCard
         dish={dish}
         status={
-          leftover ? <StatusPill tone="primary" icon={<Repeat className="h-3 w-3" />}>{reason}</StatusPill>
+          leftover ? <StatusPill tone="primary">{reason}</StatusPill>
           // Already covered — say so, but discreetly: it stays a valid pick.
           : exhausted ? <StatusPill tone="muted">{reason}</StatusPill>
           : undefined
@@ -600,7 +607,7 @@ function SuggestionCard({
               // the border and the hover.
               className="ml-auto inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-0.5 text-2xs transition-colors hover:border-foreground hover:bg-foreground hover:text-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <Repeat className="h-3 w-3" />×2
+              Batch ×2
             </button>
           ) : undefined
         }
