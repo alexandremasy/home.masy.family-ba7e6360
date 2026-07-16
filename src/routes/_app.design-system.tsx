@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Panel, Section, Tile } from "@/components/Card";
@@ -73,6 +73,36 @@ function Swatch({ token, note }: { token: string; note?: string }) {
   );
 }
 
+/**
+ * A type specimen that measures itself. Same contract as Swatch: the size is read
+ * off the rendered node, never retyped here, so the page can't drift from the scale.
+ */
+function TypeRow({ cls, role, sample }: { cls: string; role: string; sample: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const [metrics, setMetrics] = useState("");
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const s = getComputedStyle(el);
+    const track = s.letterSpacing === "normal" ? "" : ` · ${s.letterSpacing}`;
+    setMetrics(`${s.fontSize} / ${s.lineHeight}${track}`);
+  }, [cls]);
+
+  return (
+    <div className="grid gap-1 border-b border-border/40 py-3 last:border-0 sm:grid-cols-[12rem_7rem_minmax(0,1fr)] sm:items-baseline sm:gap-4">
+      <code className="font-mono text-2xs text-foreground">{cls}</code>
+      <span className="font-mono text-2xs text-muted-foreground">{metrics || "—"}</span>
+      <p ref={ref} className={cls}>
+        {sample}
+        <span className="ml-2 font-sans text-2xs font-normal normal-case tracking-normal text-muted-foreground/70">
+          {role}
+        </span>
+      </p>
+    </div>
+  );
+}
+
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="grid gap-2 border-b border-border/40 py-4 last:border-0 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-4">
@@ -86,37 +116,37 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 
 function DesignSystemPage() {
   const [checked, setChecked] = useState(true);
-  const [seg, setSeg] = useState("complet");
+  const [seg, setSeg] = useState("full");
   const dish = dishes[5] ?? dishes[0];
 
   return (
     <div className="space-y-8 pb-16">
       <PageHeader
         title="Design system"
-        subtitle="Les tokens et les composants réellement utilisés. Rendus en direct — cette page ne peut pas mentir."
+        subtitle="The tokens and components actually in use, rendered live. This page cannot drift from the code."
         variant="page"
       />
 
       {/* ── TOKENS ── */}
-      <Section title="Couleurs">
+      <Section title="Colour">
         <p className="mb-5 text-sm text-muted-foreground">
-          Les valeurs sont lues sur <code className="font-mono text-xs">document.documentElement</code> —
-          bascule le thème, elles suivent. Le navigateur normalise en{" "}
-          <code className="font-mono text-xs">lab()</code> l'
-          <code className="font-mono text-xs">oklch()</code> écrit dans{" "}
-          <code className="font-mono text-xs">styles.css</code> : c'est la valeur calculée, pas la source.
+          Every value is read off <code className="font-mono text-xs">document.documentElement</code> —
+          flip the theme and they follow. The browser normalises the{" "}
+          <code className="font-mono text-xs">oklch()</code> written in{" "}
+          <code className="font-mono text-xs">styles.css</code> into{" "}
+          <code className="font-mono text-xs">lab()</code>: what you see is the computed value, not the source.
         </p>
 
         <div className="space-y-6">
           <div>
-            <Eyebrow size="xs" className="mb-3">Sémantique — le sens avant la teinte</Eyebrow>
+            <Eyebrow size="xs" className="mb-3">Semantics — meaning before hue</Eyebrow>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <Swatch token="primary" note="Signal positif : aujourd'hui, liens, actif" />
-              <Swatch token="warm" note="ALERTE. Rien d'autre." />
-              <Swatch token="mustard" note="Décoratif + séries de données" />
-              <Swatch token="success" note="Réussi, nominal" />
-              <Swatch token="destructive" note="Destructif, erreur" />
-              <Swatch token="accent" note="shadcn : surface de survol/focus. Neutre." />
+              <Swatch token="primary" note="Positive signal: today, links, active" />
+              <Swatch token="warm" note="ALERT. Nothing else." />
+              <Swatch token="mustard" note="Decorative + data series" />
+              <Swatch token="success" note="Succeeded, nominal" />
+              <Swatch token="destructive" note="Destructive, error" />
+              <Swatch token="accent" note="shadcn's hover/focus surface. Neutral." />
             </div>
           </div>
 
@@ -133,25 +163,25 @@ function DesignSystemPage() {
           </div>
 
           <div>
-            <Eyebrow size="xs" className="mb-3">Texte & traits</Eyebrow>
+            <Eyebrow size="xs" className="mb-3">Text & lines</Eyebrow>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <Swatch token="foreground" />
               <Swatch token="muted-foreground" />
               <Swatch token="border" />
               <Swatch token="input" />
-              <Swatch token="ring" note="Anneau de focus" />
+              <Swatch token="ring" note="Focus ring" />
             </div>
           </div>
         </div>
 
         <Panel padding="sm" className="mt-6 border-warm/40 bg-warm/5">
-          <Eyebrow size="xs" tone="current" className="text-warm">Le piège</Eyebrow>
+          <Eyebrow size="xs" tone="current" className="text-warm">The trap</Eyebrow>
           <p className="mt-1.5 text-sm">
-            Les tokens <code className="font-mono text-xs">-foreground</code> ne marchent que sur
-            leur propre aplat plein. <code className="font-mono text-xs">--accent-foreground</code> est
-            bleu nuit dans les <b>deux</b> thèmes ; <code className="font-mono text-xs">--warm-foreground</code> s'
-            <b>inverse</b>. Pour du texte : <code className="font-mono text-xs">text-warm</code>,{" "}
-            <code className="font-mono text-xs">text-mustard</code>.
+            A <code className="font-mono text-xs">-foreground</code> token only works on its own solid
+            fill. <code className="font-mono text-xs">--accent-foreground</code> is navy in <b>both</b>{" "}
+            themes; <code className="font-mono text-xs">--warm-foreground</code> <b>inverts</b> between
+            them. For text, reach for <code className="font-mono text-xs">text-warm</code> or{" "}
+            <code className="font-mono text-xs">text-mustard</code> instead.
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="rounded-md bg-warm px-2.5 py-1 text-xs text-warm-foreground">bg-warm + text-warm-foreground ✓</span>
@@ -161,30 +191,79 @@ function DesignSystemPage() {
         </Panel>
       </Section>
 
-      {/* ── TYPO ── */}
-      <Section title="Typographie">
-        <p className="mb-4 text-sm text-muted-foreground">
-          Barlow partout. <code className="font-mono text-xs">--font-serif</code> pointe dessus :
-          changer la police d'affichage, c'est cette seule ligne.
+      {/* ── TYPE ── */}
+      <Section title="Type">
+        <p className="mb-5 text-sm text-muted-foreground">
+          Every size below is measured off its own rendered node, like the swatches above —
+          the numbers can't drift from <code className="font-mono text-xs">styles.css</code>.
+          One face: Barlow. <code className="font-mono text-xs">--font-serif</code> points at it,
+          so swapping the display face is that single line.
         </p>
-        <div className="space-y-3">
-          <h1 className="font-serif text-4xl tracking-tight">Titre de page · text-4xl</h1>
-          <h2 className="font-serif text-2xl tracking-tight">Titre de section · text-2xl</h2>
-          <p className="font-semibold text-lg">Semibold · le nom d'un objet</p>
-          <p className="text-sm">Corps · text-sm</p>
-          <p className="text-sm text-muted-foreground">Corps atténué · text-sm text-muted-foreground</p>
-          <div className="pt-2">
-            <Eyebrow>Eyebrow · size sm (défaut)</Eyebrow>
-            <Eyebrow size="xs">Eyebrow · size xs</Eyebrow>
-            <p className="mt-1.5 text-xs text-muted-foreground">
-              Un seul tracking : 0.18em. Il y en avait sept.
+
+        <div className="space-y-6">
+          <div>
+            <Eyebrow size="xs" className="mb-1">The scale</Eyebrow>
+            <p className="mb-3 text-xs text-muted-foreground">
+              Tailwind's own scale, extended down by two steps. Sizes come from it —
+              a <code className="font-mono">text-[…px]</code> is a bug unless the line above it says why.
             </p>
+            <div>
+              <TypeRow cls="font-serif text-4xl tracking-tight" role="page title" sample="Sixteen dishes" />
+              <TypeRow cls="font-serif text-2xl tracking-tight" role="section title" sample="This week" />
+              <TypeRow cls="text-lg font-semibold" role="the name of a thing" sample="Chili sin carne" />
+              <TypeRow cls="text-base" role="body, roomy" sample="Reads at arm's length." />
+              <TypeRow cls="text-sm" role="body — the default" sample="Reads at arm's length." />
+              <TypeRow cls="text-xs" role="secondary body" sample="Reads at arm's length." />
+              <TypeRow cls="text-2xs" role="micro body — metadata, figures" sample="Reads leaning in." />
+              <TypeRow cls="text-3xs uppercase tracking-eyebrow" role="the eyebrow" sample="Eyebrow" />
+            </div>
+          </div>
+
+          <div>
+            <Eyebrow size="xs" className="mb-1">Why two steps below xs</Eyebrow>
+            <p className="mb-3 text-xs text-muted-foreground">
+              Not one role split by a pixel. Uppercase reads larger than sentence case at the
+              same size, so the label step sits <i>below</i> the body step to weigh the same.
+              Side by side, at their real sizes:
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Panel padding="sm">
+                <p className="text-3xs uppercase tracking-eyebrow text-muted-foreground">Yield per batch</p>
+                <p className="mt-2 font-mono text-2xs text-muted-foreground">text-3xs · 10px</p>
+                <p className="mt-1 text-xs">Always uppercase, always <code className="font-mono">tracking-eyebrow</code>. Use <code className="font-mono">&lt;Eyebrow&gt;</code>, not the classes.</p>
+              </Panel>
+              <Panel padding="sm">
+                <p className="text-2xs text-muted-foreground">Last reading · 2 slots left</p>
+                <p className="mt-2 font-mono text-2xs text-muted-foreground">text-2xs · 11px</p>
+                <p className="mt-1 text-xs">Sentence case: captions, tabular figures, the line under a value.</p>
+              </Panel>
+            </div>
+          </div>
+
+          <div>
+            <Eyebrow size="xs" className="mb-3">Eyebrow — the component</Eyebrow>
+            <div className="space-y-1">
+              <Eyebrow>size sm (default) · text-xs</Eyebrow>
+              <Eyebrow size="xs">size xs · text-3xs, for cramped boxes</Eyebrow>
+              <Eyebrow tone="foreground">tone foreground · when the label carries meaning</Eyebrow>
+            </div>
           </div>
         </div>
+
+        <Panel padding="sm" className="mt-6 border-warm/40 bg-warm/5">
+          <Eyebrow size="xs" tone="current" className="text-warm">The trap</Eyebrow>
+          <p className="mt-1.5 text-sm">
+            There is no <code className="font-mono text-xs">tracking-eyebrow</code> on anything but an
+            eyebrow, and no eyebrow spelled by hand. Hand-spacing an uppercase label is what produced{" "}
+            <b>seven</b> different trackings for <b>one</b> role, and{" "}
+            <code className="font-mono text-xs">text-[10px]</code> is what produced{" "}
+            <b>six</b> sizes below <code className="font-mono text-xs">text-xs</code>. Both are back to one.
+          </p>
+        </Panel>
       </Section>
 
       {/* ── BUTTONS ── */}
-      <Section title="Boutons">
+      <Section title="Buttons">
         <Row label="Variants">
           <Button variant="inverted">Inverted</Button>
           <Button>Default</Button>
@@ -194,7 +273,7 @@ function DesignSystemPage() {
           <Button variant="destructive">Destructive</Button>
           <Button variant="link">Link</Button>
         </Row>
-        <Row label="Tailles">
+        <Row label="Sizes">
           <Button size="sm">sm</Button>
           <Button>default</Button>
           <Button size="lg">lg</Button>
@@ -202,26 +281,26 @@ function DesignSystemPage() {
           <Button size="iconRound" variant="outline"><ChevronLeft className="h-4 w-4" /></Button>
           <Button size="iconRound" variant="outline"><ChevronRight className="h-4 w-4" /></Button>
         </Row>
-        <Row label="États">
+        <Row label="States">
           <Button variant="inverted" disabled>Disabled</Button>
           <Button variant="outline" size="iconRound" disabled><ChevronRight className="h-4 w-4" /></Button>
           <CommandButton
-            onCommand={() => toast.success("Commande passée")}
-            commandLabel="Démo"
+            onCommand={() => toast.success("Command sent")}
+            commandLabel="Demo"
             className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background"
           >
             CommandButton (pending/error)
           </CommandButton>
         </Row>
         <p className="pt-3 text-xs text-muted-foreground">
-          <b>inverted</b> est l'action primaire de l'app — <code className="font-mono">bg-foreground</code>, pas
-          le teal de <code className="font-mono">--primary</code>. <b>iconRound</b> existe parce que{" "}
-          <code className="font-mono">size="icon"</code> est <code className="font-mono">rounded-md</code>.
+          <b>inverted</b> is this app's primary action — <code className="font-mono">bg-foreground</code>, not
+          the teal of <code className="font-mono">--primary</code>. <b>iconRound</b> exists because{" "}
+          <code className="font-mono">size="icon"</code> ships as <code className="font-mono">rounded-md</code>.
         </p>
       </Section>
 
       {/* ── TAGS ── */}
-      <Section title="Tags & pastilles">
+      <Section title="Tags & pills">
         <Row label="Badge">
           <Badge>Default</Badge>
           <Badge variant="secondary">Secondary</Badge>
@@ -229,30 +308,30 @@ function DesignSystemPage() {
           <Badge variant="destructive">Destructive</Badge>
         </Row>
         <Row label="StatusPill">
-          <StatusPill tone="primary" icon={<Repeat className="h-3 w-3" />}>à écouler · 1 créneau</StatusPill>
-          <StatusPill>déjà 2× sur la fenêtre</StatusPill>
-          <StatusPill icon={<Repeat className="h-3 w-3" />} title="Icône seule, pour une case étroite" />
+          <StatusPill tone="primary" icon={<Repeat className="h-3 w-3" />}>acted on · 1 slot</StatusPill>
+          <StatusPill>annotation only</StatusPill>
+          <StatusPill icon={<Repeat className="h-3 w-3" />} title="Icon alone, for a narrow cell" />
         </Row>
         <p className="pt-3 text-xs text-muted-foreground">
-          <code className="font-mono">primary</code> pour ce sur quoi on agit,{" "}
-          <code className="font-mono">muted</code> pour une annotation. Jamais <code className="font-mono">warm</code>.
+          <code className="font-mono">primary</code> for what gets acted on,{" "}
+          <code className="font-mono">muted</code> for an annotation. Never <code className="font-mono">warm</code>.
         </p>
       </Section>
 
       {/* ── FORM ── */}
-      <Section title="Formulaire">
+      <Section title="Form">
         <Row label="Input">
           <div className="w-full max-w-xs space-y-1.5">
-            <Label htmlFor="ds-input">Un champ</Label>
-            <Input id="ds-input" placeholder="Tape ici…" />
+            <Label htmlFor="ds-input">A field</Label>
+            <Input id="ds-input" placeholder="Type here…" />
           </div>
         </Row>
         <Row label="Textarea">
-          <Textarea placeholder="Un texte plus long…" className="max-w-xs" />
+          <Textarea placeholder="Something longer…" className="max-w-xs" />
         </Row>
         <Row label="Select">
           <Select defaultValue="chili">
-            <SelectTrigger aria-label="Démo select" className="w-56"><SelectValue /></SelectTrigger>
+            <SelectTrigger aria-label="Select demo" className="w-56"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="chili">Chili</SelectItem>
               <SelectItem value="curry">Curry</SelectItem>
@@ -263,57 +342,57 @@ function DesignSystemPage() {
         <Row label="Checkbox">
           <div className="flex items-center gap-2">
             <Checkbox id="ds-cb" checked={checked} onCheckedChange={(c) => setChecked(!!c)} />
-            <Label htmlFor="ds-cb" className="font-normal">Cochée</Label>
+            <Label htmlFor="ds-cb" className="font-normal">Checked</Label>
           </div>
           <div className="flex items-center gap-2">
-            <Checkbox checked="indeterminate" aria-label="Indéterminée" />
-            <span className="text-sm text-muted-foreground">Indéterminée</span>
+            <Checkbox checked="indeterminate" aria-label="Indeterminate" />
+            <span className="text-sm text-muted-foreground">Indeterminate</span>
           </div>
         </Row>
         <Row label="Switch">
-          <Switch defaultChecked aria-label="Démo switch" />
-          <Switch aria-label="Démo switch éteint" />
+          <Switch defaultChecked aria-label="Switch demo" />
+          <Switch aria-label="Switch demo, off" />
         </Row>
         <Row label="Slider">
-          <Slider defaultValue={[50]} max={100} step={1} className="max-w-xs" aria-label="Démo slider" />
+          <Slider defaultValue={[50]} max={100} step={1} className="max-w-xs" aria-label="Slider demo" />
         </Row>
         <Row label="ToggleGroup">
           <ToggleGroup
             type="single" value={seg} onValueChange={(v) => v && setSeg(v)}
-            aria-label="Densité" className="inline-flex justify-start gap-0 rounded-lg bg-secondary/70 p-1"
+            aria-label="Density" className="inline-flex justify-start gap-0 rounded-lg bg-secondary/70 p-1"
           >
-            {["complet", "léger"].map((v) => (
+            {["full", "light"].map((v) => (
               <ToggleGroupItem
                 key={v} value={v}
                 className="h-auto rounded-md px-3 py-1 text-sm font-normal capitalize text-muted-foreground hover:bg-transparent hover:text-foreground data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow"
               >{v}</ToggleGroupItem>
             ))}
           </ToggleGroup>
-          <span className="text-xs text-muted-foreground">flèches + Entrée</span>
+          <span className="text-xs text-muted-foreground">arrow keys + Enter</span>
         </Row>
         <Row label="Tabs">
           <Tabs defaultValue="a">
             <TabsList className="h-10 bg-secondary/70 p-1">
-              <TabsTrigger value="a" className="px-4">Planification</TabsTrigger>
-              <TabsTrigger value="b" className="px-4">Plats</TabsTrigger>
-              <TabsTrigger value="c" className="px-4">Courses</TabsTrigger>
+              <TabsTrigger value="a" className="px-4">Overview</TabsTrigger>
+              <TabsTrigger value="b" className="px-4">Readings</TabsTrigger>
+              <TabsTrigger value="c" className="px-4">Import</TabsTrigger>
             </TabsList>
           </Tabs>
         </Row>
       </Section>
 
       {/* ── CONTAINERS ── */}
-      <Section title="Conteneurs">
+      <Section title="Containers">
         <p className="mb-4 text-sm text-muted-foreground">
-          <code className="font-mono text-xs">Section</code> est un{" "}
-          <code className="font-mono text-xs">Panel</code> avec une ligne de titre — pas une deuxième boîte.
+          <code className="font-mono text-xs">Section</code> is a{" "}
+          <code className="font-mono text-xs">Panel</code> with a title line — not a second box.
         </p>
         <div className="grid gap-3 sm:grid-cols-3">
           <Panel padding="sm"><Eyebrow size="xs">Panel</Eyebrow><p className="mt-1 text-sm">padding sm</p></Panel>
-          <Panel><Eyebrow size="xs">Panel</Eyebrow><p className="mt-1 text-sm">padding md (défaut)</p></Panel>
+          <Panel><Eyebrow size="xs">Panel</Eyebrow><p className="mt-1 text-sm">padding md (default)</p></Panel>
           <Panel padding="lg"><Eyebrow size="xs">Panel</Eyebrow><p className="mt-1 text-sm">padding lg</p></Panel>
         </div>
-        <Eyebrow size="xs" className="mb-3 mt-6">Tile — les tones du bento</Eyebrow>
+        <Eyebrow size="xs" className="mb-3 mt-6">Tile — the bento tones</Eyebrow>
         <div className="grid-bento">
           {(["default", "primary", "mustard", "warm", "dark"] as const).map((t) => (
             <Tile key={t} span={1} tone={t}>
@@ -325,10 +404,10 @@ function DesignSystemPage() {
       </Section>
 
       {/* ── DOMAIN ── */}
-      <Section title="Composants métier">
+      <Section title="Domain components">
         <Row label="DishCard">
           <div className="w-full max-w-sm rounded-xl border border-border/60 bg-card p-3">
-            <DishCard dish={dish} status={<StatusPill tone="primary" icon={<Repeat className="h-3 w-3" />}>à écouler · 1 créneau</StatusPill>} />
+            <DishCard dish={dish} status={<StatusPill tone="primary" icon={<Repeat className="h-3 w-3" />}>1 slot left</StatusPill>} />
           </div>
           <div className="w-40 rounded-lg bg-secondary/50 p-2">
             <DishCard dish={dish} variant="compact" status={<StatusPill icon={<Repeat className="h-3 w-3" />} title="batch" />} />
@@ -336,9 +415,9 @@ function DesignSystemPage() {
         </Row>
         <Row label="BudgetBar">
           <div className="w-full max-w-md space-y-3">
-            <div><p className="text-xs text-muted-foreground">60 % dépensé</p><BudgetBar value={60} /></div>
-            <div><p className="text-xs text-muted-foreground">réel 40 % · prévu 80 %</p><BudgetBar value={40} projected={80} /></div>
-            <div><p className="text-xs text-muted-foreground">dépassement — le seul warm légitime ici</p><BudgetBar value={100} overflow={18} /></div>
+            <div><p className="text-xs text-muted-foreground">60% spent</p><BudgetBar value={60} /></div>
+            <div><p className="text-xs text-muted-foreground">actual 40% · projected 80%</p><BudgetBar value={40} projected={80} /></div>
+            <div><p className="text-xs text-muted-foreground">overrun — the only legitimate warm on this page</p><BudgetBar value={100} overflow={18} /></div>
           </div>
         </Row>
         <Row label="WeatherIcon">
@@ -352,22 +431,22 @@ function DesignSystemPage() {
       </Section>
 
       {/* ── OVERLAYS ── */}
-      <Section title="Surcouches">
+      <Section title="Overlays">
         <Row label="Dialog">
           <Dialog>
-            <DialogTrigger asChild><Button variant="outline">Ouvrir un Dialog</Button></DialogTrigger>
+            <DialogTrigger asChild><Button variant="outline">Open a Dialog</Button></DialogTrigger>
             <DialogContent>
-              <DialogHeader><DialogTitle className="font-serif text-xl">Un Dialog</DialogTitle></DialogHeader>
-              <p className="text-sm text-muted-foreground">Centré, piège le focus, Escape ferme.</p>
+              <DialogHeader><DialogTitle className="font-serif text-xl">A Dialog</DialogTitle></DialogHeader>
+              <p className="text-sm text-muted-foreground">Centred, traps focus, Escape closes.</p>
             </DialogContent>
           </Dialog>
         </Row>
         <Row label="Drawer">
           <Drawer>
-            <DrawerTrigger asChild><Button variant="outline">Ouvrir un Drawer</Button></DrawerTrigger>
+            <DrawerTrigger asChild><Button variant="outline">Open a Drawer</Button></DrawerTrigger>
             <DrawerContent className="bg-background px-4 pb-6">
-              <DrawerHeader className="px-0 text-left"><DrawerTitle className="font-serif text-xl">Un Drawer</DrawerTitle></DrawerHeader>
-              <p className="text-sm text-muted-foreground">Depuis le bas, drag-to-dismiss. C'est la modale repas sur mobile.</p>
+              <DrawerHeader className="px-0 text-left"><DrawerTitle className="font-serif text-xl">A Drawer</DrawerTitle></DrawerHeader>
+              <p className="text-sm text-muted-foreground">From the bottom, drag to dismiss. This is the meal picker on mobile.</p>
             </DrawerContent>
           </Drawer>
         </Row>
@@ -375,41 +454,41 @@ function DesignSystemPage() {
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="outline" className="gap-1.5 text-destructive hover:text-destructive">
-                <Trash2 className="h-3.5 w-3.5" />Supprimer
+                <Trash2 className="h-3.5 w-3.5" />Delete
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Supprimer ?</AlertDialogTitle>
-                <AlertDialogDescription>Une confirmation dit ce qu'on perd, pas « êtes-vous sûr ».</AlertDialogDescription>
+                <AlertDialogTitle>Delete?</AlertDialogTitle>
+                <AlertDialogDescription>A confirmation says what gets lost, not "are you sure".</AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Annuler</AlertDialogCancel>
-                <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Supprimer</AlertDialogAction>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
         </Row>
         <Row label="DropdownMenu">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild><Button variant="outline">Ouvrir un menu</Button></DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild><Button variant="outline">Open a menu</Button></DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <DropdownMenuItem>Premier</DropdownMenuItem>
-              <DropdownMenuItem>Deuxième</DropdownMenuItem>
-              <DropdownMenuItem>Troisième</DropdownMenuItem>
+              <DropdownMenuItem>First</DropdownMenuItem>
+              <DropdownMenuItem>Second</DropdownMenuItem>
+              <DropdownMenuItem>Third</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <span className="text-xs text-muted-foreground">survol au clavier = neutre, plus moutarde</span>
+          <span className="text-xs text-muted-foreground">keyboard highlight is neutral now, not mustard</span>
         </Row>
         <Row label="Tooltip">
           <Tooltip>
             <TooltipTrigger asChild><Button variant="outline" size="iconRound"><Repeat className="h-4 w-4" /></Button></TooltipTrigger>
-            <TooltipContent>Une tooltip</TooltipContent>
+            <TooltipContent>A tooltip</TooltipContent>
           </Tooltip>
         </Row>
         <Row label="Toast">
-          <Button variant="outline" onClick={() => toast.success("Enregistré")}>Succès</Button>
-          <Button variant="outline" onClick={() => toast.error("Échec", { description: "Réessaie dans un instant." })}>Erreur</Button>
+          <Button variant="outline" onClick={() => toast.success("Saved")}>Success</Button>
+          <Button variant="outline" onClick={() => toast.error("Failed", { description: "Try again in a moment." })}>Error</Button>
         </Row>
       </Section>
 
@@ -419,9 +498,9 @@ function DesignSystemPage() {
           <Table>
             <TableHeader>
               <TableRow className="text-left text-2xs uppercase tracking-eyebrow text-muted-foreground hover:bg-transparent">
-                <TableHead className="px-3 py-3">Plat</TableHead>
+                <TableHead className="px-3 py-3">Dish</TableHead>
                 <TableHead className="px-3 py-3">Base</TableHead>
-                <TableHead className="px-3 py-3 text-right">Rendement</TableHead>
+                <TableHead className="px-3 py-3 text-right">Yield</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -439,11 +518,11 @@ function DesignSystemPage() {
 
       <Panel padding="sm" className="border-dashed">
         <p className="text-xs text-muted-foreground">
-          Il manque un composant ? <b>Cherche dans <code className="font-mono">src/components/ui/</code> d'abord</b> —
-          19 primitives, toutes vivantes. Il existe mais ne colle pas à la palette ? <b>Édite <code className="font-mono">ui/*</code></b>,
-          on possède le code. C'est vraiment le vocabulaire de l'app ? Construis-le <b>une fois</b> dans{" "}
-          <code className="font-mono">components/</code>. Jamais de quatrième voie. Voir{" "}
-          <code className="font-mono">DESIGN-SYSTEM.md</code>.
+          Missing a control? <b>Look in <code className="font-mono">src/components/ui/</code> first</b> —
+          19 primitives, all of them live. It exists but fights the palette? <b>Edit{" "}
+          <code className="font-mono">ui/*</code></b>, we own that code. It really is this app's own
+          vocabulary? Build it <b>once</b> in <code className="font-mono">components/</code> and share it.
+          Never a fourth path. See <code className="font-mono">DESIGN-SYSTEM.md</code>.
         </p>
       </Panel>
     </div>
