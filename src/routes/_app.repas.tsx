@@ -31,11 +31,7 @@ function RepasLayout() {
   return (
     <DishesProvider>
       <div className="space-y-6">
-        <PageHeader
-          title="Repas"
-          subtitle="Ce qu'on mange, midi et soir. On cuisine le weekend, on emporte la semaine."
-          variant="page"
-        />
+        <PageHeader title="Repas" variant="page" />
 
         <Tabs value={current} onValueChange={(to) => navigate({ to })}>
           <TabsList className="h-10 bg-secondary/70 p-1">

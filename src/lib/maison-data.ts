@@ -4,6 +4,7 @@
 // ============================================================
 
 import type { WeatherCond } from "./mock-data";
+import { cap } from "./utils";
 export type { WeatherCond };
 
 export type Role = "protéine" | "légume" | "féculent" | "sauce" | "garniture";
@@ -504,7 +505,13 @@ export interface WeatherHint {
 }
 
 // Mocked coherence signals for the current window
-export function coherenceSignals(plan: PlanEntry[]): Array<{ tone: "warn" | "info"; text: string }> {
+export interface CoherenceSignal {
+  tone: "warn" | "info";
+  text: string;
+  items?: string[]; // when set, render as a bulleted list under `text`
+}
+
+export function coherenceSignals(plan: PlanEntry[]): CoherenceSignal[] {
   const proteinCount = new Map<string, number>();
   for (const p of plan) {
     const d = dishById(p.dishId);
@@ -513,17 +520,17 @@ export function coherenceSignals(plan: PlanEntry[]): Array<{ tone: "warn" | "inf
     });
   }
 
-  const out: Array<{ tone: "warn" | "info"; text: string }> = [];
+  const out: CoherenceSignal[] = [];
 
-  // One alert for all over-used proteins, not one per protein.
+  // One alert for all over-used proteins, listed as bullets rather than a run-on
+  // sentence — clearer once there are three of them.
   const heavy = [...proteinCount.entries()].filter(([, n]) => n >= 4);
   if (heavy.length) {
-    const parts = heavy.map(([name, n]) => `${name} (${n})`);
-    const list =
-      parts.length === 1
-        ? parts[0]
-        : parts.slice(0, -1).join(", ") + " et " + parts[parts.length - 1];
-    out.push({ tone: "warn", text: `Beaucoup de ${list} cette fenêtre.` });
+    out.push({
+      tone: "warn",
+      text: "Protéines très présentes cette fenêtre",
+      items: heavy.map(([name, n]) => `${cap(name)} · ${n}×`),
+    });
   }
 
   // Weekend load only when it's actually heavy — a normal weekend is not a remark.

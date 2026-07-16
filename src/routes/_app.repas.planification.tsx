@@ -18,7 +18,7 @@ import {
   ThermometerSun, ChevronLeft, ChevronRight, ChevronDown, SlidersHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Eyebrow } from "@/components/Eyebrow";
 
 export const Route = createFileRoute("/_app/repas/planification")({
@@ -143,9 +143,20 @@ function RepasPage() {
             {signals.slice(0, 4).map((s, i) => (
               <Alert key={i} variant={s.tone === "warn" ? "warn" : "default"}>
                 {s.tone === "warn" ? <AlertTriangle /> : <Info />}
-                <AlertDescription className={s.tone === "warn" ? "text-foreground" : undefined}>
-                  {s.text}
-                </AlertDescription>
+                {s.items ? (
+                  <>
+                    <AlertTitle>{s.text}</AlertTitle>
+                    <AlertDescription>
+                      <ul className="mt-0.5 list-disc space-y-0.5 pl-4">
+                        {s.items.map((it) => <li key={it}>{it}</li>)}
+                      </ul>
+                    </AlertDescription>
+                  </>
+                ) : (
+                  <AlertDescription className={s.tone === "warn" ? "text-foreground" : undefined}>
+                    {s.text}
+                  </AlertDescription>
+                )}
               </Alert>
             ))}
           </div>
@@ -161,7 +172,7 @@ function RepasPage() {
             {WEEKDAYS.map((d) => (
               <div
                 key={d}
-                className="hidden bg-secondary/60 px-2.5 py-2 text-xs uppercase tracking-eyebrow text-muted-foreground lg:block"
+                className="hidden bg-background px-2.5 py-2 text-xs uppercase tracking-eyebrow text-muted-foreground lg:block"
               >
                 {d}
               </div>
@@ -247,10 +258,10 @@ function DayCell({
         // Mobile: an outlined card. Desktop: a plain cell — the hairline comes
         // from the parent grid's 1px gap, so it drops its own border and radius.
         "flex flex-col overflow-hidden rounded-xl border border-border/60 transition-colors lg:min-h-[12.5rem] lg:rounded-none lg:border-0 " +
-        // Past recedes on a muted fill, today and ahead are white. The fill stays
-        // opaque so it masks the table hairline; dark: keeps the past darker (not
-        // lighter) than the white future in both themes.
-        (past ? "bg-muted dark:bg-background " : "bg-card ") +
+        // Today and ahead are white; past days just take the page colour — no
+        // added fill. bg-background (not transparent) so it still masks the
+        // table hairline, but it reads as the page, not a tinted block.
+        (past ? "bg-background " : "bg-card ") +
         (today ? "ring-2 ring-primary/50 lg:ring-inset" : "")
       }
     >
