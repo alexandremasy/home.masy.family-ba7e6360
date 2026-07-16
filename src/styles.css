@@ -64,8 +64,6 @@
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-surface: var(--surface);
-  --color-surface-foreground: var(--surface-foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -101,46 +99,53 @@
      full-bleed page must offset by this, or it hides behind the nav. */
   --nav-h: 109px;
 
-  /* Warm cream background inspired by alexandremasy.com */
-  --background: oklch(0.985 0.008 95);
-  --foreground: oklch(0.22 0.025 220);
-  --surface: oklch(0.965 0.012 90);
-  --surface-foreground: oklch(0.22 0.025 220);
+  /* ---- Light theme — every value is a step of the Figma ramps ----
+     Source of truth: alexandremasy — tokens, page "Colors" (node 0-1). The hex
+     IS the token; the comment names the rung. Nothing here is invented, so if a
+     colour looks wrong the argument is with Figma, not with this file.
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.22 0.025 220);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.22 0.025 220);
+     The ramps are primitive (Light/Red/Orange/Yellow/Green/Blue/Teal/Purple/Pink,
+     00→90). The semantics below — which rung plays "alert", which plays "hover" —
+     are this app's, and they are the part worth arguing about. */
+  --background: #fbfcfc;            /* Light/00 */
+  --foreground: #131415;            /* Light/90 */
 
-  /* Teal accent */
-  --primary: oklch(0.62 0.10 195);
-  --primary-foreground: oklch(0.99 0.005 95);
+  --card: #ffffff;                  /* White */
+  --card-foreground: #131415;       /* Light/90 */
+  --popover: #ffffff;               /* White */
+  --popover-foreground: #131415;    /* Light/90 */
 
-  --secondary: oklch(0.94 0.012 90);
-  --secondary-foreground: oklch(0.22 0.025 220);
+  /* The positive signal: today's ring, links, active, StatusPill. */
+  --primary: #1995a0;               /* Teal/60 */
+  --primary-foreground: #131415;    /* Light/90 — 5.14:1. White would be 3.49:1, under AA. */
 
-  --muted: oklch(0.945 0.010 90);
-  --muted-foreground: oklch(0.50 0.020 220);
+  --secondary: #ecedee;             /* Light/10 */
+  --secondary-foreground: #131415;  /* Light/90 */
+
+  --muted: #ecedee;                 /* Light/10 */
+  --muted-foreground: #4e575d;      /* Light/60 */
 
   /* shadcn's meaning: the neutral hover/focus surface every ui/* primitive
      reaches for (bg-accent, focus:bg-accent, data-[highlighted]). Keep it
      neutral — the decorative mustard lives in --mustard below. */
-  --accent: oklch(0.94 0.012 90);
-  --accent-foreground: oklch(0.22 0.025 220);
+  --accent: #ecedee;                /* Light/10 */
+  --accent-foreground: #131415;     /* Light/90 */
 
-  --mustard: oklch(0.78 0.12 70); /* decorative warmth: PMC tile, lights on */
-  --mustard-foreground: oklch(0.22 0.025 220);
+  --mustard: #dab12c;               /* Yellow/50 — decorative: PMC tile, lights on */
+  --mustard-foreground: #131415;    /* Light/90 — 9.05:1 */
 
-  --warm: oklch(0.74 0.13 35); /* terracotta — THE ALERT TONE, nothing else */
-  --warm-foreground: oklch(0.99 0.005 95);
+  --warm: #e07e62;                  /* Orange/40 — THE ALERT TONE, nothing else */
+  --warm-foreground: #131415;       /* Light/90 — 6.44:1 */
 
-  --success: oklch(0.65 0.13 150);
-  --destructive: oklch(0.60 0.20 25);
-  --destructive-foreground: oklch(0.99 0.005 95);
+  --success: #1c9371;               /* Green/50 */
+  /* Red, not Orange/50: --warm already owns the orange family, and an alert that
+     shares a hue with an error is an alert you can't read. */
+  --destructive: #c22038;           /* Red/50 */
+  --destructive-foreground: #fbfcfc;/* Light/00 — 5.74:1 */
 
-  --border: oklch(0.90 0.012 90);
-  --input: oklch(0.90 0.012 90);
-  --ring: oklch(0.62 0.10 195);
+  --border: #cfd3d5;                /* Light/20 */
+  --input: #cfd3d5;                 /* Light/20 */
+  --ring: #1995a0;                  /* Teal/60 */
 }
 
 /* From lg the nav pills move up into the single bar — see TopNav. */
@@ -148,11 +153,17 @@
   :root { --nav-h: 69px; }
 }
 
+/* ---- Dark theme — NOT from Figma. The only invented colour left ----
+   The token library has a single neutral ramp, "Light", and no dark counterpart,
+   so there is nothing to port these to. They stay as authored: navy-tinted rather
+   than the neutral grey an inverted Light ramp would give, which is a look the
+   library cannot currently express. This is a gap in the library, not in the code
+   — closing it means adding a Dark ramp in Figma. Until then, :root is traceable
+   and this block is not. Don't quietly "fix" it by inverting Light; that decision
+   was declined on 2026-07-16 because it costs the dark theme its temperature. */
 .dark {
   --background: oklch(0.18 0.015 230);
   --foreground: oklch(0.95 0.008 95);
-  --surface: oklch(0.22 0.018 230);
-  --surface-foreground: oklch(0.95 0.008 95);
 
   --card: oklch(0.235 0.020 230);
   --card-foreground: oklch(0.95 0.008 95);

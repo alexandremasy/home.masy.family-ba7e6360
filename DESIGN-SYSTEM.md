@@ -170,6 +170,8 @@ Phase 4 is free.
 | arbitrary `text-[…px]` | **157**, over 6 sizes | **0** — the scale is Figma's, and it's the only one |
 | sizes off the Figma grid | **191** (10·11·18·30·36·72) | **0** |
 | font weights | 4 (400·500·600·700) | **2** — 400 and 600, as in Figma |
+| invented colours (`:root`) | 15 `oklch()` | **0** — every one is a named Figma rung |
+| invented colours (`.dark`) | 26 | 24 — library has no dark ramp, documented as such |
 | `warm` occurrences | 225, ~6 were alerts | 190 — alerts, plus the token's own definition |
 
 ## The rules that hold
@@ -180,6 +182,45 @@ Phase 4 is free.
    `Eyebrow`, `Panel`/`Section`/`Tile`, `DishCard`+`StatusPill`, `BudgetBar`, `OverlayCloseLink`,
    `DishForm`, `DishFilters`, `PageHeader`, `WeatherIcon`, `CommandButton`.
 4. Never a fourth path.
+
+## The palette — ported from Figma (2026-07-16)
+
+**Source of truth: the Figma token library** — *alexandremasy — tokens*, the "Colors" page (node
+`0-1`). Nine **primitive** ramps (Light, Red, Orange, Yellow, Green, Blue, Teal, Purple, Pink), each
+`00`→`90`. Figma ships no semantic tokens — no `primary`, no `background`. **The semantics are this
+app's**; the port is the decision of *which rung plays which role*, and that is the part to argue
+with.
+
+The app was already ~90% there (the teal *was* Teal/60, the neutrals *were* the Light ramp), so this
+was a snap-to-rung, not a redesign. `:root` now carries the hex with the rung named in a comment —
+the value *is* the token:
+
+| Token | Rung | Hex | Note |
+|---|---|---|---|
+| `--background` | Light/00 | `#fbfcfc` | |
+| `--foreground` | Light/90 | `#131415` | |
+| `--card` | White | `#ffffff` | |
+| `--secondary` / `--muted` / `--accent` | Light/10 | `#ecedee` | |
+| `--muted-foreground` | Light/60 | `#4e575d` | |
+| `--border` / `--input` | Light/20 | `#cfd3d5` | the one visible change — borders are firmer |
+| `--primary` / `--ring` | Teal/60 | `#1995a0` | positive signal |
+| `--warm` | Orange/40 | `#e07e62` | **the alert tone, nothing else** |
+| `--mustard` | Yellow/50 | `#dab12c` | decorative + data series |
+| `--success` | Green/50 | `#1c9371` | |
+| `--destructive` | Red/50 | `#c22038` | **Red, not Orange/50** — warm owns the orange family; an alert sharing a hue with an error is unreadable |
+
+**Two decisions inside the port:**
+- **Accent foregrounds are all Light/90 (dark).** On Teal/60, white text is 3.49:1 (under AA);
+  Light/90 is 5.14:1. Same for warm (6.4:1) and mustard (9.0:1). Consequence: the `-foreground`
+  tokens no longer invert between themes — the old "trap" is gone. Teal fills now carry **dark**
+  text, a visible change on primary buttons, `StatusPill`, active badges.
+- **`--surface` deleted** — it had zero usages.
+
+**The dark theme is NOT ported.** The library has one neutral ramp, "Light", and no dark
+counterpart, so `.dark` stays as authored: navy-tinted, not the neutral grey an inverted Light ramp
+would give. This is the one invented block left in `styles.css`, marked as such. Closing it means
+**adding a Dark ramp in Figma** — inverting Light was declined because it costs the dark theme its
+temperature.
 
 ## The type scale — ported from Figma (2026-07-16)
 

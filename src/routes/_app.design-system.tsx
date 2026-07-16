@@ -130,11 +130,11 @@ function DesignSystemPage() {
       {/* ── TOKENS ── */}
       <Section title="Colour">
         <p className="mb-5 text-sm text-muted-foreground">
-          Every value is read off <code className="font-mono text-xs">document.documentElement</code> —
-          flip the theme and they follow. The browser normalises the{" "}
-          <code className="font-mono text-xs">oklch()</code> written in{" "}
-          <code className="font-mono text-xs">styles.css</code> into{" "}
-          <code className="font-mono text-xs">lab()</code>: what you see is the computed value, not the source.
+          The light theme is <b>ported from Figma</b> — <i>alexandremasy — tokens</i>, the "Colors"
+          page — so each swatch below <b>is</b> a rung of one of the nine ramps. Values are read live
+          off <code className="font-mono text-xs">document.documentElement</code>; flip the theme and
+          they follow. <b>The dark theme is not from Figma</b> — the library has no dark ramp, so it
+          stays as authored. That's the one place a colour here is still invented.
         </p>
 
         <div className="space-y-6">
@@ -156,7 +156,6 @@ function DesignSystemPage() {
               <Swatch token="background" />
               <Swatch token="card" />
               <Swatch token="popover" />
-              <Swatch token="surface" />
               <Swatch token="secondary" />
               <Swatch token="muted" />
             </div>
@@ -175,13 +174,14 @@ function DesignSystemPage() {
         </div>
 
         <Panel padding="sm" className="mt-6 border-warm/40 bg-warm/5">
-          <Eyebrow size="xs" tone="current" className="text-warm">The trap</Eyebrow>
+          <Eyebrow size="xs" tone="current" className="text-warm">The rule</Eyebrow>
           <p className="mt-1.5 text-sm">
             A <code className="font-mono text-xs">-foreground</code> token only works on its own solid
-            fill. <code className="font-mono text-xs">--accent-foreground</code> is navy in <b>both</b>{" "}
-            themes; <code className="font-mono text-xs">--warm-foreground</code> <b>inverts</b> between
-            them. For text, reach for <code className="font-mono text-xs">text-warm</code> or{" "}
-            <code className="font-mono text-xs">text-mustard</code> instead.
+            fill. Since the port, every accent foreground is <b>Light/90</b> (dark) in both themes, so
+            they no longer invert — they were chosen for contrast: warm 6.4:1, mustard 9.0:1, teal
+            5.1:1. On a <i>tint</i> like <code className="font-mono text-xs">bg-warm/15</code> the fill
+            is nearly the page, so use <code className="font-mono text-xs">text-warm</code> there, not
+            the foreground.
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="rounded-md bg-warm px-2.5 py-1 text-xs text-warm-foreground">bg-warm + text-warm-foreground ✓</span>
