@@ -19,7 +19,9 @@ function AppLayout() {
     pathname.startsWith("/budget") ||
     pathname.startsWith("/securite") ||
     pathname.startsWith("/repas") ||
-    pathname.startsWith("/anniversaires");
+    pathname.startsWith("/anniversaires") ||
+    // Not in any nav — a reference page, reachable by URL.
+    pathname.startsWith("/design-system");
   const isOverlay = !isFullBleed && pathname !== "/";
 
   // Pick a line based on day-of-year for a stable but rotating feel
