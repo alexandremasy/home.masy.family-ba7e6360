@@ -128,7 +128,7 @@ function ReserveOverlay() {
               <Section
                 title="Évolution de la réserve"
                 action={
-                  <span className={"inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium " + (belowFloor ? "bg-destructive/15 text-destructive" : "bg-success/15 text-success")}>
+                  <span className={"inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold " + (belowFloor ? "bg-destructive/15 text-destructive" : "bg-success/15 text-success")}>
                     <span className={"h-1.5 w-1.5 rounded-full " + (belowFloor ? "bg-destructive" : "bg-success")} />
                     {belowFloor ? "Sous le seuil" : "Au-dessus du seuil"}
                   </span>
@@ -190,7 +190,7 @@ function ReserveOverlay() {
                                 className="w-full rounded-md border border-border bg-background px-2 py-1 text-sm tabular-nums focus:border-primary focus:outline-none" />
                             </label>
                             <div className="flex gap-1">
-                              <button onClick={() => commitEdit(env.key)} className="inline-flex flex-1 items-center justify-center gap-1 rounded-md bg-primary px-2 py-1 text-xs font-medium text-primary-foreground hover:opacity-90">
+                              <button onClick={() => commitEdit(env.key)} className="inline-flex flex-1 items-center justify-center gap-1 rounded-md bg-primary px-2 py-1 text-xs font-semibold text-primary-foreground hover:opacity-90">
                                 <Check className="h-3.5 w-3.5" /> Enregistrer
                               </button>
                               <button onClick={() => setEditKey(null)} className="grid h-7 w-7 place-items-center rounded-md border border-border text-muted-foreground hover:bg-secondary">

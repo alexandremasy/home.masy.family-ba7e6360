@@ -25,6 +25,10 @@ that's the mistake that produced `text-2xs`/`text-3xs` (10/11px) when Figma's fl
 12px, and `tracking-eyebrow` (0.18em) survives Figma's letter-spacing 0 because the brand set has
 no eyebrow pattern. Colours are NOT ported — the app's palette is its own; see [[palette-semantics]].
 
+**Don't over-index on this file.** "Ne te tracasse pas tant de Figma" (Alex, 2026-07-16). It is the
+reference to check before *inventing* a token — not a spec to chase pixel-for-pixel. Alex settles
+the gaps himself and fast: 500 → 600, no debate. Read it, then ask him, don't agonise.
+
 **Open**: Figma needs `Regular/10` + `Semi-Bold/10` added — the code already uses 10px for ~62
 eyebrows on Alex's decision (2026-07-16). Until then, the code is one step ahead of the file.
 See [[design-system-state]].

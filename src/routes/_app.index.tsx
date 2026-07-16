@@ -150,12 +150,12 @@ export function Dashboard() {
                 return anyAlert ? (
                   <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-warm/15 px-2 py-0.5 text-warm">
                     <AlertTriangle className="h-3 w-3" />
-                    <span className="text-xs font-medium">{alerts[0]}{alerts.length > 1 ? ` +${alerts.length - 1}` : ""}</span>
+                    <span className="text-xs font-semibold">{alerts[0]}{alerts.length > 1 ? ` +${alerts.length - 1}` : ""}</span>
                   </span>
                 ) : (
                   <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
                     <Sparkles className="h-3 w-3" />
-                    <span className="text-xs font-medium">OK</span>
+                    <span className="text-xs font-semibold">OK</span>
                   </span>
                 );
               })()}
@@ -432,7 +432,7 @@ function ReseauTile() {
         <Eyebrow>Réseau</Eyebrow>
         <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
           <Wifi className="h-3 w-3" />
-          <span className="text-xs font-medium">Stable</span>
+          <span className="text-xs font-semibold">Stable</span>
         </span>
       </div>
 
@@ -700,7 +700,7 @@ function OilBlock() {
           <span className="tabular-nums">{o.last30dLiters} L/30j</span>
         </Tip>
         <Tip label="Autonomie estimée à ce rythme de consommation.">
-          <span className={"tabular-nums " + (low ? "font-medium text-warm" : "")}>~{o.autonomyDays} j</span>
+          <span className={"tabular-nums " + (low ? "font-semibold text-warm" : "")}>~{o.autonomyDays} j</span>
         </Tip>
       </div>
     </BlockShell>

@@ -131,7 +131,7 @@ function TransactionsPage() {
       {/* Bulk action bar */}
       {selected.size > 0 && (
         <div className="sticky top-[68px] z-20 flex flex-wrap items-center gap-3 rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 shadow-soft anim-slide-up">
-          <span className="text-sm font-medium">{selected.size} sélection{selected.size > 1 ? "s" : ""}</span>
+          <span className="text-sm font-semibold">{selected.size} sélection{selected.size > 1 ? "s" : ""}</span>
           <Select value={bulkCat} onValueChange={(v) => setBulkCat(v as CatKey)}>
             <SelectTrigger aria-label="Recatégoriser la sélection" className="h-8 w-auto gap-2 rounded-full bg-background">
               <SelectValue placeholder="Recatégoriser en…" />
@@ -186,7 +186,7 @@ function TransactionsPage() {
                   </TableCell>
                   <TableCell className="px-3 py-2.5 tabular-nums text-muted-foreground">{r.date.slice(8,10)}/{r.date.slice(5,7)}</TableCell>
                   <TableCell className="px-3 py-2.5">
-                    <span className="font-medium">{r.label}</span>
+                    <span className="font-semibold">{r.label}</span>
                     {isUncat && <span className="ml-2 inline-block rounded-full bg-warm/10 px-1.5 py-0.5 text-2xs uppercase tracking-wider text-warm">À trier</span>}
                   </TableCell>
                   <TableCell className="px-3 py-2.5">
@@ -230,7 +230,7 @@ function TransactionsPage() {
                     ) : (
                       <button onClick={() => setEditing({ id: r.id, field: "amount" })}
                         className={"rounded-md px-1.5 py-0.5 tabular-nums hover:bg-secondary " +
-                          (r.amount > 0 ? "text-success font-medium" : "")}>
+                          (r.amount > 0 ? "text-success font-semibold" : "")}>
                         {r.amount > 0 ? "+" : ""}{eur2(r.amount)}
                       </button>
                     )}

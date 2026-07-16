@@ -386,7 +386,7 @@ function PosteRow({ poste, onEdit, reel = true }: { poste: PlanPoste; onEdit?: (
               <span className="text-2xs tabular-nums text-muted-foreground/60">méd. {eur(realMedian)}</span>
             </span>
             <span className={Z.ecart}>
-              <span className={"inline-block rounded-md px-1.5 py-0.5 text-xs font-medium tabular-nums " + ecartCls}>
+              <span className={"inline-block rounded-md px-1.5 py-0.5 text-xs font-semibold tabular-nums " + ecartCls}>
                 {auBesoin ? "—" : (ecart >= 0 ? "+" : "−") + eur(Math.abs(ecart))}
               </span>
             </span>
@@ -442,7 +442,7 @@ function MobileRow({ poste, onEdit, reel = true }: { poste: PlanPoste; onEdit?: 
         {reel ? (
           <div className="mt-1 flex items-center justify-end gap-1.5">
             <span className="text-xs tabular-nums text-muted-foreground">réel {eur(realYear)} · méd. {eur(realMedian)}</span>
-            <span className={"rounded-md px-1.5 py-0.5 text-2xs font-medium tabular-nums " + ecartCls}>
+            <span className={"rounded-md px-1.5 py-0.5 text-2xs font-semibold tabular-nums " + ecartCls}>
               {auBesoin ? "—" : (ecart >= 0 ? "+" : "−") + eur(Math.abs(ecart))}
             </span>
           </div>
@@ -497,7 +497,7 @@ function PrevuReelCompare({ poste, year }: { poste: PlanPoste; year: number }) {
             </div>
           </div>
           {row("prévu", prevu, "text-primary")}
-          {row(String(year), reelN, "font-medium text-foreground/80")}
+          {row(String(year), reelN, "font-semibold text-foreground/80")}
           {row(String(year - 1), reelP, "text-muted-foreground/50")}
         </div>
       </div>

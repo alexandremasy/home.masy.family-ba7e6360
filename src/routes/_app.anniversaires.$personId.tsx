@@ -157,7 +157,7 @@ function SliderRow({
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between text-xs">
-        <span className="font-medium">{label}</span>
+        <span className="font-semibold">{label}</span>
         <span className="tabular-nums text-muted-foreground">{value}</span>
       </div>
       <Slider min={0} max={100} step={1} value={[value]} onValueChange={([v]) => onChange(v)} />

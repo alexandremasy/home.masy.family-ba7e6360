@@ -293,7 +293,7 @@ function DesignSystemPage() {
           <CommandButton
             onCommand={() => toast.success("Command sent")}
             commandLabel="Demo"
-            className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background"
+            className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-background"
           >
             CommandButton (pending/error)
           </CommandButton>
@@ -512,7 +512,7 @@ function DesignSystemPage() {
             <TableBody>
               {dishes.slice(0, 3).map((d) => (
                 <TableRow key={d.id}>
-                  <TableCell className="px-3 py-2.5 font-medium">{d.name}</TableCell>
+                  <TableCell className="px-3 py-2.5 font-semibold">{d.name}</TableCell>
                   <TableCell className="px-3 py-2.5 capitalize text-muted-foreground">{d.base}</TableCell>
                   <TableCell className="px-3 py-2.5 text-right tabular-nums">{d.rendement}</TableCell>
                 </TableRow>

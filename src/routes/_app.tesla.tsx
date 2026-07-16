@@ -342,7 +342,7 @@ function TeslaPage() {
                     <div className={"absolute right-1 top-0 h-2 w-px " + (isCurrent ? "bg-primary" : "bg-border")} />
                   </div>
                   <div className="flex flex-col items-center gap-0.5">
-                    <span className={"text-xs uppercase tracking-eyebrow " + (isCurrent ? "text-primary font-medium" : "text-muted-foreground")}>
+                    <span className={"text-xs uppercase tracking-eyebrow " + (isCurrent ? "text-primary font-semibold" : "text-muted-foreground")}>
                       {qLabel(q.year, q.q)}
                       {isCurrent && <span className="ml-1 normal-case tracking-normal opacity-70">(est.)</span>}
                     </span>

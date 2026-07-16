@@ -169,6 +169,7 @@ Phase 4 is free.
 | eyebrow trackings | **7** | 1 — `tracking-eyebrow` (+2 in tesla's documented squeeze) |
 | arbitrary `text-[…px]` | **157**, over 6 sizes | **0** — the scale is Figma's, and it's the only one |
 | sizes off the Figma grid | **191** (10·11·18·30·36·72) | **0** |
+| font weights | 4 (400·500·600·700) | **2** — 400 and 600, as in Figma |
 | `warm` occurrences | 225, ~6 were alerts | 190 — alerts, plus the token's own definition |
 
 ## The rules that hold
@@ -220,10 +221,11 @@ already. The migration renamed classes to **preserve pixels** (`text-xl`→`text
   reconcile. `<Eyebrow>` owns it — hand-spelling an uppercase label is what produced seven
   trackings for one role.
 
-**Known gap — weights.** Figma has exactly two: Regular 400 and Semi-Bold 600. The app still has
-**62 `font-medium` (500)**, seven of them inside `ui/*` (button, input, label, tabs, toggle, table).
-Barlow 500 *is* loaded, so these really do render off-system. Not resolved — it is 62 judgements
-and a visible change to every button.
+**Weights — two, and only two.** Regular 400 and Semi-Bold 600, as in Figma. There is no `medium`:
+what the app called `font-medium` (500) is 600 (Alex, 2026-07-16), so all **62** of them became
+`font-semibold`, including the seven inside `ui/*` (button, input, label, tabs, toggle, table).
+That was a real repaint, not a rename — Barlow 500 is loaded and was genuinely rendering.
+Emphasis is `font-semibold`; anything else is `font-normal`.
 
 ## Token semantics — the thing that broke everything
 

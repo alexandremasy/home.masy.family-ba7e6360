@@ -16,6 +16,7 @@ import { Route as AppTeslaRouteImport } from './routes/_app.tesla'
 import { Route as AppSecuriteRouteImport } from './routes/_app.securite'
 import { Route as AppReseauRouteImport } from './routes/_app.reseau'
 import { Route as AppRepasRouteImport } from './routes/_app.repas'
+import { Route as AppDesignSystemRouteImport } from './routes/_app.design-system'
 import { Route as AppBudgetRouteImport } from './routes/_app.budget'
 import { Route as AppAnniversairesRouteImport } from './routes/_app.anniversaires'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
@@ -78,6 +79,11 @@ const AppReseauRoute = AppReseauRouteImport.update({
 const AppRepasRoute = AppRepasRouteImport.update({
   id: '/repas',
   path: '/repas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDesignSystemRoute = AppDesignSystemRouteImport.update({
+  id: '/design-system',
+  path: '/design-system',
   getParentRoute: () => AppRoute,
 } as any)
 const AppBudgetRoute = AppBudgetRouteImport.update({
@@ -237,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/anniversaires': typeof AppAnniversairesRouteWithChildren
   '/budget': typeof AppBudgetRouteWithChildren
+  '/design-system': typeof AppDesignSystemRoute
   '/repas': typeof AppRepasRouteWithChildren
   '/reseau': typeof AppReseauRoute
   '/securite': typeof AppSecuriteRouteWithChildren
@@ -271,6 +278,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/design-system': typeof AppDesignSystemRoute
   '/reseau': typeof AppReseauRoute
   '/tesla': typeof AppTeslaRoute
   '/': typeof AppIndexRoute
@@ -307,6 +315,7 @@ export interface FileRoutesById {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_app/anniversaires': typeof AppAnniversairesRouteWithChildren
   '/_app/budget': typeof AppBudgetRouteWithChildren
+  '/_app/design-system': typeof AppDesignSystemRoute
   '/_app/repas': typeof AppRepasRouteWithChildren
   '/_app/reseau': typeof AppReseauRoute
   '/_app/securite': typeof AppSecuriteRouteWithChildren
@@ -347,6 +356,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/anniversaires'
     | '/budget'
+    | '/design-system'
     | '/repas'
     | '/reseau'
     | '/securite'
@@ -381,6 +391,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/design-system'
     | '/reseau'
     | '/tesla'
     | '/'
@@ -416,6 +427,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/_app/anniversaires'
     | '/_app/budget'
+    | '/_app/design-system'
     | '/_app/repas'
     | '/_app/reseau'
     | '/_app/securite'
@@ -505,6 +517,13 @@ declare module '@tanstack/react-router' {
       path: '/repas'
       fullPath: '/repas'
       preLoaderRoute: typeof AppRepasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/design-system': {
+      id: '/_app/design-system'
+      path: '/design-system'
+      fullPath: '/design-system'
+      preLoaderRoute: typeof AppDesignSystemRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/budget': {
@@ -817,6 +836,7 @@ const AppSecuriteRouteWithChildren = AppSecuriteRoute._addFileChildren(
 interface AppRouteChildren {
   AppAnniversairesRoute: typeof AppAnniversairesRouteWithChildren
   AppBudgetRoute: typeof AppBudgetRouteWithChildren
+  AppDesignSystemRoute: typeof AppDesignSystemRoute
   AppRepasRoute: typeof AppRepasRouteWithChildren
   AppReseauRoute: typeof AppReseauRoute
   AppSecuriteRoute: typeof AppSecuriteRouteWithChildren
@@ -830,6 +850,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAnniversairesRoute: AppAnniversairesRouteWithChildren,
   AppBudgetRoute: AppBudgetRouteWithChildren,
+  AppDesignSystemRoute: AppDesignSystemRoute,
   AppRepasRoute: AppRepasRouteWithChildren,
   AppReseauRoute: AppReseauRoute,
   AppSecuriteRoute: AppSecuriteRouteWithChildren,

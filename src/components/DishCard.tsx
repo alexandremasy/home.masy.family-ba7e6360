@@ -25,7 +25,7 @@ export function StatusPill({
         "inline-flex shrink-0 items-center gap-1 rounded-full py-0.5 text-2xs leading-tight",
         children ? "px-2" : "px-1",
         tone === "primary"
-          ? "bg-primary font-medium text-primary-foreground"
+          ? "bg-primary font-semibold text-primary-foreground"
           : "border border-border text-muted-foreground",
       )}
     >

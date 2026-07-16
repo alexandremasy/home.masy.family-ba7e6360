@@ -152,7 +152,7 @@ function AxisStatus({ axis, to }: { axis: ReturnType<typeof annualVerdict>["axes
       <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
         <span className="font-serif text-xl leading-none tabular-nums text-foreground sm:text-3xl">{axis.value}</span>
         {axis.pct && <span className="text-sm tabular-nums text-muted-foreground">· {axis.pct}</span>}
-        <span className={"inline-flex items-center self-center rounded-full px-2.5 py-0.5 text-xs font-medium " + c.bg + " " + c.fg}>{axis.tag}</span>
+        <span className={"inline-flex items-center self-center rounded-full px-2.5 py-0.5 text-xs font-semibold " + c.bg + " " + c.fg}>{axis.tag}</span>
       </div>
       <p className="mt-2 text-sm leading-snug text-muted-foreground">{axis.explain}</p>
     </>
@@ -188,7 +188,7 @@ function FlowTip({ active, payload, label }: {
   return (
     <div style={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12 }}
       className="px-3 py-2 text-xs shadow-lift">
-      <p className="mb-1 font-medium text-popover-foreground">
+      <p className="mb-1 font-semibold text-popover-foreground">
         {label}{projected && <span className="font-normal text-muted-foreground"> · projeté</span>}
       </p>
       {rows.map((r) => (
@@ -378,7 +378,7 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
                   className="group flex min-w-[140px] shrink-0 items-center gap-2 rounded-lg border border-border/60 bg-card px-2.5 py-2 text-left transition-all hover:-translate-y-0.5 hover:shadow-lift">
                   <span className={"h-1.5 w-1.5 shrink-0 rounded-full " + dot} />
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium leading-tight">{b.label}</span>
+                    <span className="block truncate text-sm font-semibold leading-tight">{b.label}</span>
                     <span className="block text-xs uppercase tracking-wide text-muted-foreground">
                       {MONTHS_FR[b.monthIdx]} · <span className="tabular-nums text-warm">−{eur(b.amount)}</span>
                     </span>
@@ -388,11 +388,11 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
             })}
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-            <span>6 mois <span className="tabular-nums font-medium text-foreground">{eur(total6m)}</span></span>
+            <span>6 mois <span className="tabular-nums font-semibold text-foreground">{eur(total6m)}</span></span>
             <span className="text-muted-foreground/40">·</span>
-            <span>Provision <span className="tabular-nums font-medium text-foreground">{eur(provisionIn6m)}</span></span>
+            <span>Provision <span className="tabular-nums font-semibold text-foreground">{eur(provisionIn6m)}</span></span>
             <span className="text-muted-foreground/40">·</span>
-            <span>Marge <span className={"tabular-nums font-medium " + (provisionIn6m - total6m >= 0 ? "text-success" : "text-destructive")}>{eur(provisionIn6m - total6m)}</span></span>
+            <span>Marge <span className={"tabular-nums font-semibold " + (provisionIn6m - total6m >= 0 ? "text-success" : "text-destructive")}>{eur(provisionIn6m - total6m)}</span></span>
           </div>
         </div>
       )}
@@ -448,12 +448,12 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
             <Icon className="h-4 w-4" />
           </span>
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium">{cat.label}</p>
+            <p className="truncate text-sm font-semibold">{cat.label}</p>
             <p className="truncate text-2xs tabular-nums text-muted-foreground">Budget {eur(cat.budget)}/mois</p>
           </div>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
-          <span className={"rounded-full px-1.5 py-0.5 text-2xs font-medium tabular-nums " + budgetChip}
+          <span className={"rounded-full px-1.5 py-0.5 text-2xs font-semibold tabular-nums " + budgetChip}
             title="Écart au budget, moyenne sur 12 mois">
             {vsBudget >= 0 ? "+" : "−"}{Math.abs(vsBudget)}%
           </span>
@@ -574,7 +574,7 @@ function PasseView({ monthIdx }: { monthIdx: number }) {
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline justify-between gap-2">
-                      <p className="truncate font-medium">{c.label}</p>
+                      <p className="truncate font-semibold">{c.label}</p>
                       <p className="shrink-0 text-sm tabular-nums">
                         <span className={over ? "font-semibold text-warm" : ""}>{eur(c.actual)}</span>
                         <span className="text-muted-foreground"> / {eur(c.budget)}</span>
@@ -634,7 +634,7 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline justify-between gap-2">
-                      <p className="truncate font-medium">{c.label}</p>
+                      <p className="truncate font-semibold">{c.label}</p>
                       <p className="shrink-0 text-xs tabular-nums text-muted-foreground">
                         <span className="text-foreground">{eur(Math.round(c.actual*progress))}</span>
                         <span className="opacity-60"> + {eur(c.budget - Math.round(c.actual*progress))} prévu</span>
@@ -704,7 +704,7 @@ function FuturView({ monthIdx }: { monthIdx: number }) {
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-2">
-                        <p className="truncate font-medium">{g.label}</p>
+                        <p className="truncate font-semibold">{g.label}</p>
                         <p className="shrink-0 text-sm tabular-nums text-warm">{eur(g.total)}</p>
                       </div>
                       <p className="mt-0.5 text-xs text-muted-foreground">{g.postes.map(p=>p.label).join(" · ")}</p>
@@ -744,7 +744,7 @@ function BillsBar({ bills, label }: { bills: { label: string; amount: number }[]
         {bills.map((b, i) => (
           <span key={i} className="inline-flex items-center gap-2 rounded-full border border-warm/30 bg-warm/10 px-3 py-1.5 text-sm text-warm">
             {b.label}
-            <span className="font-medium tabular-nums">−{eur(b.amount)}</span>
+            <span className="font-semibold tabular-nums">−{eur(b.amount)}</span>
           </span>
         ))}
       </div>

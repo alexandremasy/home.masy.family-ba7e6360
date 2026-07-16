@@ -24,7 +24,7 @@ function TrendBadge({ trend, pct, suffix = "vs 90j" }: { trend: Trend; pct: numb
   return (
     <span className={"inline-flex items-center gap-1 text-sm " + tone}>
       <Icon className="h-4 w-4" />
-      <span className="font-medium tabular-nums">{pct > 0 ? "+" : ""}{pct}%</span>
+      <span className="font-semibold tabular-nums">{pct > 0 ? "+" : ""}{pct}%</span>
       <span className="text-muted-foreground">{suffix}</span>
     </span>
   );
@@ -337,7 +337,7 @@ function EnergiePage() {
               <span className="relative grid h-5 w-5 place-items-center rounded-full anim-pulse-ring">
                 <AlertTriangle className="h-3.5 w-3.5" />
               </span>
-              <span className="font-medium tracking-tight">Niveau faible — prévoir une commande</span>
+              <span className="font-semibold tracking-tight">Niveau faible — prévoir une commande</span>
             </div>
           )}
 
@@ -377,7 +377,7 @@ function EnergiePage() {
                     type="button"
                     onClick={() => setDomain(d)}
                     className={
-                      "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all " +
+                      "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all " +
                       (active
                         ? "bg-foreground text-background shadow-soft"
                         : "text-muted-foreground hover:text-foreground")
@@ -450,14 +450,14 @@ function EnergiePage() {
                 )}
                 {/* Tooltip on hover */}
                 <div className="pointer-events-none absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full rounded-lg border border-border/60 bg-popover px-2 py-1 text-xs shadow-lift opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap z-10">
-                  <p className="font-medium capitalize">{h.label} {h.year}</p>
+                  <p className="font-semibold capitalize">{h.label} {h.year}</p>
                   <p className="tabular-nums text-muted-foreground">
                     {h.value} {cfg.unit}
                     {isNeg ? " · injection solaire" : ""}
                     {h.projected ? " · projeté" : ""}
                   </p>
                 </div>
-                <p className={"mt-1 w-full text-center text-xs sm:text-xs " + (isCurrent ? "font-medium text-foreground" : "text-muted-foreground")}>
+                <p className={"mt-1 w-full text-center text-xs sm:text-xs " + (isCurrent ? "font-semibold text-foreground" : "text-muted-foreground")}>
                   {h.label}
                 </p>
               </div>
@@ -589,9 +589,9 @@ function ReleveList() {
         <table className="w-full text-xs sm:text-sm">
           <thead>
             <tr className="border-b border-border/60 bg-secondary/40 text-left text-xs uppercase tracking-eyebrow text-muted-foreground">
-              <th className="px-1.5 py-1.5 sm:px-5 sm:py-2.5 font-medium">Date</th>
+              <th className="px-1.5 py-1.5 sm:px-5 sm:py-2.5 font-semibold">Date</th>
               {visibleCols.map((c) => (
-                <th key={c} className="px-1.5 py-1.5 sm:px-3 sm:py-2.5 font-medium text-right">
+                <th key={c} className="px-1.5 py-1.5 sm:px-3 sm:py-2.5 font-semibold text-right">
                   <div className={"flex flex-col items-end sm:flex-row sm:items-center sm:justify-end gap-0.5 sm:gap-1.5 leading-tight " + typeMeta[c].tone}>
                     <span className="hidden sm:inline-flex sm:items-center sm:gap-1 text-sm">
                       {typeMeta[c].icon}
@@ -613,7 +613,7 @@ function ReleveList() {
               return (
                 <tr key={row.id} className="border-b border-border/40 last:border-0 hover:bg-secondary/30 transition-colors">
                   <td className="px-1.5 py-1.5 sm:px-5 sm:py-3">
-                    <p className="font-medium text-xs sm:text-sm capitalize">
+                    <p className="font-semibold text-xs sm:text-sm capitalize">
                       <span className="hidden sm:inline">{monthNames[covered.getMonth()]} {covered.getFullYear()}</span>
                       <span className="sm:hidden">{covered.toLocaleDateString("fr-BE", { month: "short", year: "numeric" })}</span>
                     </p>

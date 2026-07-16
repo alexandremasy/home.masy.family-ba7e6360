@@ -61,7 +61,7 @@ function ImportPage() {
                 <FileSpreadsheet className="h-4 w-4" />
               </span>
               <div>
-                <p className="text-sm font-medium">{filename}</p>
+                <p className="text-sm font-semibold">{filename}</p>
                 <p className="text-xs text-muted-foreground">Couvre : Juin 2025</p>
               </div>
             </div>
@@ -82,13 +82,13 @@ function ImportPage() {
               {importPreviewMock.modifiees.map((m, i) => (
                 <li key={i} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 py-3 sm:flex sm:flex-wrap sm:justify-between">
                   <div className="min-w-0 sm:flex-1">
-                    <p className="truncate text-sm font-medium">{m.label}</p>
+                    <p className="truncate text-sm font-semibold">{m.label}</p>
                     <p className="text-xs text-muted-foreground">{m.date} · {m.category}</p>
                   </div>
                   <div className="flex items-center gap-2 text-sm tabular-nums">
                     <span className="rounded-md bg-secondary px-2 py-1 text-muted-foreground line-through">{eur2(-m.oldAmount)}</span>
                     <span className="text-muted-foreground">→</span>
-                    <span className="rounded-md bg-warm/10 px-2 py-1 font-medium text-warm">{eur2(-m.newAmount)}</span>
+                    <span className="rounded-md bg-warm/10 px-2 py-1 font-semibold text-warm">{eur2(-m.newAmount)}</span>
                   </div>
                   <div className="col-span-2 inline-flex rounded-full border border-border/60 bg-background p-0.5 text-xs sm:col-auto">
                     <button onClick={() => setChoices((c) => ({ ...c, [i]: "garder" }))}
@@ -109,7 +109,7 @@ function ImportPage() {
                 <li key={i} className="flex items-center gap-3 py-3 text-sm">
                   <Lock className="h-3.5 w-3.5 text-mustard" />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium">{p.label}</p>
+                    <p className="truncate font-semibold">{p.label}</p>
                     <p className="text-xs text-muted-foreground">{p.date} · {p.category}</p>
                   </div>
                   <span className="rounded-md bg-secondary px-2 py-1 tabular-nums text-muted-foreground">{eur2(-p.amount)}</span>
@@ -125,7 +125,7 @@ function ImportPage() {
                 <li key={i} className="flex items-center gap-3 py-3 text-sm">
                   <Plus className="h-3.5 w-3.5 text-success" />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium">{n.label}</p>
+                    <p className="truncate font-semibold">{n.label}</p>
                     <p className="text-xs text-muted-foreground">{n.date} · {n.category}</p>
                   </div>
                   <span className="rounded-md bg-success/10 px-2 py-1 tabular-nums text-success">{eur2(n.amount)}</span>
@@ -138,9 +138,9 @@ function ImportPage() {
           {stage === "preview" && (
             <div className="sticky bottom-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card/95 px-5 py-4 shadow-lift backdrop-blur">
               <p className="text-sm">
-                Prêt à fusionner — <span className="font-medium">{t.nouvelles}</span> à ajouter,{" "}
-                <span className="font-medium">{Object.values(choices).filter((c) => c === "maj").length}</span> mises à jour,{" "}
-                <span className="font-medium">{t.protegees}</span> protégées.
+                Prêt à fusionner — <span className="font-semibold">{t.nouvelles}</span> à ajouter,{" "}
+                <span className="font-semibold">{Object.values(choices).filter((c) => c === "maj").length}</span> mises à jour,{" "}
+                <span className="font-semibold">{t.protegees}</span> protégées.
               </p>
               <div className="flex items-center gap-2">
                 <button onClick={reset} className="rounded-full px-4 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground">Annuler</button>
@@ -178,7 +178,7 @@ function ImportPage() {
           {importHistory.map((h) => (
             <li key={h.filename} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
               <div className="min-w-0 flex-1">
-                <p className="truncate font-medium">{h.filename}</p>
+                <p className="truncate font-semibold">{h.filename}</p>
                 <p className="text-xs text-muted-foreground">Importé le {h.date} · {h.month}</p>
               </div>
               <div className="flex items-center gap-3 text-xs text-muted-foreground tabular-nums">

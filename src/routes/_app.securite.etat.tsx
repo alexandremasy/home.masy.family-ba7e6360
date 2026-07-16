@@ -52,7 +52,7 @@ function EtatTab() {
         {security.autoFollowPresence && (
           <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
             <MapPin className="h-3.5 w-3.5" />
-            Armement automatique · passe en <span className="font-medium text-foreground">Absent</span> quand tout le monde part
+            Armement automatique · passe en <span className="font-semibold text-foreground">Absent</span> quand tout le monde part
           </p>
         )}
       </Section>

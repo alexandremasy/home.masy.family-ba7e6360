@@ -47,7 +47,7 @@ export function ModeSwitcher() {
                 to={m.to}
                 className={
                   "flex items-center gap-2.5 " +
-                  (active ? "bg-secondary/80 font-medium" : "")
+                  (active ? "bg-secondary/80 font-semibold" : "")
                 }
               >
                 <span className="grid h-6 w-6 place-items-center rounded-full bg-primary/10 text-primary">

@@ -27,7 +27,8 @@ being discouraged. **Names are Tailwind's, values are Figma's — they disagree 
 `text-xl` is 24px, not 20.** Read the value, not the name. Two deliberate divergences: line-heights
 keep Tailwind's rhythm (Figma's flat 1.25 is unreadable at 12px), and `tracking-eyebrow` (0.18em)
 survives Figma's letter-spacing 0 because the brand set has no eyebrow. Use `<Eyebrow>`, never the
-classes. Open gap: 62 `font-medium` (500) remain, and Figma has only 400/600.
+classes. **Weights: exactly two — `font-normal` (400) and `font-semibold` (600).** There is no
+medium: "le medium c'est du 600" (Alex, 2026-07-16). Emphasis is semibold, everything else normal.
 
 **Language**: the product UI is **French** (a French household's dashboard — that's content, and
 the routes `/repas`, `/plats` are French on purpose, so their derived identifiers are too).

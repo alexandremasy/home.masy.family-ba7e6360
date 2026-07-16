@@ -146,7 +146,7 @@ function MensuelPage() {
                     ? "border-success/30 bg-success/10 text-success"
                     : "border-warm/30 bg-warm/10 text-warm")}>
                 {b.label}
-                <span className="font-medium tabular-nums">{b.kind === "income" ? "+" : "−"}{eur(b.amount)}</span>
+                <span className="font-semibold tabular-nums">{b.kind === "income" ? "+" : "−"}{eur(b.amount)}</span>
               </span>
             ))}
           </div>
@@ -226,7 +226,7 @@ function IncomePanel() {
           return (
             <li key={s.label} className="group">
               <div className="mb-1 flex items-baseline justify-between text-sm">
-                <span className="font-medium">{s.label}</span>
+                <span className="font-semibold">{s.label}</span>
                 <span className="tabular-nums text-muted-foreground">{eur(s.value)}</span>
               </div>
               <div className="relative h-3 w-full overflow-hidden rounded-full bg-secondary">
@@ -365,7 +365,7 @@ function CategoryRow({ cat, index, showPlanned, highlightOver }: {
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline justify-between gap-2">
-            <p className="truncate font-medium">{cat.label}</p>
+            <p className="truncate font-semibold">{cat.label}</p>
             <p className="shrink-0 text-sm tabular-nums">
               <span className={over ? "font-semibold text-warm" : ""}>{eur(cat.actual)}</span>
               {showPlanned && <span className="text-muted-foreground"> / {eur(cat.budget)}</span>}
