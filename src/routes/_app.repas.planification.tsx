@@ -14,7 +14,7 @@ import {
   type PlanEntry, type Slot, type Dish, type Base, type Suggestion,
 } from "@/lib/maison-data";
 import {
-  Sparkles, Search, Repeat, Info, AlertTriangle, Package, Move, Trash2,
+  Sparkles, Search, Repeat, Info, AlertTriangle, Package, Move, X,
   ThermometerSun, ChevronLeft, ChevronRight, ChevronDown, SlidersHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -408,8 +408,14 @@ function SlotPicker({
   // Focus on open is handled by DialogContent's onOpenAutoFocus — desktop only.
 
   // One ranked pool for the whole modal: the engine orders it, filters narrow it.
-  // Browsing never resurrects a dish the slot's hard rules rejected.
-  const ranked = useMemo(() => suggestFor(date, slot, plan, hint, 200), [date, slot, plan, hint]);
+  // Browsing never resurrects a dish the slot's hard rules rejected. In the edit
+  // modal the planned dish is excluded — it's shown in its own block above, so
+  // offering it again in the list is noise until it's been removed.
+  const ranked = useMemo(() => {
+    const placed = plan.find((e) => e.date === iso(date) && e.slot === slot)?.dishId;
+    const all = suggestFor(date, slot, plan, hint, 200);
+    return placed ? all.filter((s) => s.dish.id !== placed) : all;
+  }, [date, slot, plan, hint]);
 
   const shown = useMemo(() => {
     const keep = new Set(applyFilter(ranked.map((s) => s.dish), filter, query).map((d) => d.id));
@@ -449,20 +455,21 @@ function SlotPicker({
           </div>
           {/* Collapsed by default. The count is not decoration: the slot opens with
               its density filter already on, and a silent filter is a trap. */}
+          {/* Stays a quiet outline whether or not filters are on; a small teal
+              count is the only tell, instead of the whole button going solid. */}
           <button
             type="button"
             onClick={() => setFiltersOpen((o) => !o)}
             aria-expanded={filtersOpen}
-            className={
-              "inline-flex shrink-0 items-center gap-1.5 rounded-md border px-3 py-2 text-sm transition-colors " +
-              (activeCount > 0
-                ? "border-foreground bg-foreground text-background"
-                : "border-border bg-card text-muted-foreground hover:text-foreground")
-            }
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
             Filtres
-            {activeCount > 0 && <span className="tabular-nums">· {activeCount}</span>}
+            {activeCount > 0 && (
+              <span className="rounded-full bg-primary/15 px-1.5 text-xs font-medium tabular-nums text-primary">
+                {activeCount}
+              </span>
+            )}
             <ChevronDown className={"h-3.5 w-3.5 transition-transform " + (filtersOpen ? "rotate-180" : "")} />
           </button>
         </div>
@@ -470,29 +477,31 @@ function SlotPicker({
         {filtersOpen && <DishFilters value={filter} onChange={setFilter} bases={bases} />}
       </div>
 
-      {/* Edit modal only: the meal already planned, with its remove action, sits
-          under the filters — above the list you'd pick a replacement from. */}
+      {/* Edit modal only: the meal already planned sits under the filters, above
+          the list you'd pick a replacement from. The action clears the slot — it
+          doesn't delete the dish — so it's a small "unschedule" affordance on the
+          card (an ✕, not a bin). */}
       {currentDish && onRemove && (
         <div className="space-y-2">
           <Eyebrow size="xs">Repas planifié</Eyebrow>
-          <div className="rounded-xl border border-border/60 bg-card p-3">
-            <DishCard
-              dish={currentDish}
-              status={
-                current?.batchOfDate
-                  ? <StatusPill icon={<Repeat className="h-3 w-3" />} title="Batch — cuisson d'un autre jour" />
-                  : undefined
-              }
-            />
-            <div className="mt-3 flex justify-end border-t border-border/40 pt-3">
-              <Button
-                variant="outline"
-                onClick={onRemove}
-                className="gap-1.5 text-destructive hover:text-destructive"
-              >
-                <Trash2 className="h-3.5 w-3.5" /> Retirer ce repas
-              </Button>
+          <div className="flex items-start justify-between gap-2 rounded-xl border border-border/60 bg-card p-3">
+            <div className="min-w-0 flex-1">
+              <DishCard
+                dish={currentDish}
+                status={
+                  current?.batchOfDate
+                    ? <StatusPill icon={<Repeat className="h-3 w-3" />} title="Batch — cuisson d'un autre jour" />
+                    : undefined
+                }
+              />
             </div>
+            <button
+              type="button"
+              onClick={onRemove}
+              className="inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            >
+              <X className="h-3.5 w-3.5" /> Retirer du plan
+            </button>
           </div>
         </div>
       )}
