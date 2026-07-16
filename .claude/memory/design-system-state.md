@@ -1,32 +1,39 @@
 ---
 name: design-system-state
-description: The mockup has a shadcn dump, not a design system — 33/46 ui/ components are dead and most UI is hand-rolled markup
+description: shadcn/ui IS the mockup's design system and the refactor landed — use it, extend ui/*, never build a sibling
 metadata:
   type: project
 ---
 
-Audited 2026-07-15. Before adding UI, know what's actually shared — the `ui/` folder is
-misleading.
+Audited 2026-07-15, refactored 2026-07-16. **shadcn/ui is the system, not an option.** The full
+record (what was broken, what was measured, what was deliberately not done) is in
+`DESIGN-SYSTEM.md` at the repo root — read that before changing anything structural.
 
-**33 of 46 `src/components/ui/*` are never imported.** They are Lovable's shadcn scaffold, not
-choices. Only these are real: `button`, `input`, `dialog`, `dropdown-menu`, `tabs`, `tooltip`,
-`switch`, `badge`, `select`, `alert-dialog`, `slider`, `sonner`, `textarea`.
+**Current state**: 19 `ui/*` primitives, all live. 39 `<Button>`. 0 native `<select>`. The
+overlay runs on Radix Dialog, the mobile picker on vaul Drawer.
 
-**The hand-rolled majority** (measured, not guessed):
-- 72 raw `<button>` vs 12 `<Button>` — the component is the exception
-- 1 `<Badge>` usage (inside `DishCard`); 9 pills hand-built elsewhere
-- 31 hand-built card shells (`rounded-2xl border border-border/60 bg-card`), 13 sharing one
-  copy-pasted class string
-- 11 native `<select>` although `ui/select` (Radix) exists
-- 132 uppercase "eyebrow" labels across 23 files with **5 different tracking values**
-  (0.12 / 0.14 / 0.16 / 0.18 / 0.22em) — one role, five looks, no component
+**The four paths, in order:**
+1. Need a control? Look in `src/components/ui/` first.
+2. It exists but fights the palette? **Edit `ui/*`** — shadcn is copy-paste, we own that code.
+3. Genuinely this app's own vocabulary? Build it **once** in `components/`, share it: `Eyebrow`,
+   `Panel`/`Section`/`Tile`, `DishCard`+`StatusPill`, `BudgetBar`, `OverlayCloseLink`, `DishForm`,
+   `DishFilters`, `PageHeader`, `WeatherIcon`, `CommandButton`.
+4. There is no fourth path.
 
-**Naming trap:** `components/Card.tsx` (exports `Tile`, `Section`, 12 importers) is NOT
-`components/ui/card.tsx` (exports `Card*`, zero importers, dead).
+**Type**: the scale lives in `@theme` (`styles.css`). `text-2xs` (11px) = micro body; `text-3xs`
+(10px) = the eyebrow, always uppercase + `tracking-eyebrow` (0.18em). A `text-[…px]` is a bug
+unless a comment says why — three survive on those terms. Never hand-spell an eyebrow; use
+`<Eyebrow>`.
 
-**Real shared components** worth reusing: `Tile`/`Section` (components/Card.tsx), `DishCard` +
-`StatusPill`, `DishFilters`, `PageHeader` (mind [[pageheader-bleed-gotcha]]), `WeatherIcon`,
-`DishForm`.
+**Language**: the product UI is **French** (a French household's dashboard — that's content, and
+the routes `/repas`, `/plats` are French on purpose, so their derived identifiers are too).
+Everything else — comments, docs, the `/design-system` page — is **English**.
 
-The three that would absorb the most drift if they existed: **Eyebrow** (132), **Panel** (31),
-**IconButton** (7 identical round nav buttons). See [[palette-semantics]] for the colour side.
+**Naming trap:** `components/Card.tsx` (exports `Tile`, `Section`, `Panel`) is NOT
+`components/ui/card.tsx` — the latter was deleted precisely because the confusion was live.
+
+**Lint is not a gate here**: the repo carries ~2200 eslint errors on `main`, all prettier
+formatting, because Lovable generates unformatted code and the linter has never been run. Don't
+read a red `bun run lint` as your regression.
+
+See [[palette-semantics]] for the colour side and [[pageheader-bleed-gotcha]] for `--nav-h`.

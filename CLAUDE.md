@@ -64,6 +64,21 @@ bun run lint       # eslint
 
 First boot installs ~610 packages (~4 min) — normal.
 
+## Language — French product, English code
+
+The product UI is **French**: this is a French household's dashboard, so "Repas", "Anniversaires"
+and the routes `/repas`, `/plats`, `/courses` are content, deliberately French. Identifiers derived
+from those routes (`RepasPage`, `deriveCourses`) inherit it and that's fine.
+
+**Everything else is English**: comments, docs, commit messages, and the `/design-system` page —
+that page is developer documentation, not product surface.
+
+## Design system
+
+`DESIGN-SYSTEM.md` at the root is the record: **shadcn/ui is the system, not an option.** Use it,
+edit `src/components/ui/*` when it fights the palette (it's copy-paste, we own it), never build a
+sibling. `/design-system` renders the tokens and components live.
+
 ## Project memory
 
 Ongoing context lives in `.claude/memory/`.

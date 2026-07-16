@@ -166,7 +166,8 @@ Phase 4 is free.
 | `<Button>` | 11 | **39** |
 | raw `<button>` | 73 | 53 — the legitimate ones (filter chips, clickable cards, external links) |
 | native `<select>` | 11, 4 visual formulas | **0** |
-| eyebrow trackings | **7** | 1 (+2 deliberate: tesla's 8px responsive squeeze) |
+| eyebrow trackings | **7** | 1 — `tracking-eyebrow` (+2 in tesla's documented squeeze) |
+| arbitrary `text-[…px]` | **157**, over 6 sizes | **3**, each commented with why |
 | `warm` occurrences | 225, ~6 were alerts | 190 — alerts, plus the token's own definition |
 
 ## The rules that hold
@@ -177,6 +178,33 @@ Phase 4 is free.
    `Eyebrow`, `Panel`/`Section`/`Tile`, `DishCard`+`StatusPill`, `BudgetBar`, `OverlayCloseLink`,
    `DishForm`, `DishFilters`, `PageHeader`, `WeatherIcon`, `CommandButton`.
 4. Never a fourth path.
+
+## The type scale — the other token drift
+
+Same disease as `--accent`, different organ: **there was no scale to appeal to.** Tailwind's own
+stops at `text-xs` (12px) and this dashboard is denser than that, so 157 sizes were written as
+arbitrary values — `text-[10px]` ×55, `text-[11px]` ×50, plus 8/9/12/13px — alongside **seven**
+letter-spacings for the single eyebrow role.
+
+Two steps below `xs`, declared in `@theme`, cover the whole need:
+
+| Token | Value | Role |
+|---|---|---|
+| `text-2xs` | 11px / 16px | **micro body** — metadata, tabular figures, captions. Sentence case. |
+| `text-3xs` | 10px / 14px | **the eyebrow** — always uppercase, always `tracking-eyebrow`. |
+| `tracking-eyebrow` | 0.18em | The eyebrow's spacing. Owned by `components/Eyebrow.tsx`. |
+
+**Why two steps a pixel apart is not drift.** Uppercase reads larger than sentence case at the same
+size, so the label step has to sit *below* the body step to weigh the same. `/design-system` shows
+the two side by side at their real sizes rather than asserting it.
+
+**The rule**: sizes come from the scale. A `text-[…px]` is a bug **unless the line above it says
+why**. Three survive on those terms and are commented: a Netflix brand glyph sized optically inside
+a 36px disc (`index.tsx`), and a Tesla label squeezing below the scale to survive an 80px box on
+mobile, relaxing back onto it at `sm` (`tesla.tsx`).
+
+**Don't hand-spell an eyebrow.** `<Eyebrow>` owns `tracking-eyebrow`; typing the classes yourself is
+what produced seven trackings for one role.
 
 ## Token semantics — the thing that broke everything
 
