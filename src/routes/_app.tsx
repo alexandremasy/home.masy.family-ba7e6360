@@ -26,6 +26,9 @@ function AppLayout() {
     // Not in any nav — a reference page, reachable by URL.
     pathname.startsWith("/design-system");
   const isOverlay = !isFullBleed && pathname !== "/";
+  // Room views carry their own drag handle inside a sticky header, so the panel's
+  // own grabber (which scrolls away) is hidden for them.
+  const isRoom = pathname.startsWith("/room/");
 
   // Pick a line based on day-of-year for a stable but rotating feel
   const start = new Date(new Date().getFullYear(), 0, 0);
@@ -105,7 +108,7 @@ function AppLayout() {
                     className="overlay-backdrop fixed inset-0 z-0 bg-foreground/30 backdrop-blur-md"
                   />
                   <div className="overlay-panel relative z-10 w-full sm:mx-auto sm:mt-24 sm:mb-8 sm:w-full sm:max-w-5xl sm:px-6">
-                    <MobileDrawerPanel onClose={() => navigate({ to: "/" })}>
+                    <MobileDrawerPanel onClose={() => navigate({ to: "/" })} showHandle={!isRoom}>
                       <div className="px-5 pb-8 pt-4 sm:px-8 sm:py-10">
                         <Outlet />
                       </div>

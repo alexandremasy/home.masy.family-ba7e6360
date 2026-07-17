@@ -25,9 +25,12 @@ export function useDrawerDrag() {
 export function MobileDrawerPanel({
   children,
   onClose,
+  showHandle = true,
 }: {
   children: React.ReactNode;
   onClose: () => void;
+  /** Hide the panel's own grabber when the route provides its own (in a sticky header). */
+  showHandle?: boolean;
 }) {
   const isMobile = useIsMobile();
   const [dragY, setDragY] = useState(0);
@@ -76,13 +79,16 @@ export function MobileDrawerPanel({
           transition: dragging ? "none" : "transform 0.35s cubic-bezier(0.16, 0.84, 0.24, 1)",
         }}
       >
-        {/* Grabber — the affordance; the header below is draggable too. */}
-        <div
-          {...(handlers ?? {})}
-          className="flex shrink-0 cursor-grab touch-none justify-center pb-1 pt-3 active:cursor-grabbing sm:hidden"
-        >
-          <div className="h-1.5 w-11 rounded-full bg-muted-foreground/30" />
-        </div>
+        {/* Grabber — the affordance; the header below is draggable too. Hidden when
+            the route carries its own handle inside a sticky header. */}
+        {showHandle && (
+          <div
+            {...(handlers ?? {})}
+            className="flex shrink-0 cursor-grab touch-none justify-center pb-1 pt-3 active:cursor-grabbing sm:hidden"
+          >
+            <div className="h-1.5 w-11 rounded-full bg-muted-foreground/30" />
+          </div>
+        )}
         {children}
       </div>
     </DrawerDragContext.Provider>
