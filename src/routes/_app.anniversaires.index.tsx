@@ -189,8 +189,8 @@ function EmptyToday({ next }: { next?: Person }) {
       <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-secondary text-muted-foreground">
         <Cake className="h-6 w-6" />
       </div>
-      <p className="mt-3 font-serif text-xl">Pas d'anniversaire aujourd'hui</p>
-      <p className="mt-1 text-sm text-muted-foreground">
+      <p className="mt-3 font-serif text-base">Pas d'anniversaire aujourd'hui</p>
+      <p className="mt-1 text-xs text-muted-foreground">
         {next
           ? `Le prochain, c'est ${next.name} dans ${daysUntil(nextBirthday(next))} j.`
           : "Rien de prévu pour l'instant."}
