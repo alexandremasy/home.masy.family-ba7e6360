@@ -4,7 +4,7 @@ import { Section } from "@/components/Card";
 import { CommandButton } from "@/components/CommandButton";
 import { useDrawerDrag } from "@/components/MobileDrawerPanel";
 import { Toggle } from "@/components/ui/toggle";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SlidingTabs } from "@/components/SlidingTabs";
 import { CameraFeed } from "@/components/CameraFeed";
 import { DishwasherPanel } from "@/components/DishwasherPanel";
 import { VacuumPanel } from "@/components/VacuumPanel";
@@ -181,19 +181,11 @@ function RoomPage() {
           }
         >
           {detail.lights.scenes.length > 0 && (
-            <Tabs value={scene} onValueChange={setScene}>
-              <TabsList className="h-auto w-full">
-                {detail.lights.scenes.map((s) => {
-                  const Icon = sceneIcon(s);
-                  return (
-                    <TabsTrigger key={s} value={s} className="flex-1 flex-col gap-1 py-2">
-                      <Icon className="h-4 w-4" />
-                      {s}
-                    </TabsTrigger>
-                  );
-                })}
-              </TabsList>
-            </Tabs>
+            <SlidingTabs
+              value={scene}
+              onValueChange={setScene}
+              options={detail.lights.scenes.map((s) => ({ value: s, label: s, icon: sceneIcon(s) }))}
+            />
           )}
 
           {scene !== "Off" && !detail.lights.hideBrightness && detail.lights.scenes.length > 0 && (
