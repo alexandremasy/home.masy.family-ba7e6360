@@ -89,7 +89,7 @@ function AppLayout() {
                 // Restore the dashboard the instant a close starts (closing), in
                 // parallel with the sheet sliding out — don't wait for navigation.
                 (isOverlay && !closing
-                  ? "scale-[0.985] opacity-60 md:blur-[1px]"
+                  ? "scale-[0.985] opacity-40 md:blur-[1px]"
                   : "scale-100 opacity-100") +
                 (isOverlay ? " pointer-events-none select-none" : "")
               }
