@@ -280,7 +280,7 @@ function RoomPage() {
                 href="https://unifi.ui.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs uppercase tracking-eyebrow text-muted-foreground hover:text-foreground"
+                className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
               >
                 UI Protect
                 <ExternalLink className="h-3.5 w-3.5" />
