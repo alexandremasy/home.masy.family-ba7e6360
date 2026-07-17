@@ -199,21 +199,22 @@ export function Dashboard() {
           <div className="sm:hidden">
             <div className="flex items-center justify-between gap-2">
               <Eyebrow tone="current" className="opacity-60">Bernard</Eyebrow>
-              <span className={"inline-flex items-center gap-1 text-xs " + (tesla.pluggedIn ? "text-primary" : "opacity-60")}>
-                <Plug className={"h-3 w-3 " + (tesla.pluggedIn ? "anim-breathe" : "")} />
-                {tesla.pluggedIn ? "Branchée" : "Débranchée"}
+              <span className={"inline-flex items-center text-xs " + (tesla.pluggedIn ? "text-primary" : "opacity-60")}>
+                <Plug className={"h-3.5 w-3.5 " + (tesla.pluggedIn ? "anim-breathe" : "")} />
               </span>
             </div>
-            <div className="mt-3 flex items-baseline gap-1">
-              <span className="font-serif text-2xl tracking-tight"><CountUp to={tesla.charge} /></span>
-              <span className="text-base opacity-60">%</span>
-              <span className="ml-2 text-xs opacity-60">· {tesla.rangeKm} km</span>
+            <div className="mt-3 flex items-baseline justify-between gap-1">
+              <span className="flex items-baseline gap-1">
+                <span className="font-serif text-2xl tracking-tight"><CountUp to={tesla.charge} /></span>
+                <span className="text-base opacity-60">%</span>
+              </span>
+              <span className="text-xs opacity-60">{tesla.rangeKm} km</span>
             </div>
             <div className="relative mt-2 h-1 w-full overflow-hidden rounded-full bg-background/15">
               <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${tesla.charge}%` }} />
             </div>
-            <p className="mt-3 inline-flex items-center gap-1 text-xs opacity-70">
-              <MapPin className="h-3 w-3" />{tesla.location}
+            <p className="mt-3 inline-flex items-start gap-1 text-xs opacity-70">
+              <MapPin className="mt-0.5 h-3 w-3 shrink-0" />{tesla.location}
             </p>
           </div>
 
