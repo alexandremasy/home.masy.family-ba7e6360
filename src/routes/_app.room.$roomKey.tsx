@@ -5,9 +5,6 @@ import { CommandButton } from "@/components/CommandButton";
 import { useDrawerDrag } from "@/components/MobileDrawerPanel";
 import { Toggle } from "@/components/ui/toggle";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-// Brightness presets — the light level reads as tabs rather than a raw slider.
-const BRIGHTNESS_LEVELS = [10, 25, 50, 75, 100];
 import { CameraFeed } from "@/components/CameraFeed";
 import { DishwasherPanel } from "@/components/DishwasherPanel";
 import { VacuumPanel } from "@/components/VacuumPanel";
@@ -184,58 +181,39 @@ function RoomPage() {
           }
         >
           {detail.lights.scenes.length > 0 && (
-            <div
-              className="grid gap-2 stagger"
-              style={{ gridTemplateColumns: `repeat(${detail.lights.scenes.length}, minmax(0, 1fr))` }}
-            >
-              {detail.lights.scenes.map((s) => {
-                const active = scene === s;
-                const Icon = sceneIcon(s);
-                return (
-                  <CommandButton
-                    key={s}
-                    onCommand={() => setScene(s)}
-                    commandLabel={`Scène ${s}`}
-                    className={
-                      "group relative flex flex-col items-center gap-1.5 overflow-hidden rounded-xl border px-3 py-4 transition-all duration-300 " +
-                      (active
-                        ? "border-foreground bg-foreground text-background shadow-lift -translate-y-0.5"
-                        : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
-                    }
-                  >
-                    <Icon className={"h-5 w-5 " + (active ? "anim-breathe" : "opacity-60")} />
-                    <span className="font-serif text-lg leading-none">{s}</span>
-                  </CommandButton>
-                );
-              })}
-            </div>
+            <Tabs value={scene} onValueChange={setScene}>
+              <TabsList className="h-auto w-full gap-1 rounded-none border-b border-border bg-transparent p-0">
+                {detail.lights.scenes.map((s) => {
+                  const Icon = sceneIcon(s);
+                  return (
+                    <TabsTrigger
+                      key={s}
+                      value={s}
+                      className="-mb-px flex flex-1 flex-col gap-1 rounded-none border-b-2 border-transparent bg-transparent px-1 pb-2.5 pt-1 text-sm font-medium text-muted-foreground shadow-none transition-colors data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    >
+                      <Icon className="h-4 w-4" />
+                      {s}
+                    </TabsTrigger>
+                  );
+                })}
+              </TabsList>
+            </Tabs>
           )}
 
           {scene !== "Off" && !detail.lights.hideBrightness && detail.lights.scenes.length > 0 && (
             <div className="mt-6">
-              <div className="mb-2 text-xs uppercase tracking-eyebrow text-muted-foreground">
-                Luminosité
+              <div className="mb-2 flex justify-between text-xs uppercase tracking-eyebrow text-muted-foreground">
+                <span>Luminosité</span>
+                <span>{brightness}%</span>
               </div>
-              <Tabs
-                value={String(
-                  BRIGHTNESS_LEVELS.reduce((a, b) =>
-                    Math.abs(b - brightness) < Math.abs(a - brightness) ? b : a,
-                  ),
-                )}
-                onValueChange={(v) => setBrightness(Number(v))}
-              >
-                <TabsList className="h-auto w-full gap-1 rounded-none border-b border-border bg-transparent p-0">
-                  {BRIGHTNESS_LEVELS.map((l) => (
-                    <TabsTrigger
-                      key={l}
-                      value={String(l)}
-                      className="-mb-px flex-1 rounded-none border-b-2 border-transparent bg-transparent px-0 pb-2 pt-1 font-medium text-muted-foreground shadow-none transition-colors data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
-                    >
-                      {l}%
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-              </Tabs>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={brightness}
+                onChange={(e) => setBrightness(Number(e.target.value))}
+                className="h-2 w-full appearance-none rounded-full bg-muted accent-primary"
+              />
             </div>
           )}
 
