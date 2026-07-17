@@ -436,8 +436,37 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
 
   return (
     <Section title="Média">
+      {/* Sources — above the player; the active source reads as "on". */}
+      <ToggleGroup
+        type="single"
+        value={source === "off" ? "" : source}
+        onValueChange={(v) => {
+          if (v) {
+            setSource(v as typeof source);
+            setPlaying(true);
+          }
+        }}
+        variant="outline"
+        className="w-full gap-0"
+      >
+        <ToggleGroupItem
+          value="spotify"
+          className="flex-1 gap-1.5 rounded-r-none data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
+        >
+          <Radio className="h-4 w-4" />
+          Musiq3
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="netflix"
+          className="-ml-px flex-1 gap-1.5 rounded-l-none data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
+        >
+          <Tv className="h-4 w-4" />
+          Netflix
+        </ToggleGroupItem>
+      </ToggleGroup>
+
       <div
-        className="anim-media-gradient relative overflow-hidden rounded-xl border border-border/60 p-5"
+        className="anim-media-gradient relative mt-3 overflow-hidden rounded-xl border border-border/60 p-5"
         style={{
           backgroundImage:
             source === "off"
@@ -510,45 +539,14 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
         )}
       </div>
 
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-        {/* Sources — the active source reads as "on". */}
-        <ToggleGroup
-          type="single"
-          value={source === "off" ? "" : source}
-          onValueChange={(v) => {
-            if (v) {
-              setSource(v as typeof source);
-              setPlaying(true);
-            }
-          }}
-          variant="outline"
-          className="w-full gap-0 sm:flex-1"
-        >
-          <ToggleGroupItem
-            value="spotify"
-            className="flex-1 gap-1.5 rounded-r-none data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
-          >
-            <Radio className="h-4 w-4" />
-            Musiq3
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value="netflix"
-            className="-ml-px flex-1 gap-1.5 rounded-l-none data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
-          >
-            <Tv className="h-4 w-4" />
-            Netflix
-          </ToggleGroupItem>
-        </ToggleGroup>
-
-        {/* Volume — a button group of actions. */}
-        <div className="flex w-full sm:flex-1">
-          <Button variant="outline" aria-label="Baisser le volume" className="flex-1 rounded-r-none">
-            <Volume1 className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" aria-label="Monter le volume" className="-ml-px flex-1 rounded-l-none">
-            <Volume2 className="h-4 w-4" />
-          </Button>
-        </div>
+      {/* Volume — a button group of actions. */}
+      <div className="mt-3 flex">
+        <Button variant="outline" aria-label="Baisser le volume" className="flex-1 rounded-r-none">
+          <Volume1 className="h-4 w-4" />
+        </Button>
+        <Button variant="outline" aria-label="Monter le volume" className="-ml-px flex-1 rounded-l-none">
+          <Volume2 className="h-4 w-4" />
+        </Button>
       </div>
     </Section>
   );
