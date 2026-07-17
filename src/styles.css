@@ -344,6 +344,9 @@
   }
   .overlay-enter .overlay-panel {
     animation: overlay-panel-in 0.5s cubic-bezier(0.16, 0.84, 0.24, 1) both;
+    /* Promote to its own GPU layer so the slide/drag composites off the main
+       thread — the difference between smooth and stuttering on a phone. */
+    will-change: transform;
   }
   /* Below sm the overlay is a bottom drawer — slide the full panel up from the
      edge instead of the desktop's short lift + scale. */

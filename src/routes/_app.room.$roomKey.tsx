@@ -138,7 +138,7 @@ function RoomPage() {
           (drag.handlers ? "cursor-grab touch-none select-none active:cursor-grabbing" : "")
         }
       >
-        <div className="page-header__bg pointer-events-none absolute inset-0 bg-background/85 backdrop-blur-xl" />
+        <div className="page-header__bg pointer-events-none absolute inset-0 bg-background/95 sm:bg-background/85 sm:backdrop-blur-xl" />
         <div className="page-header__fade pointer-events-none absolute inset-x-0 top-full h-8 bg-gradient-to-b from-background to-transparent" />
         {/* Drag handle — lives in the sticky header so it stays put while scrolling. */}
         {drag.handlers && (
