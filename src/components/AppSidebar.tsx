@@ -1,12 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import {
-  Home,
-  ChevronsUpDown,
-  ChevronRight,
-  MoreHorizontal,
-  ExternalLink,
-  Palette,
-} from "lucide-react";
+import { ExternalLink, Palette, LayoutGrid } from "lucide-react";
 import { RoomIcon } from "@/components/RoomIcon";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import type { Room } from "@/lib/mock-data";
@@ -22,148 +15,62 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  useSidebar,
 } from "@/components/ui/sidebar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
+// Desktop rail. Mirrors the mobile menu sheet: every destination is directly
+// visible — no dropdowns, no tooltip submenus. Sections follow the current mode.
 export function AppSidebar() {
   const { pathname } = useLocation();
   const current = currentMode(pathname);
-  const items = navForMode(current.key);
+  const isMaison = current.key === "maison";
   const activeRoom = rooms.find((r) => pathname.startsWith("/room/" + r.key));
-  const { isMobile } = useSidebar();
+  const isActive = (to: string) => pathname === to || pathname.startsWith(to + "/");
 
   return (
     <Sidebar collapsible="icon">
-      {/* Header — the mode switcher (Gustave in his outfit). */}
+      {/* Header — identity card (Gustave in the current mode's outfit). */}
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                >
-                  <img
-                    src={current.gustave}
-                    alt={`Gustave — ${current.label}`}
-                    className="size-8 shrink-0 rounded-lg object-cover object-top ring-1 ring-sidebar-border"
-                  />
-                  <div className="grid flex-1 text-left leading-tight">
-                    <span className="truncate font-serif text-base font-medium">
-                      {current.label}
-                    </span>
-                    <span className="truncate text-xs text-muted-foreground">Assistant maison</span>
-                  </div>
-                  <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
-                align="start"
-                side={isMobile ? "bottom" : "right"}
-                sideOffset={4}
-              >
-                <DropdownMenuLabel className="text-2xs uppercase tracking-eyebrow text-muted-foreground">
-                  Modes
-                </DropdownMenuLabel>
-                {modes.map((m) => (
-                  <DropdownMenuItem key={m.key} asChild className="gap-2.5">
-                    <Link to={m.to}>
-                      <img
-                        src={m.gustave}
-                        alt=""
-                        className="size-7 rounded-md object-cover object-top ring-1 ring-border/60"
-                      />
-                      <span className="flex-1">{m.label}</span>
-                      {m.key === current.key && (
-                        <span className="size-1.5 rounded-full bg-primary" />
-                      )}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel className="text-2xs uppercase tracking-eyebrow text-muted-foreground">
-                  Bientôt
-                </DropdownMenuLabel>
-                {upcoming.map((m) => {
-                  const I = m.icon;
-                  return (
-                    <div
-                      key={m.key}
-                      aria-disabled
-                      className="flex cursor-not-allowed items-center gap-2.5 px-2 py-1.5 text-sm text-muted-foreground/60"
-                    >
-                      <span className="grid size-6 place-items-center rounded-md bg-secondary">
-                        <I className="size-3" />
-                      </span>
-                      <span className="flex-1">{m.label}</span>
-                      <span className="rounded-full bg-secondary px-1.5 py-0.5 text-2xs uppercase tracking-wider">
-                        Bientôt
-                      </span>
-                    </div>
-                  );
-                })}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <SidebarMenuButton size="lg" className="pointer-events-none">
+              <img
+                src={current.gustave}
+                alt={`Gustave — ${current.label}`}
+                className="size-8 shrink-0 rounded-lg object-cover object-top ring-1 ring-sidebar-border"
+              />
+              <div className="grid flex-1 text-left leading-tight">
+                <span className="truncate font-serif text-base font-medium">{current.label}</span>
+                <span className="truncate text-xs text-muted-foreground">Assistant maison</span>
+              </div>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 
-      {/* Content — the current mode's sections. */}
       <SidebarContent>
+        {/* Accueil — back to the bento dashboard. */}
+        <SidebarGroup>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={pathname === "/"} tooltip="Accueil">
+                <Link to="/">
+                  <LayoutGrid />
+                  <span>Accueil</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+
+        {/* Current mode's own sections. */}
         <SidebarGroup>
           <SidebarGroupLabel>{current.label}</SidebarGroupLabel>
           <SidebarMenu>
-            {/* Maison leads with Pièces (rooms dropdown). */}
-            {current.key === "maison" && (
-              <SidebarMenuItem>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <SidebarMenuButton
-                      tooltip="Pièces"
-                      isActive={!!activeRoom}
-                      className="data-[state=open]:bg-sidebar-accent"
-                    >
-                      <Home />
-                      <span>{activeRoom ? activeRoom.label : "Pièces"}</span>
-                      <ChevronRight className="ml-auto size-4 text-muted-foreground" />
-                    </SidebarMenuButton>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="start"
-                    side={isMobile ? "bottom" : "right"}
-                    sideOffset={4}
-                  >
-                    <DropdownMenuLabel>Pièces</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {rooms.map((r) => (
-                      <DropdownMenuItem key={r.key} asChild className="gap-2">
-                        <Link to="/room/$roomKey" params={{ roomKey: r.key }}>
-                          <RoomIcon icon={r.icon as Room["icon"]} className="size-4" />
-                          {r.label}
-                        </Link>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </SidebarMenuItem>
-            )}
-
-            {items.map((item) => {
+            {navForMode(current.key).map((item) => {
               const Icon = item.icon;
-              const active = pathname === item.to || pathname.startsWith(item.to + "/");
               return (
                 <SidebarMenuItem key={item.to}>
-                  <SidebarMenuButton asChild isActive={active} tooltip={item.label}>
+                  <SidebarMenuButton asChild isActive={isActive(item.to)} tooltip={item.label}>
                     <Link to={item.to}>
                       <Icon />
                       <span>{item.label}</span>
@@ -174,54 +81,110 @@ export function AppSidebar() {
             })}
           </SidebarMenu>
         </SidebarGroup>
+
+        {/* Pièces — rooms, directly visible (Maison only). */}
+        {isMaison && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Pièces</SidebarGroupLabel>
+            <SidebarMenu>
+              {rooms.map((r) => (
+                <SidebarMenuItem key={r.key}>
+                  <SidebarMenuButton asChild isActive={activeRoom?.key === r.key} tooltip={r.label}>
+                    <Link to="/room/$roomKey" params={{ roomKey: r.key }}>
+                      <RoomIcon icon={r.icon as Room["icon"]} />
+                      <span>{r.label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
+
+        {/* Outils — reference + external tools, directly visible. */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Outils</SidebarGroupLabel>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname.startsWith("/design-system")}
+                tooltip="Design system"
+              >
+                <Link to="/design-system">
+                  <Palette />
+                  <span>Design system</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            {externals.map((item) => {
+              const Icon = item.icon;
+              return (
+                <SidebarMenuItem key={item.href}>
+                  <SidebarMenuButton asChild tooltip={item.label}>
+                    <a href={item.href} target="_blank" rel="noopener noreferrer">
+                      <Icon />
+                      <span className="flex-1">{item.label}</span>
+                      <ExternalLink className="size-3.5 opacity-50" />
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
+          </SidebarMenu>
+        </SidebarGroup>
+
+        {/* Modes — the full mode switcher, directly visible. */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Modes</SidebarGroupLabel>
+          <SidebarMenu>
+            {modes.map((m) => (
+              <SidebarMenuItem key={m.key}>
+                <SidebarMenuButton asChild isActive={m.key === current.key} tooltip={m.label}>
+                  <Link to={m.to}>
+                    <img
+                      src={m.gustave}
+                      alt=""
+                      className="size-5 shrink-0 rounded-md object-cover object-top ring-1 ring-border/60"
+                    />
+                    <span className="flex-1">{m.label}</span>
+                    {m.key === current.key && <span className="size-1.5 rounded-full bg-primary" />}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+
+        {/* Bientôt — upcoming modes, disabled. */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Bientôt</SidebarGroupLabel>
+          <SidebarMenu>
+            {upcoming.map((m) => {
+              const Icon = m.icon;
+              return (
+                <SidebarMenuItem key={m.key}>
+                  <SidebarMenuButton
+                    aria-disabled
+                    tooltip={m.label}
+                    className="cursor-not-allowed text-muted-foreground/60 hover:bg-transparent hover:text-muted-foreground/60"
+                  >
+                    <Icon />
+                    <span className="flex-1">{m.label}</span>
+                    <span className="rounded-full bg-secondary px-1.5 py-0.5 text-2xs uppercase tracking-wider">
+                      Bientôt
+                    </span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
+          </SidebarMenu>
+        </SidebarGroup>
       </SidebarContent>
 
-      {/* Footer — reference + tools + theme. */}
+      {/* Footer — theme. */}
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              isActive={pathname.startsWith("/design-system")}
-              tooltip="Design system"
-            >
-              <Link to="/design-system">
-                <Palette />
-                <span>Design system</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton tooltip="Outils">
-                  <MoreHorizontal />
-                  <span>Outils</span>
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="start"
-                side={isMobile ? "bottom" : "right"}
-                sideOffset={4}
-                className="min-w-48"
-              >
-                {externals.map((item) => {
-                  const I = item.icon;
-                  return (
-                    <DropdownMenuItem key={item.href} asChild className="gap-2">
-                      <a href={item.href} target="_blank" rel="noopener noreferrer">
-                        <I className="size-4" />
-                        <span className="flex-1">{item.label}</span>
-                        <ExternalLink className="size-3.5 opacity-50" />
-                      </a>
-                    </DropdownMenuItem>
-                  );
-                })}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-
           <SidebarMenuItem>
             <ThemeToggle asSidebarItem />
           </SidebarMenuItem>

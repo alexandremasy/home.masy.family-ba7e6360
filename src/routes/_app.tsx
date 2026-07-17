@@ -37,9 +37,9 @@ function AppLayout() {
   const line = footerLines[Math.floor(diff) % footerLines.length];
 
   return (
-    // Collapsed to an icon rail by default — the calm home stays edge-to-edge,
-    // the rail expands on demand (trigger / Cmd+B / hover the toggle).
-    <SidebarProvider defaultOpen={false}>
+    // Expanded by default — the full navigation stays visible (rooms, tools,
+    // modes). The rail can still collapse to icons on demand (trigger / Cmd+B).
+    <SidebarProvider defaultOpen={true}>
       <AppSidebar />
       {/* Below md the rail is replaced by a floating bottom bar, so reserve the
           room it needs (bar height + its bottom offset). */}
