@@ -139,7 +139,10 @@ export function Dashboard() {
         ) : (
           <Tile span={2} to="/energie" className="flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs">
             <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-secondary text-muted-foreground">
+                  <Zap className="h-4.5 w-4.5" />
+                </span>
                 <p className="font-serif text-base font-semibold">Énergie</p>
               </div>
               {(() => {
@@ -423,7 +426,12 @@ function ReseauTile() {
   return (
     <Tile span={2} to="/securite/reseau" className="flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs">
       <div className="flex items-start justify-between gap-2">
-        <Eyebrow>Réseau</Eyebrow>
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-secondary text-muted-foreground">
+            <Wifi className="h-4.5 w-4.5" />
+          </span>
+          <p className="font-serif text-base font-semibold">Réseau</p>
+        </div>
         <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
           <Wifi className="h-3 w-3" />
           <span className="text-xs font-semibold">Stable</span>
