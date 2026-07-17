@@ -128,7 +128,7 @@ function AppLayout() {
                       e.preventDefault();
                       requestClose();
                     }}
-                    className="overlay-backdrop fixed inset-0 z-0 bg-foreground/40 md:bg-foreground/30 md:backdrop-blur-md"
+                    className="overlay-backdrop fixed inset-0 z-0 md:bg-foreground/30 md:backdrop-blur-md"
                   />
                   <div className="overlay-panel relative z-10 w-full max-md:absolute max-md:inset-x-0 max-md:bottom-0 md:mx-auto md:mt-24 md:mb-8 md:w-full md:max-w-5xl md:px-6">
                     <MobileDrawerPanel onClose={requestClose} showHandle={!isRoom}>
