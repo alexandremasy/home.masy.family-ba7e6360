@@ -286,9 +286,9 @@ function BirthdayTile() {
     <Tile span={1} to="/anniversaires" tone="default" className="relative flex min-h-[3rem] items-center overflow-hidden !rounded-full !border-0 !bg-card/70 !px-5 !py-2 backdrop-blur-md">
       <Cake className={"pointer-events-none absolute -right-3 -top-2 h-16 w-16 " + (today ? "opacity-15" : "opacity-[0.06]")} />
       <div className="relative min-w-0">
-        <p className="break-words font-serif text-base font-semibold leading-tight">Anniversaire de {first.p.name}</p>
+        <p className="break-words font-serif text-base font-semibold leading-tight">{first.p.name} a {upcomingAge(first.p)} ans</p>
         <p className={"text-2xs " + (today ? "opacity-80" : "text-muted-foreground")}>
-          {when} · {upcomingAge(first.p)} ans
+          {when}
         </p>
       </div>
     </Tile>
