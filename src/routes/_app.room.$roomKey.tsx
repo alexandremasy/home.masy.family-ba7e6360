@@ -10,7 +10,7 @@ import { CameraFeed } from "@/components/CameraFeed";
 import { DishwasherPanel } from "@/components/DishwasherPanel";
 import { VacuumPanel } from "@/components/VacuumPanel";
 import { rooms, roomDetails, cameras, motionEvents, vacuum, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, Volume1, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Moon, Flame, SunDim, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, LampCeiling, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, Flower2, Snowflake, ShieldCheck, Home as HomeIcon, ArrowRight, type LucideIcon } from "lucide-react";
+import { Lightbulb, Thermometer, Volume2, Volume1, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Moon, Flame, SunDim, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, LampCeiling, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, Flower2, Snowflake, ExternalLink, Home as HomeIcon, ArrowRight, type LucideIcon } from "lucide-react";
 
 function batteryFor(level: number): { Icon: LucideIcon; tone: string } {
   if (level < 20) return { Icon: BatteryWarning, tone: "text-destructive" };
@@ -276,9 +276,15 @@ function RoomPage() {
           <Section
             title="Caméra"
             action={
-              <Link to="/securite" className="inline-flex items-center gap-1.5 text-xs uppercase tracking-eyebrow text-muted-foreground hover:text-foreground">
-                <ShieldCheck className="h-3.5 w-3.5" />toutes les caméras
-              </Link>
+              <a
+                href="https://unifi.ui.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs uppercase tracking-eyebrow text-muted-foreground hover:text-foreground"
+              >
+                UI Protect
+                <ExternalLink className="h-3.5 w-3.5" />
+              </a>
             }
           >
             <div className="space-y-3">
