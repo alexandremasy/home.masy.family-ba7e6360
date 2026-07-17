@@ -8,7 +8,7 @@ import { WeatherIcon } from "@/components/WeatherIcon";
 
 import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, type Room } from "@/lib/mock-data";
 import { people, nextBirthday, upcomingAge, daysUntil, initialPlan, dishById, iso, addDays, frLongDay, TODAY } from "@/lib/maison-data";
-import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, ArrowUp, Activity, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Moon, Sunrise, Sunset, Thermometer, Server, Cast, Cake, Utensils, UtensilsCrossed } from "lucide-react";
+import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, ArrowUp, Activity, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Moon, Sunrise, Sunset, Thermometer, Server, Cast, Cake, UtensilsCrossed } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
@@ -755,10 +755,7 @@ function RepasLine() {
       aria-label={`Repas du ${dateLabel}`}
       className="group mt-4 block w-full max-w-md min-w-0 py-0.5"
     >
-      <div className="flex items-center gap-1.5">
-        <Utensils className="h-3 w-3 shrink-0 text-muted-foreground/60" />
-        <Eyebrow tone="current" size="xs" as="span" className="text-muted-foreground">{dateLabel}</Eyebrow>
-      </div>
+      <Eyebrow tone="current" size="xs" as="span" className="block text-muted-foreground">{dateLabel}</Eyebrow>
 
       {today.midi || today.soir ? (
         <div className="mt-2 space-y-1.5">
@@ -777,7 +774,7 @@ function MealRow({ icon, name }: { icon: React.ReactNode; name: string }) {
   return (
     <div className="flex items-center gap-1.5">
       <span className="shrink-0">{icon}</span>
-      <span className="min-w-0 truncate font-serif text-sm leading-tight text-foreground">{name}</span>
+      <span className="min-w-0 truncate font-serif text-sm leading-tight text-muted-foreground">{name}</span>
     </div>
   );
 }
