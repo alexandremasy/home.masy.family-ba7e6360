@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
-import { cn } from "@/lib/utils";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function ThemeToggle({
   asSidebarItem = false,
@@ -31,21 +31,19 @@ export function ThemeToggle({
   const label = dark ? "Thème clair" : "Thème sombre";
 
   if (asSegmented) {
-    const seg =
-      "flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-all";
-    const on = "bg-card text-foreground shadow-soft";
-    const off = "text-muted-foreground hover:text-foreground";
     return (
-      <div className="flex w-full gap-1 rounded-full bg-secondary/70 p-1">
-        <button type="button" onClick={() => apply(false)} className={cn(seg, dark ? off : on)}>
-          <Sun className="h-3.5 w-3.5" />
-          Clair
-        </button>
-        <button type="button" onClick={() => apply(true)} className={cn(seg, dark ? on : off)}>
-          <Moon className="h-3.5 w-3.5" />
-          Sombre
-        </button>
-      </div>
+      <Tabs value={dark ? "dark" : "light"} onValueChange={(v) => apply(v === "dark")}>
+        <TabsList className="w-full">
+          <TabsTrigger value="light" className="flex-1 gap-1.5">
+            <Sun className="h-3.5 w-3.5" />
+            Clair
+          </TabsTrigger>
+          <TabsTrigger value="dark" className="flex-1 gap-1.5">
+            <Moon className="h-3.5 w-3.5" />
+            Sombre
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
     );
   }
 
