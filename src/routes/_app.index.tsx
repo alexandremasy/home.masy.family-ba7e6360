@@ -8,7 +8,7 @@ import { WeatherIcon } from "@/components/WeatherIcon";
 
 import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, type Room } from "@/lib/mock-data";
 import { people, nextBirthday, upcomingAge, daysUntil, initialPlan, dishById, iso, addDays, frLongDay, TODAY } from "@/lib/maison-data";
-import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, ArrowUp, Activity, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Moon, Sunrise, Sunset, Thermometer, Server, Cast, Cake, UtensilsCrossed } from "lucide-react";
+import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, ArrowUp, Activity, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Moon, Sunrise, Sunset, Thermometer, Server, Cast, Cake, Utensils, UtensilsCrossed } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
@@ -762,11 +762,13 @@ function RepasLine() {
     >
       {days.map((d, i) => (
         <div key={d.label} className={"min-w-0 py-0.5 " + (i === 0 ? "pr-4" : "pl-4")}>
-          <div className="flex items-center justify-between gap-1">
-            <Eyebrow tone="current" size="xs" as="span" className="text-muted-foreground">{d.label}</Eyebrow>
-            {i === 0 && (
-              <UtensilsCrossed className="h-3 w-3 shrink-0 text-muted-foreground/50 transition-colors group-hover:text-foreground/70" />
+          <div className="flex items-center gap-1.5">
+            {i === 0 ? (
+              <Utensils className="h-3 w-3 shrink-0 text-muted-foreground/60" />
+            ) : (
+              <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/60" />
             )}
+            <Eyebrow tone="current" size="xs" as="span" className="text-muted-foreground">{d.label}</Eyebrow>
           </div>
 
           {d.midi || d.soir ? (
