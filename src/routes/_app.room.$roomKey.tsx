@@ -4,6 +4,10 @@ import { Section } from "@/components/Card";
 import { CommandButton } from "@/components/CommandButton";
 import { useDrawerDrag } from "@/components/MobileDrawerPanel";
 import { Toggle } from "@/components/ui/toggle";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+// Brightness presets — the light level reads as tabs rather than a raw slider.
+const BRIGHTNESS_LEVELS = [10, 25, 50, 75, 100];
 import { CameraFeed } from "@/components/CameraFeed";
 import { DishwasherPanel } from "@/components/DishwasherPanel";
 import { VacuumPanel } from "@/components/VacuumPanel";
@@ -209,14 +213,25 @@ function RoomPage() {
 
           {scene !== "Off" && !detail.lights.hideBrightness && detail.lights.scenes.length > 0 && (
             <div className="mt-6">
-              <div className="mb-2 flex justify-between text-xs uppercase tracking-eyebrow text-muted-foreground">
-                <span>Luminosité</span><span>{brightness}%</span>
+              <div className="mb-2 text-xs uppercase tracking-eyebrow text-muted-foreground">
+                Luminosité
               </div>
-              <input
-                type="range" min={0} max={100} value={brightness}
-                onChange={(e) => setBrightness(Number(e.target.value))}
-                className="h-2 w-full appearance-none rounded-full bg-muted accent-primary"
-              />
+              <Tabs
+                value={String(
+                  BRIGHTNESS_LEVELS.reduce((a, b) =>
+                    Math.abs(b - brightness) < Math.abs(a - brightness) ? b : a,
+                  ),
+                )}
+                onValueChange={(v) => setBrightness(Number(v))}
+              >
+                <TabsList className="w-full">
+                  {BRIGHTNESS_LEVELS.map((l) => (
+                    <TabsTrigger key={l} value={String(l)} className="flex-1">
+                      {l}%
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
             </div>
           )}
 
