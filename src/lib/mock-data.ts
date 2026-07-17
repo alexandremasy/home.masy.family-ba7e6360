@@ -202,7 +202,7 @@ export const meteo = {
   ],
 };
 
-export type MediaSource = "spotify" | "netflix" | "off";
+export type MediaSource = "musiq3" | "off";
 
 // Room detail mocks
 export const roomDetails: Record<RoomKey, {
@@ -225,7 +225,7 @@ export const roomDetails: Record<RoomKey, {
       brightness: 50,
       hideBrightness: true,
     },
-    media: { source: "spotify", nowPlaying: "Linked", artist: "Bonobo" },
+    media: { source: "musiq3", nowPlaying: "Linked", artist: "Bonobo" },
     devices: {
       batteries: [{ name: "Télécommande", level: 62 }],
       appliances: [

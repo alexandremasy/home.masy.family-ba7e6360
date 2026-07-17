@@ -11,7 +11,7 @@ import { CameraFeed } from "@/components/CameraFeed";
 import { DishwasherPanel } from "@/components/DishwasherPanel";
 import { VacuumPanel } from "@/components/VacuumPanel";
 import { rooms, roomDetails, cameras, motionEvents, vacuum, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, Volume1, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunDim, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, LampCeiling, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, Flower2, Snowflake, ShieldCheck, Home as HomeIcon, ArrowRight, type LucideIcon } from "lucide-react";
+import { Lightbulb, Thermometer, Volume2, Volume1, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Moon, Flame, SunDim, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, LampCeiling, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, Flower2, Snowflake, ShieldCheck, Home as HomeIcon, ArrowRight, type LucideIcon } from "lucide-react";
 
 function batteryFor(level: number): { Icon: LucideIcon; tone: string } {
   if (level < 20) return { Icon: BatteryWarning, tone: "text-destructive" };
@@ -384,7 +384,7 @@ function RoomPage() {
                 ] as const).map(([name, val, color]) => (
                   <div key={name} className="rounded-xl border border-border/60 bg-card p-3">
                     <div className="flex items-center gap-1 text-xs text-muted-foreground"><Droplet className="h-3 w-3" />{name}</div>
-                    <p className="mt-1.5 font-serif text-lg">{val}%</p>
+                    <p className="mt-1.5 font-serif text-base">{val}%</p>
                     <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-muted">
                       <div className="h-full rounded-full transition-all duration-700" style={{ width: `${val}%`, background: color }} />
                     </div>
@@ -428,42 +428,35 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
   const [playing, setPlaying] = useState(source !== "off");
 
   const sources = [
-    { key: "spotify" as const, label: "Spotify", Icon: MusicIcon, tint: "oklch(0.72 0.17 150)" },
-    { key: "netflix" as const, label: "Netflix", Icon: Tv, tint: "oklch(0.58 0.22 25)" },
+    { key: "musiq3" as const, label: "Musiq3", Icon: Radio, tint: "oklch(0.72 0.17 150)" },
     { key: "off" as const, label: "Éteint", Icon: Power, tint: "oklch(0.55 0 0)" },
   ];
   const active = sources.find((s) => s.key === source)!;
 
   return (
     <Section title="Média">
-      {/* Sources — above the player; the active source reads as "on". */}
-      <ToggleGroup
-        type="single"
-        value={source === "off" ? "" : source}
-        onValueChange={(v) => {
-          if (v) {
-            setSource(v as typeof source);
-            setPlaying(true);
-          }
-        }}
-        variant="outline"
-        className="w-full gap-0"
-      >
-        <ToggleGroupItem
-          value="spotify"
-          className="flex-1 gap-1.5 rounded-r-none data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
+      {/* Musiq3 + volume — one button group, above the player. */}
+      <div className="flex">
+        <Toggle
+          variant="outline"
+          pressed={source === "musiq3"}
+          onPressedChange={(on) => {
+            setSource(on ? "musiq3" : "off");
+            setPlaying(on);
+          }}
+          aria-label="Radio Musiq3"
+          className="flex-1 gap-1.5 rounded-r-none data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
         >
           <Radio className="h-4 w-4" />
           Musiq3
-        </ToggleGroupItem>
-        <ToggleGroupItem
-          value="netflix"
-          className="-ml-px flex-1 gap-1.5 rounded-l-none data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
-        >
-          <Tv className="h-4 w-4" />
-          Netflix
-        </ToggleGroupItem>
-      </ToggleGroup>
+        </Toggle>
+        <Button variant="outline" aria-label="Baisser le volume" className="-ml-px flex-1 rounded-none">
+          <Volume1 className="h-4 w-4" />
+        </Button>
+        <Button variant="outline" aria-label="Monter le volume" className="-ml-px flex-1 rounded-l-none">
+          <Volume2 className="h-4 w-4" />
+        </Button>
+      </div>
 
       <div
         className="anim-media-gradient relative mt-3 overflow-hidden rounded-xl border border-border/60 p-5"
@@ -475,14 +468,14 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
           backgroundSize: "220% 220%",
         }}
       >
-        {source === "spotify" && (
+        {source === "musiq3" && (
           <div className="flex items-center gap-4">
             <div className={"grid h-16 w-16 shrink-0 place-items-center rounded-lg shadow-lift " + (playing ? "animate-spin [animation-duration:10s]" : "")}
                  style={{ background: `radial-gradient(circle at 30% 30%, ${active.tint}, oklch(0.25 0.04 160))` }}>
               <span className="h-2.5 w-2.5 rounded-full bg-background" />
             </div>
             <div className="min-w-0 flex-1">
-              <Eyebrow size="xs">Spotify</Eyebrow>
+              <Eyebrow size="xs">Musiq3</Eyebrow>
               <p className="mt-0.5 truncate font-serif text-lg">{media.nowPlaying ?? "—"}</p>
               {media.artist && <p className="truncate text-sm text-muted-foreground">{media.artist}</p>}
               <div className="mt-2 flex h-3 items-end gap-0.5">
@@ -491,28 +484,6 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
                         style={{ height: `${h * 100}%`, animationDelay: `${i * 0.1}s` }} />
                 ))}
               </div>
-            </div>
-            <Toggle
-              variant="outline"
-              pressed={playing}
-              onPressedChange={setPlaying}
-              aria-label={playing ? "Pause" : "Lecture"}
-              className="h-11 w-11 rounded-full data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
-            >
-              {playing ? <Pause /> : <Play />}
-            </Toggle>
-          </div>
-        )}
-        {source === "netflix" && (
-          <div className="flex items-center gap-4">
-            <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg shadow-lift"
-                 style={{ background: `linear-gradient(135deg, ${active.tint}, oklch(0.25 0.08 25))` }}>
-              <Tv className="h-6 w-6 text-background" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <Eyebrow size="xs">Netflix</Eyebrow>
-              <p className="mt-0.5 truncate font-serif text-lg">Téléviseur allumé</p>
-              <p className="truncate text-sm text-muted-foreground">Source HDMI · Apple TV</p>
             </div>
             <Toggle
               variant="outline"
@@ -537,16 +508,6 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
             </div>
           </div>
         )}
-      </div>
-
-      {/* Volume — a button group of actions. */}
-      <div className="mt-3 flex">
-        <Button variant="outline" aria-label="Baisser le volume" className="flex-1 rounded-r-none">
-          <Volume1 className="h-4 w-4" />
-        </Button>
-        <Button variant="outline" aria-label="Monter le volume" className="-ml-px flex-1 rounded-l-none">
-          <Volume2 className="h-4 w-4" />
-        </Button>
       </div>
     </Section>
   );
