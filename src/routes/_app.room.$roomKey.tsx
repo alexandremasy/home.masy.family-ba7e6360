@@ -406,7 +406,7 @@ function RoomPage() {
               return (
                 <div key={b.name} className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 text-sm">
                   <span className="flex items-center gap-2"><Icon className={"h-4 w-4 " + tone} />{b.name}</span>
-                  <span className={"font-semibold " + (b.level < 20 ? "text-destructive" : "")}>{b.level}%</span>
+                  <span className={"text-xs font-semibold " + (b.level < 20 ? "text-destructive" : "")}>{b.level}%</span>
                 </div>
               );
             })}
@@ -555,18 +555,25 @@ function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
       {state.map((a, i) => {
         const Icon = applianceIcon(a.name);
         return (
-          <CommandButton
+          <button
             key={a.name}
-            onCommand={() => setState(state.map((s, idx) => idx === i ? { ...s, on: !s.on } : s))}
-            commandLabel={a.name}
-            className={"flex items-center justify-between rounded-xl border px-3 py-3 text-sm transition-all " + (a.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card hover:border-border")}
+            type="button"
+            onClick={() => setState(state.map((s, idx) => (idx === i ? { ...s, on: !s.on } : s)))}
+            className={
+              "flex items-center justify-between gap-2 rounded-xl border px-3 py-2.5 text-sm transition-all " +
+              (a.on
+                ? "border-foreground bg-foreground text-background"
+                : "border-border/60 bg-card hover:border-border")
+            }
           >
-            <span className="flex items-center gap-2">
-              <Icon className={"h-3.5 w-3.5 " + (a.on ? "anim-breathe" : "opacity-50")} />
-              {a.name}
+            <span className="flex min-w-0 items-center gap-2">
+              <Icon className={"h-4 w-4 shrink-0 " + (a.on ? "anim-breathe" : "opacity-50")} />
+              <span className="truncate">{a.name}</span>
             </span>
-            <span className={"text-2xs uppercase tracking-wider " + (a.on ? "opacity-70" : "text-muted-foreground")}>{a.on ? "On" : "Off"}</span>
-          </CommandButton>
+            <span className={a.on ? "text-background/70" : "text-muted-foreground"}>
+              {a.on ? "On" : "Off"}
+            </span>
+          </button>
         );
       })}
     </div>
