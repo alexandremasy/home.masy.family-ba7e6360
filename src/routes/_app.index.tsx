@@ -8,7 +8,7 @@ import { WeatherIcon } from "@/components/WeatherIcon";
 
 import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, type Room } from "@/lib/mock-data";
 import { people, nextBirthday, upcomingAge, daysUntil, initialPlan, dishById, iso, addDays, frLongDay, TODAY } from "@/lib/maison-data";
-import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, ArrowUp, Activity, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Moon, Sunrise, Sunset, Thermometer, Server, Cast, Cake, UtensilsCrossed } from "lucide-react";
+import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, ArrowUp, Activity, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Moon, Sunrise, Sunset, Thermometer, Server, Cake, UtensilsCrossed } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
@@ -461,61 +461,49 @@ function ReseauTile() {
 type SalonVariant = "spotify" | "netflix" | "idle";
 
 function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: SalonVariant }) {
+  // The salon reads its current media: the icon becomes the source, what's playing
+  // sits on a second line under the name, and the audio bars ride the header's right.
+  const media = {
+    spotify: {
+      tint: "bg-[oklch(0.72_0.18_150)]/15 text-[oklch(0.55_0.18_150)]",
+      icon: <SpotifyGlyph className="h-4.5 w-4.5" />,
+      sub: "Linked · Bonobo",
+      playing: true,
+    },
+    netflix: {
+      tint: "bg-[oklch(0.32_0.18_25)] text-white",
+      icon: <span className="font-serif text-sm font-semibold leading-none">N</span>,
+      sub: "Dark · S2E4",
+      playing: true,
+    },
+    idle: {
+      tint: "bg-secondary text-muted-foreground",
+      icon: <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />,
+      sub: "Chromecast en veille",
+      playing: false,
+    },
+  }[variant];
+
   return (
     <Tile span={2} to={`/room/${room.key}`} className="relative flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs">
-
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : "bg-secondary text-muted-foreground")}>
-            <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + media.tint} aria-hidden>
+            {media.icon}
           </span>
-          <div>
-            <p className="font-serif text-base font-semibold">{room.name}</p>
+          <div className="min-w-0">
+            <p className="font-serif text-base font-semibold leading-tight">{room.name}</p>
+            <p className="mt-0.5 truncate text-xs text-muted-foreground">{media.sub}</p>
           </div>
         </div>
+        {media.playing && <EqBars />}
       </div>
-
-      {variant !== "idle" && (
-        <div className="-mx-4 mt-3 flex items-center gap-2.5 bg-card px-4 py-2.5">
-          {variant === "spotify" && (
-            <>
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[oklch(0.72_0.18_150)]/15 text-[oklch(0.55_0.18_150)]" aria-hidden>
-                <SpotifyGlyph className="h-4 w-4" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-serif text-base leading-tight">Linked</p>
-                <p className="mt-0.5 truncate text-xs text-muted-foreground">Bonobo · Spotify</p>
-              </div>
-              <EqBars />
-            </>
-          )}
-
-          {variant === "netflix" && (
-            <>
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[oklch(0.32_0.18_25)] text-white" aria-hidden>
-                <span className="font-serif text-sm font-semibold leading-none">N</span>
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-serif text-base leading-tight">Dark · S2E4</p>
-                <p className="mt-0.5 truncate text-xs text-muted-foreground">Netflix</p>
-              </div>
-              <EqBars />
-            </>
-          )}
-        </div>
-      )}
 
       <div className="mt-auto pt-2 flex items-center gap-3 text-xs text-muted-foreground">
         <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-mustard" : "")}>
           <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-mustard" : "")} />
           {room.lightsOn ? "Allumé" : "Éteint"}
         </span>
-        {variant === "idle" && (
-          <span className="inline-flex items-center gap-1.5">
-            <Cast className="h-3.5 w-3.5" />
-            Chromecast en veille
-          </span>
-        )}
       </div>
     </Tile>
   );
