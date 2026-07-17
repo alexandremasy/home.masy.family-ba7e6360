@@ -86,9 +86,12 @@ function AppLayout() {
             <div
               className={
                 "mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10 transition-all duration-500 " +
-                (isOverlay
-                  ? "scale-[0.985] opacity-60 pointer-events-none select-none md:blur-[1px]"
-                  : "scale-100 opacity-100")
+                // Restore the dashboard the instant a close starts (closing), in
+                // parallel with the sheet sliding out — don't wait for navigation.
+                (isOverlay && !closing
+                  ? "scale-[0.985] opacity-60 md:blur-[1px]"
+                  : "scale-100 opacity-100") +
+                (isOverlay ? " pointer-events-none select-none" : "")
               }
               aria-hidden={isOverlay}
             >
