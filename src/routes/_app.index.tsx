@@ -753,7 +753,7 @@ function RepasLine() {
     <Link
       to="/repas"
       aria-label={`Repas du ${dateLabel}`}
-      className="group mt-4 block w-full max-w-md min-w-0 py-0.5"
+      className="group mt-8 block w-full max-w-md min-w-0 py-0.5"
     >
       <Eyebrow tone="current" size="xs" as="span" className="block text-muted-foreground">{dateLabel}</Eyebrow>
 
