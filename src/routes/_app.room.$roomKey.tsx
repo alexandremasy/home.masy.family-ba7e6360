@@ -238,14 +238,7 @@ function RoomPage() {
       {detail.media && room.key === "salon" && <MediaSection media={detail.media} />}
 
       {room.key === "cuisine" && (
-        <Section
-          title="Lave-vaisselle"
-          action={
-            <Link to="/room/$roomKey" params={{ roomKey: "cuisine" }} className="text-xs uppercase tracking-eyebrow text-muted-foreground hover:text-foreground">
-              détails
-            </Link>
-          }
-        >
+        <Section title="Lave-vaisselle">
           <DishwasherPanel />
         </Section>
       )}

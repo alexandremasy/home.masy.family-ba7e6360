@@ -2,13 +2,6 @@ import { dishwasher } from "@/lib/mock-data";
 import { Droplet, Zap, AlertTriangle, DoorOpen, CheckCircle2, Pause, Play, CircleDashed } from "lucide-react";
 import { Eyebrow } from "@/components/Eyebrow";
 
-const PHASES: { key: string; label: string }[] = [
-  { key: "Prélavage", label: "Prélavage" },
-  { key: "Lavage",    label: "Lavage" },
-  { key: "Rinçage",   label: "Rinçage" },
-  { key: "Séchage",   label: "Séchage" },
-];
-
 function ProgressRing({ pct, children }: { pct: number; children: React.ReactNode }) {
   const r = 42;
   const c = 2 * Math.PI * r;
@@ -76,16 +69,9 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <Eyebrow>{d.brand}</Eyebrow>
-          <p className="mt-1 font-serif text-base font-semibold">{d.program}</p>
-          <p className="mt-0.5 text-sm text-muted-foreground">Démarré {d.startedAt} · fin prévue {d.endsAt}</p>
-        </div>
-        <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs uppercase tracking-eyebrow ${statusPill.tone}`}>
-          <statusPill.Icon className="h-3.5 w-3.5" />
-          {statusPill.text}
-        </span>
+      <div>
+        <p className="font-serif text-base font-semibold">{d.program}</p>
+        <p className="mt-0.5 text-sm text-muted-foreground">Démarré {d.startedAt} · fin prévue {d.endsAt}</p>
       </div>
 
       {(running || paused) && (
@@ -96,22 +82,6 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
           </div>
           <div className="relative h-2 w-full overflow-hidden rounded-full bg-muted">
             <div className="h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${d.progressPct}%` }} />
-          </div>
-          <div className="mt-4 grid grid-cols-4 gap-1.5">
-            {PHASES.map((p, i) => {
-              const currentIdx = PHASES.findIndex((x) => x.key === d.phase);
-              const active = i === currentIdx;
-              const done = i < currentIdx;
-              return (
-                <div key={p.key} className={`rounded-lg px-2 py-1.5 text-center text-2xs uppercase tracking-eyebrow transition-colors ${
-                  active ? "bg-foreground text-background" :
-                  done   ? "bg-primary/15 text-primary" :
-                           "bg-card text-muted-foreground"
-                }`}>
-                  {p.label}
-                </div>
-              );
-            })}
           </div>
         </div>
       )}
