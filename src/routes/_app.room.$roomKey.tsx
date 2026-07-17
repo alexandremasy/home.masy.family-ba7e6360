@@ -156,12 +156,15 @@ function RoomPage() {
             )}
           </div>
           <Button
-            variant={roomOn ? "default" : "outline"}
+            variant="outline"
             size="sm"
             onClick={() => setRoomOn(!roomOn)}
             aria-pressed={roomOn}
             aria-label={roomOn ? "Tout éteindre" : "Tout allumer"}
-            className="ml-auto shrink-0 rounded-full"
+            className={
+              "ml-auto shrink-0 rounded-full" +
+              (roomOn ? " border-foreground bg-foreground text-background hover:bg-foreground/90" : "")
+            }
           >
             <Power className={roomOn ? "anim-breathe" : ""} />
             {roomOn ? "On" : "Off"}
