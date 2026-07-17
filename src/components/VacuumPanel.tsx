@@ -51,12 +51,13 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
 
   return (
     <div className="space-y-5">
-      <div>
+      {!(cleaning || returning || paused) && (
         <p className="font-serif text-base font-semibold">{status.text}</p>
-      </div>
+      )}
 
       {(cleaning || returning || paused) && (
         <div className="rounded-xl border border-border/60 bg-secondary/40 p-4">
+          <p className="mb-3 font-serif text-base font-semibold">{status.text}</p>
           <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
             <span>Progression · {areaPct}%</span>
             <span className="tabular-nums">{v.elapsedMin} min · ~{v.etaMin} min restantes</span>
