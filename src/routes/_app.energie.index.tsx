@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowRight, Droplet, Zap, Flame, TrendingDown, TrendingUp, Minus, AlertTriangle, CalendarDays, Sun, Moon, Sparkles, Pencil, Check, X, SunMedium } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/Eyebrow";
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
+import { AreaChart, Area, BarChart, Bar, Cell, XAxis, YAxis, ReferenceLine } from "recharts";
 
 export const Route = createFileRoute("/_app/energie/")({
   component: EnergiePage,
@@ -31,35 +33,21 @@ function TrendBadge({ trend, pct, suffix = "vs 90j" }: { trend: Trend; pct: numb
 }
 
 function Sparkline({ data, tone = "primary" }: { data: number[]; tone?: "primary" | "warm" }) {
-  const w = 100;
-  const h = 28;
-  const min = Math.min(...data);
-  const max = Math.max(...data);
-  const range = max - min || 1;
-  const step = w / (data.length - 1);
-  const points = data.map((v, i) => {
-    const x = i * step;
-    const y = h - ((v - min) / range) * h;
-    return [x, y] as const;
-  });
-  const path = points.map(([x, y], i) => (i === 0 ? `M${x},${y}` : `L${x},${y}`)).join(" ");
-  const area = `${path} L${w},${h} L0,${h} Z`;
-  const stroke = tone === "warm" ? "var(--warm)" : "var(--primary)";
-  const id = `spark-${tone}-${data.length}`;
+  const color = tone === "warm" ? "var(--warm)" : "var(--primary)";
+  const gid = `spark-fill-${tone}`;
+  const chartData = data.map((v, i) => ({ i, v }));
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="block h-7 w-full">
-      <defs>
-        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={stroke} stopOpacity="0.25" />
-          <stop offset="100%" stopColor={stroke} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={area} fill={`url(#${id})`} />
-      <path d={path} fill="none" stroke={stroke} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
-      {points.length > 0 && (
-        <circle cx={points[points.length - 1][0]} cy={points[points.length - 1][1]} r={1.8} fill={stroke} />
-      )}
-    </svg>
+    <ChartContainer config={{ v: { color } }} className="aspect-auto h-7 w-full [&_.recharts-surface]:overflow-visible">
+      <AreaChart data={chartData} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
+        <defs>
+          <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity={0.25} />
+            <stop offset="100%" stopColor={color} stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <Area dataKey="v" type="monotone" stroke={color} strokeWidth={1.5} fill={`url(#${gid})`} dot={false} isAnimationActive={false} />
+      </AreaChart>
+    </ChartContainer>
   );
 }
 
@@ -139,6 +127,62 @@ function buildHistory(domain: Domain) {
 }
 
 
+// ---------- history chart ----------
+
+type HistoDatum = {
+  label: string;
+  year: number;
+  value: number;
+  projected: boolean;
+  isNeg: boolean;
+  isCurrent: boolean;
+};
+
+// Per-bar fill mirrors the four states of the legend: recorded (current vs past),
+// solar injection (negative), and projected (dashed, faded).
+function barStyle(d: HistoDatum): React.SVGProps<SVGRectElement> {
+  if (d.isNeg) {
+    return d.projected
+      ? { fill: "var(--success)", fillOpacity: 0.12, stroke: "var(--success)", strokeOpacity: 0.4, strokeDasharray: "4 4" }
+      : { fill: "var(--success)", fillOpacity: 0.7 };
+  }
+  if (d.projected) {
+    return { fill: "var(--muted-foreground)", fillOpacity: 0.1, stroke: "var(--muted-foreground)", strokeOpacity: 0.4, strokeDasharray: "4 4" };
+  }
+  return d.isCurrent ? { fill: "var(--primary)" } : { fill: "var(--secondary)" };
+}
+
+// Month label under each bar; the latest recorded month is emphasized.
+function MonthTick({ x, y, payload, index, currentIdx }: any) {
+  return (
+    <text
+      x={x}
+      y={y}
+      dy={10}
+      textAnchor="middle"
+      fontSize={12}
+      className={index === currentIdx ? "fill-foreground font-semibold" : "fill-muted-foreground"}
+    >
+      {payload.value}
+    </text>
+  );
+}
+
+function HistoTooltip({ active, payload, unit }: { active?: boolean; payload?: any[]; unit?: string }) {
+  if (!active || !payload?.length) return null;
+  const d = payload[0].payload as HistoDatum;
+  return (
+    <div className="rounded-lg border border-border/60 bg-popover px-2 py-1 text-xs shadow-lift">
+      <p className="font-semibold capitalize">{d.label} {d.year}</p>
+      <p className="tabular-nums text-muted-foreground">
+        {d.value} {unit}
+        {d.isNeg ? " · injection solaire" : ""}
+        {d.projected ? " · projeté" : ""}
+      </p>
+    </div>
+  );
+}
+
 // ---------- card shell ----------
 
 function MetricCard({
@@ -153,7 +197,7 @@ function MetricCard({
   return (
     <div
       className={
-        "group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-card p-6 shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 " +
+        "group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-card p-5 shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 " +
         (alert
           ? "border-warm/40 hover:border-warm/60"
           : "border-border/60 hover:border-border")
@@ -170,7 +214,7 @@ function MetricCard({
         >
           {icon}
         </span>
-        <Eyebrow>{label}</Eyebrow>
+        <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">{label}</h2>
       </div>
       {children}
     </div>
@@ -185,9 +229,6 @@ function EnergiePage() {
   const history = buildHistory(domain);
   const maxPos = Math.max(0, ...history.map((h) => h.value));
   const maxNeg = Math.abs(Math.min(0, ...history.map((h) => h.value)));
-  const totalRange = maxPos + maxNeg || 1;
-  const posZonePct = (maxPos / totalRange) * 100;
-  const negZonePct = (maxNeg / totalRange) * 100;
   const cfg = domainConfig[domain];
   const DomainIcon = cfg.icon;
   const lastReading = new Date(lastReadingDate);
@@ -222,12 +263,21 @@ function EnergiePage() {
     return -1;
   })();
 
+  const chartData: HistoDatum[] = history.map((h, i) => ({
+    label: h.label,
+    year: h.year,
+    value: h.value,
+    projected: h.projected,
+    isNeg: h.value < 0,
+    isCurrent: i === latestRecordedIdx,
+  }));
+
   return (
     <div className="space-y-6">
       <PageHeader title="Énergie" subtitle="Vue d'ensemble de la consommation" icon={<Zap className="h-4 w-4" />} back={null} size="sm" />
 
       {energie.monthlyDue ? (
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-warm p-6 text-warm-foreground sm:p-8 anim-pop-in">
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-warm p-5 text-warm-foreground sm:p-6 anim-pop-in">
           <div>
             <Eyebrow tone="current" className="opacity-70">À faire</Eyebrow>
             <p className="mt-1 font-serif text-xl">Relevé mensuel à saisir</p>
@@ -296,8 +346,8 @@ function EnergiePage() {
             <span className="font-serif text-2xl tracking-tight">{water.dailyM3}</span>
             <span className="text-base text-muted-foreground">m³ / jour</span>
           </div>
-          <p className="mt-1 text-sm text-muted-foreground tabular-nums">≈ {water.dailyL} L par jour</p>
           <div className="mt-2"><TrendBadge trend={water.trend} pct={water.trendPct} suffix="vs période préc." /></div>
+          <p className="mt-2 text-sm text-muted-foreground tabular-nums">≈ {water.dailyL} L par jour</p>
 
           <div className="mt-5 rounded-xl bg-secondary/60 p-3 text-sm text-muted-foreground">
             Tendance stable sur les 30 derniers jours — aucune anomalie détectée.
@@ -319,7 +369,7 @@ function EnergiePage() {
             <span className="font-serif text-2xl tracking-tight">{oil.tankPct}</span>
             <span className="text-base text-muted-foreground">% citerne</span>
           </div>
-          <p className="mt-1 text-sm text-muted-foreground tabular-nums">
+          <p className="mt-0.5 text-sm text-muted-foreground tabular-nums">
             {oil.tankLiters.toLocaleString("fr-BE")} / {oil.tankCapacity.toLocaleString("fr-BE")} L
           </p>
 
@@ -357,42 +407,33 @@ function EnergiePage() {
       </div>
 
       {/* HISTORY CHART */}
-      <div className="rounded-2xl border border-border/60 bg-card p-6 shadow-soft sm:p-8 anim-slide-up">
+      <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-6 anim-slide-up">
         <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
             <div className="flex items-center gap-2.5">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
                 <DomainIcon className="h-4 w-4" />
               </span>
-              <Eyebrow>Historique {cfg.label.toLowerCase()}</Eyebrow>
+              <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">Historique {cfg.label.toLowerCase()}</h2>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">12 derniers mois — vue glissante</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             {/* Domain switcher */}
-            <div className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-secondary/50 p-1">
-              {(Object.keys(domainConfig) as Domain[]).map((d) => {
-                const Icon = domainConfig[d].icon;
-                const active = d === domain;
-                return (
-                  <button
-                    key={d}
-                    type="button"
-                    onClick={() => setDomain(d)}
-                    className={
-                      "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all " +
-                      (active
-                        ? "bg-foreground text-background shadow-soft"
-                        : "text-muted-foreground hover:text-foreground")
-                    }
-                  >
-                    <Icon className="h-3.5 w-3.5" />
-                    {domainConfig[d].label}
-                  </button>
-                );
-              })}
-            </div>
-            <span className="hidden items-center gap-3 text-xs text-muted-foreground sm:inline-flex">
+            <Tabs value={domain} onValueChange={(v) => setDomain(v as Domain)}>
+              <TabsList className="h-10 bg-secondary/70 p-1">
+                {(Object.keys(domainConfig) as Domain[]).map((d) => {
+                  const Icon = domainConfig[d].icon;
+                  return (
+                    <TabsTrigger key={d} value={d} className="gap-1.5 px-3">
+                      <Icon className="h-3.5 w-3.5" />
+                      {domainConfig[d].label}
+                    </TabsTrigger>
+                  );
+                })}
+              </TabsList>
+            </Tabs>
+            <span className="flex w-full flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground sm:w-auto">
               <span className="inline-flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-sm bg-primary" /> Relevé
               </span>
@@ -408,65 +449,26 @@ function EnergiePage() {
           </div>
         </header>
 
-        <div className="flex h-56 gap-2 sm:gap-3">
-          {history.map((h, i) => {
-            const isCurrent = i === latestRecordedIdx;
-            const isNeg = h.value < 0;
-            const heightPct = isNeg
-              ? (Math.abs(h.value) / (maxNeg || 1)) * 100
-              : (h.value / (maxPos || 1)) * 100;
-            return (
-              <div key={h.key} className="group relative flex h-full min-w-0 flex-1 flex-col">
-                {/* Positive zone */}
-                <div style={{ height: `${posZonePct}%` }} className="flex items-end justify-center">
-                  {!isNeg && (
-                    <div
-                      className={
-                        "w-full max-w-[60px] rounded-t-xl transition-all duration-700 hover:scale-y-105 origin-bottom " +
-                        (h.projected
-                          ? "border border-dashed border-muted-foreground/40 bg-muted-foreground/10"
-                          : isCurrent
-                            ? "bg-primary"
-                            : "bg-secondary")
-                      }
-                      style={{ height: `${heightPct}%` }}
-                    />
-                  )}
-                </div>
-                {/* Zero baseline */}
-                {maxNeg > 0 && <div className="h-px bg-border/60" />}
-                {/* Negative zone (solar surplus) */}
-                {maxNeg > 0 && (
-                  <div style={{ height: `${negZonePct}%` }} className="flex items-start justify-center">
-                    {isNeg && (
-                      <div
-                        className={
-                          "w-full max-w-[60px] rounded-b-xl transition-all duration-700 hover:scale-y-105 origin-top " +
-                          (h.projected
-                            ? "border border-dashed border-success/40 bg-success/10"
-                            : "bg-success/70")
-                        }
-                        style={{ height: `${heightPct}%` }}
-                      />
-                    )}
-                  </div>
-                )}
-                {/* Tooltip on hover */}
-                <div className="pointer-events-none absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full rounded-lg border border-border/60 bg-popover px-2 py-1 text-xs shadow-lift opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap z-10">
-                  <p className="font-semibold capitalize">{h.label} {h.year}</p>
-                  <p className="tabular-nums text-muted-foreground">
-                    {h.value} {cfg.unit}
-                    {isNeg ? " · injection solaire" : ""}
-                    {h.projected ? " · projeté" : ""}
-                  </p>
-                </div>
-                <p className={"mt-1 w-full truncate text-center text-xs " + (isCurrent ? "font-semibold text-foreground" : "text-muted-foreground")}>
-                  {h.label}
-                </p>
-              </div>
-            );
-          })}
-        </div>
+        <ChartContainer config={{}} className="aspect-auto h-56 w-full">
+          <BarChart data={chartData} margin={{ top: 8, right: 0, bottom: 0, left: 0 }} barCategoryGap="18%">
+            <YAxis hide domain={[maxNeg > 0 ? -maxNeg : 0, maxPos]} />
+            <XAxis
+              dataKey="label"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              interval={0}
+              tick={<MonthTick currentIdx={latestRecordedIdx} />}
+            />
+            {maxNeg > 0 && <ReferenceLine y={0} stroke="var(--border)" />}
+            <ChartTooltip cursor={{ fill: "var(--muted)", fillOpacity: 0.4 }} content={<HistoTooltip unit={cfg.unit} />} />
+            <Bar dataKey="value" maxBarSize={60} radius={[6, 6, 0, 0]} isAnimationActive={false}>
+              {chartData.map((d, i) => (
+                <Cell key={i} {...barStyle(d)} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ChartContainer>
 
         {/* Year axis */}
         <div className="mt-2 flex gap-2 sm:gap-3">
@@ -569,7 +571,7 @@ function ReleveList() {
     <div className="rounded-2xl border border-border/60 bg-card shadow-soft overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-5 py-4">
         <div>
-          <h2 className="font-serif text-lg tracking-tight">Historique des relevés</h2>
+          <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">Historique des relevés</h2>
           <p className="text-xs text-muted-foreground mt-0.5">{rows.length} entrées — modifiables</p>
         </div>
         <div className="flex items-center gap-2">
