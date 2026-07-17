@@ -203,9 +203,9 @@ export function MobileMenuSheet({
               </DialogPrimitive.Close>
             ))}
 
-            <div className="mt-3 flex items-center justify-between rounded-xl px-3 py-1.5">
-              <span className="text-sm text-foreground/80">Thème</span>
-              <ThemeToggle />
+            <GroupLabel>Thème</GroupLabel>
+            <div className="px-1">
+              <ThemeToggle asSegmented />
             </div>
           </div>
         </DialogPrimitive.Content>
