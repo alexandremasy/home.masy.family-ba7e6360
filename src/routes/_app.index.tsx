@@ -41,7 +41,7 @@ export function Dashboard() {
       <div className="grid-bento stagger">
 
         {/* Row 1 — greeting left, events right. Nothing else on this row. */}
-        <div className="col-span-2 flex h-full flex-col items-start justify-center px-2 py-4 sm:col-span-2 lg:col-span-4">
+        <div className="col-span-2 flex h-full flex-col items-start justify-center py-4 sm:col-span-2 lg:col-span-4">
           <Eyebrow size="xs">{dateStr}</Eyebrow>
           <h1 className="mt-1 font-serif text-xl tracking-tight text-foreground sm:text-3xl">
             {greeting}.
@@ -758,10 +758,10 @@ function RepasLine() {
     <Link
       to="/repas"
       aria-label="Repas d'aujourd'hui et de demain"
-      className="group mt-4 grid w-full max-w-md grid-cols-2 divide-x divide-border/50 overflow-hidden rounded-2xl bg-secondary/40 ring-1 ring-inset ring-border/50 transition-colors hover:bg-secondary/60"
+      className="group mt-4 grid w-full max-w-md grid-cols-2 divide-x divide-border/50"
     >
       {days.map((d, i) => (
-        <div key={d.label} className="min-w-0 px-3.5 py-2.5">
+        <div key={d.label} className={"min-w-0 py-0.5 " + (i === 0 ? "pr-4" : "pl-4")}>
           <div className="flex items-center justify-between gap-1">
             <Eyebrow tone="current" size="xs" as="span" className="text-muted-foreground">{d.label}</Eyebrow>
             {i === 0 && (
