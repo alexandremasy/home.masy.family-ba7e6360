@@ -37,27 +37,34 @@ export function Dashboard() {
 
   return (
     <div className="space-y-8 pt-16">
-      <div className="grid-bento stagger">
-
-        {/* Row 1 — greeting left, events right. Nothing else on this row. */}
-        <div className="col-span-2 flex h-full flex-col items-start justify-center py-4 sm:col-span-2 lg:col-span-4">
+      {/* Header — greeting + two compact info cards. Kept OUT of grid-bento: the
+          bento rows have a FIXED height, so short tiles placed there would leave a
+          tall empty band beneath them. In normal flow they size to content, and the
+          rooms grid sits right below. */}
+      <header className="stagger space-y-6">
+        <div className="flex flex-col items-start">
           <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             {greeting}.
           </h1>
           <RepasLine />
         </div>
 
-        {/* Compact poubelle — a third of a cell's height, top-aligned so it doesn't
-            stretch to the full row. Same 1-column width as before. */}
-        <Tile span={1} tone="mustard" className="relative flex h-[4rem] items-center self-start overflow-hidden !p-3 sm:h-[4.33rem] lg:h-[4.67rem]">
-          <PMCBag className="pointer-events-none absolute -right-2 -top-1 h-[150%] w-auto opacity-90" />
-          <div className="relative min-w-0">
-            <p className="truncate font-serif text-base leading-tight">{calendrier.poubelleToday.type}</p>
-            <p className="text-2xs opacity-80">Auj. · avant {calendrier.poubelleToday.time}</p>
-          </div>
-        </Tile>
+        {/* Poubelle + anniversaire — a third the height of a bento tile; same width
+            as one column on mobile (capped so they stay small on wider screens). */}
+        <div className="grid grid-cols-2 gap-3 sm:max-w-md">
+          <Tile span={1} tone="mustard" className="relative flex h-[4rem] items-center overflow-hidden !p-3">
+            <PMCBag className="pointer-events-none absolute -right-2 -top-1 h-[150%] w-auto opacity-90" />
+            <div className="relative min-w-0">
+              <p className="truncate font-serif text-base leading-tight">{calendrier.poubelleToday.type}</p>
+              <p className="text-2xs opacity-80">Auj. · avant {calendrier.poubelleToday.time}</p>
+            </div>
+          </Tile>
 
-        <BirthdayTile />
+          <BirthdayTile />
+        </div>
+      </header>
+
+      <div className="grid-bento stagger">
 
         {/* PRIORITY 2 — Rooms. Idle ones share a single reduced slot (below). */}
         {activeRooms.flatMap((room) => {
@@ -279,7 +286,7 @@ function BirthdayTile() {
   const when = today ? "Auj." : first.days === 1 ? "Demain" : `Dans ${first.days} j`;
 
   return (
-    <Tile span={1} to="/anniversaires" tone={today ? "warm" : "default"} className="relative flex h-[4rem] items-center self-start overflow-hidden !p-3 sm:h-[4.33rem] lg:h-[4.67rem]">
+    <Tile span={1} to="/anniversaires" tone={today ? "warm" : "default"} className="relative flex h-[4rem] items-center overflow-hidden !p-3">
       <Cake className={"pointer-events-none absolute -right-3 -top-2 h-16 w-16 " + (today ? "opacity-15" : "opacity-[0.06]")} />
       <div className="relative min-w-0">
         <p className="truncate font-serif text-base leading-tight">Anniversaire de {first.p.name}</p>
