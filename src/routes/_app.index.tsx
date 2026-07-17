@@ -80,7 +80,7 @@ export function Dashboard() {
             <Tile key={room.key} span={1} to={`/room/${room.key}`} className={"flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs " + bureauCls}>
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-mustard/20 text-mustard" : "bg-secondary text-muted-foreground")}>
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-secondary text-muted-foreground">
                     <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
                   </span>
                   <div>
