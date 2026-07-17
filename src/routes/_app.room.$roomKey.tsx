@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
 import { CommandButton } from "@/components/CommandButton";
+import { useDrawerDrag } from "@/components/MobileDrawerPanel";
 import { CameraFeed } from "@/components/CameraFeed";
 import { DishwasherPanel } from "@/components/DishwasherPanel";
 import { VacuumPanel } from "@/components/VacuumPanel";
@@ -122,10 +123,17 @@ function RoomPage() {
         : "off"
   );
   const [roomOn, setRoomOn] = useState(true);
+  const drag = useDrawerDrag();
 
   return (
     <div className="space-y-6">
-      <div className="page-header sticky top-0 z-20 -mx-5 -mt-7 px-5 pt-7 pb-4 sm:-mx-8 sm:-mt-10 sm:px-8 sm:pt-10">
+      <div
+        {...(drag.handlers ?? {})}
+        className={
+          "page-header sticky top-0 z-20 -mx-5 -mt-7 px-5 pt-7 pb-4 sm:-mx-8 sm:-mt-10 sm:px-8 sm:pt-10 " +
+          (drag.handlers ? "cursor-grab touch-none select-none active:cursor-grabbing" : "")
+        }
+      >
         <div className="page-header__bg pointer-events-none absolute inset-0 bg-background/85 backdrop-blur-xl" />
         <div className="page-header__fade pointer-events-none absolute inset-x-0 top-full h-8 bg-gradient-to-b from-background to-transparent" />
         <div className="relative">
