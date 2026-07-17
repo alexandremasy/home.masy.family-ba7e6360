@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Section } from "@/components/Card";
 import { CommandButton } from "@/components/CommandButton";
 import { useDrawerDrag } from "@/components/MobileDrawerPanel";
-import { Button } from "@/components/ui/button";
+import { Toggle } from "@/components/ui/toggle";
 import { CameraFeed } from "@/components/CameraFeed";
 import { DishwasherPanel } from "@/components/DishwasherPanel";
 import { VacuumPanel } from "@/components/VacuumPanel";
@@ -155,20 +155,17 @@ function RoomPage() {
               <p className="text-xs text-muted-foreground">Actuellement {room.temperature.toFixed(1)}°C</p>
             )}
           </div>
-          <Button
+          <Toggle
             variant="outline"
             size="sm"
-            onClick={() => setRoomOn(!roomOn)}
-            aria-pressed={roomOn}
+            pressed={roomOn}
+            onPressedChange={setRoomOn}
             aria-label={roomOn ? "Tout éteindre" : "Tout allumer"}
-            className={
-              "ml-auto shrink-0 rounded-full" +
-              (roomOn ? " border-foreground bg-foreground text-background hover:bg-foreground/90" : "")
-            }
+            className="ml-auto shrink-0 rounded-full px-3 data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
           >
             <Power className={roomOn ? "anim-breathe" : ""} />
             {roomOn ? "On" : "Off"}
-          </Button>
+          </Toggle>
         </div>
       </div>
 
