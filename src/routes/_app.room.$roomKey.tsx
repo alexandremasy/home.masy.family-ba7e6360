@@ -131,7 +131,7 @@ function RoomPage() {
       <div
         {...(drag.handlers ?? {})}
         className={
-          "page-header sticky top-0 z-20 -mx-5 -mt-6 px-5 pt-4 pb-4 sm:-mx-8 sm:-mt-10 sm:px-8 sm:pt-10 " +
+          "page-header sticky top-0 z-20 -mx-5 -mt-6 px-5 pt-2 pb-2 sm:-mx-8 sm:-mt-10 sm:px-8 sm:pb-4 sm:pt-10 " +
           (drag.handlers ? "cursor-grab touch-none select-none active:cursor-grabbing" : "")
         }
       >
