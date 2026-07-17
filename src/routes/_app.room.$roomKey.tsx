@@ -102,30 +102,9 @@ function RoomPage() {
   const data = Route.useLoaderData() as { room: typeof rooms[number] };
   const room = data.room;
   const detail = roomDetails[room.key];
-  const isDualClimate = !!detail.climate && "dual" in detail.climate;
   const [zones, setZones] = useState(detail.lights?.zones ?? []);
   const [scene, setScene] = useState(detail.lights?.scene ?? "Off");
   const [brightness, setBrightness] = useState(detail.lights?.brightness ?? 0);
-  const [mode, setMode] = useState<ClimateMode>(
-    detail.climate && !("dual" in detail.climate) ? detail.climate.mode : "auto"
-  );
-  const [dualSystem, setDualSystem] = useState<DualSystem>(
-    detail.climate && "dual" in detail.climate && detail.climate.mode === "cool" ? "cool" : "heat"
-  );
-  const [heatPreset, setHeatPreset] = useState<DualPreset>(
-    detail.climate && "dual" in detail.climate && detail.climate.mode === "heat"
-      ? detail.climate.heatSetpoint
-      : detail.climate && "dual" in detail.climate
-        ? detail.climate.heatSetpoint
-        : "off"
-  );
-  const [coolPreset, setCoolPreset] = useState<DualPreset>(
-    detail.climate && "dual" in detail.climate && detail.climate.mode === "cool"
-      ? detail.climate.coolSetpoint
-      : detail.climate && "dual" in detail.climate
-        ? detail.climate.coolSetpoint
-        : "off"
-  );
   const [roomOn, setRoomOn] = useState(true);
   const drag = useDrawerDrag();
 
@@ -252,42 +231,7 @@ function RoomPage() {
             </span>
           }
         >
-          {isDualClimate ? (
-            <DualClimate
-              system={dualSystem}
-              setSystem={setDualSystem}
-              heatPreset={heatPreset}
-              setHeatPreset={setHeatPreset}
-              coolPreset={coolPreset}
-              setCoolPreset={setCoolPreset}
-            />
-          ) : (
-            <div className="grid grid-cols-4 gap-2 stagger">
-              {(["auto", 20, 21, 22] as const).map((m) => {
-                const active = mode === m;
-                const label = m === "auto" ? "Auto" : `${m}°`;
-                const sub = m === "auto" ? "off" : "on";
-                return (
-                  <CommandButton
-                    key={String(m)}
-                    onCommand={() => setMode(m)}
-                    commandLabel={`Climatisation ${label}`}
-                    className={
-                      "flex flex-col items-center gap-1 rounded-xl border px-3 py-4 transition-all duration-300 " +
-                      (active
-                        ? "border-foreground bg-foreground text-background -translate-y-0.5 shadow-lift"
-                        : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
-                    }
-                  >
-                    <span className="font-serif text-xl leading-none">{label}</span>
-                    <span className={"text-2xs uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
-                      {sub}
-                    </span>
-                  </CommandButton>
-                );
-              })}
-            </div>
-          )}
+          <ClimateControl climate={detail.climate} />
         </Section>
       )}
 
@@ -545,25 +489,42 @@ function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
   );
 }
 
-function DualClimate({
-  system,
-  setSystem,
-  heatPreset,
-  setHeatPreset,
-  coolPreset,
-  setCoolPreset,
-}: {
-  system: DualSystem;
-  setSystem: (s: DualSystem) => void;
-  heatPreset: DualPreset;
-  setHeatPreset: (p: DualPreset) => void;
-  coolPreset: DualPreset;
-  setCoolPreset: (p: DualPreset) => void;
-}) {
+type ClimateData = NonNullable<(typeof roomDetails)[RoomKey]["climate"]>;
+
+/**
+ * Shared climate control, used by every room. Simple (single-setpoint) rooms get
+ * the temperature tabs alone; dual (heat/cool) rooms get a heat/cool toggle above
+ * the same tabs. Same building blocks as the light scenes (SlidingTabs) and the
+ * On/Off (ToggleGroup), so climate reads like the rest of the room.
+ */
+function ClimateControl({ climate }: { climate: ClimateData }) {
+  const [mode, setMode] = useState<ClimateMode>("dual" in climate ? "auto" : climate.mode);
+  const [system, setSystem] = useState<DualSystem>(
+    "dual" in climate && climate.mode === "cool" ? "cool" : "heat",
+  );
+  const [heatPreset, setHeatPreset] = useState<DualPreset>(
+    "dual" in climate ? climate.heatSetpoint : "off",
+  );
+  const [coolPreset, setCoolPreset] = useState<DualPreset>(
+    "dual" in climate ? climate.coolSetpoint : "off",
+  );
+
+  // Simple climate — just the temperature tabs.
+  if (!("dual" in climate)) {
+    const modes: ClimateMode[] = ["auto", 20, 21, 22];
+    return (
+      <SlidingTabs
+        value={String(mode)}
+        onValueChange={(v) => setMode(v === "auto" ? "auto" : (Number(v) as ClimateMode))}
+        options={modes.map((m) => ({ value: String(m), label: m === "auto" ? "Auto" : `${m}°` }))}
+      />
+    );
+  }
+
+  // Dual (heat/cool) — toggle + temperature tabs.
   const presets = system === "heat" ? HEAT_PRESETS : COOL_PRESETS;
   const activePreset = system === "heat" ? heatPreset : coolPreset;
   const setPreset = system === "heat" ? setHeatPreset : setCoolPreset;
-
   const choices: DualPreset[] = ["off", ...presets];
 
   return (
@@ -593,7 +554,6 @@ function DualClimate({
           Froid
         </ToggleGroupItem>
       </ToggleGroup>
-
 
       {/* Températures — sliding tabs, like the light scenes. */}
       <SlidingTabs
