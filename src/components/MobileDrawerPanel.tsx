@@ -11,9 +11,7 @@ import { useIsMobile } from "@/lib/use-media";
 // every frame and make the drag stutter on a phone. Handlers are memoised so the
 // context stays stable and consumers don't re-render mid-drag.
 const CLOSE_THRESHOLD = 110;
-const EXIT_MS = 200;
 const SNAP = "transform 0.35s cubic-bezier(0.16, 0.84, 0.24, 1)";
-const EXIT = `transform ${EXIT_MS}ms cubic-bezier(0.4, 0, 1, 1)`; // ease-in — accelerates out
 
 type DragHandlers = {
   onPointerDown: (e: React.PointerEvent) => void;
@@ -87,11 +85,10 @@ export function MobileDrawerPanel({
     if (!active.current) return;
     active.current = false;
     if (dragY.current > CLOSE_THRESHOLD) {
-      // Keep sliding the sheet out from where the finger left it (fast ease-in),
-      // then close the moment it clears the screen — closing at a frozen position
-      // is what reads as a lag.
-      paint(window.innerHeight, EXIT);
-      window.setTimeout(onClose, EXIT_MS);
+      // Hand off to the CSS exit animation (data-state=closed): it slides the
+      // panel out from under the finger's offset, so the close is one continuous
+      // motion and behaves the same however the sheet is dismissed.
+      onClose();
     } else {
       paint(0, SNAP);
     }

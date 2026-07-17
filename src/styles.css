@@ -351,6 +351,23 @@
        thread — the difference between smooth and stuttering on a phone. */
     will-change: transform;
   }
+
+  /* Exit — Radix stamps data-state=closed on ANY close (drag, backdrop tap, Esc).
+     The Content itself fades so Radix's Presence waits for the animation before
+     unmounting; the panel slides/lifts out underneath. */
+  @keyframes overlay-fade-out {
+    to { opacity: 0; }
+  }
+  @keyframes overlay-panel-out {
+    to { opacity: 0; transform: translateY(16px) scale(0.99); }
+  }
+  .overlay-enter[data-state="closed"] {
+    animation: overlay-fade-out 0.25s ease-in both;
+  }
+  .overlay-enter[data-state="closed"] .overlay-panel {
+    animation: overlay-panel-out 0.25s ease-in both;
+  }
+
   /* Below sm the overlay is a bottom drawer — slide the full panel up from the
      edge instead of the desktop's short lift + scale. */
   @media (max-width: 767.98px) {
@@ -360,6 +377,12 @@
     }
     .overlay-enter .overlay-panel {
       animation: overlay-drawer-in 0.4s cubic-bezier(0.16, 0.84, 0.24, 1) both;
+    }
+    @keyframes overlay-drawer-out {
+      to { transform: translateY(100%); }
+    }
+    .overlay-enter[data-state="closed"] .overlay-panel {
+      animation: overlay-drawer-out 0.28s ease-in both;
     }
   }
 
