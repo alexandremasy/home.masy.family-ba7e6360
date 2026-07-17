@@ -224,9 +224,13 @@ function RoomPage() {
                 )}
                 onValueChange={(v) => setBrightness(Number(v))}
               >
-                <TabsList className="w-full">
+                <TabsList className="h-auto w-full gap-1 rounded-none border-b border-border bg-transparent p-0">
                   {BRIGHTNESS_LEVELS.map((l) => (
-                    <TabsTrigger key={l} value={String(l)} className="flex-1">
+                    <TabsTrigger
+                      key={l}
+                      value={String(l)}
+                      className="-mb-px flex-1 rounded-none border-b-2 border-transparent bg-transparent px-0 pb-2 pt-1 font-medium text-muted-foreground shadow-none transition-colors data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    >
                       {l}%
                     </TabsTrigger>
                   ))}
