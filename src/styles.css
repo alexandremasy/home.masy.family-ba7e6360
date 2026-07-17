@@ -470,4 +470,54 @@
     80% { transform: translateX(2px); }
   }
   .anim-shake { animation: shake-x 0.35s cubic-bezier(.36,.07,.19,.97) both; }
+
+  /* ---- Living gradient — a slow purple→blue mesh that drifts behind the
+     dashboard, Stripe-style. Decorative and off-palette by request. Absolute
+     (not fixed) so it's immune to the dashboard's transform ancestor, and pure
+     CSS so it renders on the server too. ---- */
+  .living-gradient {
+    position: absolute;
+    inset: -12% 0;
+    z-index: -10;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .living-gradient__blob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 32rem;
+    height: 32rem;
+    border-radius: 9999px;
+    filter: blur(72px);
+    opacity: 0.55;
+    will-change: transform;
+  }
+  .living-gradient__blob--purple {
+    background: radial-gradient(circle at center, #8b5cf6, transparent 68%);
+    animation: lg-drift-a 17s ease-in-out infinite;
+  }
+  .living-gradient__blob--violet {
+    background: radial-gradient(circle at center, #6366f1, transparent 68%);
+    animation: lg-drift-b 21s ease-in-out infinite;
+  }
+  .living-gradient__blob--blue {
+    background: radial-gradient(circle at center, #3b82f6, transparent 68%);
+    animation: lg-drift-c 19s ease-in-out infinite;
+  }
+  @keyframes lg-drift-a {
+    0%, 100% { transform: translate(-62%, -74%) scale(1); }
+    50%      { transform: translate(-40%, -52%) scale(1.28); }
+  }
+  @keyframes lg-drift-b {
+    0%, 100% { transform: translate(-40%, -34%) scale(1.2); }
+    50%      { transform: translate(-58%, -56%) scale(1); }
+  }
+  @keyframes lg-drift-c {
+    0%, 100% { transform: translate(-30%, -46%) scale(1.1); }
+    50%      { transform: translate(-52%, -24%) scale(1.32); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .living-gradient__blob { animation: none; }
+  }
 }

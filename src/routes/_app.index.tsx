@@ -36,6 +36,14 @@ export function Dashboard() {
   const greeting = now.getHours() < 12 ? "Bonjour" : now.getHours() < 18 ? "Bon après-midi" : "Bonsoir";
 
   return (
+    <div className="relative isolate">
+      {/* Living purple→blue mesh, drifting slowly behind the home. */}
+      <div aria-hidden className="living-gradient">
+        <span className="living-gradient__blob living-gradient__blob--purple" />
+        <span className="living-gradient__blob living-gradient__blob--violet" />
+        <span className="living-gradient__blob living-gradient__blob--blue" />
+      </div>
+
     <div className="space-y-4 pt-16">
       {/* Header — greeting + two compact info cards. Kept OUT of grid-bento: the
           bento rows have a FIXED height, so short tiles placed there would leave a
@@ -263,6 +271,7 @@ export function Dashboard() {
 
       </div>
 
+    </div>
     </div>
   );
 }
