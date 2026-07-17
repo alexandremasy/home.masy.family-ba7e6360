@@ -142,15 +142,9 @@ function RoomPage() {
             <RoomIcon icon={room.icon} className="h-5 w-5 anim-float" />
           </span>
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <h1 className="truncate font-serif text-xl tracking-tight sm:text-2xl">{room.name}</h1>
-              {room.occupied && (
-                <span className="relative inline-flex h-2.5 w-2.5 shrink-0">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-success/40 animate-ping" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-success" />
-                </span>
-              )}
-            </div>
+            <h1 className="truncate font-serif text-xl font-semibold tracking-tight sm:text-2xl">
+              {room.name}
+            </h1>
             {typeof room.temperature === "number" && (
               <p className="text-xs text-muted-foreground">Actuellement {room.temperature.toFixed(1)}°C</p>
             )}
