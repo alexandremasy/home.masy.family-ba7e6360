@@ -437,31 +437,9 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
   return (
     <Section
       title="Média"
-      action={
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>{active.label}</span>
-          {source !== "off" && (
-            <Button
-              variant="outline"
-              onClick={() => { setSource("off"); setPlaying(false); }}
-              aria-label="Couper le média"
-              title="Couper"
-              className="h-7 w-7 rounded-full p-0 text-muted-foreground [&_svg]:size-3"
-            >
-              <Power />
-            </Button>
-          )}
-        </div>
-      }
+      action={<span className="text-sm text-muted-foreground">{active.label}</span>}
     >
-      <div
-        className="relative overflow-hidden rounded-xl border border-border/60 p-5"
-        style={{
-          background: source === "off"
-            ? "linear-gradient(135deg, color-mix(in oklab, var(--card) 92%, transparent), var(--card))"
-            : `linear-gradient(135deg, color-mix(in oklab, ${active.tint} 22%, var(--card)), var(--card) 70%)`,
-        }}
-      >
+      <div className="relative overflow-hidden rounded-xl border border-border/60 p-5">
         {source === "spotify" && (
           <div className="flex items-center gap-4">
             <div className={"grid h-16 w-16 shrink-0 place-items-center rounded-lg shadow-lift " + (playing ? "animate-spin [animation-duration:10s]" : "")}
