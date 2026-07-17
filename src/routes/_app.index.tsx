@@ -79,7 +79,7 @@ export function Dashboard() {
           return [
             <Tile key={room.key} span={1} to={`/room/${room.key}`} className={"flex flex-col " + bureauCls}>
               <div className="flex items-start justify-between">
-                <div className="flex items-start gap-3">
+                <div className="flex items-center gap-3">
                   <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-mustard/20 text-mustard" : "bg-secondary text-muted-foreground")}>
                     <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
                   </span>
@@ -87,7 +87,7 @@ export function Dashboard() {
                     <p className="font-serif text-base font-semibold">{room.name}</p>
                   </div>
                 </div>
-                {bureauCls && <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />}
+                {bureauCls && <RoomStatus on={!!room.lightsOn} />}
               </div>
 
               {typeof room.temperature === "number" ? (
@@ -466,7 +466,7 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
     <Tile span={2} to={`/room/${room.key}`} className="relative flex flex-col">
 
       <div className="flex items-start justify-between">
-        <div className="flex items-start gap-3">
+        <div className="flex items-center gap-3">
           <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : "bg-secondary text-muted-foreground")}>
             <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
           </span>
@@ -474,7 +474,7 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
             <p className="font-serif text-base font-semibold">{room.name}</p>
           </div>
         </div>
-        <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />
+        <RoomStatus on={!!room.lightsOn} />
       </div>
 
       {variant !== "idle" && (
@@ -541,15 +541,7 @@ function SpotifyGlyph({ className }: { className?: string }) {
   );
 }
 
-function RoomStatus({ on, occupied }: { on: boolean; occupied: boolean }) {
-  if (occupied) {
-    return (
-      <span className="relative inline-flex h-2.5 w-2.5">
-        <span className="absolute inline-flex h-full w-full rounded-full bg-success/40 animate-ping" />
-        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-success" />
-      </span>
-    );
-  }
+function RoomStatus({ on }: { on: boolean }) {
   return (
     <span className={"h-2.5 w-2.5 rounded-full " + (on ? "bg-mustard" : "bg-muted-foreground/25")} />
   );
