@@ -353,16 +353,10 @@
   }
 
   /* Exit — Radix stamps data-state=closed on ANY close (drag, backdrop tap, Esc).
-     The Content itself fades so Radix's Presence waits for the animation before
-     unmounting; the panel slides/lifts out underneath. */
-  @keyframes overlay-fade-out {
-    to { opacity: 0; }
-  }
+     The Content's fade is driven by tw-animate classes in _app.tsx (which Radix's
+     Presence reliably waits on); this just slides/lifts the panel out underneath. */
   @keyframes overlay-panel-out {
     to { opacity: 0; transform: translateY(16px) scale(0.99); }
-  }
-  .overlay-enter[data-state="closed"] {
-    animation: overlay-fade-out 0.25s ease-in both;
   }
   .overlay-enter[data-state="closed"] .overlay-panel {
     animation: overlay-panel-out 0.25s ease-in both;

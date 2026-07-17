@@ -73,7 +73,7 @@ function AppLayout() {
               className={
                 "mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10 transition-all duration-500 " +
                 (isOverlay
-                  ? "scale-[0.985] opacity-60 pointer-events-none select-none sm:blur-[1px]"
+                  ? "scale-[0.985] opacity-60 pointer-events-none select-none md:blur-[1px]"
                   : "scale-100 opacity-100")
               }
               aria-hidden={isOverlay}
@@ -87,9 +87,11 @@ function AppLayout() {
 
             {/* On Radix Dialog, not by hand — it traps focus, handles Escape and the
                 scroll lock. Not ui/sheet (a side panel) nor ui/dialog (a centred
-                box): the primitives with our own shape. Below sm it's a Stripe-style
-                bottom drawer (anchored to the bottom, rounded top, slides up); at sm
-                and up it's the centred panel that scrolls its whole container. */}
+                box): the primitives with our own shape. Below md it's a Stripe-style
+                bottom drawer (anchored to the bottom, rounded top, slides up); at md
+                and up it's the centred panel that scrolls its whole container. This
+                md breakpoint matches useIsMobile, so overlays and ResponsiveModal
+                flip to a sheet at the same width. */}
             <DialogPrimitive.Root
               open={isOverlay}
               onOpenChange={(o) => {
@@ -98,7 +100,7 @@ function AppLayout() {
             >
               <DialogPrimitive.Portal>
                 <DialogPrimitive.Content
-                  className="overlay-enter fixed inset-0 z-40 overflow-hidden sm:block sm:overflow-y-auto sm:overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                  className="overlay-enter fixed inset-0 z-40 overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=closed]:duration-200 md:block md:overflow-y-auto md:overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                   aria-describedby={undefined}
                 >
                   {/* Radix needs a title to announce; the real one is inside the route. */}
@@ -108,16 +110,16 @@ function AppLayout() {
                     to="/"
                     aria-label="Fermer"
                     tabIndex={-1}
-                    className="overlay-backdrop fixed inset-0 z-0 bg-foreground/40 sm:bg-foreground/30 sm:backdrop-blur-md"
+                    className="overlay-backdrop fixed inset-0 z-0 bg-foreground/40 md:bg-foreground/30 md:backdrop-blur-md"
                   />
-                  <div className="overlay-panel relative z-10 w-full max-sm:absolute max-sm:inset-x-0 max-sm:bottom-0 sm:mx-auto sm:mt-24 sm:mb-8 sm:w-full sm:max-w-5xl sm:px-6">
+                  <div className="overlay-panel relative z-10 w-full max-md:absolute max-md:inset-x-0 max-md:bottom-0 md:mx-auto md:mt-24 md:mb-8 md:w-full md:max-w-5xl md:px-6">
                     <MobileDrawerPanel onClose={() => navigate({ to: "/" })} showHandle={!isRoom}>
-                      <div className="px-5 pb-8 pt-4 sm:px-8 sm:py-10">
+                      <div className="px-5 pb-8 pt-4 md:px-8 md:py-10">
                         <Outlet />
                       </div>
                     </MobileDrawerPanel>
                   </div>
-                  <OverlayCloseLink to="/" className="hidden sm:grid" />
+                  <OverlayCloseLink to="/" className="hidden md:grid" />
                 </DialogPrimitive.Content>
               </DialogPrimitive.Portal>
             </DialogPrimitive.Root>
