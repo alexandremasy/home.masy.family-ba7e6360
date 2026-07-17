@@ -52,7 +52,7 @@ export function Dashboard() {
         {/* Poubelle + anniversaire — a third the height of a bento tile; same width
             as one column on mobile (capped so they stay small on wider screens). */}
         <div className="grid grid-cols-2 gap-3 sm:max-w-md">
-          <Tile span={1} tone="mustard" className="relative flex h-[4rem] items-center overflow-hidden !rounded-full !px-5 !py-3">
+          <Tile span={1} tone="default" className="relative flex min-h-[4rem] items-center overflow-hidden !rounded-full !bg-mustard/10 !px-5 !py-3">
             <PMCBag className="pointer-events-none absolute -right-2 -top-1 h-[150%] w-auto opacity-90" />
             <div className="relative min-w-0">
               <p className="truncate font-serif text-base leading-tight">{calendrier.poubelleToday.type}</p>
@@ -286,10 +286,10 @@ function BirthdayTile() {
   const when = today ? "Auj." : first.days === 1 ? "Demain" : `Dans ${first.days} j`;
 
   return (
-    <Tile span={1} to="/anniversaires" tone={today ? "warm" : "default"} className="relative flex h-[4rem] items-center overflow-hidden !rounded-full !px-5 !py-3">
+    <Tile span={1} to="/anniversaires" tone="default" className={"relative flex min-h-[4rem] items-center overflow-hidden !rounded-full !px-5 !py-3" + (today ? " !bg-warm/10" : "")}>
       <Cake className={"pointer-events-none absolute -right-3 -top-2 h-16 w-16 " + (today ? "opacity-15" : "opacity-[0.06]")} />
       <div className="relative min-w-0">
-        <p className="truncate font-serif text-base leading-tight">Anniversaire de {first.p.name}</p>
+        <p className="break-words font-serif text-base leading-tight">Anniversaire de {first.p.name}</p>
         <p className={"text-2xs " + (today ? "opacity-80" : "text-muted-foreground")}>
           {when} · {upcomingAge(first.p)} ans
         </p>
