@@ -140,8 +140,7 @@ export function Dashboard() {
           <Tile span={2} to="/energie" className="flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <Eyebrow>Énergie</Eyebrow>
-                <p className="mt-1 font-serif text-base font-semibold">Vue d'ensemble</p>
+                <p className="font-serif text-base font-semibold">Énergie</p>
               </div>
               {(() => {
                 const alerts: string[] = [];
