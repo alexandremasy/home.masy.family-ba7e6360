@@ -9,6 +9,7 @@ import { ArrowRight, Droplet, Zap, Flame, TrendingDown, TrendingUp, Minus, Alert
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/Eyebrow";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AreaChart, Area, BarChart, Bar, Cell, XAxis, YAxis, ReferenceLine } from "recharts";
 
 export const Route = createFileRoute("/_app/energie/")({
@@ -567,6 +568,22 @@ function ReleveList() {
     cancel();
   };
 
+  const rowActions = (row: ReleveRow, isEditing: boolean) =>
+    isEditing ? (
+      <div className="inline-flex gap-1">
+        <button onClick={save} className="grid h-7 w-7 place-items-center rounded-md bg-foreground text-background hover:opacity-90" aria-label="Enregistrer">
+          <Check className="h-3.5 w-3.5" />
+        </button>
+        <button onClick={cancel} className="grid h-7 w-7 place-items-center rounded-md border border-border hover:bg-secondary" aria-label="Annuler">
+          <X className="h-3.5 w-3.5" />
+        </button>
+      </div>
+    ) : (
+      <button onClick={() => startEdit(row)} className="grid h-7 w-7 place-items-center rounded-md border border-border/60 text-muted-foreground hover:text-foreground hover:bg-secondary" aria-label="Modifier">
+        <Pencil className="h-3.5 w-3.5" />
+      </button>
+    );
+
   return (
     <div className="rounded-2xl border border-border/60 bg-card shadow-soft overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-5 py-4">
@@ -590,79 +607,103 @@ function ReleveList() {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-xs sm:text-sm">
-          <thead>
-            <tr className="border-b border-border/60 bg-secondary/40 text-left text-xs uppercase tracking-eyebrow text-muted-foreground">
-              <th className="px-1.5 py-1.5 sm:px-5 sm:py-2.5 font-semibold">Date</th>
+      {/* Desktop: table */}
+      <div className="hidden sm:block">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-secondary/40 hover:bg-secondary/40">
+              <TableHead className="px-5 text-xs uppercase tracking-eyebrow">Date</TableHead>
               {visibleCols.map((c) => (
-                <th key={c} className="px-1.5 py-1.5 sm:px-3 sm:py-2.5 font-semibold text-right">
-                  <div className={"flex flex-col items-end sm:flex-row sm:items-center sm:justify-end gap-0.5 sm:gap-1.5 leading-tight " + typeMeta[c].tone}>
-                    <span className="hidden sm:inline-flex sm:items-center sm:gap-1 text-sm">
-                      {typeMeta[c].icon}
-                      {typeMeta[c].label}
-                    </span>
-                    <span className="sm:hidden text-xs">{typeMeta[c].label}</span>
-                    <span className="text-2xs sm:text-xs text-muted-foreground/70 font-normal">{typeMeta[c].unit}</span>
+                <TableHead key={c} className="px-3 text-right text-xs uppercase tracking-eyebrow">
+                  <div className={"flex items-center justify-end gap-1.5 " + typeMeta[c].tone}>
+                    {typeMeta[c].icon}
+                    {typeMeta[c].label}
+                    <span className="font-normal normal-case text-muted-foreground/70">{typeMeta[c].unit}</span>
                   </div>
-                </th>
+                </TableHead>
               ))}
-              <th className="px-1.5 py-1.5 sm:px-3 sm:py-2.5 w-10 sm:w-16"></th>
-            </tr>
-          </thead>
-          <tbody>
+              <TableHead className="w-16" />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {displayRows.map((row) => {
               const d = new Date(row.date);
               const covered = new Date(d.getFullYear(), d.getMonth() - 1, 1);
               const isEditing = editing === row.id;
               return (
-                <tr key={row.id} className="border-b border-border/40 last:border-0 hover:bg-secondary/30 transition-colors">
-                  <td className="px-1.5 py-1.5 sm:px-5 sm:py-3">
-                    <p className="font-semibold text-xs sm:text-sm capitalize">
-                      <span className="hidden sm:inline">{monthNames[covered.getMonth()]} {covered.getFullYear()}</span>
-                      <span className="sm:hidden">{covered.toLocaleDateString("fr-BE", { month: "short", year: "numeric" })}</span>
-                    </p>
+                <TableRow key={row.id}>
+                  <TableCell className="px-5 py-3">
+                    <p className="font-semibold capitalize">{monthNames[covered.getMonth()]} {covered.getFullYear()}</p>
                     <p className="text-xs text-muted-foreground">
-                      <span className="hidden sm:inline">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}</span>
-                      <span className="sm:hidden">{d.toLocaleDateString("fr-BE", { day: "numeric", month: "short" })}</span>
+                      {d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}
                     </p>
-                  </td>
+                  </TableCell>
                   {visibleCols.map((c) => (
-                    <td key={c} className="px-2 py-2 sm:px-3 sm:py-3 text-right tabular-nums">
+                    <TableCell key={c} className="px-3 py-3 text-right tabular-nums">
                       {isEditing ? (
                         <Input
                           type="number"
                           step="0.1"
                           value={String((draft as any)[c] ?? row[c])}
                           onChange={(e) => setDraft((dr) => ({ ...dr, [c]: Number(e.target.value) }))}
-                          className="h-8 w-16 sm:w-24 ml-auto text-right"
+                          className="ml-auto h-8 w-24 text-right"
                         />
                       ) : (
                         <span>{row[c]}</span>
                       )}
-                    </td>
+                    </TableCell>
                   ))}
-                  <td className="px-2 py-2 sm:px-3 sm:py-3 text-right">
-                    {isEditing ? (
-                      <div className="inline-flex gap-1">
-                        <button onClick={save} className="grid h-7 w-7 place-items-center rounded-md bg-foreground text-background hover:opacity-90" aria-label="Enregistrer">
-                          <Check className="h-3.5 w-3.5" />
-                        </button>
-                        <button onClick={cancel} className="grid h-7 w-7 place-items-center rounded-md border border-border hover:bg-secondary" aria-label="Annuler">
-                          <X className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    ) : (
-                      <button onClick={() => startEdit(row)} className="grid h-7 w-7 place-items-center rounded-md border border-border/60 text-muted-foreground hover:text-foreground hover:bg-secondary ml-auto" aria-label="Modifier">
-                        <Pencil className="h-3.5 w-3.5" />
-                      </button>
-                    )}
-                  </td>
-                </tr>
+                  <TableCell className="px-3 py-3 text-right">{rowActions(row, isEditing)}</TableCell>
+                </TableRow>
               );
             })}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Mobile: stacked cards (a 7-column table can't fit a phone) */}
+      <div className="divide-y divide-border/40 sm:hidden">
+        {displayRows.map((row) => {
+          const d = new Date(row.date);
+          const covered = new Date(d.getFullYear(), d.getMonth() - 1, 1);
+          const isEditing = editing === row.id;
+          return (
+            <div key={row.id} className="p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-semibold capitalize">{monthNames[covered.getMonth()]} {covered.getFullYear()}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}
+                  </p>
+                </div>
+                {rowActions(row, isEditing)}
+              </div>
+              <div className={"mt-3 grid gap-2 " + (visibleCols.length === 1 ? "grid-cols-1" : "grid-cols-2")}>
+                {visibleCols.map((c) => (
+                  <div key={c} className="rounded-lg bg-secondary/50 px-3 py-2">
+                    <p className={"inline-flex items-center gap-1.5 text-2xs uppercase tracking-eyebrow " + typeMeta[c].tone}>
+                      {typeMeta[c].icon}
+                      {typeMeta[c].label}
+                    </p>
+                    {isEditing ? (
+                      <Input
+                        type="number"
+                        step="0.1"
+                        value={String((draft as any)[c] ?? row[c])}
+                        onChange={(e) => setDraft((dr) => ({ ...dr, [c]: Number(e.target.value) }))}
+                        className="mt-1 h-8 w-full tabular-nums"
+                      />
+                    ) : (
+                      <p className="mt-0.5 font-serif text-base tabular-nums">
+                        {row[c]}<span className="ml-1 text-xs text-muted-foreground">{typeMeta[c].unit}</span>
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
