@@ -182,15 +182,11 @@ function RoomPage() {
         >
           {detail.lights.scenes.length > 0 && (
             <Tabs value={scene} onValueChange={setScene}>
-              <TabsList className="h-auto w-full gap-1 rounded-none border-b border-border bg-transparent p-0">
+              <TabsList className="h-auto w-full">
                 {detail.lights.scenes.map((s) => {
                   const Icon = sceneIcon(s);
                   return (
-                    <TabsTrigger
-                      key={s}
-                      value={s}
-                      className="-mb-px flex flex-1 flex-col gap-1 rounded-none border-b-2 border-transparent bg-transparent px-1 pb-2.5 pt-1 text-sm font-medium text-muted-foreground shadow-none transition-colors data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
-                    >
+                    <TabsTrigger key={s} value={s} className="flex-1 flex-col gap-1 py-2">
                       <Icon className="h-4 w-4" />
                       {s}
                     </TabsTrigger>
