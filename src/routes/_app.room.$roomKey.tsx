@@ -4,6 +4,7 @@ import { Section } from "@/components/Card";
 import { CommandButton } from "@/components/CommandButton";
 import { useDrawerDrag } from "@/components/MobileDrawerPanel";
 import { Toggle } from "@/components/ui/toggle";
+import { Button } from "@/components/ui/button";
 import { SlidingTabs } from "@/components/SlidingTabs";
 import { CameraFeed } from "@/components/CameraFeed";
 import { DishwasherPanel } from "@/components/DishwasherPanel";
@@ -215,15 +216,20 @@ function RoomPage() {
                 {zones.map((z, i) => {
                   const Icon = zoneIcon(z.name);
                   return (
-                    <CommandButton
+                    <Toggle
                       key={z.name}
-                      onCommand={() => setZones(zones.map((zz, idx) => idx === i ? { ...zz, on: !zz.on } : zz))}
-                      commandLabel={`Zone ${z.name}`}
-                      className={"inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all " + (z.on ? "border-foreground bg-foreground text-background shadow-lift" : "border-border/60 bg-card text-muted-foreground hover:border-border hover:text-foreground")}
+                      variant="outline"
+                      size="sm"
+                      pressed={z.on}
+                      onPressedChange={() =>
+                        setZones(zones.map((zz, idx) => (idx === i ? { ...zz, on: !zz.on } : zz)))
+                      }
+                      aria-label={`Zone ${z.name}`}
+                      className="gap-1.5 rounded-full text-xs data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
                     >
-                      <Icon className={"h-3 w-3 " + (z.on ? "anim-breathe" : "opacity-50")} />
+                      <Icon className={z.on ? "anim-breathe" : "opacity-50"} />
                       {z.name}
-                    </CommandButton>
+                    </Toggle>
                   );
                 })}
               </div>
@@ -431,15 +437,15 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span>{active.label}</span>
           {source !== "off" && (
-            <CommandButton
-              onCommand={() => { setSource("off"); setPlaying(false); }}
-              commandLabel="Couper le média"
-              className="grid h-7 w-7 place-items-center rounded-full border border-border/60 bg-card text-muted-foreground transition-colors hover:text-foreground hover:border-border"
+            <Button
+              variant="outline"
+              onClick={() => { setSource("off"); setPlaying(false); }}
               aria-label="Couper le média"
               title="Couper"
+              className="h-7 w-7 rounded-full p-0 text-muted-foreground [&_svg]:size-3"
             >
-              <Power className="h-3 w-3" />
-            </CommandButton>
+              <Power />
+            </Button>
           )}
         </div>
       }
@@ -469,12 +475,15 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
                 ))}
               </div>
             </div>
-            <CommandButton onCommand={() => setPlaying(!playing)}
-                    commandLabel={playing ? "Pause Spotify" : "Lecture Spotify"}
-                    className="grid h-11 w-11 place-items-center rounded-full bg-foreground text-background transition-transform hover:scale-105 active:scale-95"
-                    aria-label={playing ? "Pause" : "Lecture"}>
-              {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-            </CommandButton>
+            <Toggle
+              variant="outline"
+              pressed={playing}
+              onPressedChange={setPlaying}
+              aria-label={playing ? "Pause" : "Lecture"}
+              className="h-11 w-11 rounded-full data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
+            >
+              {playing ? <Pause /> : <Play />}
+            </Toggle>
           </div>
         )}
         {source === "netflix" && (
@@ -488,12 +497,15 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
               <p className="mt-0.5 truncate font-serif text-lg">Téléviseur allumé</p>
               <p className="truncate text-sm text-muted-foreground">Source HDMI · Apple TV</p>
             </div>
-            <CommandButton onCommand={() => setPlaying(!playing)}
-                    commandLabel={playing ? "Pause Netflix" : "Lecture Netflix"}
-                    className="grid h-11 w-11 place-items-center rounded-full bg-foreground text-background transition-transform hover:scale-105 active:scale-95"
-                    aria-label={playing ? "Pause" : "Lecture"}>
-              {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-            </CommandButton>
+            <Toggle
+              variant="outline"
+              pressed={playing}
+              onPressedChange={setPlaying}
+              aria-label={playing ? "Pause" : "Lecture"}
+              className="h-11 w-11 rounded-full data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
+            >
+              {playing ? <Pause /> : <Play />}
+            </Toggle>
           </div>
         )}
         {source === "off" && (
@@ -548,14 +560,17 @@ function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
 function ActionButton({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick?: () => void }) {
   const [triggered, setTriggered] = useState(false);
   return (
-    <CommandButton
-      onCommand={() => { onClick?.(); setTriggered(true); setTimeout(() => setTriggered(false), 800); }}
-      commandLabel={label}
-      className={"flex flex-col items-center gap-1.5 rounded-xl border border-border/60 p-3 text-sm transition-all duration-300 " + (triggered ? "bg-primary text-primary-foreground -translate-y-0.5" : "bg-card hover:-translate-y-0.5 hover:border-border")}
+    <Button
+      variant="outline"
+      onClick={() => { onClick?.(); setTriggered(true); setTimeout(() => setTriggered(false), 800); }}
+      className={
+        "h-auto flex-col gap-1.5 py-3 text-sm font-normal transition-all duration-300 " +
+        (triggered ? "-translate-y-0.5 border-foreground bg-foreground text-background" : "hover:-translate-y-0.5")
+      }
     >
       {icon}
       <span>{label}</span>
-    </CommandButton>
+    </Button>
   );
 }
 
