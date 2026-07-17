@@ -73,7 +73,7 @@ function AppLayout() {
               className={
                 "mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10 transition-all duration-500 " +
                 (isOverlay
-                  ? "scale-[0.985] opacity-60 blur-[1px] pointer-events-none select-none"
+                  ? "scale-[0.985] opacity-60 pointer-events-none select-none sm:blur-[1px]"
                   : "scale-100 opacity-100")
               }
               aria-hidden={isOverlay}
@@ -99,7 +99,7 @@ function AppLayout() {
               <DialogPrimitive.Portal>
                 <DialogPrimitive.Content
                   key={pathname}
-                  className="overlay-enter fixed inset-0 z-40 flex flex-col justify-end overflow-hidden sm:block sm:overflow-y-auto sm:overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                  className="overlay-enter fixed inset-0 z-40 overflow-hidden sm:block sm:overflow-y-auto sm:overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                   aria-describedby={undefined}
                 >
                   {/* Radix needs a title to announce; the real one is inside the route. */}
@@ -109,9 +109,9 @@ function AppLayout() {
                     to="/"
                     aria-label="Fermer"
                     tabIndex={-1}
-                    className="overlay-backdrop fixed inset-0 z-0 bg-foreground/30 backdrop-blur-md"
+                    className="overlay-backdrop fixed inset-0 z-0 bg-foreground/40 sm:bg-foreground/30 sm:backdrop-blur-md"
                   />
-                  <div className="overlay-panel relative z-10 w-full sm:mx-auto sm:mt-24 sm:mb-8 sm:w-full sm:max-w-5xl sm:px-6">
+                  <div className="overlay-panel relative z-10 w-full max-sm:absolute max-sm:inset-x-0 max-sm:bottom-0 sm:mx-auto sm:mt-24 sm:mb-8 sm:w-full sm:max-w-5xl sm:px-6">
                     <MobileDrawerPanel onClose={() => navigate({ to: "/" })} showHandle={!isRoom}>
                       <div className="px-5 pb-8 pt-4 sm:px-8 sm:py-10">
                         <Outlet />
