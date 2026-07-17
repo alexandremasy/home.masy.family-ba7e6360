@@ -129,8 +129,7 @@ function RoomPage() {
         <div className="page-header__bg pointer-events-none absolute inset-0 bg-background/85 backdrop-blur-xl" />
         <div className="page-header__fade pointer-events-none absolute inset-x-0 top-full h-8 bg-gradient-to-b from-background to-transparent" />
         <div className="relative">
-          <Link to="/" className="text-sm text-muted-foreground transition-colors hover:text-foreground">← Cockpit</Link>
-          <div className="mt-2 flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <span className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/12 text-primary">
               <RoomIcon icon={room.icon} className="h-5 w-5 anim-float" />
             </span>
