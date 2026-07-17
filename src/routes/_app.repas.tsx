@@ -1,5 +1,7 @@
-import { createFileRoute, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useLocation, useNavigate, Link } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { DishesProvider } from "@/lib/dishes-store";
 
 export const Route = createFileRoute("/_app/repas")({
@@ -32,18 +34,28 @@ function RepasLayout() {
       {/* Full-bleed stage, aligned with Anniversaires: cancel the shell's px so the
           teal wash reaches edge to edge, the inner wrapper re-adds content padding. */}
       <div className="relative -mx-4 pt-16 sm:-mx-6">
-        {/* A soft teal glow anchored top-left, reaching a touch toward the top-right
-            corner, breathing slowly. Fades out by the end of the tabs (h-60 ≈ title +
-            nav). absolute, not fixed — the .mode-enter ancestor keeps a transform,
-            which would trap a fixed layer. See .repas-glow in styles.css. */}
+        {/* The muted-grey page surface is painted viewport-wide in _app.tsx (scoped
+            to repas), so it aligns top-to-bottom. This glow just sits over it. */}
+        {/* A single teal blob emanating from the very top, drifting and morphing
+            across the top band while shifting hue, then fading down into the muted
+            grey (see .repas-glow in styles.css). absolute, not fixed — the
+            .mode-enter ancestor keeps a transform, which would trap a fixed layer. */}
         <div
           aria-hidden
-          className="repas-glow pointer-events-none absolute inset-x-0 -top-6 -z-10 h-72 sm:-top-10"
+          className="repas-glow pointer-events-none absolute inset-x-0 -top-6 -z-10 h-96 sm:-top-10"
         />
 
         <div className="space-y-6 px-6 sm:px-12">
-          {/* Page header — serif title over the wash, no sticky glass bar. */}
-          <h1 className="font-serif text-3xl tracking-tight sm:text-4xl">Repas</h1>
+          {/* Page header — a back affordance to the dashboard, then the serif title. */}
+          <div className="space-y-3">
+            <Button asChild variant="outline" size="iconRound" className="text-muted-foreground">
+              <Link to="/">
+                <ArrowLeft className="h-4 w-4" />
+                <span className="sr-only">Retour au cockpit</span>
+              </Link>
+            </Button>
+            <h1 className="font-serif text-2xl font-semibold tracking-tight sm:text-3xl">Repas</h1>
+          </div>
 
           {/* Page navigation — each tab is its own route (deep-linkable). */}
           <Tabs value={current} onValueChange={(to) => navigate({ to })}>

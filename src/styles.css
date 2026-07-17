@@ -565,21 +565,21 @@
   /* Repas page glow: a teal corner wash, strong top-left and a lighter touch
      reaching the top-right, breathing slowly under the title + tabs. */
   .repas-glow {
-    background: radial-gradient(closest-side, color-mix(in oklab, var(--primary) 24%, transparent) 0%, transparent 100%);
-    background-repeat: no-repeat;
-    background-position: 20% 0%;
-    background-size: 70% 175%;
+    /* Anchored AT THE TOP (at X 0%): the core sits on the top edge and fades
+       DOWNWARD, so the top band stays filled and there's no hard seam — the ellipse
+       reaches transparent (72%) well before the element's bottom. */
+    background: radial-gradient(ellipse 130% 115% at 45% 0%, color-mix(in oklab, var(--primary) 26%, transparent) 0%, transparent 82%);
     animation: repas-glow-morph 14s ease-in-out infinite;
   }
-  /* One coherent blob: it drifts left→right and morphs its shape (animated
-     background position + size) while shifting hue. Rests on a muted grey (low
-     saturation) at each cycle's ends, blooming to full teal in the middle — so it
-     settles more on the muted grey than on the colour. */
+  /* One coherent blob that keeps the top filled while it drifts left→right and
+     morphs (the ellipse itself is interpolated) and shifts hue, then fades far down
+     into the page's muted grey. Rests on a muted grey (low saturation) at each
+     cycle's ends, blooming teal in the middle. */
   @keyframes repas-glow-morph {
-    0%, 100% { background-position: 12% 0%; background-size: 60% 160%; opacity: 0.8; filter: saturate(0.3) hue-rotate(0deg); }
-    50%      { background-position: 64% 0%; background-size: 90% 205%; opacity: 1;   filter: saturate(1.15) hue-rotate(-18deg); }
+    0%, 100% { background: radial-gradient(ellipse 120% 108% at 35% 0%, color-mix(in oklab, var(--primary) 22%, transparent) 0%, transparent 84%); filter: saturate(0.35) hue-rotate(0deg); }
+    50%      { background: radial-gradient(ellipse 155% 125% at 58% 0%, color-mix(in oklab, var(--primary) 30%, transparent) 0%, transparent 82%); filter: saturate(1.15) hue-rotate(-18deg); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .repas-glow { animation: none; opacity: 0.85; filter: saturate(0.35); background-position: 32% 0%; }
+    .repas-glow { animation: none; filter: saturate(0.5); }
   }
 }

@@ -14,7 +14,7 @@ import {
   type PlanEntry, type Slot, type Dish, type Base, type Suggestion,
 } from "@/lib/maison-data";
 import {
-  Sparkles, Search, AlertTriangle, Move, X, Sun, Moon,
+  Sparkles, Search, AlertTriangle, X, Sun, Moon,
   ThermometerSun, ChevronLeft, ChevronRight, ChevronDown, SlidersHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -172,9 +172,9 @@ function RepasPage() {
                   <button
                     type="button"
                     aria-label={`${signals.length} remarque${signals.length > 1 ? "s" : ""} sur la période`}
-                    className="inline-flex items-center gap-1 text-warm transition-opacity hover:opacity-70"
+                    className="inline-flex items-center gap-1 rounded-full bg-warm/15 px-2 py-0.5 text-warm transition-colors hover:bg-warm/25"
                   >
-                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTriangle className="h-3.5 w-3.5" />
                     <span className="text-xs font-semibold tabular-nums">{signals.length}</span>
                   </button>
                 </TooltipTrigger>
@@ -242,8 +242,8 @@ function RepasPage() {
               </div>
             ))}
           </div>
-          <div className="overflow-hidden rounded-xl border border-border/60">
-            <div className="grid gap-px bg-border/60 lg:grid-cols-7">
+          <div className="overflow-hidden rounded-xl lg:border lg:border-border/60">
+            <div className="grid gap-0.5 lg:grid-cols-7 lg:gap-px lg:bg-border/60">
               {weeks.flat().map((d) => (
                 <DayCell
                   key={iso(d)}
@@ -259,10 +259,6 @@ function RepasPage() {
             </div>
           </div>
         </div>
-
-        <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Move className="h-3 w-3" /> Glissez un plat vers un autre créneau pour le déplacer.
-        </p>
       </div>
 
       {/* Suggestions — a Dialog on desktop, a Drawer on a phone. The mobile
@@ -286,10 +282,10 @@ function RepasPage() {
         </Dialog>
       ) : (
         <Drawer open={!!selected} onOpenChange={closeSlot}>
-          <DrawerContent className="max-h-[92dvh] bg-background px-4 pb-4">
+          <DrawerContent className="flex max-h-[92dvh] flex-col gap-4 bg-background px-4 pb-4">
             {picker && (
               <>
-                <DrawerHeader className="px-0 pb-2 text-left">
+                <DrawerHeader className="p-0 text-left">
                   <DrawerTitle className="flex items-center gap-2 font-serif text-lg">
                     <SlotTitle date={selectedDate!} slot={selected!.slot} />
                   </DrawerTitle>
@@ -440,19 +436,21 @@ function SlotCell({
           <DishCard
             dish={dish}
             variant="compact"
-            leading={<SlotIcon slot={slot} className="text-muted-foreground" />}
-            status={
-              batch ? (
-                <span
-                  title={`${batch.iteration}ᵉ fois cette fenêtre`}
-                  className={
-                    "inline-grid h-4 w-4 shrink-0 place-items-center rounded-full bg-background/70 text-2xs font-semibold tabular-nums " +
-                    batch.badge
-                  }
-                >
-                  {batch.iteration}
-                </span>
-              ) : undefined
+            leading={
+              <span className="inline-flex items-center gap-1">
+                <SlotIcon slot={slot} className="text-muted-foreground" />
+                {batch && (
+                  <span
+                    title={`${batch.iteration}ᵉ fois cette fenêtre`}
+                    className={
+                      "inline-grid h-4 w-4 shrink-0 place-items-center rounded-full bg-background/70 text-2xs font-semibold tabular-nums " +
+                      batch.badge
+                    }
+                  >
+                    {batch.iteration}
+                  </span>
+                )}
+              </span>
             }
           />
         </button>
@@ -588,7 +586,7 @@ function SlotPicker({
       )}
 
       {/* min-h-0 or the flex child refuses to shrink and the scroll never engages. */}
-      <div className="min-h-0 flex-1 space-y-7 overflow-y-auto">
+      <div className="min-h-0 flex-1 space-y-5 overflow-y-auto sm:space-y-7">
         {shown.length === 0 && (
           <p className="px-1 py-6 text-sm text-muted-foreground">
             Aucun plat ne correspond — élargissez les critères.

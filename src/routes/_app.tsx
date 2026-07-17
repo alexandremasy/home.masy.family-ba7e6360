@@ -50,6 +50,13 @@ function AppLayout() {
             full-bleed module pages (repas, anniversaires, budget…) own their own calm
             surface, so it doesn't mount there. */}
         {!isFullBleed && <LivingGradient />}
+        {/* Repas paints the whole viewport a muted grey behind its content, so the
+            page reads as one aligned surface top-to-bottom (its local glow sits over
+            it). Fixed at the SidebarInset level — outside the transformed .mode-enter
+            wrapper, which would otherwise trap a fixed layer. */}
+        {pathname.startsWith("/repas") && (
+          <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-muted" />
+        )}
         {/* Light bar: just the rail toggle, no surface — the button floats over the
             page. pointer-events-none so the transparent strip never eats clicks on
             content scrolling beneath it; the trigger re-enables them. --nav-h mirrors

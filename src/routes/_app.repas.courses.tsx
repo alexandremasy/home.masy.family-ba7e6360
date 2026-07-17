@@ -1,13 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { createPortal } from "react-dom";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   upcomingMeals, initialPlan, frLongDay, addDays, iso, TODAY,
   type UpcomingMeal, type Slot,
 } from "@/lib/maison-data";
-import { Check, Plus, Minus, X, ShoppingBasket, UtensilsCrossed, Undo2, Sun, Moon, ChevronUp } from "lucide-react";
+import { Check, Plus, Minus, X, ShoppingBasket, UtensilsCrossed, Sun, Moon, ChevronUp } from "lucide-react";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { DishCard } from "@/components/DishCard";
@@ -41,11 +40,6 @@ function CoursesPage() {
   // same name are ONE entry. A hand-add is just adjustment +1.
   const [adjust, setAdjust] = useState<Record<string, number>>({});
   const [newName, setNewName] = useState("");
-  // The bottom bar is portaled to <body> to escape the route's `mode-enter`
-  // container, which keeps a `transform: scale(1)` (fill-mode: both) and would
-  // otherwise anchor `position: fixed` to itself instead of the viewport.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
 
   // Meal count per ingredient (a batch of the same dish counts its slots once —
   // upcomingMeals already excludes leftovers). This is the quantity's base.
@@ -130,13 +124,6 @@ function CoursesPage() {
     setNewName("");
   };
 
-  const resetAll = () => {
-    const s = new Set<string>();
-    for (const m of meals) for (const c of m.components) s.add(compKey(m.key, c.name));
-    setSelected(s);
-    setAdjust({});
-  };
-
   const totalItems = items.length;
 
   // The shopping list body is shared verbatim between the desktop side panel and
@@ -151,7 +138,7 @@ function CoursesPage() {
           onKeyDown={(e) => { if (e.key === "Enter") addManual(); }}
           className="h-9"
         />
-        <Button size="sm" onClick={addManual} className="h-9 shrink-0 gap-1">
+        <Button size="sm" variant="inverted" onClick={addManual} className="h-9 shrink-0 gap-1">
           <Plus className="h-3.5 w-3.5" />Ajouter
         </Button>
       </div>
@@ -161,9 +148,9 @@ function CoursesPage() {
           Liste vide — coche des composants dans les repas.
         </p>
       ) : (
-        <ul className="divide-y divide-border/50">
+        <ul className="-mx-2">
           {sortedItems.map((it) => (
-            <li key={it.name} className="group flex items-center gap-2 py-1.5">
+            <li key={it.name} className="group flex items-center gap-2 rounded-lg px-2 py-1.5 odd:bg-muted/40">
               <p className="min-w-0 flex-1 truncate text-sm">{it.name}</p>
               <div className="flex shrink-0 items-center gap-0.5 rounded-md border border-border/60 bg-background">
                 <button
@@ -187,7 +174,7 @@ function CoursesPage() {
               <button
                 onClick={() => setQty(it.name, 0)}
                 aria-label="Retirer"
-                className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-muted-foreground/60 transition-colors hover:text-destructive"
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-border/60 bg-background text-muted-foreground transition-colors hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
               >
                 <X className="h-3 w-3" />
               </button>
@@ -196,51 +183,69 @@ function CoursesPage() {
         </ul>
       )}
 
-      <div className="mt-4 flex items-center justify-between border-t border-border/50 pt-3">
-        <span className="inline-flex items-center gap-1 text-2xs text-muted-foreground">
-          <ShoppingBasket className="h-3 w-3" />{totalItems} article{totalItems > 1 ? "s" : ""}
-        </span>
-        <Button size="sm" variant="ghost" onClick={resetAll} className="h-7 gap-1 text-xs">
-          <Undo2 className="h-3 w-3" />Réinitialiser
-        </Button>
-      </div>
     </>
   );
 
   return (
-    <div className="pb-24">
-      {/* ── Left: meals and their components — no framed panel, just the list ── */}
+    <div>
+      {/* ── Meals and their components — no framed panel, just the list ── */}
       <div className="anim-slide-up">
-        <header className="mb-5 flex items-end justify-between gap-4">
+        <header className="mb-5">
           <h2 className="font-serif text-xl tracking-tight text-foreground">Prochains repas</h2>
-          <Eyebrow size="xs" as="span">{meals.length} repas</Eyebrow>
         </header>
-        <p className="mb-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-          <UtensilsCrossed className="h-3 w-3 text-primary" />
-          Coche un composant pour l'ajouter à la liste — décoche pour le retirer.
-        </p>
+        {/* Basket summary — sits inline in the content, then sticks to the top as you
+            scroll the days list (a floating card, not fixed chrome). Tap opens the
+            full list in a bottom sheet. */}
+        <Drawer>
+          <DrawerTrigger asChild>
+            <button className="sticky top-3 z-40 mb-5 flex w-full items-center justify-between gap-3 rounded-xl border border-border/60 bg-card/95 px-4 py-3 shadow-soft backdrop-blur supports-[backdrop-filter]:bg-card/80">
+              <span className="inline-flex items-center gap-2 text-sm font-medium">
+                <ShoppingBasket className="h-4 w-4 text-primary" />
+                Liste · {totalItems} article{totalItems > 1 ? "s" : ""}
+              </span>
+              <ChevronUp className="h-4 w-4 text-muted-foreground" />
+            </button>
+          </DrawerTrigger>
+          <DrawerContent className="max-h-[85dvh]">
+            <DrawerHeader className="text-left">
+              <div className="flex items-baseline justify-between gap-3">
+                <DrawerTitle className="font-serif text-lg">Liste de courses</DrawerTitle>
+                <span className="shrink-0 text-xs text-muted-foreground">
+                  {totalItems} article{totalItems > 1 ? "s" : ""}
+                </span>
+              </div>
+            </DrawerHeader>
+            <div className="overflow-y-auto px-4 pb-8">{listBody}</div>
+          </DrawerContent>
+        </Drawer>
+
         <div className="space-y-5">
           {days.map(({ date, cells }) => (
             <div key={date}>
-              <Eyebrow size="xs" className="mb-2">{frLongDay(new Date(date))}</Eyebrow>
+              <Eyebrow size="xs" className="mb-3">{frLongDay(new Date(date))}</Eyebrow>
               <div className="grid items-stretch gap-3 sm:grid-cols-2">
                 {cells.map((cell) => {
-                  // The slot marker lives OUTSIDE the card — a sun for midi, a
-                  // moon for soir, matching the planning grid.
+                  // The slot marker (sun for midi, moon for soir) is a badge that
+                  // straddles the card's top-left border.
                   const Icon = cell.slot === "midi" ? Sun : Moon;
                   const label = cell.slot === "midi" ? "Midi" : "Soir";
                   return (
-                    <div key={cell.slot} className="flex flex-col gap-1.5">
-                      <Icon className="h-4 w-4 shrink-0 text-muted-foreground" aria-label={label} />
+                    <div key={cell.slot} className="relative">
+                      <span
+                        aria-label={label}
+                        className="absolute -top-2.5 left-3 z-10 grid h-6 w-6 place-items-center rounded-full border border-border/60 bg-card text-muted-foreground shadow-soft"
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                      </span>
                       {!cell.meal ? (
-                        <Empty className="flex-1 rounded-xl border border-border/60 p-4 md:p-6">
+                        <Empty className="h-full rounded-xl border border-border/60 p-4 md:p-6">
                           <EmptyHeader>
                             <EmptyMedia variant="icon" className="text-muted-foreground/60"><UtensilsCrossed /></EmptyMedia>
                             <EmptyTitle className="text-base font-normal text-muted-foreground/70">Rien de planifié</EmptyTitle>
                           </EmptyHeader>
                         </Empty>
                       ) : (
-                        <div className="flex flex-1 flex-col rounded-xl border border-border/60 bg-card p-3.5">
+                        <div className="flex h-full flex-col rounded-xl border border-border/60 bg-card p-3.5">
                           <DishCard
                             dish={cell.meal.dish}
                             footer={
@@ -277,29 +282,6 @@ function CoursesPage() {
           ))}
         </div>
       </div>
-
-      {/* ── The list lives in a bottom sheet, its bar always visible.
-          Portaled to <body> so `position: fixed` anchors to the viewport. ── */}
-      {mounted && createPortal(
-        <Drawer>
-          <DrawerTrigger asChild>
-            <button className="fixed inset-x-0 bottom-0 z-50 flex items-center justify-between gap-3 border-t border-border/60 bg-card/95 px-4 py-3 shadow-lift backdrop-blur supports-[backdrop-filter]:bg-card/80">
-              <span className="inline-flex items-center gap-2 text-sm font-medium">
-                <ShoppingBasket className="h-4 w-4 text-primary" />
-                Liste · {totalItems} article{totalItems > 1 ? "s" : ""}
-              </span>
-              <ChevronUp className="h-4 w-4 text-muted-foreground" />
-            </button>
-          </DrawerTrigger>
-          <DrawerContent className="max-h-[85dvh]">
-            <DrawerHeader className="text-left">
-              <DrawerTitle className="font-serif text-xl tracking-tight">Liste de courses</DrawerTitle>
-            </DrawerHeader>
-            <div className="overflow-y-auto px-4 pb-8">{listBody}</div>
-          </DrawerContent>
-        </Drawer>,
-        document.body,
-      )}
     </div>
   );
 }
