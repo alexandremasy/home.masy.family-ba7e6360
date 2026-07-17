@@ -6,8 +6,7 @@ import {
 } from "recharts";
 import {
   ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, PiggyBank, Sparkles,
-  TrendingUp, TrendingDown, Clock, CheckCircle2, CalendarClock, AlertTriangle,
-  ShieldCheck, ShieldAlert,
+  TrendingUp, TrendingDown, Clock, CheckCircle2, CalendarClock,
 } from "lucide-react";
 import { CountUp } from "@/components/CountUp";
 import {
@@ -42,46 +41,60 @@ function VuePage() {
   const view = NAV_VIEWS[navIdx];
 
   return (
-    <div className="space-y-6 anim-slide-up sm:space-y-8">
-      <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:flex sm:flex-wrap sm:justify-between sm:gap-4">
-        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-          {zoom !== null && (
-            <Button
-       onClick={() => setZoom(null)}
-       variant="outline" size="iconRound"
-       aria-label="Retour à la vue d'ensemble"
-      ><ArrowLeft className="h-4 w-4" /></Button>
+    // Full-bleed stage with the anniversaires-style teal wash header: cancel the
+    // shell px so the wash reaches edge to edge, the inner wrapper re-adds padding.
+    <div className="relative -mx-4 pt-16 sm:-mx-6">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 -top-6 bottom-0 -z-10 bg-gradient-to-b from-mustard/10 to-transparent sm:-top-10 md:-top-24"
+      />
+      <div className="space-y-8 px-6 anim-slide-up sm:px-12">
+        <header className="flex items-start justify-between gap-4">
+          <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+            {zoom !== null ? (
+              <Button
+                onClick={() => setZoom(null)}
+                variant="outline" size="iconRound"
+                aria-label="Retour à la vue d'ensemble"
+              ><ArrowLeft className="h-5 w-5" /></Button>
+            ) : (
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-mustard/15 text-mustard">
+                <PiggyBank className="h-6 w-6" />
+              </span>
+            )}
+            <div className="min-w-0">
+              <Eyebrow tone="current" size="xs" className="text-mustard">
+                Budget · {zoom === null ? "Vue d'ensemble" : "Mois"}
+              </Eyebrow>
+              <h1 className="font-serif text-2xl tracking-tight sm:text-3xl">
+                {zoom === null
+                  ? viewTitle(view)
+                  : <>
+                      <button onClick={() => setZoom(null)} className="text-muted-foreground hover:text-foreground transition-colors">{viewTitle(view)}</button>
+                      <span className="mx-2 text-muted-foreground/50">/</span>
+                      <span className="capitalize">{MONTHS_FR_LONG[zoom.monthIdx]} {zoom.year}</span>
+                    </>}
+              </h1>
+              {zoom === null && (
+                <p className="text-sm text-muted-foreground">Trajectoire de l'année, échéances et épargne.</p>
+              )}
+            </div>
+          </div>
+          {zoom === null && (
+            <div className="flex shrink-0 items-center gap-2">
+              <Button onClick={() => setNavIdx((i) => Math.max(0, i - 1))} disabled={navIdx === 0}
+                aria-label="Vers le glissant"
+                variant="outline" size="iconRound"
+              ><ChevronLeft className="h-4 w-4" /></Button>
+              <Button onClick={() => setNavIdx((i) => Math.min(NAV_VIEWS.length - 1, i + 1))} disabled={navIdx === NAV_VIEWS.length - 1}
+                aria-label="Vers les années passées"
+                variant="outline" size="iconRound"
+              ><ChevronRight className="h-4 w-4" /></Button>
+            </div>
           )}
-          <div className="min-w-0">
-            <Eyebrow size="xs">
-              Budget · {zoom === null ? "Vue d'ensemble" : "Mois"}
-            </Eyebrow>
-            <h1 className="mt-1 truncate font-serif text-xl tracking-tight sm:text-4xl">
-              {zoom === null
-                ? viewTitle(view)
-                : <>
-                    <button onClick={() => setZoom(null)} className="text-muted-foreground hover:text-foreground transition-colors">{viewTitle(view)}</button>
-                    <span className="mx-2 text-muted-foreground/50">/</span>
-                    <span className="capitalize">{MONTHS_FR_LONG[zoom.monthIdx]} {zoom.year}</span>
-                  </>}
-            </h1>
-          </div>
-        </div>
-        {zoom === null && (
-          <div className="flex shrink-0 items-center gap-2">
-            <Button onClick={() => setNavIdx((i) => Math.max(0, i - 1))} disabled={navIdx === 0}
-       aria-label="Vers le glissant"
-       variant="outline" size="iconRound"
-      ><ChevronLeft className="h-4 w-4" /></Button>
-            <Button onClick={() => setNavIdx((i) => Math.min(NAV_VIEWS.length - 1, i + 1))} disabled={navIdx === NAV_VIEWS.length - 1}
-       aria-label="Vers les années passées"
-       variant="outline" size="iconRound"
-      ><ChevronRight className="h-4 w-4" /></Button>
-          </div>
-        )}
-      </header>
+        </header>
 
-      <div className="relative">
+        <div className="relative">
         <div className={(zoom === null ? "opacity-100" : "pointer-events-none hidden") + " transition-opacity duration-300"}>
           <YearView view={view} onPickMonth={(year, monthIdx) => setZoom({ year, monthIdx })} />
         </div>
@@ -98,8 +111,9 @@ function VuePage() {
         </div>
       </div>
 
-      {/* Nested modal routes (e.g. /budget/vue/reserve) render here, over the vue */}
-      <Outlet />
+        {/* Nested modal routes (e.g. /budget/vue/reserve) render here, over the vue */}
+        <Outlet />
+      </div>
     </div>
   );
 }
@@ -124,16 +138,6 @@ function YearView({ view, onPickMonth }: { view: BudgetView; onPickMonth: (year:
 
 /* ---- 1. Verdict header — integrated into the Flux block; the curve is its gauge ---- */
 
-function verdictTone(status: ReturnType<typeof annualVerdict>["status"]) {
-  return status === "ok"
-    ? { ring: "ring-success/30", bg: "bg-success/10", fg: "text-success", Icon: ShieldCheck }
-    : status === "absorbed"
-    ? { ring: "ring-mustard/40", bg: "bg-mustard/15", fg: "text-mustard", Icon: ShieldCheck }
-    : status === "warn"
-    ? { ring: "ring-warm/40", bg: "bg-warm/15", fg: "text-warm", Icon: AlertTriangle }
-    : { ring: "ring-destructive/40", bg: "bg-destructive/10", fg: "text-destructive", Icon: ShieldAlert };
-}
-
 const axisCls = {
   ok: { fg: "text-success", dot: "bg-success", bg: "bg-success/15" },
   warn: { fg: "text-warm", dot: "bg-warm", bg: "bg-warm/15" },
@@ -150,7 +154,7 @@ function AxisStatus({ axis, to }: { axis: ReturnType<typeof annualVerdict>["axes
         {to && <ChevronRight className="ml-auto h-3.5 w-3.5 text-muted-foreground/60 transition-transform group-hover/axis:translate-x-0.5" />}
       </p>
       <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-        <span className="font-serif text-xl leading-none tabular-nums text-foreground sm:text-3xl">{axis.value}</span>
+        <span className="font-serif text-lg leading-none tabular-nums text-foreground sm:text-xl">{axis.value}</span>
         {axis.pct && <span className="text-sm tabular-nums text-muted-foreground">· {axis.pct}</span>}
         <span className={"inline-flex items-center self-center rounded-full px-2.5 py-0.5 text-xs font-semibold " + c.bg + " " + c.fg}>{axis.tag}</span>
       </div>
@@ -202,7 +206,7 @@ function VerdictHeader({ verdict, view }: { verdict: ReturnType<typeof annualVer
   const freshness = dataFreshness();
   return (
     <div>
-      <h2 className="font-serif text-xl tracking-tight sm:text-3xl">Santé de l'année</h2>
+      <h2 className="font-serif text-base tracking-tight sm:text-lg">Santé de l'année</h2>
       <p className="mt-1 text-sm text-muted-foreground">
         Sur base des imports jusqu'à {freshness.lastMonth} — la suite est projetée.
       </p>
@@ -272,12 +276,11 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
   const total6m = upcoming.filter((b) => b.monthsAway < 6).reduce((s, b) => s + b.amount, 0);
   const provisionIn6m = provision * 6;
   const flowAxis = useYAxis(flows.flatMap(f => [f.inReel ?? 0, f.inProj ?? 0, f.depReel ?? 0, f.depProj ?? 0]), 2000);
-  const tone = verdictTone(verdict.status);
   const monthlyBudget = categories.reduce((s, c) => s + c.budget, 0);
   const lastImportX = flows.find((f) => f.isLastImport)?.m;
   const todayX = flows.find((f) => f.isToday)?.m;
   return (
-    <section className={"rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up ring-1 " + tone.ring}>
+    <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up">
       {/* Verdict integrated at the top — the curve below is its gauge */}
       <VerdictHeader verdict={verdict} view={view} />
 
@@ -492,7 +495,7 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
 }
 
 /* keep unused-import guards happy */
-void incomeSources; void nonMonthlyBills; void ArrowRight; void Sparkles; void PiggyBank; void CheckCircle2; void Clock;
+void incomeSources; void nonMonthlyBills; void ArrowRight; void Sparkles; void CheckCircle2; void Clock;
 
 
 
