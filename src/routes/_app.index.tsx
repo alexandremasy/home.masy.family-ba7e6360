@@ -43,7 +43,7 @@ export function Dashboard() {
         {/* Row 1 — greeting left, events right. Nothing else on this row. */}
         <div className="col-span-2 flex h-full flex-col items-start justify-center py-4 sm:col-span-2 lg:col-span-4">
           <Eyebrow size="xs">{dateStr}</Eyebrow>
-          <h1 className="mt-1 font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          <h1 className="mt-0.5 font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             {greeting}.
           </h1>
           <RepasLine />
@@ -735,9 +735,8 @@ function WeatherTile() {
 }
 
 /**
- * What we eat — today and tomorrow side by side, a small menu under the greeting.
- * Each meal reads with its slot glyph (sun = midi, moon = soir) and the dish in serif;
- * quiet enough to sit under the greeting, worked enough to feel like a card.
+ * What we eat today — a small menu under the greeting. Each meal reads with its slot
+ * glyph (sun = midi, moon = soir) and the dish in serif; quiet, but worked.
  */
 function RepasLine() {
   const dayPlan = (d: Date) => {
@@ -749,38 +748,27 @@ function RepasLine() {
     return { midi: at("midi"), soir: at("soir") };
   };
 
-  const days = [
-    { label: "Aujourd'hui", ...dayPlan(TODAY) },
-    { label: "Demain", ...dayPlan(addDays(TODAY, 1)) },
-  ];
+  const today = dayPlan(TODAY);
 
   return (
     <Link
       to="/repas"
-      aria-label="Repas d'aujourd'hui et de demain"
-      className="group mt-4 grid w-full max-w-md grid-cols-2"
+      aria-label="Repas d'aujourd'hui"
+      className="group mt-4 block w-full max-w-md min-w-0 py-0.5"
     >
-      {days.map((d, i) => (
-        <div key={d.label} className={"min-w-0 py-0.5 " + (i === 0 ? "pr-4" : "pl-4")}>
-          <div className="flex items-center gap-1.5">
-            {i === 0 ? (
-              <Utensils className="h-3 w-3 shrink-0 text-muted-foreground/60" />
-            ) : (
-              <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/60" />
-            )}
-            <Eyebrow tone="current" size="xs" as="span" className="text-muted-foreground">{d.label}</Eyebrow>
-          </div>
+      <div className="flex items-center gap-1.5">
+        <Utensils className="h-3 w-3 shrink-0 text-muted-foreground/60" />
+        <Eyebrow tone="current" size="xs" as="span" className="text-muted-foreground">Aujourd'hui</Eyebrow>
+      </div>
 
-          {d.midi || d.soir ? (
-            <div className="mt-2 space-y-1.5">
-              {d.midi && <MealRow icon={<Sun className="h-3.5 w-3.5 text-mustard" />} name={d.midi} />}
-              {d.soir && <MealRow icon={<Moon className="h-3.5 w-3.5 text-primary" />} name={d.soir} />}
-            </div>
-          ) : (
-            <p className="mt-2 text-sm italic text-muted-foreground/60">Rien de prévu</p>
-          )}
+      {today.midi || today.soir ? (
+        <div className="mt-2 space-y-1.5">
+          {today.midi && <MealRow icon={<Sun className="h-3.5 w-3.5 text-mustard" />} name={today.midi} />}
+          {today.soir && <MealRow icon={<Moon className="h-3.5 w-3.5 text-primary" />} name={today.soir} />}
         </div>
-      ))}
+      ) : (
+        <p className="mt-2 text-sm italic text-muted-foreground/60">Rien de prévu</p>
+      )}
     </Link>
   );
 }
