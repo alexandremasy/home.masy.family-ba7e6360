@@ -98,7 +98,6 @@ function AppLayout() {
             >
               <DialogPrimitive.Portal>
                 <DialogPrimitive.Content
-                  key={pathname}
                   className="overlay-enter fixed inset-0 z-40 overflow-hidden sm:block sm:overflow-y-auto sm:overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                   aria-describedby={undefined}
                 >
