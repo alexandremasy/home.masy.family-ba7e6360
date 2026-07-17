@@ -36,12 +36,12 @@ export function Dashboard() {
   const greeting = now.getHours() < 12 ? "Bonjour" : now.getHours() < 18 ? "Bon après-midi" : "Bonsoir";
 
   return (
-    <div className="space-y-8 pt-16">
+    <div className="space-y-4 pt-16">
       {/* Header — greeting + two compact info cards. Kept OUT of grid-bento: the
           bento rows have a FIXED height, so short tiles placed there would leave a
           tall empty band beneath them. In normal flow they size to content, and the
           rooms grid sits right below. */}
-      <header className="stagger space-y-6">
+      <header className="stagger space-y-8">
         <div className="flex flex-col items-start">
           <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             {greeting}.
@@ -52,7 +52,7 @@ export function Dashboard() {
         {/* Poubelle + anniversaire — a third the height of a bento tile; same width
             as one column on mobile (capped so they stay small on wider screens). */}
         <div className="grid grid-cols-2 gap-3 sm:max-w-md">
-          <Tile span={1} tone="mustard" className="relative flex h-[4rem] items-center overflow-hidden !p-3">
+          <Tile span={1} tone="mustard" className="relative flex h-[4rem] items-center overflow-hidden !rounded-full !px-5 !py-3">
             <PMCBag className="pointer-events-none absolute -right-2 -top-1 h-[150%] w-auto opacity-90" />
             <div className="relative min-w-0">
               <p className="truncate font-serif text-base leading-tight">{calendrier.poubelleToday.type}</p>
@@ -286,7 +286,7 @@ function BirthdayTile() {
   const when = today ? "Auj." : first.days === 1 ? "Demain" : `Dans ${first.days} j`;
 
   return (
-    <Tile span={1} to="/anniversaires" tone={today ? "warm" : "default"} className="relative flex h-[4rem] items-center overflow-hidden !p-3">
+    <Tile span={1} to="/anniversaires" tone={today ? "warm" : "default"} className="relative flex h-[4rem] items-center overflow-hidden !rounded-full !px-5 !py-3">
       <Cake className={"pointer-events-none absolute -right-3 -top-2 h-16 w-16 " + (today ? "opacity-15" : "opacity-[0.06]")} />
       <div className="relative min-w-0">
         <p className="truncate font-serif text-base leading-tight">Anniversaire de {first.p.name}</p>
