@@ -7,6 +7,7 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/s
 import { footerLines } from "@/lib/mock-data";
 import { Dashboard } from "./_app.index";
 import { OverlayCloseLink } from "@/components/OverlayCloseLink";
+import { LivingGradient } from "@/components/LivingGradient";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
@@ -42,7 +43,10 @@ function AppLayout() {
       <AppSidebar />
       {/* Below md the rail is replaced by a floating bottom bar, so reserve the
           room it needs (bar height + its bottom offset). */}
-      <SidebarInset className="pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-0">
+      <SidebarInset className="isolate pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-0">
+        {/* Full-viewport living gradient — behind the content, above the page bg
+            (SidebarInset is isolated). Shifts hue as the page scrolls. */}
+        <LivingGradient />
         {/* Light bar: just the rail toggle, no surface — the button floats over the
             page. pointer-events-none so the transparent strip never eats clicks on
             content scrolling beneath it; the trigger re-enables them. --nav-h mirrors

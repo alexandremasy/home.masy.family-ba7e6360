@@ -471,16 +471,19 @@
   }
   .anim-shake { animation: shake-x 0.35s cubic-bezier(.36,.07,.19,.97) both; }
 
-  /* ---- Living gradient — a slow purple→blue mesh that drifts behind the
-     dashboard, Stripe-style. Decorative and off-palette by request. Absolute
-     (not fixed) so it's immune to the dashboard's transform ancestor, and pure
-     CSS so it renders on the server too. ---- */
+  /* ---- Living gradient — a slow purple→blue mesh that drifts across the whole
+     viewport, Stripe-style, and shifts hue as the page scrolls (--lg-scroll,
+     0→1, written by LivingGradient). Fixed and mounted inside the isolated
+     SidebarInset: it paints above the page background but behind the content.
+     Decorative and off-palette by request. ---- */
   .living-gradient {
-    position: absolute;
-    inset: -12% 0;
-    z-index: -10;
+    position: fixed;
+    inset: 0;
+    z-index: -1;
     overflow: hidden;
     pointer-events: none;
+    filter: hue-rotate(calc(var(--lg-scroll, 0) * 75deg));
+    transition: filter 120ms linear;
   }
   .living-gradient__blob {
     position: absolute;
