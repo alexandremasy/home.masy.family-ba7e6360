@@ -137,11 +137,11 @@ export function Dashboard() {
             </Button>
           </Tile>
         ) : (
-          <Tile span={2} to="/energie" className="flex flex-col">
+          <Tile span={2} to="/energie" className="flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
                 <Eyebrow>Énergie</Eyebrow>
-                <p className="mt-1 font-serif text-lg">Vue d'ensemble</p>
+                <p className="mt-1 font-serif text-base font-semibold">Vue d'ensemble</p>
               </div>
               {(() => {
                 const alerts: string[] = [];
@@ -422,7 +422,7 @@ function ReseauTile() {
   const MAX = 500; // the line's ceiling — the dial reads the share of it
 
   return (
-    <Tile span={2} to="/securite/reseau" className="flex flex-col">
+    <Tile span={2} to="/securite/reseau" className="flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs">
       <div className="flex items-start justify-between gap-2">
         <Eyebrow>Réseau</Eyebrow>
         <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
@@ -434,7 +434,7 @@ function ReseauTile() {
       <div className="relative mt-1 flex flex-1 items-center justify-center">
         <TickGauge value={st.downMbps} max={MAX} className="w-[78%] max-w-[220px] overflow-visible" />
         <div className="absolute inset-x-0 top-[44%] text-center">
-          <p className="font-serif text-4xl leading-none tracking-tight tabular-nums">
+          <p className="font-serif text-2xl leading-none tracking-tight tabular-nums">
             <CountUp to={st.downMbps} />
           </p>
           <Eyebrow size="xs" className="mt-1">Mbps ↓</Eyebrow>
