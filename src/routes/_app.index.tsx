@@ -8,7 +8,7 @@ import { WeatherIcon } from "@/components/WeatherIcon";
 
 import { rooms, tesla, reseau, energie, calendrier, meteo, roomDetails, type Room } from "@/lib/mock-data";
 import { people, nextBirthday, upcomingAge, daysUntil, initialPlan, dishById, iso, addDays, frLongDay, TODAY } from "@/lib/maison-data";
-import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, ArrowUp, Activity, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Sunrise, Sunset, Thermometer, Server, Cast, Cake, UtensilsCrossed } from "lucide-react";
+import { Lightbulb, Wind, Wifi, Car, Plug, ArrowRight, ArrowUp, Activity, Droplet, Zap, Flame, MapPin, Sparkles, AlertTriangle, TrendingDown, TrendingUp, Minus, Sun, Moon, Sunrise, Sunset, Thermometer, Server, Cast, Cake, UtensilsCrossed } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
@@ -734,7 +734,11 @@ function WeatherTile() {
   );
 }
 
-/** What we eat — two quiet lines under the greeting: today, then tomorrow. */
+/**
+ * What we eat — today and tomorrow side by side, a small menu under the greeting.
+ * Each meal reads with its slot glyph (sun = midi, moon = soir) and the dish in serif;
+ * quiet enough to sit under the greeting, worked enough to feel like a card.
+ */
 function RepasLine() {
   const dayPlan = (d: Date) => {
     const key = iso(d);
@@ -753,25 +757,39 @@ function RepasLine() {
   return (
     <Link
       to="/repas"
-      className="group mt-3 flex items-start gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
+      aria-label="Repas d'aujourd'hui et de demain"
+      className="group mt-4 grid w-full max-w-md grid-cols-2 divide-x divide-border/50 overflow-hidden rounded-2xl bg-secondary/40 ring-1 ring-inset ring-border/50 transition-colors hover:bg-secondary/60"
     >
-      <UtensilsCrossed className="mt-[3px] h-3.5 w-3.5 shrink-0 text-muted-foreground/70 transition-colors group-hover:text-foreground" />
-      <span className="min-w-0 space-y-0.5">
-        {days.map((d) => (
-          <span key={d.label} className="block">
-            <Eyebrow tone="current" size="xs" as="span">{d.label}</Eyebrow>
-            {d.midi || d.soir ? (
-              <>
-                {d.midi && <> · {d.midi}</>}
-                {d.soir && <> · {d.soir}</>}
-              </>
-            ) : (
-              <span className="italic text-muted-foreground/60"> · rien de prévu</span>
+      {days.map((d, i) => (
+        <div key={d.label} className="min-w-0 px-3.5 py-2.5">
+          <div className="flex items-center justify-between gap-1">
+            <Eyebrow tone="current" size="xs" as="span" className="text-muted-foreground">{d.label}</Eyebrow>
+            {i === 0 && (
+              <UtensilsCrossed className="h-3 w-3 shrink-0 text-muted-foreground/50 transition-colors group-hover:text-foreground/70" />
             )}
-          </span>
-        ))}
-      </span>
+          </div>
+
+          {d.midi || d.soir ? (
+            <div className="mt-2 space-y-1.5">
+              {d.midi && <MealRow icon={<Sun className="h-3.5 w-3.5 text-mustard" />} name={d.midi} />}
+              {d.soir && <MealRow icon={<Moon className="h-3.5 w-3.5 text-primary" />} name={d.soir} />}
+            </div>
+          ) : (
+            <p className="mt-2 text-sm italic text-muted-foreground/60">Rien de prévu</p>
+          )}
+        </div>
+      ))}
     </Link>
+  );
+}
+
+/** One meal line — slot glyph then the dish, truncated so long names never break the grid. */
+function MealRow({ icon, name }: { icon: React.ReactNode; name: string }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <span className="shrink-0">{icon}</span>
+      <span className="min-w-0 truncate font-serif text-sm leading-tight text-foreground">{name}</span>
+    </div>
   );
 }
 
