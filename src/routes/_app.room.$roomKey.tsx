@@ -435,11 +435,17 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
   const active = sources.find((s) => s.key === source)!;
 
   return (
-    <Section
-      title="Média"
-      action={<span className="text-sm text-muted-foreground">{active.label}</span>}
-    >
-      <div className="relative overflow-hidden rounded-xl border border-border/60 p-5">
+    <Section title="Média">
+      <div
+        className="anim-media-gradient relative overflow-hidden rounded-xl border border-border/60 p-5"
+        style={{
+          backgroundImage:
+            source === "off"
+              ? "linear-gradient(135deg, color-mix(in oklab, var(--card) 92%, transparent), var(--card))"
+              : `linear-gradient(120deg, color-mix(in oklab, ${active.tint} 32%, var(--card)), var(--card) 55%, color-mix(in oklab, ${active.tint} 16%, var(--card)))`,
+          backgroundSize: "220% 220%",
+        }}
+      >
         {source === "spotify" && (
           <div className="flex items-center gap-4">
             <div className={"grid h-16 w-16 shrink-0 place-items-center rounded-lg shadow-lift " + (playing ? "animate-spin [animation-duration:10s]" : "")}
@@ -447,7 +453,7 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
               <span className="h-2.5 w-2.5 rounded-full bg-background" />
             </div>
             <div className="min-w-0 flex-1">
-              <Eyebrow size="xs">Spotify · en lecture</Eyebrow>
+              <Eyebrow size="xs">Spotify</Eyebrow>
               <p className="mt-0.5 truncate font-serif text-lg">{media.nowPlaying ?? "—"}</p>
               {media.artist && <p className="truncate text-sm text-muted-foreground">{media.artist}</p>}
               <div className="mt-2 flex h-3 items-end gap-0.5">

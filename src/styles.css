@@ -332,6 +332,14 @@
 
   .eq-bar { transform-origin: bottom; animation: equalizer 0.9s ease-in-out infinite; }
 
+  /* Slow drift of a tinted media backdrop — the pane feels alive without motion
+     on the content. Pairs with an inline gradient + background-size on the element. */
+  @keyframes media-gradient {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+  .anim-media-gradient { animation: media-gradient 9s ease-in-out infinite; }
+
   /* ---- Stripe-like slide-up overlay ----
      Backdrop fades, panel glides up + scales in. */
   @keyframes overlay-fade-in {
@@ -557,16 +565,21 @@
   /* Repas page glow: a teal corner wash, strong top-left and a lighter touch
      reaching the top-right, breathing slowly under the title + tabs. */
   .repas-glow {
-    background:
-      radial-gradient(90% 120% at 0% 0%, color-mix(in oklab, var(--primary) 22%, transparent) 0%, transparent 68%),
-      radial-gradient(95% 120% at 100% 0%, color-mix(in oklab, var(--primary) 21%, transparent) 0%, transparent 70%);
-    animation: repas-glow-breathe 9s ease-in-out infinite;
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--primary) 24%, transparent) 0%, transparent 100%);
+    background-repeat: no-repeat;
+    background-position: 20% 0%;
+    background-size: 70% 175%;
+    animation: repas-glow-morph 14s ease-in-out infinite;
   }
-  @keyframes repas-glow-breathe {
-    0%, 100% { opacity: 0.6; }
-    50%      { opacity: 1; }
+  /* One coherent blob: it drifts left→right and morphs its shape (animated
+     background position + size) while shifting hue. Rests on a muted grey (low
+     saturation) at each cycle's ends, blooming to full teal in the middle — so it
+     settles more on the muted grey than on the colour. */
+  @keyframes repas-glow-morph {
+    0%, 100% { background-position: 12% 0%; background-size: 60% 160%; opacity: 0.8; filter: saturate(0.3) hue-rotate(0deg); }
+    50%      { background-position: 64% 0%; background-size: 90% 205%; opacity: 1;   filter: saturate(1.15) hue-rotate(-18deg); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .repas-glow { animation: none; opacity: 0.85; }
+    .repas-glow { animation: none; opacity: 0.85; filter: saturate(0.35); background-position: 32% 0%; }
   }
 }
