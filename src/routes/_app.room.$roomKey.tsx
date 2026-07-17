@@ -11,7 +11,7 @@ import { CameraFeed } from "@/components/CameraFeed";
 import { DishwasherPanel } from "@/components/DishwasherPanel";
 import { VacuumPanel } from "@/components/VacuumPanel";
 import { rooms, roomDetails, cameras, motionEvents, vacuum, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, Volume1, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunDim, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, Flower2, Snowflake, ShieldCheck, Home as HomeIcon, ArrowRight, type LucideIcon } from "lucide-react";
+import { Lightbulb, Thermometer, Volume2, Volume1, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunDim, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, LampCeiling, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, Flower2, Snowflake, ShieldCheck, Home as HomeIcon, ArrowRight, type LucideIcon } from "lucide-react";
 
 function batteryFor(level: number): { Icon: LucideIcon; tone: string } {
   if (level < 20) return { Icon: BatteryWarning, tone: "text-destructive" };
@@ -61,7 +61,7 @@ function zoneIcon(name: string): LucideIcon {
   if (n.includes("bureau")) return Briefcase;
   if (n.includes("divan") || n.includes("canapé") || n.includes("canape")) return Armchair;
   if (n.includes("escalier")) return Footprints;
-  if (n.includes("plafond")) return Square;
+  if (n.includes("plafond")) return LampCeiling;
   if (n.includes("playbar") || n.includes("speaker")) return Speaker;
   if (n.includes("chevet") || n.includes("lit")) return Bed;
   if (n.includes("îlot") || n.includes("ilot") || n.includes("plan")) return ChefHat;
@@ -375,7 +375,7 @@ function RoomPage() {
           {detail.devices.ink && (
             <div className="mb-6">
               <Eyebrow className="mb-3">Imprimante · niveaux d'encre</Eyebrow>
-              <div className="grid grid-cols-4 gap-3 stagger">
+              <div className="grid grid-cols-2 gap-3 stagger sm:grid-cols-4">
                 {([
                   ["Cyan", detail.devices.ink.c, "oklch(0.78 0.13 200)"],
                   ["Magenta", detail.devices.ink.m, "oklch(0.65 0.22 350)"],
@@ -588,88 +588,50 @@ function DualClimate({
   coolPreset: DualPreset;
   setCoolPreset: (p: DualPreset) => void;
 }) {
-  const HEAT_TINT = "oklch(0.68 0.18 40)";
-  const COOL_TINT = "oklch(0.72 0.12 220)";
-
   const presets = system === "heat" ? HEAT_PRESETS : COOL_PRESETS;
   const activePreset = system === "heat" ? heatPreset : coolPreset;
   const setPreset = system === "heat" ? setHeatPreset : setCoolPreset;
-  const tint = system === "heat" ? HEAT_TINT : COOL_TINT;
 
   const choices: DualPreset[] = ["off", ...presets];
 
   return (
     <div className="space-y-4">
-      <div
-        className="relative grid grid-cols-2 rounded-full border border-border/60 bg-card p-1"
-        role="tablist"
-        aria-label="Mode climatisation"
+      {/* Chaud / Froid — toggle group, like the room On/Off. */}
+      <ToggleGroup
+        type="single"
+        value={system}
+        onValueChange={(v) => {
+          if (v) setSystem(v as DualSystem);
+        }}
+        variant="outline"
+        className="w-full gap-0"
       >
-        <span
-          aria-hidden
-          className="absolute inset-y-1 w-[calc(50%-0.25rem)] rounded-full shadow-lift transition-all duration-300 ease-out"
-          style={{
-            left: system === "heat" ? "0.25rem" : "calc(50% + 0rem)",
-            background: `linear-gradient(135deg, ${tint}, color-mix(in oklab, ${tint} 60%, var(--foreground)))`,
-          }}
-        />
-        {([
-          { key: "heat" as const, label: "Chaud", Icon: Flame },
-          { key: "cool" as const, label: "Froid", Icon: Snowflake },
-        ]).map(({ key, label, Icon }) => {
-          const active = system === key;
-          return (
-            <CommandButton
-              key={key}
-              role="tab"
-              aria-selected={active}
-              onCommand={() => setSystem(key)}
-              commandLabel={`Climatisation ${label}`}
-              className={
-                "relative z-10 flex items-center justify-center gap-2 rounded-full px-3 py-2.5 text-sm font-semibold transition-colors duration-300 " +
-                (active ? "text-background" : "text-muted-foreground hover:text-foreground")
-              }
-            >
-              <Icon className={"h-4 w-4 " + (active ? "anim-breathe" : "opacity-60")} />
-              <span className="font-serif text-base leading-none">{label}</span>
-            </CommandButton>
-          );
-        })}
-      </div>
-
-
-      <div
-        className="rounded-xl border border-border/60 p-3"
-        style={{ background: `linear-gradient(to right, var(--card), color-mix(in oklab, ${tint} 28%, var(--card)))` }}
-      >
-        <div
-          className="grid gap-2 stagger"
-          style={{ gridTemplateColumns: `repeat(${choices.length}, minmax(0, 1fr))` }}
+        <ToggleGroupItem
+          value="heat"
+          className="flex-1 gap-1.5 rounded-r-none data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
         >
-          {choices.map((p) => {
-            const active = activePreset === p;
-            const isOff = p === "off";
-            return (
-              <CommandButton
-                key={String(p)}
-                onCommand={() => setPreset(p)}
-                commandLabel={isOff ? (system === "heat" ? "Chauffage auto" : "Froid off") : `Consigne ${p}°`}
-                className={
-                  "flex flex-col items-center gap-1 rounded-xl border px-3 py-4 transition-all duration-300 " +
-                  (active
-                    ? "border-foreground bg-foreground text-background -translate-y-0.5 shadow-lift"
-                    : "border-border/60 bg-card hover:-translate-y-0.5 hover:border-border")
-                }
-              >
-                <span className="font-serif text-xl leading-none">{isOff ? (system === "heat" ? "Auto" : "Off") : `${p}°`}</span>
-                <span className={"text-2xs uppercase tracking-wider " + (active ? "opacity-70" : "text-muted-foreground")}>
-                  {isOff ? "éteint" : "on"}
-                </span>
-              </CommandButton>
-            );
-          })}
-        </div>
-      </div>
+          <Flame className="h-4 w-4" />
+          Chaud
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="cool"
+          className="-ml-px flex-1 gap-1.5 rounded-l-none data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
+        >
+          <Snowflake className="h-4 w-4" />
+          Froid
+        </ToggleGroupItem>
+      </ToggleGroup>
+
+
+      {/* Températures — sliding tabs, like the light scenes. */}
+      <SlidingTabs
+        value={String(activePreset)}
+        onValueChange={(v) => setPreset(v === "off" ? "off" : Number(v))}
+        options={choices.map((p) => ({
+          value: String(p),
+          label: p === "off" ? (system === "heat" ? "Auto" : "Off") : `${p}°`,
+        }))}
+      />
     </div>
   );
 }
