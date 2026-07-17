@@ -37,13 +37,13 @@ export function Dashboard() {
   const dateStr = now.toLocaleDateString("fr-BE", { weekday: "long", day: "numeric", month: "long" });
 
   return (
-    <div className="space-y-8 pt-6 sm:pt-4">
+    <div className="space-y-8 pt-16">
       <div className="grid-bento stagger">
 
         {/* Row 1 — greeting left, events right. Nothing else on this row. */}
         <div className="col-span-2 flex h-full flex-col items-start justify-center py-4 sm:col-span-2 lg:col-span-4">
           <Eyebrow size="xs">{dateStr}</Eyebrow>
-          <h1 className="mt-1 font-serif text-xl tracking-tight text-foreground sm:text-3xl">
+          <h1 className="mt-1 font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             {greeting}.
           </h1>
           <RepasLine />
