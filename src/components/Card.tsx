@@ -86,11 +86,21 @@ export function Panel({
 }
 
 /** A Panel with a title row. */
-export function Section({ title, children, action }: { title: string; children: ReactNode; action?: ReactNode }) {
+export function Section({
+  title,
+  children,
+  action,
+  className,
+}: {
+  title: string;
+  children: ReactNode;
+  action?: ReactNode;
+  className?: string;
+}) {
   return (
-    <Panel padding="lg" className="anim-slide-up">
+    <Panel padding="lg" className={cn("anim-slide-up", className)}>
       <header className="mb-5 flex items-end justify-between gap-4">
-        <h2 className="font-serif text-xl tracking-tight text-foreground">{title}</h2>
+        <h2 className="font-serif text-lg tracking-tight text-foreground">{title}</h2>
         {action}
       </header>
       {children}

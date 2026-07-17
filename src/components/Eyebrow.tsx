@@ -25,7 +25,7 @@ export function Eyebrow({
   return (
     <As
       className={cn(
-        "uppercase tracking-eyebrow",
+        "font-medium uppercase tracking-eyebrow",
         size === "xs" ? "text-2xs" : "text-xs",
         tone === "muted" && "text-muted-foreground",
         tone === "foreground" && "text-foreground",
