@@ -427,7 +427,7 @@ function ReseauTile() {
   const MAX = 500; // the line's ceiling — the dial reads the share of it
 
   return (
-    <Tile span={2} to="/reseau" className="flex flex-col">
+    <Tile span={2} to="/securite/reseau" className="flex flex-col">
       <div className="flex items-start justify-between gap-2">
         <Eyebrow>Réseau</Eyebrow>
         <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">

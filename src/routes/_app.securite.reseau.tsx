@@ -24,9 +24,9 @@ const serviceIcons: Record<string, typeof Container> = {
   Search: Globe,
 };
 
-export const Route = createFileRoute("/_app/reseau")({
+export const Route = createFileRoute("/_app/securite/reseau")({
   component: ReseauPage,
-  head: () => ({ meta: [{ title: "Réseau — Maison" }] }),
+  head: () => ({ meta: [{ title: "Réseau — Sécurité" }] }),
 });
 
 function ReseauPage() {

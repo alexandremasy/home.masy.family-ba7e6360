@@ -14,7 +14,6 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTeslaRouteImport } from './routes/_app.tesla'
 import { Route as AppSecuriteRouteImport } from './routes/_app.securite'
-import { Route as AppReseauRouteImport } from './routes/_app.reseau'
 import { Route as AppRepasRouteImport } from './routes/_app.repas'
 import { Route as AppDesignSystemRouteImport } from './routes/_app.design-system'
 import { Route as AppBudgetRouteImport } from './routes/_app.budget'
@@ -26,6 +25,7 @@ import { Route as AppRepasIndexRouteImport } from './routes/_app.repas.index'
 import { Route as AppEnergieIndexRouteImport } from './routes/_app.energie.index'
 import { Route as AppBudgetIndexRouteImport } from './routes/_app.budget.index'
 import { Route as AppAnniversairesIndexRouteImport } from './routes/_app.anniversaires.index'
+import { Route as AppSecuriteReseauRouteImport } from './routes/_app.securite.reseau'
 import { Route as AppSecuritePerimetreRouteImport } from './routes/_app.securite.perimetre'
 import { Route as AppSecuriteEtatRouteImport } from './routes/_app.securite.etat'
 import { Route as AppSecuriteActiviteRouteImport } from './routes/_app.securite.activite'
@@ -68,11 +68,6 @@ const AppTeslaRoute = AppTeslaRouteImport.update({
 const AppSecuriteRoute = AppSecuriteRouteImport.update({
   id: '/securite',
   path: '/securite',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppReseauRoute = AppReseauRouteImport.update({
-  id: '/reseau',
-  path: '/reseau',
   getParentRoute: () => AppRoute,
 } as any)
 const AppRepasRoute = AppRepasRouteImport.update({
@@ -131,6 +126,11 @@ const AppAnniversairesIndexRoute = AppAnniversairesIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppAnniversairesRoute,
+} as any)
+const AppSecuriteReseauRoute = AppSecuriteReseauRouteImport.update({
+  id: '/reseau',
+  path: '/reseau',
+  getParentRoute: () => AppSecuriteRoute,
 } as any)
 const AppSecuritePerimetreRoute = AppSecuritePerimetreRouteImport.update({
   id: '/perimetre',
@@ -238,7 +238,6 @@ export interface FileRoutesByFullPath {
   '/budget': typeof AppBudgetRouteWithChildren
   '/design-system': typeof AppDesignSystemRoute
   '/repas': typeof AppRepasRouteWithChildren
-  '/reseau': typeof AppReseauRoute
   '/securite': typeof AppSecuriteRouteWithChildren
   '/tesla': typeof AppTeslaRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -256,6 +255,7 @@ export interface FileRoutesByFullPath {
   '/securite/activite': typeof AppSecuriteActiviteRoute
   '/securite/etat': typeof AppSecuriteEtatRoute
   '/securite/perimetre': typeof AppSecuritePerimetreRoute
+  '/securite/reseau': typeof AppSecuriteReseauRoute
   '/anniversaires/': typeof AppAnniversairesIndexRoute
   '/budget/': typeof AppBudgetIndexRoute
   '/energie/': typeof AppEnergieIndexRoute
@@ -271,7 +271,6 @@ export interface FileRoutesByTo {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/design-system': typeof AppDesignSystemRoute
-  '/reseau': typeof AppReseauRoute
   '/tesla': typeof AppTeslaRoute
   '/': typeof AppIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -288,6 +287,7 @@ export interface FileRoutesByTo {
   '/securite/activite': typeof AppSecuriteActiviteRoute
   '/securite/etat': typeof AppSecuriteEtatRoute
   '/securite/perimetre': typeof AppSecuritePerimetreRoute
+  '/securite/reseau': typeof AppSecuriteReseauRoute
   '/anniversaires': typeof AppAnniversairesIndexRoute
   '/budget': typeof AppBudgetIndexRoute
   '/energie': typeof AppEnergieIndexRoute
@@ -308,7 +308,6 @@ export interface FileRoutesById {
   '/_app/budget': typeof AppBudgetRouteWithChildren
   '/_app/design-system': typeof AppDesignSystemRoute
   '/_app/repas': typeof AppRepasRouteWithChildren
-  '/_app/reseau': typeof AppReseauRoute
   '/_app/securite': typeof AppSecuriteRouteWithChildren
   '/_app/tesla': typeof AppTeslaRoute
   '/_app/': typeof AppIndexRoute
@@ -327,6 +326,7 @@ export interface FileRoutesById {
   '/_app/securite/activite': typeof AppSecuriteActiviteRoute
   '/_app/securite/etat': typeof AppSecuriteEtatRoute
   '/_app/securite/perimetre': typeof AppSecuritePerimetreRoute
+  '/_app/securite/reseau': typeof AppSecuriteReseauRoute
   '/_app/anniversaires/': typeof AppAnniversairesIndexRoute
   '/_app/budget/': typeof AppBudgetIndexRoute
   '/_app/energie/': typeof AppEnergieIndexRoute
@@ -348,7 +348,6 @@ export interface FileRouteTypes {
     | '/budget'
     | '/design-system'
     | '/repas'
-    | '/reseau'
     | '/securite'
     | '/tesla'
     | '/.mcp/invoke-tool/$tool'
@@ -366,6 +365,7 @@ export interface FileRouteTypes {
     | '/securite/activite'
     | '/securite/etat'
     | '/securite/perimetre'
+    | '/securite/reseau'
     | '/anniversaires/'
     | '/budget/'
     | '/energie/'
@@ -381,7 +381,6 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/design-system'
-    | '/reseau'
     | '/tesla'
     | '/'
     | '/.mcp/invoke-tool/$tool'
@@ -398,6 +397,7 @@ export interface FileRouteTypes {
     | '/securite/activite'
     | '/securite/etat'
     | '/securite/perimetre'
+    | '/securite/reseau'
     | '/anniversaires'
     | '/budget'
     | '/energie'
@@ -417,7 +417,6 @@ export interface FileRouteTypes {
     | '/_app/budget'
     | '/_app/design-system'
     | '/_app/repas'
-    | '/_app/reseau'
     | '/_app/securite'
     | '/_app/tesla'
     | '/_app/'
@@ -436,6 +435,7 @@ export interface FileRouteTypes {
     | '/_app/securite/activite'
     | '/_app/securite/etat'
     | '/_app/securite/perimetre'
+    | '/_app/securite/reseau'
     | '/_app/anniversaires/'
     | '/_app/budget/'
     | '/_app/energie/'
@@ -490,13 +490,6 @@ declare module '@tanstack/react-router' {
       path: '/securite'
       fullPath: '/securite'
       preLoaderRoute: typeof AppSecuriteRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/reseau': {
-      id: '/_app/reseau'
-      path: '/reseau'
-      fullPath: '/reseau'
-      preLoaderRoute: typeof AppReseauRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/repas': {
@@ -575,6 +568,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/anniversaires/'
       preLoaderRoute: typeof AppAnniversairesIndexRouteImport
       parentRoute: typeof AppAnniversairesRoute
+    }
+    '/_app/securite/reseau': {
+      id: '/_app/securite/reseau'
+      path: '/reseau'
+      fullPath: '/securite/reseau'
+      preLoaderRoute: typeof AppSecuriteReseauRouteImport
+      parentRoute: typeof AppSecuriteRoute
     }
     '/_app/securite/perimetre': {
       id: '/_app/securite/perimetre'
@@ -797,6 +797,7 @@ interface AppSecuriteRouteChildren {
   AppSecuriteActiviteRoute: typeof AppSecuriteActiviteRoute
   AppSecuriteEtatRoute: typeof AppSecuriteEtatRoute
   AppSecuritePerimetreRoute: typeof AppSecuritePerimetreRoute
+  AppSecuriteReseauRoute: typeof AppSecuriteReseauRoute
   AppSecuriteIndexRoute: typeof AppSecuriteIndexRoute
 }
 
@@ -804,6 +805,7 @@ const AppSecuriteRouteChildren: AppSecuriteRouteChildren = {
   AppSecuriteActiviteRoute: AppSecuriteActiviteRoute,
   AppSecuriteEtatRoute: AppSecuriteEtatRoute,
   AppSecuritePerimetreRoute: AppSecuritePerimetreRoute,
+  AppSecuriteReseauRoute: AppSecuriteReseauRoute,
   AppSecuriteIndexRoute: AppSecuriteIndexRoute,
 }
 
@@ -816,7 +818,6 @@ interface AppRouteChildren {
   AppBudgetRoute: typeof AppBudgetRouteWithChildren
   AppDesignSystemRoute: typeof AppDesignSystemRoute
   AppRepasRoute: typeof AppRepasRouteWithChildren
-  AppReseauRoute: typeof AppReseauRoute
   AppSecuriteRoute: typeof AppSecuriteRouteWithChildren
   AppTeslaRoute: typeof AppTeslaRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -830,7 +831,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppBudgetRoute: AppBudgetRouteWithChildren,
   AppDesignSystemRoute: AppDesignSystemRoute,
   AppRepasRoute: AppRepasRouteWithChildren,
-  AppReseauRoute: AppReseauRoute,
   AppSecuriteRoute: AppSecuriteRouteWithChildren,
   AppTeslaRoute: AppTeslaRoute,
   AppIndexRoute: AppIndexRoute,

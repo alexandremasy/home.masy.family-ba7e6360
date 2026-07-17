@@ -1,33 +1,17 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import type { LucideIcon } from "lucide-react";
 import {
   Home,
-  UtensilsCrossed,
-  Cake,
-  Car,
-  Wifi,
-  Zap,
-  LayoutDashboard,
-  Table2,
-  CalendarRange,
-  FileUp,
-  ShieldCheck,
-  DoorClosed,
-  Activity,
   ChevronsUpDown,
   ChevronRight,
   MoreHorizontal,
-  Settings,
-  Wrench,
   ExternalLink,
   Palette,
-  Newspaper,
-  Radar,
 } from "lucide-react";
 import { RoomIcon } from "@/components/RoomIcon";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import type { Room } from "@/lib/mock-data";
 import { modes, currentMode } from "@/lib/modes";
+import { rooms, upcoming, externals, navForMode } from "@/lib/nav";
 import {
   Sidebar,
   SidebarHeader,
@@ -48,56 +32,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-type NavItem = { to: string; label: string; icon: LucideIcon };
-
-// Each mode's sections — the per-mode navigation, unchanged from the old TopNav,
-// just moved into the rail. Rooms hang off Pièces as a dropdown.
-const maisonNav: NavItem[] = [
-  { to: "/repas", label: "Repas", icon: UtensilsCrossed },
-  { to: "/anniversaires", label: "Anniversaires", icon: Cake },
-  { to: "/tesla", label: "Bernard", icon: Car },
-  { to: "/reseau", label: "Réseau", icon: Wifi },
-  { to: "/energie", label: "Énergie", icon: Zap },
-];
-
-const budgetNav: NavItem[] = [
-  { to: "/budget/vue", label: "Vue d'ensemble", icon: LayoutDashboard },
-  { to: "/budget/transactions", label: "Transactions", icon: Table2 },
-  { to: "/budget/planification", label: "Planification", icon: CalendarRange },
-  { to: "/budget/import", label: "Import", icon: FileUp },
-];
-
-const securiteNav: NavItem[] = [
-  { to: "/securite/etat", label: "État", icon: ShieldCheck },
-  { to: "/securite/perimetre", label: "Périmètre", icon: DoorClosed },
-  { to: "/securite/activite", label: "Activité", icon: Activity },
-];
-
-const rooms = [
-  { key: "salon", label: "Salon", icon: "sofa" },
-  { key: "bureau", label: "Bureau", icon: "briefcase" },
-  { key: "cuisine", label: "Cuisine", icon: "utensils" },
-  { key: "chambre", label: "Chambre", icon: "bed" },
-  { key: "buanderie", label: "Buanderie", icon: "washing-machine" },
-  { key: "escalier", label: "Escalier", icon: "footprints" },
-] as const;
-
-const upcoming = [
-  { key: "medias", label: "Médias", icon: Newspaper },
-  { key: "veille", label: "Veille", icon: Radar },
-];
-
-const externals = [
-  { href: "https://example.com/settings", label: "Settings", icon: Settings },
-  { href: "https://example.com/dev-tools", label: "Dev tools", icon: Wrench },
-];
-
-function navForMode(key: string): NavItem[] {
-  if (key === "budget") return budgetNav;
-  if (key === "securite") return securiteNav;
-  return maisonNav;
-}
 
 export function AppSidebar() {
   const { pathname } = useLocation();
