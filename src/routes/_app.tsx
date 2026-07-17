@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { createFileRoute, Outlet, useLocation, useNavigate, Link } from "@tanstack/react-router";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -30,6 +31,16 @@ function AppLayout() {
   // Room views carry their own drag handle inside a sticky header, so the panel's
   // own grabber (which scrolls away) is hidden for them.
   const isRoom = pathname.startsWith("/room/");
+
+  // Closing is driven manually, not by Radix Presence: we keep the overlay mounted
+  // (open stays true because pathname hasn't changed yet), let the .overlay-leaving
+  // exit animation play, then navigate. Reliable across the drag/backdrop/Esc paths.
+  const [closing, setClosing] = useState(false);
+  useEffect(() => setClosing(false), [pathname]);
+  const requestClose = useCallback(() => {
+    setClosing(true);
+    window.setTimeout(() => navigate({ to: "/" }), 260);
+  }, [navigate]);
 
   // Pick a line based on day-of-year for a stable but rotating feel
   const start = new Date(new Date().getFullYear(), 0, 0);
@@ -95,12 +106,15 @@ function AppLayout() {
             <DialogPrimitive.Root
               open={isOverlay}
               onOpenChange={(o) => {
-                if (!o) navigate({ to: "/" });
+                if (!o) requestClose();
               }}
             >
               <DialogPrimitive.Portal>
                 <DialogPrimitive.Content
-                  className="overlay-enter fixed inset-0 z-40 overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 md:block md:overflow-y-auto md:overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                  className={
+                    (closing ? "overlay-leaving" : "overlay-enter") +
+                    " fixed inset-0 z-40 overflow-hidden md:block md:overflow-y-auto md:overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                  }
                   aria-describedby={undefined}
                 >
                   {/* Radix needs a title to announce; the real one is inside the route. */}
@@ -110,10 +124,14 @@ function AppLayout() {
                     to="/"
                     aria-label="Fermer"
                     tabIndex={-1}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      requestClose();
+                    }}
                     className="overlay-backdrop fixed inset-0 z-0 bg-foreground/40 md:bg-foreground/30 md:backdrop-blur-md"
                   />
                   <div className="overlay-panel relative z-10 w-full max-md:absolute max-md:inset-x-0 max-md:bottom-0 md:mx-auto md:mt-24 md:mb-8 md:w-full md:max-w-5xl md:px-6">
-                    <MobileDrawerPanel onClose={() => navigate({ to: "/" })} showHandle={!isRoom}>
+                    <MobileDrawerPanel onClose={requestClose} showHandle={!isRoom}>
                       <div className="px-5 pb-8 pt-4 md:px-8 md:py-10">
                         <Outlet />
                       </div>
