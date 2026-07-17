@@ -749,16 +749,17 @@ function RepasLine() {
   };
 
   const today = dayPlan(TODAY);
+  const dateLabel = TODAY.toLocaleDateString("fr-BE", { weekday: "long", day: "numeric", month: "long" });
 
   return (
     <Link
       to="/repas"
-      aria-label="Repas d'aujourd'hui"
+      aria-label={`Repas du ${dateLabel}`}
       className="group mt-4 block w-full max-w-md min-w-0 py-0.5"
     >
       <div className="flex items-center gap-1.5">
         <Utensils className="h-3 w-3 shrink-0 text-muted-foreground/60" />
-        <Eyebrow tone="current" size="xs" as="span" className="text-muted-foreground">Aujourd'hui</Eyebrow>
+        <Eyebrow tone="current" size="xs" as="span" className="text-muted-foreground">{dateLabel}</Eyebrow>
       </div>
 
       {today.midi || today.soir ? (
