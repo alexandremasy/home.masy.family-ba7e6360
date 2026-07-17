@@ -77,7 +77,7 @@ export function Dashboard() {
           }
           const bureauCls = room.key === "bureau" ? "sm:col-span-2" : "";
           return [
-            <Tile key={room.key} span={1} to={`/room/${room.key}`} className={"flex flex-col !p-4 " + bureauCls}>
+            <Tile key={room.key} span={1} to={`/room/${room.key}`} className={"flex flex-col !p-4 !border-white !bg-card/80 backdrop-blur-md " + bureauCls}>
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-mustard/20 text-mustard" : "bg-secondary text-muted-foreground")}>
@@ -87,18 +87,17 @@ export function Dashboard() {
                     <p className="font-serif text-base font-semibold">{room.name}</p>
                   </div>
                 </div>
-                {bureauCls && <RoomStatus on={!!room.lightsOn} />}
               </div>
 
               {typeof room.temperature === "number" ? (
-                <p className="mt-6 font-serif text-4xl tracking-tight">
+                <p className="mt-3 font-serif text-4xl tracking-tight">
                   <CountUp to={room.temperature} decimals={1} /><span className="text-base text-muted-foreground">°C</span>
                 </p>
               ) : (
-                <div className="mt-6 h-[2.75rem]" aria-hidden />
+                <div className="mt-3 h-[2.75rem]" aria-hidden />
               )}
 
-              <div className="mt-auto pt-3 flex items-center gap-3 text-xs text-muted-foreground">
+              <div className="mt-auto pt-2 flex items-center gap-3 text-xs text-muted-foreground">
                 <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-mustard" : "")}>
                   <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-mustard" : "")} />
                   {room.lightsOn ? "Allumé" : "Éteint"}
@@ -463,7 +462,7 @@ type SalonVariant = "spotify" | "netflix" | "idle";
 
 function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: SalonVariant }) {
   return (
-    <Tile span={2} to={`/room/${room.key}`} className="relative flex flex-col !p-4">
+    <Tile span={2} to={`/room/${room.key}`} className="relative flex flex-col !p-4 !border-white !bg-card/80 backdrop-blur-md">
 
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
@@ -474,11 +473,10 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
             <p className="font-serif text-base font-semibold">{room.name}</p>
           </div>
         </div>
-        <RoomStatus on={!!room.lightsOn} />
       </div>
 
       {variant !== "idle" && (
-        <div className="mt-5 flex items-center gap-2.5 rounded-xl bg-secondary/60 p-2.5">
+        <div className="mt-3 flex items-center gap-2.5 rounded-xl bg-secondary/60 p-2.5">
           {variant === "spotify" && (
             <>
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[oklch(0.72_0.18_150)]/15 text-[oklch(0.55_0.18_150)]" aria-hidden>
@@ -507,7 +505,7 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
         </div>
       )}
 
-      <div className="mt-auto pt-3 flex items-center gap-3 text-xs text-muted-foreground">
+      <div className="mt-auto pt-2 flex items-center gap-3 text-xs text-muted-foreground">
         <span className={"inline-flex items-center gap-1.5 transition-colors " + (room.lightsOn ? "text-mustard" : "")}>
           <Lightbulb className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-mustard" : "")} />
           {room.lightsOn ? "Allumé" : "Éteint"}
@@ -538,12 +536,6 @@ function SpotifyGlyph({ className }: { className?: string }) {
     <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
       <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.6 14.4a.7.7 0 0 1-.96.23c-2.63-1.6-5.94-1.97-9.84-1.07a.7.7 0 1 1-.31-1.36c4.27-.98 7.93-.56 10.88 1.24.33.2.43.64.23.96zm1.23-2.74a.88.88 0 0 1-1.2.29c-3.01-1.85-7.6-2.39-11.16-1.31a.88.88 0 1 1-.51-1.68c4.07-1.24 9.13-.64 12.59 1.49.41.25.54.79.28 1.21zm.11-2.86c-3.61-2.14-9.57-2.34-13.02-1.29a1.05 1.05 0 1 1-.61-2.01c3.96-1.2 10.54-.97 14.7 1.5a1.05 1.05 0 1 1-1.07 1.8z"/>
     </svg>
-  );
-}
-
-function RoomStatus({ on }: { on: boolean }) {
-  return (
-    <span className={"h-2.5 w-2.5 rounded-full " + (on ? "bg-mustard" : "bg-muted-foreground/25")} />
   );
 }
 
