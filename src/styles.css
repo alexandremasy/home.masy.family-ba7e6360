@@ -253,7 +253,10 @@
   .grid-bento {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-rows: 10rem;
+    /* Mobile stacks: let each card take its content height (paired 1-col cards
+       still stretch to match within their row). Desktop keeps the fixed mosaic
+       via the media queries below. */
+    grid-auto-rows: auto;
     gap: 0.75rem;
     grid-auto-flow: row dense;
   }
