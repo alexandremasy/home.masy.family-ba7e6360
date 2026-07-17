@@ -55,7 +55,7 @@ export function Dashboard() {
           <Tile span={1} tone="default" className="relative flex min-h-[3rem] items-center overflow-hidden !rounded-full !border-0 !bg-card/70 !px-5 !py-2 backdrop-blur-md">
             <PMCBag className="pointer-events-none absolute -right-2 -top-1 h-[150%] w-auto opacity-90" />
             <div className="relative min-w-0">
-              <p className="truncate font-serif text-base leading-tight">{calendrier.poubelleToday.type}</p>
+              <p className="truncate font-serif text-base font-semibold leading-tight">{calendrier.poubelleToday.type}</p>
               <p className="text-2xs opacity-80">Auj. · avant {calendrier.poubelleToday.time}</p>
             </div>
           </Tile>
@@ -286,7 +286,7 @@ function BirthdayTile() {
     <Tile span={1} to="/anniversaires" tone="default" className="relative flex min-h-[3rem] items-center overflow-hidden !rounded-full !border-0 !bg-card/70 !px-5 !py-2 backdrop-blur-md">
       <Cake className={"pointer-events-none absolute -right-3 -top-2 h-16 w-16 " + (today ? "opacity-15" : "opacity-[0.06]")} />
       <div className="relative min-w-0">
-        <p className="break-words font-serif text-base leading-tight">Anniversaire de {first.p.name}</p>
+        <p className="break-words font-serif text-base font-semibold leading-tight">Anniversaire de {first.p.name}</p>
         <p className={"text-2xs " + (today ? "opacity-80" : "text-muted-foreground")}>
           {when} · {upcomingAge(first.p)} ans
         </p>
