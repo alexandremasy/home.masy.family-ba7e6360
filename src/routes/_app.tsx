@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { useScrollLock } from "@/lib/use-scroll-lock";
 import { createFileRoute, Outlet, useLocation, useNavigate, Link } from "@tanstack/react-router";
 import { AppSidebar } from "@/components/AppSidebar";
 import { BottomBar } from "@/components/BottomBar";
@@ -37,6 +38,8 @@ function AppLayout() {
   // exit animation play, then navigate. Reliable across the drag/backdrop/Esc paths.
   const [closing, setClosing] = useState(false);
   useEffect(() => setClosing(false), [pathname]);
+  // Lock background scroll while the overlay is open (iOS-safe).
+  useScrollLock(isOverlay);
   const requestClose = useCallback(() => {
     setClosing(true);
     window.setTimeout(() => navigate({ to: "/" }), 260);

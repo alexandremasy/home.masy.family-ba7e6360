@@ -8,6 +8,7 @@ import type { Room } from "@/lib/mock-data";
 import { modes, currentMode } from "@/lib/modes";
 import { rooms, upcoming, externals, navForMode } from "@/lib/nav";
 import { cn } from "@/lib/utils";
+import { useScrollLock } from "@/lib/use-scroll-lock";
 
 const rowCls = (active: boolean) =>
   cn(
@@ -69,6 +70,7 @@ export function MobileMenuSheet({
   const isMaison = current.key === "maison";
   const activeRoom = rooms.find((r) => pathname.startsWith("/room/" + r.key));
   const isActive = (to: string) => pathname === to || pathname.startsWith(to + "/");
+  useScrollLock(open);
 
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
