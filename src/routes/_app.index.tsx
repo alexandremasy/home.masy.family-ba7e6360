@@ -37,7 +37,7 @@ export function Dashboard() {
   const dateStr = now.toLocaleDateString("fr-BE", { weekday: "long", day: "numeric", month: "long" });
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pt-6 sm:pt-4">
       <div className="grid-bento stagger">
 
         {/* Row 1 — greeting left, events right. Nothing else on this row. */}
