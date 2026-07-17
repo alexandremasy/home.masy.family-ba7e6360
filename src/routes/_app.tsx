@@ -2,6 +2,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { createFileRoute, Outlet, useLocation, useNavigate, Link } from "@tanstack/react-router";
 import { AppSidebar } from "@/components/AppSidebar";
 import { BottomBar } from "@/components/BottomBar";
+import { MobileDrawerPanel } from "@/components/MobileDrawerPanel";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { footerLines } from "@/lib/mock-data";
 import { Dashboard } from "./_app.index";
@@ -104,13 +105,11 @@ function AppLayout() {
                     className="overlay-backdrop fixed inset-0 z-0 bg-foreground/30 backdrop-blur-md"
                   />
                   <div className="overlay-panel relative z-10 w-full sm:mx-auto sm:mt-24 sm:mb-8 sm:w-full sm:max-w-5xl sm:px-6">
-                    <div className="relative flex max-h-[88vh] flex-col overflow-y-auto rounded-t-3xl border border-border/60 bg-background shadow-lift [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:max-h-none sm:overflow-clip sm:rounded-3xl">
-                      {/* Grabber — the drawer's affordance on mobile. */}
-                      <div className="mx-auto mt-2.5 h-1.5 w-10 shrink-0 rounded-full bg-border sm:hidden" />
+                    <MobileDrawerPanel onClose={() => navigate({ to: "/" })}>
                       <div className="px-5 pb-8 pt-4 sm:px-8 sm:py-10">
                         <Outlet />
                       </div>
-                    </div>
+                    </MobileDrawerPanel>
                   </div>
                   <OverlayCloseLink to="/" className="hidden sm:grid" />
                 </DialogPrimitive.Content>
