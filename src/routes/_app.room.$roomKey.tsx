@@ -11,7 +11,7 @@ import { CameraFeed } from "@/components/CameraFeed";
 import { DishwasherPanel } from "@/components/DishwasherPanel";
 import { VacuumPanel } from "@/components/VacuumPanel";
 import { rooms, roomDetails, cameras, motionEvents, vacuum, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, VolumeX, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunDim, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, Flower2, Snowflake, ShieldCheck, Home as HomeIcon, ArrowRight, type LucideIcon } from "lucide-react";
+import { Lightbulb, Thermometer, Volume2, Volume1, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Tv, Music as MusicIcon, Moon, Flame, SunDim, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, Square, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, Flower2, Snowflake, ShieldCheck, Home as HomeIcon, ArrowRight, type LucideIcon } from "lucide-react";
 
 function batteryFor(level: number): { Icon: LucideIcon; tone: string } {
   if (level < 20) return { Icon: BatteryWarning, tone: "text-destructive" };
@@ -555,7 +555,7 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
         {/* Volume — a button group of actions. */}
         <div className="flex w-full sm:flex-1">
           <Button variant="outline" aria-label="Baisser le volume" className="flex-1 rounded-r-none">
-            <VolumeX className="h-4 w-4" />
+            <Volume1 className="h-4 w-4" />
           </Button>
           <Button variant="outline" aria-label="Monter le volume" className="-ml-px flex-1 rounded-l-none">
             <Volume2 className="h-4 w-4" />
