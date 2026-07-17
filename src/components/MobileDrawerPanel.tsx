@@ -104,14 +104,14 @@ export function MobileDrawerPanel({
     <DrawerDragContext.Provider value={{ handlers }}>
       <div
         ref={surfaceRef}
-        className="relative flex max-h-[85dvh] flex-col overflow-y-auto overscroll-contain rounded-t-3xl border border-border/60 bg-background shadow-lift [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:max-h-none sm:overflow-clip sm:rounded-3xl"
+        className="relative flex max-h-[85dvh] flex-col overflow-y-auto overscroll-contain rounded-t-3xl border border-border/60 bg-background/80 shadow-lift backdrop-blur-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:max-h-none md:overflow-clip md:rounded-3xl"
       >
         {/* Grabber — the affordance; the header below is draggable too. Hidden when
             the route carries its own handle inside a sticky header. */}
         {showHandle && (
           <div
             {...(handlers ?? {})}
-            className="flex shrink-0 cursor-grab touch-none justify-center pb-1 pt-3 active:cursor-grabbing sm:hidden"
+            className="flex shrink-0 cursor-grab touch-none justify-center pb-1 pt-3 active:cursor-grabbing md:hidden"
           >
             <div className="h-1.5 w-11 rounded-full bg-muted-foreground/30" />
           </div>

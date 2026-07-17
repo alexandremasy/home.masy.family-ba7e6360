@@ -145,7 +145,7 @@ function RoomPage() {
           <div className="relative mx-auto mb-2 h-1.5 w-11 rounded-full bg-muted-foreground/30 sm:hidden" />
         )}
         <div className="relative flex items-center gap-3">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/12 text-primary">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/12 text-primary">
             <RoomIcon icon={room.icon} className="h-5 w-5 anim-float" />
           </span>
           <div className="min-w-0 flex-1">
