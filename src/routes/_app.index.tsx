@@ -90,7 +90,7 @@ export function Dashboard() {
               </div>
 
               {typeof room.temperature === "number" ? (
-                <p className={"mt-3 font-serif tracking-tight " + (bureauCls ? "text-2xl" : "text-4xl")}>
+                <p className="mt-3 font-serif text-2xl tracking-tight">
                   <CountUp to={room.temperature} decimals={1} /><span className="text-base text-muted-foreground">°C</span>
                 </p>
               ) : (
@@ -205,7 +205,7 @@ export function Dashboard() {
               </span>
             </div>
             <div className="mt-3 flex items-baseline gap-1">
-              <span className="font-serif text-3xl tracking-tight"><CountUp to={tesla.charge} /></span>
+              <span className="font-serif text-2xl tracking-tight"><CountUp to={tesla.charge} /></span>
               <span className="text-base opacity-60">%</span>
               <span className="ml-2 text-xs opacity-60">· {tesla.rangeKm} km</span>
             </div>
@@ -235,7 +235,7 @@ export function Dashboard() {
             <div className="mt-4 flex items-end gap-6">
               <div>
                 <div className="flex items-baseline gap-1">
-                  <span className="font-serif text-4xl tracking-tight"><CountUp to={tesla.charge} /></span>
+                  <span className="font-serif text-2xl tracking-tight"><CountUp to={tesla.charge} /></span>
                   <span className="text-lg opacity-60">%</span>
                 </div>
                 <p className="text-xs opacity-60">{tesla.rangeKm} km · limite {tesla.chargeLimit}%</p>
