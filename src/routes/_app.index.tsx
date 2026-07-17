@@ -758,7 +758,7 @@ function RepasLine() {
     <Link
       to="/repas"
       aria-label="Repas d'aujourd'hui et de demain"
-      className="group mt-4 grid w-full max-w-md grid-cols-2 divide-x divide-border/50"
+      className="group mt-4 grid w-full max-w-md grid-cols-2"
     >
       {days.map((d, i) => (
         <div key={d.label} className={"min-w-0 py-0.5 " + (i === 0 ? "pr-4" : "pl-4")}>
