@@ -84,10 +84,7 @@ export function Dashboard() {
                     <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
                   </span>
                   <div>
-                    <p className="font-serif text-lg">{room.name}</p>
-                    {room.scene && room.scene !== "Off" && (
-                      <Eyebrow className="mt-0.5">{room.scene}</Eyebrow>
-                    )}
+                    <p className="font-serif text-base font-semibold">{room.name}</p>
                   </div>
                 </div>
                 {bureauCls && <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />}
@@ -474,10 +471,7 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
             <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
           </span>
           <div>
-            <p className="font-serif text-lg">{room.name}</p>
-            {room.scene && room.scene !== "Off" && (
-              <Eyebrow className="mt-0.5">{room.scene}</Eyebrow>
-            )}
+            <p className="font-serif text-base font-semibold">{room.name}</p>
           </div>
         </div>
         <RoomStatus on={!!room.lightsOn} occupied={!!room.occupied} />
