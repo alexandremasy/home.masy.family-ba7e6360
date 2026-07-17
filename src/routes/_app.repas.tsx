@@ -1,5 +1,4 @@
 import { createFileRoute, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
-import { PageHeader } from "@/components/PageHeader";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DishesProvider } from "@/lib/dishes-store";
 
@@ -30,18 +29,33 @@ function RepasLayout() {
 
   return (
     <DishesProvider>
-      <div className="space-y-6">
-        <PageHeader title="Repas" variant="page" />
+      {/* Full-bleed stage, aligned with Anniversaires: cancel the shell's px so the
+          teal wash reaches edge to edge, the inner wrapper re-adds content padding. */}
+      <div className="relative -mx-4 pt-16 sm:-mx-6">
+        {/* A soft teal glow anchored top-left, reaching a touch toward the top-right
+            corner, breathing slowly. Fades out by the end of the tabs (h-60 ≈ title +
+            nav). absolute, not fixed — the .mode-enter ancestor keeps a transform,
+            which would trap a fixed layer. See .repas-glow in styles.css. */}
+        <div
+          aria-hidden
+          className="repas-glow pointer-events-none absolute inset-x-0 -top-6 -z-10 h-72 sm:-top-10"
+        />
 
-        <Tabs value={current} onValueChange={(to) => navigate({ to })}>
-          <TabsList className="h-10 bg-secondary/70 p-1">
-            {tabs.map((t) => (
-              <TabsTrigger key={t.to} value={t.to} className="px-4">{t.label}</TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+        <div className="space-y-6 px-6 sm:px-12">
+          {/* Page header — serif title over the wash, no sticky glass bar. */}
+          <h1 className="font-serif text-3xl tracking-tight sm:text-4xl">Repas</h1>
 
-        <Outlet />
+          {/* Page navigation — each tab is its own route (deep-linkable). */}
+          <Tabs value={current} onValueChange={(to) => navigate({ to })}>
+            <TabsList className="h-10 bg-secondary/70 p-1">
+              {tabs.map((t) => (
+                <TabsTrigger key={t.to} value={t.to} className="px-4">{t.label}</TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+
+          <Outlet />
+        </div>
       </div>
     </DishesProvider>
   );

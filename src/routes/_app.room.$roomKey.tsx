@@ -134,15 +134,15 @@ function RoomPage() {
       <div
         {...(drag.handlers ?? {})}
         className={
-          "page-header sticky top-0 z-20 -mx-5 -mt-4 px-5 pt-2 pb-2 sm:-mx-8 sm:-mt-10 sm:px-8 sm:pb-4 sm:pt-10 " +
+          "page-header sticky top-0 z-20 -mx-5 -mt-4 px-5 pt-2 pb-2 md:-mx-8 md:-mt-10 md:px-8 md:pb-4 md:pt-10 " +
           (drag.handlers ? "cursor-grab touch-none select-none active:cursor-grabbing" : "")
         }
       >
-        <div className="page-header__bg pointer-events-none absolute inset-0 bg-background/95 sm:bg-background/85 sm:backdrop-blur-xl" />
+        <div className="page-header__bg pointer-events-none absolute inset-0 bg-background/95 md:bg-background/85 md:backdrop-blur-xl" />
         <div className="page-header__fade pointer-events-none absolute inset-x-0 top-full h-8 bg-gradient-to-b from-background to-transparent" />
         {/* Drag handle — lives in the sticky header so it stays put while scrolling. */}
         {drag.handlers && (
-          <div className="relative mx-auto mb-2 h-1.5 w-11 rounded-full bg-muted-foreground/30 sm:hidden" />
+          <div className="relative mx-auto mb-2 h-1.5 w-11 rounded-full bg-muted-foreground/30 md:hidden" />
         )}
         <div className="relative flex items-center gap-3">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/12 text-primary">

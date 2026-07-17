@@ -553,4 +553,20 @@
   @media (prefers-reduced-motion: reduce) {
     .living-gradient__blob { animation: none; }
   }
+
+  /* Repas page glow: a teal corner wash, strong top-left and a lighter touch
+     reaching the top-right, breathing slowly under the title + tabs. */
+  .repas-glow {
+    background:
+      radial-gradient(90% 120% at 0% 0%, color-mix(in oklab, var(--primary) 22%, transparent) 0%, transparent 68%),
+      radial-gradient(95% 120% at 100% 0%, color-mix(in oklab, var(--primary) 21%, transparent) 0%, transparent 70%);
+    animation: repas-glow-breathe 9s ease-in-out infinite;
+  }
+  @keyframes repas-glow-breathe {
+    0%, 100% { opacity: 0.6; }
+    50%      { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .repas-glow { animation: none; opacity: 0.85; }
+  }
 }

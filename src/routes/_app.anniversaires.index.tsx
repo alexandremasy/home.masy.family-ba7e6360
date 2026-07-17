@@ -7,7 +7,7 @@ import { Cake, Copy, Check, Pencil, Plus, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Eyebrow } from "@/components/Eyebrow";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ResponsiveModal } from "@/components/ResponsiveModal";
 import { MessageStudio } from "@/components/MessageStudio";
 import { PersonCard } from "@/components/PersonCard";
 import { Separator } from "@/components/ui/separator";
@@ -81,6 +81,9 @@ function TodayHero({ person, onEditProfile }: { person: Person; onEditProfile: (
     { label: "Bref", sliders: { ...d, longueur: 18 }, seed: 2 },
   ];
   const [edit, setEdit] = useState<Variant | null>(null);
+  const studio = edit && (
+    <MessageStudio key={edit.label} person={person} initialSliders={edit.sliders} initialSeed={edit.seed} />
+  );
 
   return (
     <section>
@@ -123,16 +126,13 @@ function TodayHero({ person, onEditProfile }: { person: Person; onEditProfile: (
         ))}
       </div>
 
-      <Dialog open={edit !== null} onOpenChange={(o) => !o && setEdit(null)}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="font-serif text-xl">Message pour {person.name}</DialogTitle>
-          </DialogHeader>
-          {edit && (
-            <MessageStudio key={edit.label} person={person} initialSliders={edit.sliders} initialSeed={edit.seed} />
-          )}
-        </DialogContent>
-      </Dialog>
+      <ResponsiveModal
+        open={edit !== null}
+        onOpenChange={(o) => !o && setEdit(null)}
+        title={`Message pour ${person.name}`}
+      >
+        {studio}
+      </ResponsiveModal>
     </section>
   );
 }
@@ -153,7 +153,7 @@ function SuggestionCard({ person, variant, onEdit }: { person: Person; variant: 
   };
 
   return (
-    <div className="flex flex-col gap-2 rounded-md border border-border/50 bg-card p-4 shadow-soft">
+    <div className="flex flex-col gap-2 rounded-xl border border-border/50 bg-card/70 p-4 shadow-soft">
       <div className="flex items-center justify-between">
         <Eyebrow size="xs">{variant.label}</Eyebrow>
         <div className="-mr-1 flex items-center gap-0.5 text-muted-foreground">

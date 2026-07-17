@@ -1,14 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { useScrollLock } from "@/lib/use-scroll-lock";
-import { createFileRoute, Outlet, useLocation, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
 import { AppSidebar } from "@/components/AppSidebar";
 import { BottomBar } from "@/components/BottomBar";
-import { MobileDrawerPanel } from "@/components/MobileDrawerPanel";
+import { AppSheet } from "@/components/AppSheet";
+import { useSheetClose } from "@/lib/use-sheet-close";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { footerLines } from "@/lib/mock-data";
 import { Dashboard } from "./_app.index";
-import { OverlayCloseLink } from "@/components/OverlayCloseLink";
 import { LivingGradient } from "@/components/LivingGradient";
 
 export const Route = createFileRoute("/_app")({
@@ -29,21 +26,10 @@ function AppLayout() {
     // Not in any nav — a reference page, reachable by URL.
     pathname.startsWith("/design-system");
   const isOverlay = !isFullBleed && pathname !== "/";
-  // Room views carry their own drag handle inside a sticky header, so the panel's
-  // own grabber (which scrolls away) is hidden for them.
-  const isRoom = pathname.startsWith("/room/");
 
-  // Closing is driven manually, not by Radix Presence: we keep the overlay mounted
-  // (open stays true because pathname hasn't changed yet), let the .overlay-leaving
-  // exit animation play, then navigate. Reliable across the drag/backdrop/Esc paths.
-  const [closing, setClosing] = useState(false);
-  useEffect(() => setClosing(false), [pathname]);
-  // Lock background scroll while the overlay is open (iOS-safe).
-  useScrollLock(isOverlay);
-  const requestClose = useCallback(() => {
-    setClosing(true);
-    window.setTimeout(() => navigate({ to: "/" }), 260);
-  }, [navigate]);
+  // Close plays the exit animation, then navigates home — shared with in-page modals
+  // via useSheetClose. `closing` also lifts the dashboard blur in parallel (below).
+  const { closing, requestClose } = useSheetClose({ open: isOverlay, onClosed: () => navigate({ to: "/" }) });
 
   // Pick a line based on day-of-year for a stable but rotating feel
   const start = new Date(new Date().getFullYear(), 0, 0);
@@ -59,8 +45,11 @@ function AppLayout() {
           room it needs (bar height + its bottom offset). */}
       <SidebarInset className="isolate pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-0">
         {/* Full-viewport living gradient — behind the content, above the page bg
-            (SidebarInset is isolated). Shifts hue as the page scrolls. */}
-        <LivingGradient />
+            (SidebarInset is isolated). Shifts hue as the page scrolls. Lives only in
+            the dashboard world: the home screen and the overlay modals above it. The
+            full-bleed module pages (repas, anniversaires, budget…) own their own calm
+            surface, so it doesn't mount there. */}
+        {!isFullBleed && <LivingGradient />}
         {/* Light bar: just the rail toggle, no surface — the button floats over the
             page. pointer-events-none so the transparent strip never eats clicks on
             content scrolling beneath it; the trigger re-enables them. --nav-h mirrors
@@ -102,51 +91,13 @@ function AppLayout() {
               <p className="font-serif text-sm italic text-muted-foreground">{line}</p>
             </footer>
 
-            {/* On Radix Dialog, not by hand — it traps focus, handles Escape and the
-                scroll lock. Not ui/sheet (a side panel) nor ui/dialog (a centred
-                box): the primitives with our own shape. Below md it's a Stripe-style
-                bottom drawer (anchored to the bottom, rounded top, slides up); at md
-                and up it's the centred panel that scrolls its whole container. This
-                md breakpoint matches useIsMobile, so overlays and ResponsiveModal
-                flip to a sheet at the same width. */}
-            <DialogPrimitive.Root
-              open={isOverlay}
-              onOpenChange={(o) => {
-                if (!o) requestClose();
-              }}
-            >
-              <DialogPrimitive.Portal>
-                <DialogPrimitive.Content
-                  className={
-                    (closing ? "overlay-leaving" : "overlay-enter") +
-                    " fixed inset-0 z-40 overflow-hidden md:block md:overflow-y-auto md:overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                  }
-                  aria-describedby={undefined}
-                >
-                  {/* Radix needs a title to announce; the real one is inside the route. */}
-                  <DialogPrimitive.Title className="sr-only">Détail</DialogPrimitive.Title>
-
-                  <Link
-                    to="/"
-                    aria-label="Fermer"
-                    tabIndex={-1}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      requestClose();
-                    }}
-                    className="overlay-backdrop fixed inset-0 z-0 md:bg-foreground/30 md:backdrop-blur-md"
-                  />
-                  <div className="overlay-panel relative z-10 w-full max-md:absolute max-md:inset-x-0 max-md:bottom-0 md:mx-auto md:mt-24 md:mb-8 md:w-full md:max-w-5xl md:px-6">
-                    <MobileDrawerPanel onClose={requestClose} showHandle={!isRoom}>
-                      <div className="px-5 pb-8 pt-4 md:px-8 md:py-10">
-                        <Outlet />
-                      </div>
-                    </MobileDrawerPanel>
-                  </div>
-                  <OverlayCloseLink to="/" className="hidden md:grid" />
-                </DialogPrimitive.Content>
-              </DialogPrimitive.Portal>
-            </DialogPrimitive.Root>
+            {/* The one sheet shell, shared with in-page modals (AppSheet). Below md a
+                Stripe-style bottom drawer; at md+ a top-anchored panel. `closing` is
+                owned here (useSheetClose) so the dashboard blur above can lift in
+                parallel with the exit animation. */}
+            <AppSheet open={isOverlay} closing={closing} onRequestClose={requestClose} size="lg">
+              <Outlet />
+            </AppSheet>
           </>
         )}
       </SidebarInset>

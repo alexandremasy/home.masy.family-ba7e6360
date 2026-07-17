@@ -123,7 +123,7 @@ function TeslaPage() {
 
   return (
     <div className="space-y-8">
-      <PageHeader title="Bernard" />
+      <PageHeader title="Bernard" icon={<Car className="h-4 w-4" />} back={null} size="sm" />
 
       {/* ============ 1. ÉTAT DE LA VOITURE ============ */}
       <section className="space-y-4">

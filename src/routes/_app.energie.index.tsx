@@ -142,13 +142,12 @@ function buildHistory(domain: Domain) {
 // ---------- card shell ----------
 
 function MetricCard({
-  label, icon, accent = "primary", alert = false, animatedIcon, children,
+  label, icon, accent = "primary", alert = false, children,
 }: {
   label: string;
   icon: React.ReactNode;
   accent?: "primary" | "warm";
   alert?: boolean;
-  animatedIcon?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -160,19 +159,18 @@ function MetricCard({
           : "border-border/60 hover:border-border")
       }
     >
-      <div className="flex items-center justify-between">
-        <Eyebrow>{label}</Eyebrow>
+      <div className="flex items-center gap-2.5">
         <span
           className={
-            "grid h-9 w-9 place-items-center rounded-full " +
+            "grid h-9 w-9 shrink-0 place-items-center rounded-full " +
             (accent === "warm" || alert
               ? "bg-warm/15 text-warm"
-              : "bg-primary/10 text-primary") +
-            (animatedIcon ? " " : "")
+              : "bg-primary/10 text-primary")
           }
         >
           {icon}
         </span>
+        <Eyebrow>{label}</Eyebrow>
       </div>
       {children}
     </div>
@@ -191,6 +189,7 @@ function EnergiePage() {
   const posZonePct = (maxPos / totalRange) * 100;
   const negZonePct = (maxNeg / totalRange) * 100;
   const cfg = domainConfig[domain];
+  const DomainIcon = cfg.icon;
   const lastReading = new Date(lastReadingDate);
   const lastReadingFmt = lastReading.toLocaleDateString("fr-BE", {
     day: "numeric", month: "long", year: "numeric",
@@ -225,7 +224,7 @@ function EnergiePage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Énergie" subtitle="Vue d'ensemble de la consommation" />
+      <PageHeader title="Énergie" subtitle="Vue d'ensemble de la consommation" icon={<Zap className="h-4 w-4" />} back={null} size="sm" />
 
       {energie.monthlyDue ? (
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-warm p-6 text-warm-foreground sm:p-8 anim-pop-in">
@@ -262,15 +261,14 @@ function EnergiePage() {
         {/* ELECTRICITY */}
         <MetricCard label="Électricité" icon={<Zap className="h-4 w-4 anim-glow" />}>
           <div className="mt-4 flex items-baseline gap-1.5">
-            <span className="font-serif text-5xl tracking-tight">{electricity.dailyKWh}</span>
+            <span className="font-serif text-2xl tracking-tight">{electricity.dailyKWh}</span>
             <span className="text-base text-muted-foreground">kWh / jour</span>
           </div>
           <div className="mt-2"><TrendBadge trend={electricity.trend} pct={electricity.trendPct} /></div>
 
-          <div className="mt-5 flex items-center justify-between text-sm">
-            <span className="text-muted-foreground capitalize">Total {coveredMonthShort}</span>
-            <strong className="font-serif text-lg tabular-nums">{electricity.monthKWh} kWh</strong>
-          </div>
+          <p className="mt-2 text-sm text-muted-foreground">
+            <span className="font-serif tabular-nums text-foreground">{electricity.monthKWh} kWh</span> en {coveredMonthLabel}
+          </p>
 
           <div className="mt-3 grid grid-cols-2 gap-2">
             <div className="rounded-xl bg-secondary/60 p-3">
@@ -295,7 +293,7 @@ function EnergiePage() {
         {/* WATER */}
         <MetricCard label="Eau" icon={<Droplet className="h-4 w-4 anim-float" />}>
           <div className="mt-4 flex items-baseline gap-1.5">
-            <span className="font-serif text-5xl tracking-tight">{water.dailyM3}</span>
+            <span className="font-serif text-2xl tracking-tight">{water.dailyM3}</span>
             <span className="text-base text-muted-foreground">m³ / jour</span>
           </div>
           <p className="mt-1 text-sm text-muted-foreground tabular-nums">≈ {water.dailyL} L par jour</p>
@@ -318,7 +316,7 @@ function EnergiePage() {
           alert={oil.status === "alert"}
         >
           <div className="mt-4 flex items-baseline gap-1.5">
-            <span className="font-serif text-5xl tracking-tight">{oil.tankPct}</span>
+            <span className="font-serif text-2xl tracking-tight">{oil.tankPct}</span>
             <span className="text-base text-muted-foreground">% citerne</span>
           </div>
           <p className="mt-1 text-sm text-muted-foreground tabular-nums">
@@ -362,7 +360,12 @@ function EnergiePage() {
       <div className="rounded-2xl border border-border/60 bg-card p-6 shadow-soft sm:p-8 anim-slide-up">
         <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="font-serif text-xl tracking-tight">Historique {cfg.label.toLowerCase()}</h2>
+            <div className="flex items-center gap-2.5">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                <DomainIcon className="h-4 w-4" />
+              </span>
+              <Eyebrow>Historique {cfg.label.toLowerCase()}</Eyebrow>
+            </div>
             <p className="mt-1 text-sm text-muted-foreground">12 derniers mois — vue glissante</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -413,7 +416,7 @@ function EnergiePage() {
               ? (Math.abs(h.value) / (maxNeg || 1)) * 100
               : (h.value / (maxPos || 1)) * 100;
             return (
-              <div key={h.key} className="group relative flex h-full flex-1 flex-col">
+              <div key={h.key} className="group relative flex h-full min-w-0 flex-1 flex-col">
                 {/* Positive zone */}
                 <div style={{ height: `${posZonePct}%` }} className="flex items-end justify-center">
                   {!isNeg && (
@@ -457,7 +460,7 @@ function EnergiePage() {
                     {h.projected ? " · projeté" : ""}
                   </p>
                 </div>
-                <p className={"mt-1 w-full text-center text-xs sm:text-xs " + (isCurrent ? "font-semibold text-foreground" : "text-muted-foreground")}>
+                <p className={"mt-1 w-full truncate text-center text-xs " + (isCurrent ? "font-semibold text-foreground" : "text-muted-foreground")}>
                   {h.label}
                 </p>
               </div>
@@ -472,7 +475,7 @@ function EnergiePage() {
             return (
               <div
                 key={g.year}
-                className="flex items-center justify-center border-t border-border/60 pt-1.5 text-xs uppercase tracking-eyebrow text-muted-foreground"
+                className="flex min-w-0 items-center justify-center border-t border-border/60 pt-1.5 text-xs uppercase tracking-eyebrow text-muted-foreground"
                 style={{ flex: span }}
               >
                 {g.year}
