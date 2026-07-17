@@ -1,6 +1,7 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { createFileRoute, Outlet, useLocation, useNavigate, Link } from "@tanstack/react-router";
 import { AppSidebar } from "@/components/AppSidebar";
+import { BottomBar } from "@/components/BottomBar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { footerLines } from "@/lib/mock-data";
 import { Dashboard } from "./_app.index";
@@ -35,12 +36,14 @@ function AppLayout() {
     // the rail expands on demand (trigger / Cmd+B / hover the toggle).
     <SidebarProvider defaultOpen={false}>
       <AppSidebar />
-      <SidebarInset>
+      {/* Below md the rail is replaced by a floating bottom bar, so reserve the
+          room it needs (bar height + its bottom offset). */}
+      <SidebarInset className="pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-0">
         {/* Light bar: just the rail toggle, no surface — the button floats over the
             page. pointer-events-none so the transparent strip never eats clicks on
             content scrolling beneath it; the trigger re-enables them. --nav-h mirrors
-            its height for sticky page offsets. */}
-        <header className="pointer-events-none sticky top-0 z-30 flex h-14 items-center px-2 sm:px-4">
+            its height for sticky page offsets. Desktop only — mobile uses the bottom bar. */}
+        <header className="pointer-events-none sticky top-0 z-30 hidden h-14 items-center px-2 sm:px-4 md:flex">
           <SidebarTrigger className="pointer-events-auto size-9 rounded-full border border-border bg-card text-foreground shadow-soft hover:bg-secondary" />
         </header>
 
@@ -76,8 +79,9 @@ function AppLayout() {
 
             {/* On Radix Dialog, not by hand — it traps focus, handles Escape and the
                 scroll lock. Not ui/sheet (a side panel) nor ui/dialog (a centred
-                box): this overlay scrolls its whole container with the panel inside,
-                so the primitives, with our own shape. */}
+                box): the primitives with our own shape. Below sm it's a Stripe-style
+                bottom drawer (anchored to the bottom, rounded top, slides up); at sm
+                and up it's the centred panel that scrolls its whole container. */}
             <DialogPrimitive.Root
               open={isOverlay}
               onOpenChange={(o) => {
@@ -87,7 +91,7 @@ function AppLayout() {
               <DialogPrimitive.Portal>
                 <DialogPrimitive.Content
                   key={pathname}
-                  className="overlay-enter fixed inset-0 z-40 overflow-y-auto overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                  className="overlay-enter fixed inset-0 z-40 flex flex-col justify-end overflow-hidden sm:block sm:overflow-y-auto sm:overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                   aria-describedby={undefined}
                 >
                   {/* Radix needs a title to announce; the real one is inside the route. */}
@@ -99,20 +103,23 @@ function AppLayout() {
                     tabIndex={-1}
                     className="overlay-backdrop fixed inset-0 z-0 bg-foreground/30 backdrop-blur-md"
                   />
-                  <div className="overlay-panel relative z-10 mx-0 mt-16 mb-8 w-screen max-w-none sm:mx-auto sm:mt-24 sm:w-full sm:max-w-5xl sm:px-6">
-                    <div className="relative overflow-clip border border-border/60 bg-background shadow-lift sm:rounded-3xl">
-                      <div className="px-5 py-7 sm:px-8 sm:py-10">
+                  <div className="overlay-panel relative z-10 w-full sm:mx-auto sm:mt-24 sm:mb-8 sm:w-full sm:max-w-5xl sm:px-6">
+                    <div className="relative flex max-h-[88vh] flex-col overflow-y-auto rounded-t-3xl border border-border/60 bg-background shadow-lift [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:max-h-none sm:overflow-clip sm:rounded-3xl">
+                      {/* Grabber — the drawer's affordance on mobile. */}
+                      <div className="mx-auto mt-2.5 h-1.5 w-10 shrink-0 rounded-full bg-border sm:hidden" />
+                      <div className="px-5 pb-8 pt-4 sm:px-8 sm:py-10">
                         <Outlet />
                       </div>
                     </div>
                   </div>
-                  <OverlayCloseLink to="/" />
+                  <OverlayCloseLink to="/" className="hidden sm:grid" />
                 </DialogPrimitive.Content>
               </DialogPrimitive.Portal>
             </DialogPrimitive.Root>
           </>
         )}
       </SidebarInset>
+      <BottomBar />
     </SidebarProvider>
   );
 }

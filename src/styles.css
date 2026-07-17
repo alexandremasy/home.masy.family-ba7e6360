@@ -61,12 +61,14 @@
      components/Eyebrow.tsx; hand-spacing an uppercase label means you skipped it. */
   --tracking-eyebrow: 0.18em;
 
-  --radius-sm: calc(var(--radius) - 6px);
-  --radius-md: calc(var(--radius) - 3px);
+  /* Tighter than shadcn's default scale — the product reads crisp, not bubbly.
+     Base 8px; the large steps climb gently so 2xl/3xl stay restrained. */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 6px);
-  --radius-2xl: calc(var(--radius) + 12px);
-  --radius-3xl: calc(var(--radius) + 20px);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -106,10 +108,13 @@
 
   --shadow-soft: 0 1px 2px oklch(0.2 0.02 200 / 0.04), 0 8px 24px -12px oklch(0.2 0.02 200 / 0.08);
   --shadow-lift: 0 2px 4px oklch(0.2 0.02 200 / 0.05), 0 16px 40px -16px oklch(0.2 0.02 200 / 0.12);
+  /* One step above lift — for surfaces that genuinely float over content (the
+     mobile bottom bar). Same hue, deeper and a touch more opaque. */
+  --shadow-float: 0 4px 8px oklch(0.2 0.02 200 / 0.06), 0 24px 56px -20px oklch(0.2 0.02 200 / 0.2);
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 
   /* Height of the slim sticky bar in the sidebar inset — mirrors the header in
      src/routes/_app.tsx (h-14). Anything else that sticks in a full-bleed page
@@ -339,6 +344,17 @@
   }
   .overlay-enter .overlay-panel {
     animation: overlay-panel-in 0.5s cubic-bezier(0.16, 0.84, 0.24, 1) both;
+  }
+  /* Below sm the overlay is a bottom drawer — slide the full panel up from the
+     edge instead of the desktop's short lift + scale. */
+  @media (max-width: 767.98px) {
+    @keyframes overlay-drawer-in {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    .overlay-enter .overlay-panel {
+      animation: overlay-drawer-in 0.4s cubic-bezier(0.16, 0.84, 0.24, 1) both;
+    }
   }
 
   /* Stagger helpers */
