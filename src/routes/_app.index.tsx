@@ -77,7 +77,7 @@ export function Dashboard() {
           }
           const bureauCls = room.key === "bureau" ? "sm:col-span-2" : "";
           return [
-            <Tile key={room.key} span={1} to={`/room/${room.key}`} className={"flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md " + bureauCls}>
+            <Tile key={room.key} span={1} to={`/room/${room.key}`} className={"flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs " + bureauCls}>
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <span className={"grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " + (room.occupied ? "bg-success/15 text-success" : room.lightsOn ? "bg-mustard/20 text-mustard" : "bg-secondary text-muted-foreground")}>
@@ -462,7 +462,7 @@ type SalonVariant = "spotify" | "netflix" | "idle";
 
 function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: SalonVariant }) {
   return (
-    <Tile span={2} to={`/room/${room.key}`} className="relative flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md">
+    <Tile span={2} to={`/room/${room.key}`} className="relative flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs">
 
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
@@ -476,7 +476,7 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
       </div>
 
       {variant !== "idle" && (
-        <div className="mt-3 flex items-center gap-2.5 rounded-xl bg-secondary/60 p-2.5">
+        <div className="-mx-4 mt-3 flex items-center gap-2.5 bg-card px-4 py-2.5">
           {variant === "spotify" && (
             <>
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[oklch(0.72_0.18_150)]/15 text-[oklch(0.55_0.18_150)]" aria-hidden>
