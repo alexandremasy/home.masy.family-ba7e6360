@@ -1,5 +1,5 @@
 import { vacuum } from "@/lib/mock-data";
-import { Bot, BatteryCharging, Battery, Home, AlertTriangle, Trash2, CircleDashed, MoveRight, PauseCircle } from "lucide-react";
+import { Bot, BatteryCharging, Battery, Home, AlertTriangle, Trash2, MoveRight, PauseCircle } from "lucide-react";
 import { Eyebrow } from "@/components/Eyebrow";
 
 export function VacuumPanel({ compact = false }: { compact?: boolean }) {
@@ -52,13 +52,7 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
   return (
     <div className="space-y-5">
       <div>
-        <Eyebrow>{v.name}</Eyebrow>
-        <p className="mt-1 font-serif text-base font-semibold">{status.text}</p>
-        <p className="mt-0.5 text-sm text-muted-foreground">
-          {cleaning || returning
-            ? `${v.areaCleanedM2} / ${v.areaTargetM2} m² · ~${v.etaMin} min restantes`
-            : `Prochain passage · ${v.nextSchedule}`}
-        </p>
+        <p className="font-serif text-base font-semibold">{status.text}</p>
       </div>
 
       {(cleaning || returning || paused) && (
@@ -70,26 +64,10 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
           <div className="relative h-2 w-full overflow-hidden rounded-full bg-muted">
             <div className="h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${areaPct}%` }} />
           </div>
-          <div className="mt-4 flex flex-wrap gap-1.5">
-            {v.plan.map((p) => {
-              const done = p.status === "done";
-              const active = p.status === "active";
-              return (
-                <span key={p.room} className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs transition-colors ${
-                  active ? "bg-foreground text-background" :
-                  done   ? "bg-primary/15 text-primary" :
-                           "bg-card text-muted-foreground border border-border/60"
-                }`}>
-                  {done ? "✓" : active ? <span className="relative inline-flex h-1.5 w-1.5"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-background/70" /><span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-background" /></span> : <CircleDashed className="h-2.5 w-2.5 opacity-60" />}
-                  {p.room}
-                </span>
-              );
-            })}
-          </div>
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2">
         <div className={`rounded-lg border p-3 ${batLow ? "border-warm/40 bg-warm/10" : "border-border/60 bg-secondary/40"}`}>
           <Eyebrow size="xs" as="div" className="flex items-center gap-1.5">
             <BatteryIcon className="h-3.5 w-3.5" />Batterie
@@ -101,15 +79,6 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
             <Trash2 className="h-3.5 w-3.5" />Bac
           </Eyebrow>
           <p className="mt-1 font-serif text-base">{v.binFullPct}% plein</p>
-        </div>
-        <div className="rounded-lg border border-border/60 bg-secondary/40 p-3">
-          <Eyebrow size="xs">Dernier passage</Eyebrow>
-          <p className="mt-1 truncate font-serif text-sm">{v.lastRun.when}</p>
-          <p className="text-xs text-muted-foreground">{v.lastRun.areaM2} m² · {v.lastRun.durationMin} min</p>
-        </div>
-        <div className="rounded-lg border border-border/60 bg-secondary/40 p-3">
-          <Eyebrow size="xs">Prochain</Eyebrow>
-          <p className="mt-1 truncate font-serif text-sm">{v.nextSchedule}</p>
         </div>
       </div>
     </div>
