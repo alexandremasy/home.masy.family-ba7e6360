@@ -353,10 +353,17 @@
   }
 
   /* Exit — Radix stamps data-state=closed on ANY close (drag, backdrop tap, Esc).
-     The Content's fade is driven by tw-animate classes in _app.tsx (which Radix's
-     Presence reliably waits on); this just slides/lifts the panel out underneath. */
+     A no-op `animate-out` on the Content (in _app.tsx) makes Radix's Presence wait
+     WITHOUT fading the whole subtree; the actual motion is here — the backdrop
+     fades and the panel slides/lifts out on their own so the sheet is seen moving. */
+  @keyframes overlay-fade-out {
+    to { opacity: 0; }
+  }
   @keyframes overlay-panel-out {
     to { opacity: 0; transform: translateY(16px) scale(0.99); }
+  }
+  .overlay-enter[data-state="closed"] .overlay-backdrop {
+    animation: overlay-fade-out 0.25s ease-in both;
   }
   .overlay-enter[data-state="closed"] .overlay-panel {
     animation: overlay-panel-out 0.25s ease-in both;

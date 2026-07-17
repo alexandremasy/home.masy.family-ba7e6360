@@ -100,7 +100,7 @@ function AppLayout() {
             >
               <DialogPrimitive.Portal>
                 <DialogPrimitive.Content
-                  className="overlay-enter fixed inset-0 z-40 overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=closed]:duration-200 md:block md:overflow-y-auto md:overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                  className="overlay-enter fixed inset-0 z-40 overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 md:block md:overflow-y-auto md:overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                   aria-describedby={undefined}
                 >
                   {/* Radix needs a title to announce; the real one is inside the route. */}
