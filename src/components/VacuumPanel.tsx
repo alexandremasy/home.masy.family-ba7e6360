@@ -51,20 +51,14 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <Eyebrow>{v.name}</Eyebrow>
-          <p className="mt-1 font-serif text-xl">{status.text}</p>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            {cleaning || returning
-              ? `${v.areaCleanedM2} / ${v.areaTargetM2} m² · ~${v.etaMin} min restantes`
-              : `Prochain passage · ${v.nextSchedule}`}
-          </p>
-        </div>
-        <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs uppercase tracking-eyebrow ${status.tone}`}>
-          <status.Icon className="h-3.5 w-3.5" />
-          {status.text}
-        </span>
+      <div>
+        <Eyebrow>{v.name}</Eyebrow>
+        <p className="mt-1 font-serif text-base font-semibold">{status.text}</p>
+        <p className="mt-0.5 text-sm text-muted-foreground">
+          {cleaning || returning
+            ? `${v.areaCleanedM2} / ${v.areaTargetM2} m² · ~${v.etaMin} min restantes`
+            : `Prochain passage · ${v.nextSchedule}`}
+        </p>
       </div>
 
       {(cleaning || returning || paused) && (
@@ -96,24 +90,24 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
       )}
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <div className={`rounded-xl border p-3 ${batLow ? "border-warm/40 bg-warm/10" : "border-border/60 bg-card"}`}>
+        <div className={`rounded-lg border p-3 ${batLow ? "border-warm/40 bg-warm/10" : "border-border/60 bg-secondary/40"}`}>
           <Eyebrow size="xs" as="div" className="flex items-center gap-1.5">
             <BatteryIcon className="h-3.5 w-3.5" />Batterie
           </Eyebrow>
-          <p className={`mt-1 font-serif text-lg ${batLow ? "text-warm" : ""}`}>{v.batteryPct}%</p>
+          <p className={`mt-1 font-serif text-base ${batLow ? "text-warm" : ""}`}>{v.batteryPct}%</p>
         </div>
-        <div className={`rounded-xl border p-3 ${v.binFullPct > 80 ? "border-warm/40 bg-warm/10" : "border-border/60 bg-card"}`}>
+        <div className={`rounded-lg border p-3 ${v.binFullPct > 80 ? "border-warm/40 bg-warm/10" : "border-border/60 bg-secondary/40"}`}>
           <Eyebrow size="xs" as="div" className="flex items-center gap-1.5">
             <Trash2 className="h-3.5 w-3.5" />Bac
           </Eyebrow>
-          <p className="mt-1 font-serif text-lg">{v.binFullPct}% plein</p>
+          <p className="mt-1 font-serif text-base">{v.binFullPct}% plein</p>
         </div>
-        <div className="rounded-xl border border-border/60 bg-card p-3">
+        <div className="rounded-lg border border-border/60 bg-secondary/40 p-3">
           <Eyebrow size="xs">Dernier passage</Eyebrow>
           <p className="mt-1 truncate font-serif text-sm">{v.lastRun.when}</p>
           <p className="text-xs text-muted-foreground">{v.lastRun.areaM2} m² · {v.lastRun.durationMin} min</p>
         </div>
-        <div className="rounded-xl border border-border/60 bg-card p-3">
+        <div className="rounded-lg border border-border/60 bg-secondary/40 p-3">
           <Eyebrow size="xs">Prochain</Eyebrow>
           <p className="mt-1 truncate font-serif text-sm">{v.nextSchedule}</p>
         </div>

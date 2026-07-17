@@ -1,7 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Section } from "@/components/Card";
-import { CommandButton } from "@/components/CommandButton";
 import { useDrawerDrag } from "@/components/MobileDrawerPanel";
 import { Toggle } from "@/components/ui/toggle";
 import { Button } from "@/components/ui/button";
@@ -251,20 +250,16 @@ function RoomPage() {
           <VacuumPanel />
           {vacuum.state === "docked" && (
             <div className="mt-4 flex flex-wrap gap-2">
-              <CommandButton
-                onCommand={() => {}}
-                commandLabel="Lancer un cycle"
-                className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-background transition-transform hover:translate-x-0.5"
+              <Button
+                onClick={() => {}}
+                className="rounded-full bg-foreground text-background hover:bg-foreground/90"
               >
-                Lancer un cycle <ArrowRight className="h-4 w-4" />
-              </CommandButton>
-              <CommandButton
-                onCommand={() => {}}
-                commandLabel="Vider le bac"
-                className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-border hover:text-foreground"
-              >
+                Lancer un cycle
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" onClick={() => {}} className="rounded-full">
                 Vider le bac
-              </CommandButton>
+              </Button>
             </div>
           )}
         </Section>
