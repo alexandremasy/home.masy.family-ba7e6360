@@ -11,7 +11,9 @@ import { useIsMobile } from "@/lib/use-media";
 // every frame and make the drag stutter on a phone. Handlers are memoised so the
 // context stays stable and consumers don't re-render mid-drag.
 const CLOSE_THRESHOLD = 110;
+const EXIT_MS = 200;
 const SNAP = "transform 0.35s cubic-bezier(0.16, 0.84, 0.24, 1)";
+const EXIT = `transform ${EXIT_MS}ms cubic-bezier(0.4, 0, 1, 1)`; // ease-in — accelerates out
 
 type DragHandlers = {
   onPointerDown: (e: React.PointerEvent) => void;
@@ -43,10 +45,10 @@ export function MobileDrawerPanel({
   const dragY = useRef(0);
   const active = useRef(false);
 
-  const paint = useCallback((y: number, animate: boolean) => {
+  const paint = useCallback((y: number, transition: string) => {
     const el = surfaceRef.current;
     if (!el) return;
-    el.style.transition = animate ? SNAP : "none";
+    el.style.transition = transition;
     el.style.transform = `translateY(${y}px)`;
   }, []);
 
@@ -65,7 +67,7 @@ export function MobileDrawerPanel({
       startY.current = e.clientY;
       dragY.current = 0;
       active.current = true;
-      paint(0, false);
+      paint(0, "none");
       e.currentTarget.setPointerCapture?.(e.pointerId);
     },
     [isMobile, paint],
@@ -76,7 +78,7 @@ export function MobileDrawerPanel({
       if (!active.current) return;
       const dy = Math.max(0, e.clientY - startY.current);
       dragY.current = dy;
-      paint(dy, false);
+      paint(dy, "none");
     },
     [paint],
   );
@@ -85,12 +87,13 @@ export function MobileDrawerPanel({
     if (!active.current) return;
     active.current = false;
     if (dragY.current > CLOSE_THRESHOLD) {
-      // Keep sliding the sheet out from where the finger left it, then close once
-      // it's off-screen — closing at a frozen position is what reads as a lag.
-      paint(window.innerHeight, true);
-      window.setTimeout(onClose, 220);
+      // Keep sliding the sheet out from where the finger left it (fast ease-in),
+      // then close the moment it clears the screen — closing at a frozen position
+      // is what reads as a lag.
+      paint(window.innerHeight, EXIT);
+      window.setTimeout(onClose, EXIT_MS);
     } else {
-      paint(0, true);
+      paint(0, SNAP);
     }
   }, [onClose, paint]);
 
