@@ -118,7 +118,7 @@ function AppLayout() {
                       </div>
                     </MobileDrawerPanel>
                   </div>
-                  <OverlayCloseLink to="/" className="hidden sm:grid" />
+                  <OverlayCloseLink to="/" />
                 </DialogPrimitive.Content>
               </DialogPrimitive.Portal>
             </DialogPrimitive.Root>
