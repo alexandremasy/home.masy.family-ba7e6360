@@ -5,6 +5,7 @@ import { CommandButton } from "@/components/CommandButton";
 import { useDrawerDrag } from "@/components/MobileDrawerPanel";
 import { Toggle } from "@/components/ui/toggle";
 import { Button } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { SlidingTabs } from "@/components/SlidingTabs";
 import { CameraFeed } from "@/components/CameraFeed";
 import { DishwasherPanel } from "@/components/DishwasherPanel";
@@ -521,11 +522,45 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
         )}
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <ActionButton icon={<Radio className="h-4 w-4" />} label="Musiq3" onClick={() => { setSource("spotify"); setPlaying(true); }} />
-        <ActionButton icon={<Tv className="h-4 w-4" />} label="Netflix" onClick={() => { setSource("netflix"); setPlaying(true); }} />
-        <ActionButton icon={<VolumeX className="h-4 w-4" />} label="Volume −" />
-        <ActionButton icon={<Volume2 className="h-4 w-4" />} label="Volume +" />
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+        {/* Sources — the active source reads as "on". */}
+        <ToggleGroup
+          type="single"
+          value={source === "off" ? "" : source}
+          onValueChange={(v) => {
+            if (v) {
+              setSource(v as typeof source);
+              setPlaying(true);
+            }
+          }}
+          variant="outline"
+          className="w-full gap-0 sm:flex-1"
+        >
+          <ToggleGroupItem
+            value="spotify"
+            className="flex-1 gap-1.5 rounded-r-none data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
+          >
+            <Radio className="h-4 w-4" />
+            Musiq3
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="netflix"
+            className="-ml-px flex-1 gap-1.5 rounded-l-none data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
+          >
+            <Tv className="h-4 w-4" />
+            Netflix
+          </ToggleGroupItem>
+        </ToggleGroup>
+
+        {/* Volume — a button group of actions. */}
+        <div className="flex w-full sm:flex-1">
+          <Button variant="outline" aria-label="Baisser le volume" className="flex-1 rounded-r-none">
+            <VolumeX className="h-4 w-4" />
+          </Button>
+          <Button variant="outline" aria-label="Monter le volume" className="-ml-px flex-1 rounded-l-none">
+            <Volume2 className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </Section>
   );
@@ -553,23 +588,6 @@ function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
         );
       })}
     </div>
-  );
-}
-
-function ActionButton({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick?: () => void }) {
-  const [triggered, setTriggered] = useState(false);
-  return (
-    <Button
-      variant="outline"
-      onClick={() => { onClick?.(); setTriggered(true); setTimeout(() => setTriggered(false), 800); }}
-      className={
-        "h-auto flex-col gap-1.5 py-3 text-sm font-normal transition-all duration-300 " +
-        (triggered ? "-translate-y-0.5 border-foreground bg-foreground text-background" : "hover:-translate-y-0.5")
-      }
-    >
-      {icon}
-      <span>{label}</span>
-    </Button>
   );
 }
 
