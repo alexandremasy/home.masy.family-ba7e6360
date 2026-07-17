@@ -79,7 +79,7 @@ export function MobileDrawerPanel({
         {/* Grabber — the affordance; the header below is draggable too. */}
         <div
           {...(handlers ?? {})}
-          className="flex shrink-0 cursor-grab touch-none justify-center pb-2 pt-3.5 active:cursor-grabbing sm:hidden"
+          className="flex shrink-0 cursor-grab touch-none justify-center pb-1 pt-3 active:cursor-grabbing sm:hidden"
         >
           <div className="h-1.5 w-11 rounded-full bg-muted-foreground/30" />
         </div>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Section } from "@/components/Card";
 import { CommandButton } from "@/components/CommandButton";
 import { useDrawerDrag } from "@/components/MobileDrawerPanel";
+import { Button } from "@/components/ui/button";
 import { CameraFeed } from "@/components/CameraFeed";
 import { DishwasherPanel } from "@/components/DishwasherPanel";
 import { VacuumPanel } from "@/components/VacuumPanel";
@@ -130,40 +131,41 @@ function RoomPage() {
       <div
         {...(drag.handlers ?? {})}
         className={
-          "page-header sticky top-0 z-20 -mx-5 -mt-7 px-5 pt-7 pb-4 sm:-mx-8 sm:-mt-10 sm:px-8 sm:pt-10 " +
+          "page-header sticky top-0 z-20 -mx-5 -mt-6 px-5 pt-4 pb-4 sm:-mx-8 sm:-mt-10 sm:px-8 sm:pt-10 " +
           (drag.handlers ? "cursor-grab touch-none select-none active:cursor-grabbing" : "")
         }
       >
         <div className="page-header__bg pointer-events-none absolute inset-0 bg-background/85 backdrop-blur-xl" />
         <div className="page-header__fade pointer-events-none absolute inset-x-0 top-full h-8 bg-gradient-to-b from-background to-transparent" />
-        <div className="relative">
-          <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/12 text-primary">
-              <RoomIcon icon={room.icon} className="h-5 w-5 anim-float" />
-            </span>
-            <h1 className="font-serif text-3xl tracking-tight sm:text-4xl">{room.name}</h1>
-            {room.occupied && (
-              <span className="relative inline-flex h-3 w-3">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-success/40 animate-ping" />
-                <span className="relative inline-flex h-3 w-3 rounded-full bg-success" />
-              </span>
+        <div className="relative flex items-center gap-3">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/12 text-primary">
+            <RoomIcon icon={room.icon} className="h-5 w-5 anim-float" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <h1 className="truncate font-serif text-xl tracking-tight sm:text-2xl">{room.name}</h1>
+              {room.occupied && (
+                <span className="relative inline-flex h-2.5 w-2.5 shrink-0">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-success/40 animate-ping" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-success" />
+                </span>
+              )}
+            </div>
+            {typeof room.temperature === "number" && (
+              <p className="text-xs text-muted-foreground">Actuellement {room.temperature.toFixed(1)}°C</p>
             )}
-            <CommandButton
-              onCommand={() => setRoomOn(!roomOn)}
-              commandLabel={roomOn ? "Tout éteindre" : "Tout allumer"}
-              aria-pressed={roomOn}
-              aria-label={roomOn ? "Tout éteindre" : "Tout allumer"}
-              className={"ml-auto inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs uppercase tracking-eyebrow transition-all " + (roomOn
-                ? "border-foreground bg-foreground text-background shadow-lift"
-                : "border-border/60 bg-card text-muted-foreground hover:border-border")}
-            >
-              <Power className={"h-3.5 w-3.5 " + (roomOn ? "anim-breathe" : "")} />
-              {roomOn ? "On" : "Off"}
-            </CommandButton>
           </div>
-          {typeof room.temperature === "number" && (
-            <p className="mt-1 text-sm text-muted-foreground">Actuellement {room.temperature.toFixed(1)}°C</p>
-          )}
+          <Button
+            variant={roomOn ? "default" : "outline"}
+            size="sm"
+            onClick={() => setRoomOn(!roomOn)}
+            aria-pressed={roomOn}
+            aria-label={roomOn ? "Tout éteindre" : "Tout allumer"}
+            className="ml-auto shrink-0 rounded-full"
+          >
+            <Power className={roomOn ? "anim-breathe" : ""} />
+            {roomOn ? "On" : "Off"}
+          </Button>
         </div>
       </div>
 
