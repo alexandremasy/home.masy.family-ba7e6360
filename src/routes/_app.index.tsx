@@ -80,7 +80,7 @@ export function Dashboard() {
             <Tile key={room.key} span={1} to={`/room/${room.key}`} className={"flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs " + bureauCls}>
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-secondary text-muted-foreground">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/15 text-primary">
                     <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
                   </span>
                   <div>
@@ -140,7 +140,7 @@ export function Dashboard() {
           <Tile span={2} to="/energie" className="flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs">
             <div className="flex items-start justify-between gap-2">
               <div className="flex min-w-0 items-center gap-3">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-secondary text-muted-foreground">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/15 text-primary">
                   <Zap className="h-4.5 w-4.5" />
                 </span>
                 <p className="font-serif text-base font-semibold">Énergie</p>
@@ -427,7 +427,7 @@ function ReseauTile() {
     <Tile span={2} to="/securite/reseau" className="flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs">
       <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-3">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-secondary text-muted-foreground">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/15 text-primary">
             <Wifi className="h-4.5 w-4.5" />
           </span>
           <p className="font-serif text-base font-semibold">Réseau</p>
@@ -485,7 +485,7 @@ function SalonTile({ room, variant }: { room: typeof rooms[number]; variant: Sal
       playing: true,
     },
     idle: {
-      tint: "bg-secondary text-muted-foreground",
+      tint: "bg-primary/15 text-primary",
       icon: <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />,
       sub: "Chromecast en veille",
       playing: false,
