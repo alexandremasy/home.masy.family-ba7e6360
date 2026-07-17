@@ -100,7 +100,7 @@ export function Section({
   return (
     <Panel padding="md" className={cn("anim-slide-up", className)}>
       <header className="mb-4 flex items-end justify-between gap-4">
-        <h2 className="font-serif text-lg tracking-tight text-foreground">{title}</h2>
+        <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">{title}</h2>
         {action}
       </header>
       {children}
