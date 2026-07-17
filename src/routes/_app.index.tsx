@@ -47,12 +47,13 @@ export function Dashboard() {
           <RepasLine />
         </div>
 
-        <Tile span={1} tone="mustard" className="relative overflow-hidden">
-          <PMCBag className="pointer-events-none absolute -right-3 -top-3 h-[110%] w-auto opacity-90" />
-          <div className="relative">
-            <Eyebrow tone="current" className="opacity-70">Auj.</Eyebrow>
-            <p className="mt-1 font-serif text-lg leading-tight">{calendrier.poubelleToday.type}</p>
-            <p className="mt-0.5 text-xs opacity-80">avant {calendrier.poubelleToday.time}</p>
+        {/* Compact poubelle — a third of a cell's height, top-aligned so it doesn't
+            stretch to the full row. Same 1-column width as before. */}
+        <Tile span={1} tone="mustard" className="relative flex h-[4rem] items-center self-start overflow-hidden !p-3 sm:h-[4.33rem] lg:h-[4.67rem]">
+          <PMCBag className="pointer-events-none absolute -right-2 -top-1 h-[150%] w-auto opacity-90" />
+          <div className="relative min-w-0">
+            <p className="truncate font-serif text-base leading-tight">{calendrier.poubelleToday.type}</p>
+            <p className="text-2xs opacity-80">Auj. · avant {calendrier.poubelleToday.time}</p>
           </div>
         </Tile>
 
