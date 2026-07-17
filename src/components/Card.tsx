@@ -79,7 +79,7 @@ export function Panel({
   as?: "section" | "div" | "article";
 }) {
   return (
-    <As className={cn("rounded-2xl border border-border/60 bg-card shadow-soft", panelPadding[padding], className)}>
+    <As className={cn("rounded-lg border border-border/60 bg-card", panelPadding[padding], className)}>
       {children}
     </As>
   );

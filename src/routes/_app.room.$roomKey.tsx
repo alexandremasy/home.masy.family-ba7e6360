@@ -168,7 +168,6 @@ function RoomPage() {
       {detail.lights && (
         <Section
           title="Luminosité"
-          className="rounded-lg shadow-none"
           action={
             zones.length > 0 ? (
               <span className="text-sm text-muted-foreground">
