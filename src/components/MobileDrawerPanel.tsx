@@ -84,8 +84,14 @@ export function MobileDrawerPanel({
   const end = useCallback(() => {
     if (!active.current) return;
     active.current = false;
-    if (dragY.current > CLOSE_THRESHOLD) onClose();
-    else paint(0, true);
+    if (dragY.current > CLOSE_THRESHOLD) {
+      // Keep sliding the sheet out from where the finger left it, then close once
+      // it's off-screen — closing at a frozen position is what reads as a lag.
+      paint(window.innerHeight, true);
+      window.setTimeout(onClose, 220);
+    } else {
+      paint(0, true);
+    }
   }, [onClose, paint]);
 
   const handlers = useMemo<DragHandlers | null>(
