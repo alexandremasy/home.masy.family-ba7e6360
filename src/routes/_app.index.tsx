@@ -90,7 +90,7 @@ export function Dashboard() {
               </div>
 
               {typeof room.temperature === "number" ? (
-                <p className="mt-3 font-serif text-4xl tracking-tight">
+                <p className={"mt-3 font-serif tracking-tight " + (bureauCls ? "text-2xl" : "text-4xl")}>
                   <CountUp to={room.temperature} decimals={1} /><span className="text-base text-muted-foreground">°C</span>
                 </p>
               ) : (
@@ -113,11 +113,11 @@ export function Dashboard() {
           ];
         })}
 
-        {/* Idle rooms — one shared slot, reduced */}
-        {idleRooms.length > 0 && <IdleRoomsTile rooms={idleRooms} />}
-
         {/* Weather — single cell, no background, floats into any hole */}
         <WeatherTile />
+
+        {/* Idle rooms — one shared slot, reduced */}
+        {idleRooms.length > 0 && <IdleRoomsTile rooms={idleRooms} />}
 
         {/* Énergie */}
         {energie.monthlyDue ? (
@@ -370,7 +370,7 @@ function IdleRoomsTile({ rooms: idle }: { rooms: Room[] }) {
         <Link
           key={r.key}
           to={`/room/${r.key}`}
-          className="group flex flex-1 items-center gap-2.5 rounded-2xl border-[3px] border-border/50 px-3 transition-colors hover:border-border hover:bg-secondary/30"
+          className="group flex flex-1 items-center gap-2.5 rounded-2xl border border-border/60 bg-card/50 px-3 py-3.5 backdrop-blur-md transition-colors hover:bg-card/70"
         >
           <RoomIcon icon={r.icon} className="h-4 w-4 shrink-0 text-muted-foreground icon-hover" />
           <span className="min-w-0 flex-1 truncate font-serif text-sm">{r.name}</span>
