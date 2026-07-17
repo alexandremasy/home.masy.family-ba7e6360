@@ -498,27 +498,28 @@
   }
   .living-gradient__blob--purple {
     background: radial-gradient(circle at center, #8b5cf6, transparent 68%);
-    animation: lg-drift-a 17s ease-in-out infinite;
+    animation: lg-drift-a 14s ease-in-out infinite;
   }
   .living-gradient__blob--violet {
     background: radial-gradient(circle at center, #6366f1, transparent 68%);
-    animation: lg-drift-b 21s ease-in-out infinite;
+    animation: lg-drift-b 18s ease-in-out infinite;
   }
   .living-gradient__blob--blue {
     background: radial-gradient(circle at center, #3b82f6, transparent 68%);
-    animation: lg-drift-c 19s ease-in-out infinite;
+    animation: lg-drift-c 16s ease-in-out infinite;
   }
+  /* Wide diagonal sweeps with strong scale swings so the mesh visibly breathes. */
   @keyframes lg-drift-a {
-    0%, 100% { transform: translate(-62%, -74%) scale(1); }
-    50%      { transform: translate(-40%, -52%) scale(1.28); }
+    0%, 100% { transform: translate(-78%, -92%) scale(0.95); }
+    50%      { transform: translate(-26%, -40%) scale(1.45); }
   }
   @keyframes lg-drift-b {
-    0%, 100% { transform: translate(-40%, -34%) scale(1.2); }
-    50%      { transform: translate(-58%, -56%) scale(1); }
+    0%, 100% { transform: translate(-28%, -22%) scale(1.4); }
+    50%      { transform: translate(-72%, -70%) scale(0.9); }
   }
   @keyframes lg-drift-c {
-    0%, 100% { transform: translate(-30%, -46%) scale(1.1); }
-    50%      { transform: translate(-52%, -24%) scale(1.32); }
+    0%, 100% { transform: translate(-20%, -58%) scale(1.05); }
+    50%      { transform: translate(-66%, -12%) scale(1.5); }
   }
   @media (prefers-reduced-motion: reduce) {
     .living-gradient__blob { animation: none; }
