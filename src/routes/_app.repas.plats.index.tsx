@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
 import { DishCard } from "@/components/DishCard";
 import { useDishes } from "@/lib/dishes-store";
@@ -37,24 +36,33 @@ function PlatsPage() {
           <p className="text-xs text-muted-foreground">
             {results.length} plat{results.length > 1 ? "s" : ""} sur {dishes.length}
           </p>
-          <Button asChild size="sm" className="gap-1.5">
-            <Link to="/repas/plats/nouveau"><Plus className="h-3.5 w-3.5" />Nouveau plat</Link>
-          </Button>
         </div>
       </div>
 
       <DishFilters value={filter} onChange={setFilter} bases={allBases} />
 
-      {results.length === 0 ? (
-        <p className="py-10 text-center text-sm text-muted-foreground">
-          Aucun plat ne correspond à ces critères.
-        </p>
-      ) : (
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {results.map((d) => <CatalogueCard key={d.id} dish={d} />)}
-        </div>
-      )}
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Adding a dish is the first card of the catalogue, not a header button. */}
+        <AddDishCard />
+        {results.map((d) => (
+          <CatalogueCard key={d.id} dish={d} />
+        ))}
+      </div>
     </div>
+  );
+}
+
+/** Add-a-dish affordance — an empty, dashed card at the head of the catalogue
+ *  grid (the "+ new dish" lives here, not in a header button). */
+function AddDishCard() {
+  return (
+    <Link
+      to="/repas/plats/nouveau"
+      className="flex min-h-[7rem] flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-border/70 p-3.5 text-muted-foreground transition-all hover:border-primary hover:bg-secondary/40 hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
+      <Plus className="h-5 w-5" />
+      <span className="text-sm font-medium">Nouveau plat</span>
+    </Link>
   );
 }
 
