@@ -1,8 +1,38 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { linkTo } from "@storybook/addon-links";
+import { ArrowRight } from "lucide-react";
 
 // The design system landing page. Two faces of one project: mockup.masy.family is the
 // clickable experience; this Storybook (design.masy.family) is the living design system —
-// tokens, components, blocks/templates, and co-located specs.
+// tokens, components, blocks, and co-located specs. The cards below link into each section.
+const SECTIONS: { title: string; body: string; to: string }[] = [
+  {
+    title: "Tokens",
+    body: "Color, typography, radius, shadows, spacing, motion — read live from styles.css.",
+    to: "Tokens/Color",
+  },
+  {
+    title: "UI",
+    body: "The shadcn primitives, with this app's real deviations (inverted button, warn alert).",
+    to: "UI/Button",
+  },
+  {
+    title: "Components",
+    body: "Composed pieces — Tile, PageHeader, DishCard, BudgetBar, WeatherIcon…",
+    to: "Components/Card",
+  },
+  {
+    title: "Blocks",
+    body: "Layout building blocks — the dashboard bento grid.",
+    to: "Blocks/Bento Grid",
+  },
+  {
+    title: "Specs",
+    body: "How each module behaves — co-located so decisions stop getting lost.",
+    to: "Specs/Repas · Courses",
+  },
+];
+
 function Welcome() {
   return (
     <div className="mx-auto max-w-2xl p-8">
@@ -14,22 +44,19 @@ function Welcome() {
         <code>src/components</code>, documented here so the cockpit can reuse them without drift.
       </p>
       <div className="mt-8 grid gap-3 sm:grid-cols-2">
-        {[
-          [
-            "Tokens",
-            "Color, typography, radius, shadows, spacing, motion — read live from styles.css.",
-          ],
-          [
-            "UI",
-            "The shadcn primitives, with this app's real deviations (inverted button, warn alert).",
-          ],
-          ["Components", "Composed pieces — Tile, PageHeader, DishCard, BudgetBar, WeatherIcon…"],
-          ["Specs", "How each module behaves — co-located so decisions stop getting lost."],
-        ].map(([title, body]) => (
-          <div key={title} className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft">
-            <p className="font-serif text-lg font-semibold">{title}</p>
+        {SECTIONS.map(({ title, body, to }) => (
+          <button
+            key={title}
+            type="button"
+            onClick={linkTo(to)}
+            className="group rounded-2xl border border-border/60 bg-card p-4 text-left shadow-soft transition-colors hover:border-primary/40 hover:bg-accent"
+          >
+            <div className="flex items-center justify-between">
+              <p className="font-serif text-lg font-semibold">{title}</p>
+              <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+            </div>
             <p className="mt-1 text-sm text-muted-foreground">{body}</p>
-          </div>
+          </button>
         ))}
       </div>
     </div>
@@ -37,7 +64,7 @@ function Welcome() {
 }
 
 const meta = {
-  title: "Design System/Welcome",
+  title: "Welcome",
   component: Welcome,
   parameters: { layout: "fullscreen" },
 } satisfies Meta<typeof Welcome>;

@@ -7,6 +7,12 @@ import "../src/styles.css";
 const preview: Preview = {
   parameters: {
     layout: "centered",
+    // Welcome first, then the design system top-down; everything else after.
+    options: {
+      storySort: {
+        order: ["Welcome", "Tokens", "UI", "Components", "Blocks", "Specs", "*"],
+      },
+    },
     controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
     a11y: { test: "todo" },
     backgrounds: { disable: true },
