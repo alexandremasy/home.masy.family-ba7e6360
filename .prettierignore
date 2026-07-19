@@ -10,3 +10,4 @@ routeTree.gen.ts
 # Docs & agent memory — not prettier-gated
 .claude
 *.md
+storybook-static
