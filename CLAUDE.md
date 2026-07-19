@@ -4,80 +4,65 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A **throwaway design mockup** built in Lovable — a **frontend-only prototype with no
-persistence** (all data is mocked in-memory). Its job is to validate UX + business
-logic fast, then hand the model off to the real apps. It is **not** production and is
-never wired to a real backend.
+The **UI/UX source of truth** for the `masy.family` systems — the components, templates/blocks,
+tokens, interaction patterns, and module **specs**. It is **hand-authored** (Lovable is retired)
+and **frontend-only**: all data is mocked in-memory, no backend, never wired to real data.
 
-Stack: **TanStack Start** (SSR) + Vite + React 19 + Tailwind v4, served on Cloudflare
-via `@cloudflare/vite-plugin`. SSR entry is redirected to `src/server.ts` (our error
-wrapper) — see `vite.config.ts` and `wrangler.jsonc`.
+It is **not** a throwaway prototype anymore. Design and interaction are decided here and figured
+here; the real frontend (`cockpit`) consumes what this repo defines. Treat it like a product.
 
-## Where this fits (the stack)
+Stack: **plain Vite + React 19 + TanStack Router (SPA)** + Tailwind v4 + shadcn/ui — the **same
+stack as `cockpit`**, so components/styles/assets copy-paste (and, eventually, import) cleanly.
+No SSR, no Cloudflare.
 
-This is one of three apps under `/opt/apps` — read `/opt/apps/CLAUDE.md` for the stack
-overview. The relationship is what matters here:
+## The canonical model (read `/opt/apps/CLAUDE.md` for the full picture)
 
-- **`mockup` (this repo) — the exploration ground.** Prototype a domain's UI + logic
-  with mocked data, lock it, then hand it off. It owns no data and ships nothing.
-- **`api` (`/opt/apps/api`) — the real data layer.** When a mockup validates a domain,
-  its persistence/business logic gets built for real here (the single write door to
-  Postgres). Mocked shapes here become the OpenAPI contract there.
-- **`cockpit` (`/opt/apps/cockpit`) — the real frontend.** Validated screens get
-  **rebuilt by hand** in cockpit against the live `api` — the mockup is the exact
-  visual/UX target, not code to copy.
+- **Mockup (this repo) owns UI + UX**: tokens, `ui/` + composed components, templates/blocks,
+  interaction patterns, and specs. All documented in Storybook (see below).
+- **Cockpit orchestrates**: it *uses* these components + templates and adds the data-logic layer
+  (TanStack Query vs `api`, cache/invalidation, HA real-time, derived state). A cockpit page = a
+  template from here + its data wiring. **Never author a component in `cockpit`** — author it here.
+- End-state: extract the shared foundation (tokens + `ui/` + components + templates) into a
+  **package** the cockpit imports (deferred until the first real domain is rebuilt in cockpit).
+  Until then, mockup-canonical copy-paste. `/sync-mockup` is the codified migration path.
 
-So: what's proven here does not migrate as code. It migrates as a **brief** → `api`
-gets the data layer, `cockpit` gets the UI. The `*-BRIEF.md` files at the root are
-exactly those handoffs:
+## Storybook — the living design system
 
-- `FOYER-BRIEF.md` — the household model (PM spec, WIP).
-- `MAISON-BRIEF.md` — Maison domain: repas, courses, anniversaires.
-- `PLANIFICATION-BRIEF.md` — budget Planification handoff (the data layer to build).
+Published to **`design.masy.family`** (the `mockup-storybook` compose service, Storybook dev on
+port 6006). It documents **Tokens** (read live from `src/styles.css`), **UI** primitives,
+composed **Components**, **Blocks**, and co-located **Specs** (MDX). `@storybook/addon-mcp`
+exposes the design system to coding agents (component context + reuse enforcement) — the bridge
+that lets the cockpit rebuild reuse canonical components instead of reinventing them. Stories are
+colocated with each component (`*.stories.tsx`); token pages + specs live under `src/design-system/`.
 
-## Gotcha — Lovable regenerates `vite.config.ts`
-
-Lovable overwrites this file on every sync and strips the `VITE_PROXIED` block
-(`allowedHosts: ["mockup.masy.family"]` + `wss`/443 HMR) that serves the app behind
-Traefik — without it `mockup.masy.family` answers "Blocked request". This is now
-**auto-healed at container boot** by `scripts/ensure-proxied.mjs`, which re-injects the
-block before vite starts (idempotent). No manual step after a sync.
-
-Caveat: the script lives in this repo, so a Lovable sync *could* delete it too — it is
-committed (restore with git), and the boot command tolerates its absence (vite still
-starts, degrading to "Blocked request" until the script is restored).
-
-Separately: the `@lovable.dev/vite-tanstack-config` preset already bundles the core
-plugins — do NOT add tanstackStart/react/tailwind/etc. manually or the app breaks on
-duplicate plugins.
+> The old in-app `/design-system` route is **retired** — Storybook supersedes it.
 
 ## Run
 
-Runs as the `mockup` service in the `/opt/apps` compose stack (bind-mount + vite HMR).
-Locally:
-
 ```bash
 bun install
-bun run dev        # vite dev (SSR)
-bun run lint       # eslint
+bun run dev             # vite dev (SPA)
+bun run lint            # eslint (prettier-clean required)
+bun run format          # prettier --write
+bun run storybook       # storybook dev :6006
+bun run build-storybook # static build
 ```
 
-First boot installs ~610 packages (~4 min) — normal.
+`vite.config.ts` bakes the `VITE_PROXIED` block (allowedHosts + `wss:443` HMR) so the app serves
+behind Traefik at `mockup.masy.family`; Storybook re-asserts it in `.storybook/main.ts` `viteFinal`.
+Docs/memory are excluded from prettier (`.prettierignore`); `storybook-static` is gitignored.
 
 ## Language — French product, English code
 
-The product UI is **French**: this is a French household's dashboard, so "Repas", "Anniversaires"
-and the routes `/repas`, `/plats`, `/courses` are content, deliberately French. Identifiers derived
-from those routes (`RepasPage`, `deriveCourses`) inherit it and that's fine.
-
-**Everything else is English**: comments, docs, commit messages, and the `/design-system` page —
-that page is developer documentation, not product surface.
+The product UI is **French** (a French household's dashboard): "Repas", "Anniversaires", routes
+`/repas`, `/courses`. Identifiers derived from those inherit it and that's fine. **Everything else
+is English**: comments, docs, commit messages, Storybook story identifiers/titles.
 
 ## Design system
 
-`DESIGN-SYSTEM.md` at the root is the record: **shadcn/ui is the system, not an option.** Use it,
-edit `src/components/ui/*` when it fights the palette (it's copy-paste, we own it), never build a
-sibling. `/design-system` renders the tokens and components live.
+`DESIGN-SYSTEM.md` is the written record: **shadcn/ui is the system, not an option** — one token
+layer (CSS vars in `src/styles.css`), customize `src/components/ui/*` in place, never build a
+sibling. Storybook renders the tokens and components live.
 
 ## Project memory
 
