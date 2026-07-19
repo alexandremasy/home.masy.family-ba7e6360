@@ -37,4 +37,13 @@ export default tseslint.config(
     },
   },
   eslintPluginPrettier,
+  {
+    // Storybook story files: render() functions are components to Storybook (hooks used
+    // inside them are legitimate), and stories export non-component values (meta/args).
+    files: ["**/*.stories.tsx"],
+    rules: {
+      "react-hooks/rules-of-hooks": "off",
+      "react-refresh/only-export-components": "off",
+    },
+  },
 );
