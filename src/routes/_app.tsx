@@ -7,6 +7,7 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/s
 import { footerLines } from "@/lib/mock-data";
 import { Dashboard } from "./_app.index";
 import { LivingGradient } from "@/components/LivingGradient";
+import { useDocumentTitle } from "@/lib/page-title";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
@@ -15,6 +16,8 @@ export const Route = createFileRoute("/_app")({
 function AppLayout() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  // Tab title = active view, prefixed 🎨 to mark the mockup app.
+  useDocumentTitle(pathname);
 
   // A module with its own world is full-bleed (it owns the whole content area).
   // Everything else opens as an overlay above the dashboard.
