@@ -10,8 +10,20 @@ interface BaseProps {
   tone?: "default" | "primary" | "warm" | "mustard" | "dark";
 }
 
-const toneClasses: Record<NonNullable<BaseProps["tone"]>, string> = {
-  default: "bg-card text-card-foreground",
+type TileVariant = "solid" | "glass" | "pill";
+
+// The three real Tile surfaces (was ~6 ad-hoc `!`-override flavors across the dashboard).
+// `solid` is the default card; `glass` a frosted translucent tile; `pill` a rounded row.
+const tileSurface: Record<TileVariant, string> = {
+  solid:
+    "rounded-2xl border border-border/50 bg-card text-card-foreground p-5 shadow-soft hover:border-border",
+  glass:
+    "rounded-2xl border border-white bg-card/60 text-card-foreground p-4 shadow-xs backdrop-blur-md dark:border-white/10",
+  pill: "flex min-h-[3.5rem] items-center rounded-full border-0 bg-card/70 text-card-foreground px-5 py-2.5 backdrop-blur-md",
+};
+
+// Tint (bg + text) for a solid tile. `default` is left to the surface's own bg.
+const toneClasses: Record<Exclude<NonNullable<BaseProps["tone"]>, "default">, string> = {
   primary: "bg-primary text-primary-foreground",
   warm: "bg-warm text-warm-foreground",
   mustard: "bg-mustard text-mustard-foreground",
@@ -28,21 +40,27 @@ const spanClasses: Record<NonNullable<BaseProps["span"]>, string> = {
 
 export function Tile({
   children,
-  className = "",
+  className,
   span = 2,
   rowSpan,
   tone = "default",
+  variant = "solid",
   to,
   ...rest
-}: BaseProps & { to?: string } & Omit<HTMLAttributes<HTMLDivElement>, "children">) {
-  const cls =
-    "group relative overflow-hidden rounded-2xl border border-border/50 p-5 shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 hover:border-border " +
-    toneClasses[tone] +
-    " " +
-    spanClasses[span] +
-    (rowSpan === 2 ? " row-span-2" : "") +
-    " " +
-    className;
+}: BaseProps & { variant?: TileVariant; to?: string } & Omit<
+    HTMLAttributes<HTMLDivElement>,
+    "children"
+  >) {
+  // cn (tailwind-merge) resolves conflicts, so a tint or a `className` override wins
+  // WITHOUT `!important` — that's what killed the per-site override surgery.
+  const cls = cn(
+    "group relative overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift",
+    tileSurface[variant],
+    tone !== "default" && toneClasses[tone],
+    spanClasses[span],
+    rowSpan === 2 && "row-span-2",
+    className,
+  );
 
   if (to) {
     return (

@@ -74,6 +74,33 @@ export const AllTones: Story = {
   ),
 };
 
+// ── Tile variants (surface) — the 3 real shapes, was ~6 ad-hoc !-override flavors ──
+export const Solid: Story = {
+  args: { variant: "solid", children: "Solid — the default card" },
+};
+
+export const Glass: Story = {
+  args: { variant: "glass", className: "flex flex-col", children: "Glass — frosted translucent" },
+};
+
+export const Pill: Story = {
+  args: { variant: "pill", span: 1, children: "Pill — a rounded row" },
+};
+
+export const AllVariants: Story = {
+  render: () => (
+    <>
+      <Tile variant="solid">Solid</Tile>
+      <Tile variant="glass" className="flex flex-col">
+        Glass
+      </Tile>
+      <Tile variant="pill" span={1}>
+        Pill
+      </Tile>
+    </>
+  ),
+};
+
 // ── Tile spans ──────────────────────────────────────────────────────────────
 export const Spans: Story = {
   render: () => (

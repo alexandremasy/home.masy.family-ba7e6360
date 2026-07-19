@@ -109,11 +109,7 @@ export function Dashboard() {
         {/* Poubelle + anniversaire — a third the height of a bento tile; same width
             as one column on mobile (capped so they stay small on wider screens). */}
         <div className="grid grid-cols-2 gap-3 sm:max-w-md">
-          <Tile
-            span={1}
-            tone="default"
-            className="relative flex min-h-[3.5rem] items-center overflow-hidden !rounded-full !border-0 !bg-card/70 !px-5 !py-2.5 backdrop-blur-md"
-          >
+          <Tile span={1} variant="pill">
             <PMCBag className="pointer-events-none absolute -right-2 -top-1 h-[150%] w-auto opacity-90" />
             <div className="relative min-w-0">
               <p className="truncate font-serif text-base font-semibold leading-tight">
@@ -143,10 +139,8 @@ export function Dashboard() {
               key={room.key}
               span={1}
               to={`/room/${room.key}`}
-              className={
-                "flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs " +
-                bureauCls
-              }
+              variant="glass"
+              className={"flex flex-col " + bureauCls}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
@@ -225,11 +219,7 @@ export function Dashboard() {
             </Button>
           </Tile>
         ) : (
-          <Tile
-            span={2}
-            to="/energie"
-            className="flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs"
-          >
+          <Tile span={2} to="/energie" variant="glass" className="flex flex-col">
             <div className="flex items-start justify-between gap-2">
               <div className="flex min-w-0 items-center gap-3">
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
@@ -299,7 +289,7 @@ export function Dashboard() {
           span={2}
           to="/tesla"
           tone="dark"
-          className="relative isolate !col-span-1 sm:!col-span-2"
+          className="relative isolate col-span-1 sm:col-span-2"
         >
           <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-80" />
           <span className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 rounded-b-[inherit] bg-gradient-to-t from-foreground via-foreground/70 to-transparent" />
@@ -421,12 +411,7 @@ function BirthdayTile() {
   const when = today ? "Auj." : first.days === 1 ? "Demain" : `Dans ${first.days} j`;
 
   return (
-    <Tile
-      span={1}
-      to="/anniversaires"
-      tone="default"
-      className="relative flex min-h-[3.5rem] items-center overflow-hidden !rounded-full !border-0 !bg-card/70 !px-5 !py-2.5 backdrop-blur-md"
-    >
+    <Tile span={1} to="/anniversaires" variant="pill">
       <Cake
         className={
           "pointer-events-none absolute -right-3 -top-2 h-16 w-16 " +
@@ -601,11 +586,7 @@ function ReseauTile() {
   const MAX = 500; // the line's ceiling — the dial reads the share of it
 
   return (
-    <Tile
-      span={2}
-      to="/securite/reseau"
-      className="flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs"
-    >
+    <Tile span={2} to="/securite/reseau" variant="glass" className="flex flex-col">
       <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-3">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
@@ -692,11 +673,7 @@ function SalonTile({ room, variant }: { room: (typeof rooms)[number]; variant: S
   }[variant];
 
   return (
-    <Tile
-      span={2}
-      to={`/room/${room.key}`}
-      className="relative flex flex-col !p-4 !border-white dark:!border-white/10 !bg-card/60 backdrop-blur-md !shadow-xs"
-    >
+    <Tile span={2} to={`/room/${room.key}`} variant="glass" className="flex flex-col">
       <div className="flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-3">
           <span
