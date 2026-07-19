@@ -12,7 +12,11 @@ import { cn } from "@/lib/utils";
  * components/, not in ui/.
  */
 export function Eyebrow({
-  children, tone = "muted", size = "sm", className, as: As = "p",
+  children,
+  tone = "muted",
+  size = "sm",
+  className,
+  as: As = "p",
 }: {
   children: ReactNode;
   /** `muted` reads as a label; `foreground` when the eyebrow carries meaning of its own. */

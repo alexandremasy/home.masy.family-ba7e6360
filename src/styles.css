@@ -7,14 +7,16 @@
 @theme inline {
   /* Native system UI font — the OS decides the actual face (SF on Apple, Segoe UI
      on Windows, Roboto on Android). No webfont to load. */
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
   /* The display face reads through this token — headings and `.font-serif`. Kept as
      the same native stack so the whole app stays on the OS font. */
-  --font-serif: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
 
   /* ---- Type scale ----
      THE scale, not a scale. Ported from the Figma token library
@@ -34,27 +36,27 @@
      These keep Tailwind's rhythm: generous at body sizes, ~1 at display sizes. */
   --text-*: initial;
 
-  --text-2xs: 0.625rem;              /* 10 — the eyebrow. Figma Regular/10. */
+  --text-2xs: 0.625rem; /* 10 — the eyebrow. Figma Regular/10. */
   --text-2xs--line-height: 0.875rem;
-  --text-xs: 0.75rem;                /* 12 — the body floor */
+  --text-xs: 0.75rem; /* 12 — the body floor */
   --text-xs--line-height: 1rem;
-  --text-sm: 0.875rem;               /* 14 */
+  --text-sm: 0.875rem; /* 14 */
   --text-sm--line-height: 1.25rem;
-  --text-base: 1rem;                 /* 16 */
+  --text-base: 1rem; /* 16 */
   --text-base--line-height: 1.5rem;
-  --text-lg: 1.25rem;                /* 20 */
+  --text-lg: 1.25rem; /* 20 */
   --text-lg--line-height: 1.75rem;
-  --text-xl: 1.5rem;                 /* 24 */
+  --text-xl: 1.5rem; /* 24 */
   --text-xl--line-height: 2rem;
-  --text-2xl: 1.75rem;               /* 28 */
+  --text-2xl: 1.75rem; /* 28 */
   --text-2xl--line-height: 2.25rem;
-  --text-3xl: 2rem;                  /* 32 */
+  --text-3xl: 2rem; /* 32 */
   --text-3xl--line-height: 2.5rem;
-  --text-4xl: 2.5rem;                /* 40 */
+  --text-4xl: 2.5rem; /* 40 */
   --text-4xl--line-height: 2.75rem;
-  --text-5xl: 3rem;                  /* 48 */
+  --text-5xl: 3rem; /* 48 */
   --text-5xl--line-height: 1;
-  --text-6xl: 3.5rem;                /* 56 — the ceiling */
+  --text-6xl: 3.5rem; /* 56 — the ceiling */
   --text-6xl--line-height: 1;
 
   /* The eyebrow's letter-spacing. One value — there were seven. Owned by
@@ -129,55 +131,55 @@
      The ramps are primitive (Light/Red/Orange/Yellow/Green/Blue/Teal/Purple/Pink,
      00→90). The semantics below — which rung plays "alert", which plays "hover" —
      are this app's, and they are the part worth arguing about. */
-  --background: #fbfcfc;            /* Light/00 */
-  --foreground: #131415;            /* Light/90 */
+  --background: #fbfcfc; /* Light/00 */
+  --foreground: #131415; /* Light/90 */
 
-  --card: #ffffff;                  /* White */
-  --card-foreground: #131415;       /* Light/90 */
-  --popover: #ffffff;               /* White */
-  --popover-foreground: #131415;    /* Light/90 */
+  --card: #ffffff; /* White */
+  --card-foreground: #131415; /* Light/90 */
+  --popover: #ffffff; /* White */
+  --popover-foreground: #131415; /* Light/90 */
 
   /* The positive signal: today's ring, links, active, StatusPill. */
-  --primary: #1995a0;               /* Teal/60 */
-  --primary-foreground: #131415;    /* Light/90 — 5.14:1. White would be 3.49:1, under AA. */
+  --primary: #1995a0; /* Teal/60 */
+  --primary-foreground: #131415; /* Light/90 — 5.14:1. White would be 3.49:1, under AA. */
 
-  --secondary: #ecedee;             /* Light/10 */
-  --secondary-foreground: #131415;  /* Light/90 */
+  --secondary: #ecedee; /* Light/10 */
+  --secondary-foreground: #131415; /* Light/90 */
 
-  --muted: #ecedee;                 /* Light/10 */
-  --muted-foreground: #4e575d;      /* Light/60 */
+  --muted: #ecedee; /* Light/10 */
+  --muted-foreground: #4e575d; /* Light/60 */
 
   /* shadcn's meaning: the neutral hover/focus surface every ui/* primitive
      reaches for (bg-accent, focus:bg-accent, data-[highlighted]). Keep it
      neutral — the decorative mustard lives in --mustard below. */
-  --accent: #ecedee;                /* Light/10 */
-  --accent-foreground: #131415;     /* Light/90 */
+  --accent: #ecedee; /* Light/10 */
+  --accent-foreground: #131415; /* Light/90 */
 
-  --mustard: #dab12c;               /* Yellow/50 — decorative: PMC tile, lights on */
-  --mustard-foreground: #131415;    /* Light/90 — 9.05:1 */
+  --mustard: #dab12c; /* Yellow/50 — decorative: PMC tile, lights on */
+  --mustard-foreground: #131415; /* Light/90 — 9.05:1 */
 
-  --warm: #e07e62;                  /* Orange/40 — THE ALERT TONE, nothing else */
-  --warm-foreground: #131415;       /* Light/90 — 6.44:1 */
+  --warm: #e07e62; /* Orange/40 — THE ALERT TONE, nothing else */
+  --warm-foreground: #131415; /* Light/90 — 6.44:1 */
 
-  --success: #1c9371;               /* Green/50 */
+  --success: #1c9371; /* Green/50 */
   /* Red, not Orange/50: --warm already owns the orange family, and an alert that
      shares a hue with an error is an alert you can't read. */
-  --destructive: #c22038;           /* Red/50 */
-  --destructive-foreground: #fbfcfc;/* Light/00 — 5.74:1 */
+  --destructive: #c22038; /* Red/50 */
+  --destructive-foreground: #fbfcfc; /* Light/00 — 5.74:1 */
 
-  --border: #cfd3d5;                /* Light/20 */
-  --input: #cfd3d5;                 /* Light/20 */
-  --ring: #1995a0;                  /* Teal/60 */
+  --border: #cfd3d5; /* Light/20 */
+  --input: #cfd3d5; /* Light/20 */
+  --ring: #1995a0; /* Teal/60 */
 
   /* Sidebar — white rail on the soft-grey page, active/hover on Light/10. */
-  --sidebar: #ffffff;                    /* White */
-  --sidebar-foreground: #131415;         /* Light/90 */
-  --sidebar-primary: #1995a0;            /* Teal/60 */
+  --sidebar: #ffffff; /* White */
+  --sidebar-foreground: #131415; /* Light/90 */
+  --sidebar-primary: #1995a0; /* Teal/60 */
   --sidebar-primary-foreground: #131415; /* Light/90 */
-  --sidebar-accent: #ecedee;             /* Light/10 */
-  --sidebar-accent-foreground: #131415;  /* Light/90 */
-  --sidebar-border: #cfd3d5;             /* Light/20 */
-  --sidebar-ring: #1995a0;               /* Teal/60 */
+  --sidebar-accent: #ecedee; /* Light/10 */
+  --sidebar-accent-foreground: #131415; /* Light/90 */
+  --sidebar-border: #cfd3d5; /* Light/20 */
+  --sidebar-ring: #1995a0; /* Teal/60 */
 }
 
 /* ---- Dark theme — NOT from Figma. The only invented colour left ----
@@ -192,42 +194,42 @@
   --background: oklch(0.18 0.015 230);
   --foreground: oklch(0.95 0.008 95);
 
-  --card: oklch(0.235 0.020 230);
+  --card: oklch(0.235 0.02 230);
   --card-foreground: oklch(0.95 0.008 95);
-  --popover: oklch(0.235 0.020 230);
+  --popover: oklch(0.235 0.02 230);
   --popover-foreground: oklch(0.95 0.008 95);
 
   --primary: oklch(0.72 0.12 195);
   --primary-foreground: oklch(0.18 0.015 230);
 
-  --secondary: oklch(0.28 0.020 230);
+  --secondary: oklch(0.28 0.02 230);
   --secondary-foreground: oklch(0.95 0.008 95);
 
   --muted: oklch(0.27 0.018 230);
-  --muted-foreground: oklch(0.70 0.020 220);
+  --muted-foreground: oklch(0.7 0.02 220);
 
-  --accent: oklch(0.28 0.020 230);
+  --accent: oklch(0.28 0.02 230);
   --accent-foreground: oklch(0.95 0.008 95);
 
-  --mustard: oklch(0.80 0.13 70);
+  --mustard: oklch(0.8 0.13 70);
   --mustard-foreground: oklch(0.18 0.015 230);
 
   --warm: oklch(0.72 0.14 35);
   --warm-foreground: oklch(0.18 0.015 230);
 
   --success: oklch(0.72 0.14 150);
-  --destructive: oklch(0.65 0.20 25);
+  --destructive: oklch(0.65 0.2 25);
   --destructive-foreground: oklch(0.99 0.005 95);
 
   --border: oklch(1 0 0 / 8%);
   --input: oklch(1 0 0 / 12%);
   --ring: oklch(0.72 0.12 195);
 
-  --sidebar: oklch(0.235 0.020 230);            /* = card */
+  --sidebar: oklch(0.235 0.02 230); /* = card */
   --sidebar-foreground: oklch(0.95 0.008 95);
   --sidebar-primary: oklch(0.72 0.12 195);
   --sidebar-primary-foreground: oklch(0.18 0.015 230);
-  --sidebar-accent: oklch(0.28 0.020 230);      /* = secondary */
+  --sidebar-accent: oklch(0.28 0.02 230); /* = secondary */
   --sidebar-accent-foreground: oklch(0.95 0.008 95);
   --sidebar-border: oklch(1 0 0 / 8%);
   --sidebar-ring: oklch(0.72 0.12 195);
@@ -237,13 +239,17 @@
   * {
     border-color: var(--color-border);
   }
-  html, body {
+  html,
+  body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, .font-serif {
+  h1,
+  h2,
+  h3,
+  .font-serif {
     font-family: var(--font-serif);
     letter-spacing: -0.01em;
   }
@@ -261,94 +267,210 @@
     grid-auto-flow: row dense;
   }
   @media (min-width: 640px) {
-    .grid-bento { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 11rem; gap: 1rem; }
+    .grid-bento {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-auto-rows: 11rem;
+      gap: 1rem;
+    }
   }
   @media (min-width: 1024px) {
-    .grid-bento { grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: 12rem; gap: 1.25rem; }
+    .grid-bento {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-auto-rows: 12rem;
+      gap: 1.25rem;
+    }
   }
 
   /* ---- Micro animations ---- */
   @keyframes breathe {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.06); opacity: 0.85; }
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.06);
+      opacity: 0.85;
+    }
   }
   @keyframes pulse-ring {
-    0% { box-shadow: 0 0 0 0 currentColor; opacity: 0.6; }
-    70% { box-shadow: 0 0 0 8px transparent; opacity: 0; }
-    100% { box-shadow: 0 0 0 0 transparent; opacity: 0; }
+    0% {
+      box-shadow: 0 0 0 0 currentColor;
+      opacity: 0.6;
+    }
+    70% {
+      box-shadow: 0 0 0 8px transparent;
+      opacity: 0;
+    }
+    100% {
+      box-shadow: 0 0 0 0 transparent;
+      opacity: 0;
+    }
   }
   @keyframes slide-up {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   @keyframes wiggle {
-    0%, 100% { transform: rotate(0); }
-    25% { transform: rotate(-6deg); }
-    75% { transform: rotate(6deg); }
+    0%,
+    100% {
+      transform: rotate(0);
+    }
+    25% {
+      transform: rotate(-6deg);
+    }
+    75% {
+      transform: rotate(6deg);
+    }
   }
   @keyframes equalizer {
-    0%, 100% { transform: scaleY(0.4); }
-    50% { transform: scaleY(1); }
+    0%,
+    100% {
+      transform: scaleY(0.4);
+    }
+    50% {
+      transform: scaleY(1);
+    }
   }
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-2px); }
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-2px);
+    }
   }
   @keyframes drift {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(2px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(2px);
+    }
   }
   @keyframes pop-in {
-    0% { opacity: 0; transform: scale(0.92) translateY(6px); }
-    60% { transform: scale(1.02) translateY(0); }
-    100% { opacity: 1; transform: scale(1); }
+    0% {
+      opacity: 0;
+      transform: scale(0.92) translateY(6px);
+    }
+    60% {
+      transform: scale(1.02) translateY(0);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
   @keyframes glow {
-    0%, 100% { filter: drop-shadow(0 0 0 transparent); }
-    50% { filter: drop-shadow(0 0 8px color-mix(in oklab, var(--primary) 40%, transparent)); }
+    0%,
+    100% {
+      filter: drop-shadow(0 0 0 transparent);
+    }
+    50% {
+      filter: drop-shadow(0 0 8px color-mix(in oklab, var(--primary) 40%, transparent));
+    }
   }
   @keyframes sway {
-    0%, 100% { transform: rotate(-3deg); }
-    50% { transform: rotate(3deg); }
+    0%,
+    100% {
+      transform: rotate(-3deg);
+    }
+    50% {
+      transform: rotate(3deg);
+    }
   }
-  .anim-sway { animation: sway 4.5s ease-in-out infinite; transform-origin: top center; }
+  .anim-sway {
+    animation: sway 4.5s ease-in-out infinite;
+    transform-origin: top center;
+  }
 
-  .anim-breathe { animation: breathe 2.4s ease-in-out infinite; }
-  .anim-float { animation: float 3.2s ease-in-out infinite; }
-  .anim-drift { animation: drift 4s ease-in-out infinite; }
-  .anim-glow { animation: glow 2.8s ease-in-out infinite; }
-  .anim-slide-up { animation: slide-up 0.5s cubic-bezier(0.2,0.7,0.2,1) both; }
-  .anim-pop-in { animation: pop-in 0.5s cubic-bezier(0.2,0.7,0.2,1) both; }
-  .anim-wiggle:hover { animation: wiggle 0.4s ease-in-out; }
+  .anim-breathe {
+    animation: breathe 2.4s ease-in-out infinite;
+  }
+  .anim-float {
+    animation: float 3.2s ease-in-out infinite;
+  }
+  .anim-drift {
+    animation: drift 4s ease-in-out infinite;
+  }
+  .anim-glow {
+    animation: glow 2.8s ease-in-out infinite;
+  }
+  .anim-slide-up {
+    animation: slide-up 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .anim-pop-in {
+    animation: pop-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .anim-wiggle:hover {
+    animation: wiggle 0.4s ease-in-out;
+  }
   .anim-pulse-ring::after {
-    content: ""; position: absolute; inset: 0; border-radius: inherit;
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
     animation: pulse-ring 1.8s ease-out infinite;
   }
 
   /* Generic icon hover lift — scoped via .icon-hover */
-  .icon-hover { transition: transform 0.25s cubic-bezier(0.2,0.7,0.2,1); }
-  .group:hover .icon-hover { transform: translateY(-1px) scale(1.08); }
-  .group:hover .icon-hover-x { transform: translateX(2px); }
+  .icon-hover {
+    transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .group:hover .icon-hover {
+    transform: translateY(-1px) scale(1.08);
+  }
+  .group:hover .icon-hover-x {
+    transform: translateX(2px);
+  }
 
-  .eq-bar { transform-origin: bottom; animation: equalizer 0.9s ease-in-out infinite; }
+  .eq-bar {
+    transform-origin: bottom;
+    animation: equalizer 0.9s ease-in-out infinite;
+  }
 
   /* Slow drift of a tinted media backdrop — the pane feels alive without motion
      on the content. Pairs with an inline gradient + background-size on the element. */
   @keyframes media-gradient {
-    0%, 100% { background-position: 0% 50%; }
-    50%      { background-position: 100% 50%; }
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
   }
-  .anim-media-gradient { animation: media-gradient 9s ease-in-out infinite; }
+  .anim-media-gradient {
+    animation: media-gradient 9s ease-in-out infinite;
+  }
 
   /* ---- Stripe-like slide-up overlay ----
      Backdrop fades, panel glides up + scales in. */
   @keyframes overlay-fade-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
   @keyframes overlay-panel-in {
-    from { opacity: 0; transform: translateY(28px) scale(0.985); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
+    from {
+      opacity: 0;
+      transform: translateY(28px) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
   .overlay-enter .overlay-backdrop {
     animation: overlay-fade-in 0.35s ease-out both;
@@ -364,10 +486,15 @@
      overlay mounted while it plays, then navigates). The backdrop fades and the
      panel slides/lifts out so the sheet is seen moving. */
   @keyframes overlay-fade-out {
-    to { opacity: 0; }
+    to {
+      opacity: 0;
+    }
   }
   @keyframes overlay-panel-out {
-    to { opacity: 0; transform: translateY(16px) scale(0.99); }
+    to {
+      opacity: 0;
+      transform: translateY(16px) scale(0.99);
+    }
   }
   .overlay-leaving .overlay-backdrop {
     animation: overlay-fade-out 0.25s ease-in both;
@@ -380,14 +507,20 @@
      edge instead of the desktop's short lift + scale. */
   @media (max-width: 767.98px) {
     @keyframes overlay-drawer-in {
-      from { transform: translateY(100%); }
-      to   { transform: translateY(0); }
+      from {
+        transform: translateY(100%);
+      }
+      to {
+        transform: translateY(0);
+      }
     }
     .overlay-enter .overlay-panel {
       animation: overlay-drawer-in 0.4s cubic-bezier(0.16, 0.84, 0.24, 1) both;
     }
     @keyframes overlay-drawer-out {
-      to { transform: translateY(100%); }
+      to {
+        transform: translateY(100%);
+      }
     }
     .overlay-leaving .overlay-panel {
       animation: overlay-drawer-out 0.28s ease-in both;
@@ -395,63 +528,158 @@
   }
 
   /* Stagger helpers */
-  .stagger > * { animation: slide-up 0.5s cubic-bezier(0.2,0.7,0.2,1) both; }
-  .stagger > *:nth-child(1) { animation-delay: 0.02s; }
-  .stagger > *:nth-child(2) { animation-delay: 0.06s; }
-  .stagger > *:nth-child(3) { animation-delay: 0.10s; }
-  .stagger > *:nth-child(4) { animation-delay: 0.14s; }
-  .stagger > *:nth-child(5) { animation-delay: 0.18s; }
-  .stagger > *:nth-child(6) { animation-delay: 0.22s; }
-  .stagger > *:nth-child(7) { animation-delay: 0.26s; }
-  .stagger > *:nth-child(8) { animation-delay: 0.30s; }
-  .stagger > *:nth-child(9) { animation-delay: 0.34s; }
-  .stagger > *:nth-child(10) { animation-delay: 0.38s; }
-  .stagger > *:nth-child(11) { animation-delay: 0.42s; }
-  .stagger > *:nth-child(12) { animation-delay: 0.46s; }
+  .stagger > * {
+    animation: slide-up 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .stagger > *:nth-child(1) {
+    animation-delay: 0.02s;
+  }
+  .stagger > *:nth-child(2) {
+    animation-delay: 0.06s;
+  }
+  .stagger > *:nth-child(3) {
+    animation-delay: 0.1s;
+  }
+  .stagger > *:nth-child(4) {
+    animation-delay: 0.14s;
+  }
+  .stagger > *:nth-child(5) {
+    animation-delay: 0.18s;
+  }
+  .stagger > *:nth-child(6) {
+    animation-delay: 0.22s;
+  }
+  .stagger > *:nth-child(7) {
+    animation-delay: 0.26s;
+  }
+  .stagger > *:nth-child(8) {
+    animation-delay: 0.3s;
+  }
+  .stagger > *:nth-child(9) {
+    animation-delay: 0.34s;
+  }
+  .stagger > *:nth-child(10) {
+    animation-delay: 0.38s;
+  }
+  .stagger > *:nth-child(11) {
+    animation-delay: 0.42s;
+  }
+  .stagger > *:nth-child(12) {
+    animation-delay: 0.46s;
+  }
 
   /* Mode switch: cross-fade + slight scale */
   @keyframes mode-in {
-    from { opacity: 0; transform: scale(0.985); }
-    to   { opacity: 1; transform: scale(1); }
+    from {
+      opacity: 0;
+      transform: scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
-  .mode-enter { animation: mode-in 0.4s cubic-bezier(0.16,0.84,0.24,1) both; }
+  .mode-enter {
+    animation: mode-in 0.4s cubic-bezier(0.16, 0.84, 0.24, 1) both;
+  }
 
   /* Donut draw-in */
 
   /* Weather icon animations */
-  @keyframes sun-spin { to { transform: rotate(360deg); } }
+  @keyframes sun-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
   @keyframes rain-bob {
-    0%, 100% { transform: translateY(-1px); }
-    50% { transform: translateY(3px); }
+    0%,
+    100% {
+      transform: translateY(-1px);
+    }
+    50% {
+      transform: translateY(3px);
+    }
   }
   @keyframes storm-flicker {
-    0%, 55%, 100% { opacity: 1; filter: drop-shadow(0 0 0 transparent); }
-    60%, 72% { opacity: 0.5; filter: drop-shadow(0 0 8px color-mix(in oklab, var(--warm) 80%, transparent)); }
-    66% { opacity: 1; filter: drop-shadow(0 0 10px color-mix(in oklab, var(--warm) 90%, transparent)); }
+    0%,
+    55%,
+    100% {
+      opacity: 1;
+      filter: drop-shadow(0 0 0 transparent);
+    }
+    60%,
+    72% {
+      opacity: 0.5;
+      filter: drop-shadow(0 0 8px color-mix(in oklab, var(--warm) 80%, transparent));
+    }
+    66% {
+      opacity: 1;
+      filter: drop-shadow(0 0 10px color-mix(in oklab, var(--warm) 90%, transparent));
+    }
   }
   @keyframes snow-fall {
-    0%, 100% { transform: translateY(-1px) rotate(-4deg); }
-    50% { transform: translateY(3px) rotate(6deg); }
+    0%,
+    100% {
+      transform: translateY(-1px) rotate(-4deg);
+    }
+    50% {
+      transform: translateY(3px) rotate(6deg);
+    }
   }
   @keyframes fog-drift {
-    0%, 100% { transform: translateX(-2px); opacity: 0.75; }
-    50% { transform: translateX(2px); opacity: 1; }
+    0%,
+    100% {
+      transform: translateX(-2px);
+      opacity: 0.75;
+    }
+    50% {
+      transform: translateX(2px);
+      opacity: 1;
+    }
   }
   @keyframes partly-bob {
-    0%, 100% { transform: translate(-1px, 0) rotate(-2deg); }
-    50% { transform: translate(1px, -2px) rotate(2deg); }
+    0%,
+    100% {
+      transform: translate(-1px, 0) rotate(-2deg);
+    }
+    50% {
+      transform: translate(1px, -2px) rotate(2deg);
+    }
   }
   @keyframes cloud-drift {
-    0%, 100% { transform: translateX(-2px); }
-    50% { transform: translateX(2px); }
+    0%,
+    100% {
+      transform: translateX(-2px);
+    }
+    50% {
+      transform: translateX(2px);
+    }
   }
-  .anim-sun { animation: sun-spin 12s linear infinite; transform-origin: center; transform-box: fill-box; }
-  .anim-rain { animation: rain-bob 1.4s ease-in-out infinite; }
-  .anim-storm { animation: storm-flicker 2.4s ease-in-out infinite; }
-  .anim-snow { animation: snow-fall 2.6s ease-in-out infinite; }
-  .anim-fog { animation: fog-drift 3.2s ease-in-out infinite; }
-  .anim-partly { animation: partly-bob 3s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
-  .anim-cloud { animation: cloud-drift 4s ease-in-out infinite; }
+  .anim-sun {
+    animation: sun-spin 12s linear infinite;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+  .anim-rain {
+    animation: rain-bob 1.4s ease-in-out infinite;
+  }
+  .anim-storm {
+    animation: storm-flicker 2.4s ease-in-out infinite;
+  }
+  .anim-snow {
+    animation: snow-fall 2.6s ease-in-out infinite;
+  }
+  .anim-fog {
+    animation: fog-drift 3.2s ease-in-out infinite;
+  }
+  .anim-partly {
+    animation: partly-bob 3s ease-in-out infinite;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+  .anim-cloud {
+    animation: cloud-drift 4s ease-in-out infinite;
+  }
 
   /* ---- Custom cursor (alexandremasy.com-inspired) ----
      - The native system cursor is kept (auto → pointer on interactive elements).
@@ -488,25 +716,42 @@
     stroke-width: 1.5;
   }
   @media (hover: none), (pointer: coarse) {
-    .cursor-follower { display: none; }
+    .cursor-follower {
+      display: none;
+    }
   }
 
   /* ---- Animated mesh gradient ---- */
 
   @media (prefers-reduced-motion: reduce) {
-    .cursor-follower { display: none; }
+    .cursor-follower {
+      display: none;
+    }
   }
 }
 
 @layer utilities {
   @keyframes shake-x {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-3px); }
-    40% { transform: translateX(3px); }
-    60% { transform: translateX(-2px); }
-    80% { transform: translateX(2px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20% {
+      transform: translateX(-3px);
+    }
+    40% {
+      transform: translateX(3px);
+    }
+    60% {
+      transform: translateX(-2px);
+    }
+    80% {
+      transform: translateX(2px);
+    }
   }
-  .anim-shake { animation: shake-x 0.35s cubic-bezier(.36,.07,.19,.97) both; }
+  .anim-shake {
+    animation: shake-x 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
 
   /* ---- Living gradient — a slow purple→blue mesh that drifts across the whole
      viewport, Stripe-style, and shifts hue as the page scrolls (--lg-scroll,
@@ -547,19 +792,36 @@
   }
   /* Wide diagonal sweeps with strong scale swings so the mesh visibly breathes. */
   @keyframes lg-drift-a {
-    0%, 100% { transform: translate(-78%, -92%) scale(0.95); }
-    50%      { transform: translate(-26%, -40%) scale(1.45); }
+    0%,
+    100% {
+      transform: translate(-78%, -92%) scale(0.95);
+    }
+    50% {
+      transform: translate(-26%, -40%) scale(1.45);
+    }
   }
   @keyframes lg-drift-b {
-    0%, 100% { transform: translate(-28%, -22%) scale(1.4); }
-    50%      { transform: translate(-72%, -70%) scale(0.9); }
+    0%,
+    100% {
+      transform: translate(-28%, -22%) scale(1.4);
+    }
+    50% {
+      transform: translate(-72%, -70%) scale(0.9);
+    }
   }
   @keyframes lg-drift-c {
-    0%, 100% { transform: translate(-20%, -58%) scale(1.05); }
-    50%      { transform: translate(-66%, -12%) scale(1.5); }
+    0%,
+    100% {
+      transform: translate(-20%, -58%) scale(1.05);
+    }
+    50% {
+      transform: translate(-66%, -12%) scale(1.5);
+    }
   }
   @media (prefers-reduced-motion: reduce) {
-    .living-gradient__blob { animation: none; }
+    .living-gradient__blob {
+      animation: none;
+    }
   }
 
   /* Repas page glow: a teal corner wash, strong top-left and a lighter touch
@@ -568,7 +830,11 @@
     /* Anchored AT THE TOP (at X 0%): the core sits on the top edge and fades
        DOWNWARD, so the top band stays filled and there's no hard seam — the ellipse
        reaches transparent (72%) well before the element's bottom. */
-    background: radial-gradient(ellipse 130% 115% at 45% 0%, color-mix(in oklab, var(--primary) 26%, transparent) 0%, transparent 82%);
+    background: radial-gradient(
+      ellipse 130% 115% at 45% 0%,
+      color-mix(in oklab, var(--primary) 26%, transparent) 0%,
+      transparent 82%
+    );
     animation: repas-glow-morph 14s ease-in-out infinite;
   }
   /* One coherent blob that keeps the top filled while it drifts left→right and
@@ -576,10 +842,28 @@
      into the page's muted grey. Rests on a muted grey (low saturation) at each
      cycle's ends, blooming teal in the middle. */
   @keyframes repas-glow-morph {
-    0%, 100% { background: radial-gradient(ellipse 120% 108% at 35% 0%, color-mix(in oklab, var(--primary) 22%, transparent) 0%, transparent 84%); filter: saturate(0.35) hue-rotate(0deg); }
-    50%      { background: radial-gradient(ellipse 155% 125% at 58% 0%, color-mix(in oklab, var(--primary) 30%, transparent) 0%, transparent 82%); filter: saturate(1.15) hue-rotate(-18deg); }
+    0%,
+    100% {
+      background: radial-gradient(
+        ellipse 120% 108% at 35% 0%,
+        color-mix(in oklab, var(--primary) 22%, transparent) 0%,
+        transparent 84%
+      );
+      filter: saturate(0.35) hue-rotate(0deg);
+    }
+    50% {
+      background: radial-gradient(
+        ellipse 155% 125% at 58% 0%,
+        color-mix(in oklab, var(--primary) 30%, transparent) 0%,
+        transparent 82%
+      );
+      filter: saturate(1.15) hue-rotate(-18deg);
+    }
   }
   @media (prefers-reduced-motion: reduce) {
-    .repas-glow { animation: none; filter: saturate(0.5); }
+    .repas-glow {
+      animation: none;
+      filter: saturate(0.5);
+    }
   }
 }

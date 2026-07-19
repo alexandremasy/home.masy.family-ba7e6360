@@ -17,7 +17,10 @@ function PlatsPage() {
   const [filter, setFilter] = useState<DishFilter>(EMPTY_FILTER);
   const [query, setQuery] = useState("");
 
-  const allBases = useMemo(() => [...new Set(dishes.map((d) => d.base))].sort() as Base[], [dishes]);
+  const allBases = useMemo(
+    () => [...new Set(dishes.map((d) => d.base))].sort() as Base[],
+    [dishes],
+  );
   const results = useMemo(() => applyFilter(dishes, filter, query), [dishes, filter, query]);
 
   return (

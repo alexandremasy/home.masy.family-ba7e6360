@@ -17,7 +17,7 @@ export function ResponsiveModal({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  title: ReactNode;
+  title?: string;
   headerAction?: ReactNode;
   size?: "md" | "lg";
   children: ReactNode;

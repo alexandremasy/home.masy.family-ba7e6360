@@ -1,11 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { generateMessage, nextBirthday, daysUntil, upcomingAge, hasBirthYear, type Person, type Sliders } from "@/lib/maison-data";
+import {
+  generateMessage,
+  nextBirthday,
+  daysUntil,
+  upcomingAge,
+  hasBirthYear,
+  type Person,
+  type Sliders,
+} from "@/lib/maison-data";
 import { usePeople } from "@/lib/people-store";
 import { cap } from "@/lib/utils";
 import { Cake, Copy, Check, Pencil, Plus, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { Eyebrow } from "@/components/Eyebrow";
 import { ResponsiveModal } from "@/components/ResponsiveModal";
 import { MessageStudio } from "@/components/MessageStudio";
@@ -41,9 +54,11 @@ function AnniversairesPage() {
 
       <div className="space-y-8 px-6 sm:px-12">
         {/* 1 — the day's birthday, front and centre */}
-        {todays.length > 0
-          ? todays.map((p) => <TodayHero key={p.id} person={p} onEditProfile={() => setEditing(p)} />)
-          : <EmptyToday next={upcoming[0]} />}
+        {todays.length > 0 ? (
+          todays.map((p) => <TodayHero key={p.id} person={p} onEditProfile={() => setEditing(p)} />)
+        ) : (
+          <EmptyToday next={upcoming[0]} />
+        )}
 
         {/* Full-bleed rule: -mx cancels the inner px, w-auto (via the data override,
             which otherwise pins w-full) lets both margins pull it to the stage edges. */}
@@ -82,7 +97,12 @@ function TodayHero({ person, onEditProfile }: { person: Person; onEditProfile: (
   ];
   const [edit, setEdit] = useState<Variant | null>(null);
   const studio = edit && (
-    <MessageStudio key={edit.label} person={person} initialSliders={edit.sliders} initialSeed={edit.seed} />
+    <MessageStudio
+      key={edit.label}
+      person={person}
+      initialSliders={edit.sliders}
+      initialSeed={edit.seed}
+    />
   );
 
   return (
@@ -138,7 +158,15 @@ function TodayHero({ person, onEditProfile }: { person: Person; onEditProfile: (
 }
 
 /** One ready-to-send draft. Copy or edit its style from the card's top-right. */
-function SuggestionCard({ person, variant, onEdit }: { person: Person; variant: Variant; onEdit: () => void }) {
+function SuggestionCard({
+  person,
+  variant,
+  onEdit,
+}: {
+  person: Person;
+  variant: Variant;
+  onEdit: () => void;
+}) {
   const [copied, setCopied] = useState(false);
   const message = generateMessage(person, variant.sliders, "", variant.seed);
 
@@ -172,12 +200,18 @@ function SuggestionCard({ person, variant, onEdit }: { person: Person; variant: 
             title="Copier"
             className="grid h-7 w-7 place-items-center rounded-md transition-colors hover:bg-secondary hover:text-foreground"
           >
-            {copied ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied ? (
+              <Check className="h-3.5 w-3.5 text-primary" />
+            ) : (
+              <Copy className="h-3.5 w-3.5" />
+            )}
             <span className="sr-only">{copied ? "Copié" : "Copier"}</span>
           </button>
         </div>
       </div>
-      <p className="whitespace-pre-wrap font-serif text-base leading-relaxed text-foreground">{message}</p>
+      <p className="whitespace-pre-wrap font-serif text-base leading-relaxed text-foreground">
+        {message}
+      </p>
     </div>
   );
 }

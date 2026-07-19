@@ -69,11 +69,7 @@ export function PMCBag({ className = "" }: { className?: string }) {
       <rect x="98" y="32" width="24" height="14" rx="4" fill="oklch(0.72 0.17 85)" />
 
       {/* glossy highlight */}
-      <path
-        d="M52 90 Q56 86 64 86 L66 200 Q60 204 54 200 Z"
-        fill="white"
-        opacity="0.18"
-      />
+      <path d="M52 90 Q56 86 64 86 L66 200 Q60 204 54 200 Z" fill="white" opacity="0.18" />
     </svg>
   );
 }

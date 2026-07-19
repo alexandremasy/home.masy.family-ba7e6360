@@ -4,8 +4,14 @@ import { PersonForm, EMPTY_PERSON, type PersonDraft } from "@/components/PersonF
 import { ResponsiveModal } from "@/components/ResponsiveModal";
 import { Button } from "@/components/ui/button";
 import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import type { Person } from "@/lib/maison-data";
 import { Trash2 } from "lucide-react";
@@ -16,7 +22,13 @@ export type PersonTarget = Person | "new" | null;
  * Add / edit a person, through the shared ResponsiveModal (bottom sheet on mobile,
  * centred dialog on desktop). Deleting still goes through an AlertDialog.
  */
-export function PersonDialog({ target, onOpenChange }: { target: PersonTarget; onOpenChange: (open: boolean) => void }) {
+export function PersonDialog({
+  target,
+  onOpenChange,
+}: {
+  target: PersonTarget;
+  onOpenChange: (open: boolean) => void;
+}) {
   const { create, update, remove } = usePeople();
   const [confirming, setConfirming] = useState(false);
 
@@ -88,7 +100,12 @@ export function PersonDialog({ target, onOpenChange }: { target: PersonTarget; o
   );
 
   return (
-    <ResponsiveModal open={open} onOpenChange={onOpenChange} title={title} headerAction={removeButton}>
+    <ResponsiveModal
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      headerAction={removeButton}
+    >
       {form}
       {confirm}
     </ResponsiveModal>

@@ -12,7 +12,13 @@ export function MapPinBg({ className = "" }: { className?: string }) {
     >
       <defs>
         <pattern id="map-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="0.4" opacity="0.18" />
+          <path
+            d="M 20 0 L 0 0 0 20"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="0.4"
+            opacity="0.18"
+          />
         </pattern>
         <radialGradient id="map-vignette" cx="50%" cy="50%" r="65%">
           <stop offset="0%" stopColor="white" stopOpacity="0" />
@@ -25,7 +31,10 @@ export function MapPinBg({ className = "" }: { className?: string }) {
         </radialGradient>
         <filter id="pin-glow" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="2.5" result="b" />
-          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
         </filter>
       </defs>
 
@@ -53,7 +62,15 @@ export function MapPinBg({ className = "" }: { className?: string }) {
 
       {/* single teal location dot */}
       <circle cx="200" cy="100" r="5" fill="oklch(0.72 0.13 195)" />
-      <circle cx="200" cy="100" r="5" fill="none" stroke="oklch(0.92 0.05 195)" strokeWidth="1" opacity="0.9" />
+      <circle
+        cx="200"
+        cy="100"
+        r="5"
+        fill="none"
+        stroke="oklch(0.92 0.05 195)"
+        strokeWidth="1"
+        opacity="0.9"
+      />
     </svg>
   );
 }

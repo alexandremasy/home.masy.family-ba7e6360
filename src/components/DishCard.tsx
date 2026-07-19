@@ -9,7 +9,10 @@ import { effortLevel, fmtMinutes, type Dish } from "@/lib/maison-data";
  * Never `warm` — that is the alert tone.
  */
 export function StatusPill({
-  tone = "muted", icon, children, title,
+  tone = "muted",
+  icon,
+  children,
+  title,
 }: {
   tone?: "primary" | "muted";
   icon?: ReactNode;
@@ -72,7 +75,12 @@ function attributesOf(dish: Dish): string[] {
  * cell has room for the name and nothing else.
  */
 export function DishCard({
-  dish, variant = "full", status, actions, footer, leading,
+  dish,
+  variant = "full",
+  status,
+  actions,
+  footer,
+  leading,
 }: {
   dish: Dish;
   variant?: "full" | "compact";
@@ -104,7 +112,9 @@ export function DishCard({
       {!compact && (
         <div className="mt-2 flex flex-wrap items-center gap-1">
           {attributesOf(dish).map((a) => (
-            <Badge key={a} variant="secondary" className="text-2xs font-normal">{a}</Badge>
+            <Badge key={a} variant="secondary" className="text-2xs font-normal">
+              {a}
+            </Badge>
           ))}
           {actions}
         </div>

@@ -32,7 +32,10 @@ function AppLayout() {
 
   // Close plays the exit animation, then navigates home — shared with in-page modals
   // via useSheetClose. `closing` also lifts the dashboard blur in parallel (below).
-  const { closing, requestClose } = useSheetClose({ open: isOverlay, onClosed: () => navigate({ to: "/" }) });
+  const { closing, requestClose } = useSheetClose({
+    open: isOverlay,
+    onClosed: () => navigate({ to: "/" }),
+  });
 
   // Pick a line based on day-of-year for a stable but rotating feel
   const start = new Date(new Date().getFullYear(), 0, 0);

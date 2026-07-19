@@ -22,20 +22,19 @@ const numField = (label: string, max: number) =>
     .refine((v) => Number(v) >= 0, { message: `${label} doit être positif` })
     .refine((v) => Number(v) <= max, { message: `${label} semble trop élevé` });
 
-const schema = z
-  .object({
-    eau: numField("Eau", 100000),
-    jour: numField("Électricité jour", 1000000),
-    nuit: numField("Électricité nuit", 1000000),
-    mazout: numField("Mazout", 100),
-    date: z
-      .string()
-      .nonempty({ message: "La date est requise" })
-      .refine((v) => !Number.isNaN(Date.parse(v)), { message: "Date invalide" })
-      .refine((v) => new Date(v).getTime() <= Date.now() + 24 * 3600 * 1000, {
-        message: "La date ne peut pas être dans le futur",
-      }),
-  });
+const schema = z.object({
+  eau: numField("Eau", 100000),
+  jour: numField("Électricité jour", 1000000),
+  nuit: numField("Électricité nuit", 1000000),
+  mazout: numField("Mazout", 100),
+  date: z
+    .string()
+    .nonempty({ message: "La date est requise" })
+    .refine((v) => !Number.isNaN(Date.parse(v)), { message: "Date invalide" })
+    .refine((v) => new Date(v).getTime() <= Date.now() + 24 * 3600 * 1000, {
+      message: "La date ne peut pas être dans le futur",
+    }),
+});
 
 type FormState = { eau: string; jour: string; nuit: string; mazout: string; date: string };
 type Status = "idle" | "submitting" | "success" | "error";
@@ -46,7 +45,13 @@ function SaisiePage() {
   const [status, setStatus] = useState<Status>("idle");
   const [formError, setFormError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
-  const [form, setForm] = useState<FormState>({ eau: "", jour: "", nuit: "", mazout: "", date: today });
+  const [form, setForm] = useState<FormState>({
+    eau: "",
+    jour: "",
+    nuit: "",
+    mazout: "",
+    date: today,
+  });
 
   const update = (k: keyof FormState, v: string) => {
     setForm((f) => ({ ...f, [k]: v }));
@@ -90,17 +95,55 @@ function SaisiePage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <PageHeader title="Relevé mensuel" subtitle="Saisis les 4 compteurs ci-dessous." back="/energie" backLabel="Énergie" />
+      <PageHeader
+        title="Relevé mensuel"
+        subtitle="Saisis les 4 compteurs ci-dessous."
+        back="/energie"
+        backLabel="Énergie"
+      />
 
       <Section title="Compteurs">
         <form onSubmit={submit} noValidate className="space-y-4">
-          <Field label="Eau" unit="m³" value={form.eau} onChange={(v) => update("eau", v)} error={errors.eau} disabled={submitting || done} />
-          <Field label="Électricité jour" unit="kWh" value={form.jour} onChange={(v) => update("jour", v)} error={errors.jour} disabled={submitting || done} />
-          <Field label="Électricité nuit" unit="kWh" value={form.nuit} onChange={(v) => update("nuit", v)} error={errors.nuit} disabled={submitting || done} />
-          <Field label="Citerne à mazout" unit="%" value={form.mazout} onChange={(v) => update("mazout", v)} error={errors.mazout} disabled={submitting || done} />
+          <Field
+            label="Eau"
+            unit="m³"
+            value={form.eau}
+            onChange={(v) => update("eau", v)}
+            error={errors.eau}
+            disabled={submitting || done}
+          />
+          <Field
+            label="Électricité jour"
+            unit="kWh"
+            value={form.jour}
+            onChange={(v) => update("jour", v)}
+            error={errors.jour}
+            disabled={submitting || done}
+          />
+          <Field
+            label="Électricité nuit"
+            unit="kWh"
+            value={form.nuit}
+            onChange={(v) => update("nuit", v)}
+            error={errors.nuit}
+            disabled={submitting || done}
+          />
+          <Field
+            label="Citerne à mazout"
+            unit="%"
+            value={form.mazout}
+            onChange={(v) => update("mazout", v)}
+            error={errors.mazout}
+            disabled={submitting || done}
+          />
 
           <div>
-            <Label htmlFor="releve-date" className="mb-1.5 block text-xs uppercase tracking-eyebrow text-muted-foreground">Date</Label>
+            <Label
+              htmlFor="releve-date"
+              className="mb-1.5 block text-xs uppercase tracking-eyebrow text-muted-foreground"
+            >
+              Date
+            </Label>
             <input
               id="releve-date"
               type="date"
@@ -137,9 +180,13 @@ function SaisiePage() {
             }
           >
             {submitting ? (
-              <><Loader2 className="h-4 w-4 animate-spin" /> Envoi en cours…</>
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> Envoi en cours…
+              </>
             ) : done ? (
-              <><Check className="h-4 w-4" /> Enregistré</>
+              <>
+                <Check className="h-4 w-4" /> Enregistré
+              </>
             ) : (
               "Enregistrer le relevé"
             )}
@@ -170,7 +217,12 @@ function Field({
   const id = useId();
   return (
     <div>
-      <Label htmlFor={id} className="mb-1.5 block text-xs uppercase tracking-eyebrow text-muted-foreground">{label}</Label>
+      <Label
+        htmlFor={id}
+        className="mb-1.5 block text-xs uppercase tracking-eyebrow text-muted-foreground"
+      >
+        {label}
+      </Label>
       <div
         className={
           "flex overflow-hidden rounded-xl border bg-card focus-within:ring-2 focus-within:ring-ring " +
@@ -188,7 +240,9 @@ function Field({
           placeholder="0"
           className="flex-1 bg-transparent px-4 py-3 text-foreground outline-none disabled:opacity-60"
         />
-        <span className="grid place-items-center bg-secondary px-4 text-sm text-muted-foreground">{unit}</span>
+        <span className="grid place-items-center bg-secondary px-4 text-sm text-muted-foreground">
+          {unit}
+        </span>
       </div>
       {error && <p className="mt-1.5 text-sm text-destructive">{error}</p>}
     </div>

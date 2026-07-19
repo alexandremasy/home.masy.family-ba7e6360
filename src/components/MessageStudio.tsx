@@ -57,21 +57,54 @@ export function MessageStudio({
             title="Copier"
             className="grid h-7 w-7 place-items-center rounded-md transition-colors hover:bg-secondary hover:text-foreground"
           >
-            {copied ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied ? (
+              <Check className="h-3.5 w-3.5 text-primary" />
+            ) : (
+              <Copy className="h-3.5 w-3.5" />
+            )}
             <span className="sr-only">{copied ? "Copié" : "Copier"}</span>
           </button>
         </div>
-        <p className="whitespace-pre-wrap pr-16 font-serif text-lg leading-relaxed text-foreground">{message}</p>
+        <p className="whitespace-pre-wrap pr-16 font-serif text-lg leading-relaxed text-foreground">
+          {message}
+        </p>
       </div>
 
       <div className="space-y-5 rounded-lg border border-border/60 p-4">
-        <SliderRow label="Registre" left="pudique" right="complice" value={sliders.registre} onChange={(v) => set("registre", v)} />
-        <SliderRow label="Chaleur" left="sobre" right="tendre" value={sliders.chaleur} onChange={(v) => set("chaleur", v)} />
-        <SliderRow label="Humour" left="sincère" right="taquin" value={sliders.humour} onChange={(v) => set("humour", v)} />
-        <SliderRow label="Longueur" left="bref" right="développé" value={sliders.longueur} onChange={(v) => set("longueur", v)} />
+        <SliderRow
+          label="Registre"
+          left="pudique"
+          right="complice"
+          value={sliders.registre}
+          onChange={(v) => set("registre", v)}
+        />
+        <SliderRow
+          label="Chaleur"
+          left="sobre"
+          right="tendre"
+          value={sliders.chaleur}
+          onChange={(v) => set("chaleur", v)}
+        />
+        <SliderRow
+          label="Humour"
+          left="sincère"
+          right="taquin"
+          value={sliders.humour}
+          onChange={(v) => set("humour", v)}
+        />
+        <SliderRow
+          label="Longueur"
+          left="bref"
+          right="développé"
+          value={sliders.longueur}
+          onChange={(v) => set("longueur", v)}
+        />
 
         <div className="border-t border-border/60 pt-4">
-          <Label htmlFor="refine-comment" className="mb-1.5 flex items-center gap-1.5 text-xs font-normal text-muted-foreground">
+          <Label
+            htmlFor="refine-comment"
+            className="mb-1.5 flex items-center gap-1.5 text-xs font-normal text-muted-foreground"
+          >
             <Sparkles className="h-3 w-3 text-primary" />
             Affiner par commentaire (ex. « plus court », « clin d'oeil à la guitare »)
           </Label>

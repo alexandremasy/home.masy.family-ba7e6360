@@ -10,7 +10,11 @@ export const Route = createFileRoute("/_app/securite")({
   head: () => ({
     meta: [
       { title: "Sécurité — Maison" },
-      { name: "description", content: "État de la maison : armement, présence, périmètre, activité, caméras et santé du système." },
+      {
+        name: "description",
+        content:
+          "État de la maison : armement, présence, périmètre, activité, caméras et santé du système.",
+      },
     ],
   }),
 });
@@ -26,10 +30,16 @@ function SecuriteLayout() {
         subtitle="L'état de la maison, en un coup d'œil"
         variant="page"
         action={
-          <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs uppercase tracking-eyebrow ${
-            secure ? "bg-success/15 text-success" : "bg-warm/15 text-warm"
-          }`}>
-            {secure ? <ShieldCheck className="h-3.5 w-3.5" /> : <ShieldAlert className="h-3.5 w-3.5" />}
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs uppercase tracking-eyebrow ${
+              secure ? "bg-success/15 text-success" : "bg-warm/15 text-warm"
+            }`}
+          >
+            {secure ? (
+              <ShieldCheck className="h-3.5 w-3.5" />
+            ) : (
+              <ShieldAlert className="h-3.5 w-3.5" />
+            )}
             {secure ? "Sécurisée" : `${openPoints.length} à vérifier`}
           </span>
         }

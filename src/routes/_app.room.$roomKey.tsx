@@ -10,7 +10,49 @@ import { CameraFeed } from "@/components/CameraFeed";
 import { DishwasherPanel } from "@/components/DishwasherPanel";
 import { VacuumPanel } from "@/components/VacuumPanel";
 import { rooms, roomDetails, cameras, motionEvents, vacuum, type RoomKey } from "@/lib/mock-data";
-import { Lightbulb, Thermometer, Volume2, Volume1, Play, Battery, BatteryFull, BatteryMedium, BatteryLow, BatteryWarning, Droplet, Sparkles, Pause, Power, Radio, Moon, Flame, SunDim, SunMedium, Sun, BookOpen, Sunrise, UtensilsCrossed, ChefHat, Briefcase, Armchair, Footprints, LampCeiling, Speaker, Bed, Cat, Printer, Projector, Lamp, Disc3, Flower2, Snowflake, ExternalLink, Home as HomeIcon, ArrowRight, type LucideIcon } from "lucide-react";
+import {
+  Lightbulb,
+  Thermometer,
+  Volume2,
+  Volume1,
+  Play,
+  Battery,
+  BatteryFull,
+  BatteryMedium,
+  BatteryLow,
+  BatteryWarning,
+  Droplet,
+  Sparkles,
+  Pause,
+  Power,
+  Radio,
+  Moon,
+  Flame,
+  SunDim,
+  SunMedium,
+  Sun,
+  BookOpen,
+  Sunrise,
+  UtensilsCrossed,
+  ChefHat,
+  Briefcase,
+  Armchair,
+  Footprints,
+  LampCeiling,
+  Speaker,
+  Bed,
+  Cat,
+  Printer,
+  Projector,
+  Lamp,
+  Disc3,
+  Flower2,
+  Snowflake,
+  ExternalLink,
+  Home as HomeIcon,
+  ArrowRight,
+  type LucideIcon,
+} from "lucide-react";
 
 function batteryFor(level: number): { Icon: LucideIcon; tone: string } {
   if (level < 20) return { Icon: BatteryWarning, tone: "text-destructive" };
@@ -74,18 +116,20 @@ import { Eyebrow } from "@/components/Eyebrow";
 export const Route = createFileRoute("/_app/room/$roomKey")({
   component: RoomPage,
   loader: ({ params }: { params: { roomKey: string } }) => {
-    const room = rooms.find((r) => r.key === params.roomKey as RoomKey);
+    const room = rooms.find((r) => r.key === (params.roomKey as RoomKey));
     if (!room) throw notFound();
     return { room };
   },
   notFoundComponent: () => (
     <div className="py-16 text-center">
       <h1 className="font-serif text-3xl">Pièce introuvable</h1>
-      <Link to="/" className="mt-4 inline-block text-primary underline">Retour</Link>
+      <Link to="/" className="mt-4 inline-block text-primary underline">
+        Retour
+      </Link>
     </div>
   ),
   head: ({ params }: { params: { roomKey: string } }) => {
-    const room = rooms.find((r) => r.key === params.roomKey as RoomKey);
+    const room = rooms.find((r) => r.key === (params.roomKey as RoomKey));
     return { meta: [{ title: room ? `${room.name} — Maison` : "Pièce" }] };
   },
 });
@@ -98,7 +142,7 @@ const HEAT_PRESETS: number[] = [19, 20, 21, 22];
 const COOL_PRESETS: number[] = [22, 24, 26];
 
 function RoomPage() {
-  const data = Route.useLoaderData() as { room: typeof rooms[number] };
+  const data = Route.useLoaderData() as { room: (typeof rooms)[number] };
   const room = data.room;
   const detail = roomDetails[room.key];
   const [zones, setZones] = useState(detail.lights?.zones ?? []);
@@ -131,7 +175,9 @@ function RoomPage() {
               {room.name}
             </h1>
             {typeof room.temperature === "number" && (
-              <p className="text-xs text-muted-foreground">Actuellement {room.temperature.toFixed(1)}°C</p>
+              <p className="text-xs text-muted-foreground">
+                Actuellement {room.temperature.toFixed(1)}°C
+              </p>
             )}
           </div>
           <Toggle
@@ -168,7 +214,11 @@ function RoomPage() {
             <SlidingTabs
               value={scene}
               onValueChange={setScene}
-              options={detail.lights.scenes.map((s) => ({ value: s, label: s, icon: sceneIcon(s) }))}
+              options={detail.lights.scenes.map((s) => ({
+                value: s,
+                label: s,
+                icon: sceneIcon(s),
+              }))}
             />
           )}
 
@@ -191,9 +241,7 @@ function RoomPage() {
 
           {zones.length > 0 && (
             <div className={detail.lights.scenes.length > 0 ? "mt-6" : ""}>
-              {detail.lights.scenes.length > 0 && (
-                <Eyebrow className="mb-3">Zones</Eyebrow>
-              )}
+              {detail.lights.scenes.length > 0 && <Eyebrow className="mb-3">Zones</Eyebrow>}
               <div className="flex flex-wrap gap-1.5">
                 {zones.map((z, i) => {
                   const Icon = zoneIcon(z.name);
@@ -245,7 +293,12 @@ function RoomPage() {
       {room.key === "buanderie" && (
         <Section
           title="Aspirateur robot"
-          action={<span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground"><HomeIcon className="h-4 w-4" />Base ici</span>}
+          action={
+            <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+              <HomeIcon className="h-4 w-4" />
+              Base ici
+            </span>
+          }
         >
           <VacuumPanel />
           {vacuum.state === "docked" && (
@@ -266,12 +319,16 @@ function RoomPage() {
       )}
 
       {(() => {
-        const roomCams = cameras.filter((c) => c.installed && (
-          (room.key === "salon"     && c.id === "salon") ||
-          (room.key === "buanderie" && c.id === "buanderie")
-        ));
+        const roomCams = cameras.filter(
+          (c) =>
+            c.installed &&
+            ((room.key === "salon" && c.id === "salon") ||
+              (room.key === "buanderie" && c.id === "buanderie")),
+        );
         if (roomCams.length === 0) return null;
-        const recentEvents = motionEvents.filter((e) => roomCams.some(c => c.id === e.cameraId)).slice(0, 3);
+        const recentEvents = motionEvents
+          .filter((e) => roomCams.some((c) => c.id === e.cameraId))
+          .slice(0, 3);
         return (
           <Section
             title="Caméra"
@@ -294,7 +351,10 @@ function RoomPage() {
               {recentEvents.length > 0 && (
                 <ul className="space-y-1.5">
                   {recentEvents.map((e) => (
-                    <li key={e.id} className="flex items-center gap-2 rounded-lg bg-secondary/60 px-3 py-2 text-xs">
+                    <li
+                      key={e.id}
+                      className="flex items-center gap-2 rounded-lg bg-secondary/60 px-3 py-2 text-xs"
+                    >
                       <Sparkles className="h-3 w-3 text-primary" />
                       <span className="flex-1 truncate">{e.label}</span>
                       <span className="tabular-nums text-muted-foreground">{e.time}</span>
@@ -307,24 +367,31 @@ function RoomPage() {
         );
       })()}
 
-
       {detail.devices && (
         <Section title="Périphériques">
           {detail.devices.ink && (
             <div className="mb-6">
               <Eyebrow className="mb-3">Imprimante · niveaux d'encre</Eyebrow>
               <div className="grid grid-cols-2 gap-3 stagger sm:grid-cols-4">
-                {([
-                  ["Cyan", detail.devices.ink.c, "oklch(0.78 0.13 200)"],
-                  ["Magenta", detail.devices.ink.m, "oklch(0.65 0.22 350)"],
-                  ["Jaune", detail.devices.ink.y, "oklch(0.86 0.16 95)"],
-                  ["Noir", detail.devices.ink.k, "oklch(0.30 0.02 230)"],
-                ] as const).map(([name, val, color]) => (
+                {(
+                  [
+                    ["Cyan", detail.devices.ink.c, "oklch(0.78 0.13 200)"],
+                    ["Magenta", detail.devices.ink.m, "oklch(0.65 0.22 350)"],
+                    ["Jaune", detail.devices.ink.y, "oklch(0.86 0.16 95)"],
+                    ["Noir", detail.devices.ink.k, "oklch(0.30 0.02 230)"],
+                  ] as const
+                ).map(([name, val, color]) => (
                   <div key={name} className="rounded-xl border border-border/60 bg-card p-3">
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground"><Droplet className="h-3 w-3" />{name}</div>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Droplet className="h-3 w-3" />
+                      {name}
+                    </div>
                     <p className="mt-1.5 font-serif text-base">{val}%</p>
                     <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-muted">
-                      <div className="h-full rounded-full transition-all duration-700" style={{ width: `${val}%`, background: color }} />
+                      <div
+                        className="h-full rounded-full transition-all duration-700"
+                        style={{ width: `${val}%`, background: color }}
+                      />
                     </div>
                   </div>
                 ))}
@@ -342,9 +409,19 @@ function RoomPage() {
             {detail.devices.batteries.map((b) => {
               const { Icon, tone } = batteryFor(b.level);
               return (
-                <div key={b.name} className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 text-sm">
-                  <span className="flex items-center gap-2"><Icon className={"h-4 w-4 " + tone} />{b.name}</span>
-                  <span className={"text-xs font-semibold " + (b.level < 20 ? "text-destructive" : "")}>{b.level}%</span>
+                <div
+                  key={b.name}
+                  className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 text-sm"
+                >
+                  <span className="flex items-center gap-2">
+                    <Icon className={"h-4 w-4 " + tone} />
+                    {b.name}
+                  </span>
+                  <span
+                    className={"text-xs font-semibold " + (b.level < 20 ? "text-destructive" : "")}
+                  >
+                    {b.level}%
+                  </span>
                 </div>
               );
             })}
@@ -354,14 +431,16 @@ function RoomPage() {
 
       {!detail.lights && !detail.climate && !detail.media && !detail.devices && (
         <Section title="Aucun appareil">
-          <p className="text-muted-foreground">Cette pièce n'a pas encore de capteurs ou d'appareils connectés.</p>
+          <p className="text-muted-foreground">
+            Cette pièce n'a pas encore de capteurs ou d'appareils connectés.
+          </p>
         </Section>
       )}
     </div>
   );
 }
 
-function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"]["media"]> }) {
+function MediaSection({ media }: { media: NonNullable<(typeof roomDetails)["salon"]["media"]> }) {
   const [source, setSource] = useState(media.source);
   const [playing, setPlaying] = useState(source !== "off");
 
@@ -388,10 +467,18 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
           <Radio className="h-4 w-4" />
           Musiq3
         </Toggle>
-        <Button variant="outline" aria-label="Baisser le volume" className="-ml-px flex-1 rounded-none">
+        <Button
+          variant="outline"
+          aria-label="Baisser le volume"
+          className="-ml-px flex-1 rounded-none"
+        >
           <Volume1 className="h-4 w-4" />
         </Button>
-        <Button variant="outline" aria-label="Monter le volume" className="-ml-px flex-1 rounded-l-none">
+        <Button
+          variant="outline"
+          aria-label="Monter le volume"
+          className="-ml-px flex-1 rounded-l-none"
+        >
           <Volume2 className="h-4 w-4" />
         </Button>
       </div>
@@ -408,18 +495,30 @@ function MediaSection({ media }: { media: NonNullable<typeof roomDetails["salon"
       >
         {source === "musiq3" && (
           <div className="flex items-center gap-4">
-            <div className={"grid h-16 w-16 shrink-0 place-items-center rounded-lg shadow-lift " + (playing ? "animate-spin [animation-duration:10s]" : "")}
-                 style={{ background: `radial-gradient(circle at 30% 30%, ${active.tint}, oklch(0.25 0.04 160))` }}>
+            <div
+              className={
+                "grid h-16 w-16 shrink-0 place-items-center rounded-lg shadow-lift " +
+                (playing ? "animate-spin [animation-duration:10s]" : "")
+              }
+              style={{
+                background: `radial-gradient(circle at 30% 30%, ${active.tint}, oklch(0.25 0.04 160))`,
+              }}
+            >
               <span className="h-2.5 w-2.5 rounded-full bg-background" />
             </div>
             <div className="min-w-0 flex-1">
               <Eyebrow size="xs">Musiq3</Eyebrow>
               <p className="mt-0.5 truncate font-serif text-lg">{media.nowPlaying ?? "—"}</p>
-              {media.artist && <p className="truncate text-sm text-muted-foreground">{media.artist}</p>}
+              {media.artist && (
+                <p className="truncate text-sm text-muted-foreground">{media.artist}</p>
+              )}
               <div className="mt-2 flex h-3 items-end gap-0.5">
                 {[0.6, 0.9, 0.4, 1, 0.7, 0.5, 0.85].map((h, i) => (
-                  <span key={i} className={"w-1 rounded-sm bg-foreground/70 " + (playing ? "eq-bar" : "")}
-                        style={{ height: `${h * 100}%`, animationDelay: `${i * 0.1}s` }} />
+                  <span
+                    key={i}
+                    className={"w-1 rounded-sm bg-foreground/70 " + (playing ? "eq-bar" : "")}
+                    style={{ height: `${h * 100}%`, animationDelay: `${i * 0.1}s` }}
+                  />
                 ))}
               </div>
             </div>

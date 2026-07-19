@@ -9,7 +9,11 @@ export const Route = createFileRoute("/_app/repas")({
   head: () => ({
     meta: [
       { title: "Repas — Cockpit" },
-      { name: "description", content: "Planifier les repas, gérer le catalogue de plats et la liste de courses qui en découle." },
+      {
+        name: "description",
+        content:
+          "Planifier les repas, gérer le catalogue de plats et la liste de courses qui en découle.",
+      },
     ],
   }),
 });
@@ -20,8 +24,8 @@ export const Route = createFileRoute("/_app/repas")({
 // Courses lives here, not in the TopNav: it is derived from the plan.
 const tabs = [
   { to: "/repas/planification", label: "Planification" },
-  { to: "/repas/plats",         label: "Plats" },
-  { to: "/repas/courses",       label: "Courses" },
+  { to: "/repas/plats", label: "Plats" },
+  { to: "/repas/courses", label: "Courses" },
 ];
 
 function RepasLayout() {
@@ -61,7 +65,9 @@ function RepasLayout() {
           <Tabs value={current} onValueChange={(to) => navigate({ to })}>
             <TabsList className="h-10 bg-secondary/70 p-1">
               {tabs.map((t) => (
-                <TabsTrigger key={t.to} value={t.to} className="px-4">{t.label}</TabsTrigger>
+                <TabsTrigger key={t.to} value={t.to} className="px-4">
+                  {t.label}
+                </TabsTrigger>
               ))}
             </TabsList>
           </Tabs>

@@ -56,10 +56,9 @@ export const CommandButton = forwardRef<HTMLButtonElement, Props>(function Comma
       onCommand?.();
     } catch (err) {
       setErrored(true);
-      toast.error(
-        commandLabel ? `« ${commandLabel} » a échoué` : "Commande échouée",
-        { description: (err as Error).message ?? "Réessaie dans un instant." },
-      );
+      toast.error(commandLabel ? `« ${commandLabel} » a échoué` : "Commande échouée", {
+        description: (err as Error).message ?? "Réessaie dans un instant.",
+      });
       errorTimer.current = setTimeout(() => setErrored(false), 1800);
     } finally {
       setPending(false);

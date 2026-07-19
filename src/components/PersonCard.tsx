@@ -8,7 +8,8 @@ import { ChevronRight } from "lucide-react";
  * the edit modal; without, a static tile.
  */
 export function PersonCard({ person, onEdit }: { person: Person; onEdit?: () => void }) {
-  const cls = "flex items-center justify-between gap-3 rounded-md border border-border/60 bg-card p-3";
+  const cls =
+    "flex items-center justify-between gap-3 rounded-md border border-border/60 bg-card p-3";
   const meta = [
     cap(person.relation),
     nextBirthday(person).toLocaleDateString("fr-BE", { day: "numeric", month: "long" }),
@@ -28,7 +29,11 @@ export function PersonCard({ person, onEdit }: { person: Person; onEdit?: () => 
 
   if (onEdit) {
     return (
-      <button type="button" onClick={onEdit} className={cls + " w-full text-left transition-colors hover:bg-secondary/40"}>
+      <button
+        type="button"
+        onClick={onEdit}
+        className={cls + " w-full text-left transition-colors hover:bg-secondary/40"}
+      >
         {body}
       </button>
     );

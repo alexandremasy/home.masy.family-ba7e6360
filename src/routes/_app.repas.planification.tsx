@@ -5,17 +5,46 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { useIsDesktop } from "@/lib/use-media";
-import { DishFilters, applyFilter, countFilters, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
+import {
+  DishFilters,
+  applyFilter,
+  countFilters,
+  EMPTY_FILTER,
+  type DishFilter,
+} from "@/components/DishFilters";
 import { DishCard, StatusPill } from "@/components/DishCard";
 import { cap } from "@/lib/utils";
 import {
-  dishById, suggestFor, coherenceSignals, initialPlan, calWeeks, iso,
-  isWeekend, frLongDay, addDays, dayWeather, weatherHintFor, TODAY,
-  type PlanEntry, type Slot, type Dish, type Base, type Suggestion,
+  dishById,
+  suggestFor,
+  coherenceSignals,
+  initialPlan,
+  calWeeks,
+  iso,
+  isWeekend,
+  frLongDay,
+  addDays,
+  dayWeather,
+  weatherHintFor,
+  TODAY,
+  type PlanEntry,
+  type Slot,
+  type Dish,
+  type Base,
+  type Suggestion,
 } from "@/lib/maison-data";
 import {
-  Sparkles, Search, AlertTriangle, X, Sun, Moon,
-  ThermometerSun, ChevronLeft, ChevronRight, ChevronDown, SlidersHorizontal,
+  Sparkles,
+  Search,
+  AlertTriangle,
+  X,
+  Sun,
+  Moon,
+  ThermometerSun,
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  SlidersHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -64,7 +93,11 @@ function computeBatches(plan: PlanEntry[], windowDates: string[]): BatchInfo {
       a.date === b.date ? (a.slot === "midi" ? -1 : 1) : a.date < b.date ? -1 : 1,
     );
     ordered.forEach((e, i) =>
-      map.set(batchKey(e.date, e.slot), { shade: style.shade, badge: style.badge, iteration: i + 1 }),
+      map.set(batchKey(e.date, e.slot), {
+        shade: style.shade,
+        badge: style.badge,
+        iteration: i + 1,
+      }),
     );
   }
   return map;
@@ -74,7 +107,12 @@ function computeBatches(plan: PlanEntry[], windowDates: string[]): BatchInfo {
     "Midi"/"Soir" text label, sitting before the dish name instead. */
 function SlotIcon({ slot, className = "" }: { slot: Slot; className?: string }) {
   const Icon = slot === "midi" ? Sun : Moon;
-  return <Icon className={"h-3.5 w-3.5 shrink-0 " + className} aria-label={slot === "midi" ? "Midi" : "Soir"} />;
+  return (
+    <Icon
+      className={"h-3.5 w-3.5 shrink-0 " + className}
+      aria-label={slot === "midi" ? "Midi" : "Soir"}
+    />
+  );
 }
 
 /** Title content only — the shell supplies DialogTitle or DrawerTitle around it. */
@@ -97,7 +135,10 @@ function rangeLabel(weeks: Date[][]): string {
   const last = weeks[1][6];
   const sameMonth = first.getMonth() === last.getMonth();
   const fmt = (d: Date, withMonth: boolean) =>
-    d.toLocaleDateString("fr-BE", withMonth ? { day: "numeric", month: "long" } : { day: "numeric" });
+    d.toLocaleDateString(
+      "fr-BE",
+      withMonth ? { day: "numeric", month: "long" } : { day: "numeric" },
+    );
   return `${fmt(first, !sameMonth)} → ${fmt(last, true)}`;
 }
 
@@ -111,15 +152,18 @@ function RepasPage() {
   const weeks = useMemo(() => calWeeks(weekOffset), [weekOffset]);
   const batches = useMemo(() => computeBatches(plan, weeks.flat().map(iso)), [plan, weeks]);
 
-  const remove = (date: string, slot: Slot) => setPlan((p) => p.filter((e) => !(e.date === date && e.slot === slot)));
-  const upsert = (entry: PlanEntry) => setPlan((p) => [...p.filter((e) => !(e.date === entry.date && e.slot === entry.slot)), entry]);
+  const remove = (date: string, slot: Slot) =>
+    setPlan((p) => p.filter((e) => !(e.date === date && e.slot === slot)));
+  const upsert = (entry: PlanEntry) =>
+    setPlan((p) => [...p.filter((e) => !(e.date === entry.date && e.slot === entry.slot)), entry]);
   const move = (from: { date: string; slot: Slot }, to: { date: string; slot: Slot }) => {
     setPlan((p) => {
       const src = p.find((e) => e.date === from.date && e.slot === from.slot);
       if (!src) return p;
-      const withoutBoth = p.filter((e) =>
-        !(e.date === from.date && e.slot === from.slot) &&
-        !(e.date === to.date && e.slot === to.slot)
+      const withoutBoth = p.filter(
+        (e) =>
+          !(e.date === from.date && e.slot === from.slot) &&
+          !(e.date === to.date && e.slot === to.slot),
       );
       return [...withoutBoth, { ...src, date: to.date, slot: to.slot }];
     });
@@ -129,33 +173,39 @@ function RepasPage() {
   const selectedDate = selected ? new Date(selected.date) : null;
   const isDesktop = useIsDesktop();
 
-  const closeSlot = (open: boolean) => { if (!open) setSelected(null); };
+  const closeSlot = (open: boolean) => {
+    if (!open) setSelected(null);
+  };
 
   // Built once, mounted in whichever shell the viewport calls for.
-  const picker = selected && selectedDate ? (
-    <SlotPicker
-      date={selectedDate}
-      slot={selected.slot}
-      plan={plan}
-      onRemove={
-        plan.some((e) => e.date === selected.date && e.slot === selected.slot)
-          ? () => { remove(selected.date, selected.slot); setSelected(null); }
-          : undefined
-      }
-      onPick={(dish, batch) => {
-        upsert({ date: selected.date, slot: selected.slot, dishId: dish.id });
-        if (batch) {
-          upsert({
-            date: iso(addDays(selectedDate, 1)),
-            slot: selected.slot,
-            dishId: dish.id,
-            batchOfDate: selected.date,
-          });
+  const picker =
+    selected && selectedDate ? (
+      <SlotPicker
+        date={selectedDate}
+        slot={selected.slot}
+        plan={plan}
+        onRemove={
+          plan.some((e) => e.date === selected.date && e.slot === selected.slot)
+            ? () => {
+                remove(selected.date, selected.slot);
+                setSelected(null);
+              }
+            : undefined
         }
-        setSelected(null);
-      }}
-    />
-  ) : null;
+        onPick={(dish, batch) => {
+          upsert({ date: selected.date, slot: selected.slot, dishId: dish.id });
+          if (batch) {
+            upsert({
+              date: iso(addDays(selectedDate, 1)),
+              slot: selected.slot,
+              dishId: dish.id,
+              batchOfDate: selected.date,
+            });
+          }
+          setSelected(null);
+        }}
+      />
+    ) : null;
 
   return (
     <div className="space-y-6">
@@ -188,7 +238,9 @@ function RepasPage() {
                         <p className="text-xs font-semibold text-foreground">{s.text}</p>
                         {s.items && (
                           <ul className="list-disc space-y-0.5 pl-3.5 text-xs text-muted-foreground">
-                            {s.items.map((it) => <li key={it}>{it}</li>)}
+                            {s.items.map((it) => (
+                              <li key={it}>{it}</li>
+                            ))}
                           </ul>
                         )}
                       </div>
@@ -214,21 +266,22 @@ function RepasPage() {
               <Button
                 onClick={() => setWeekOffset((o) => o - 1)}
                 aria-label="Semaine précédente"
-                variant="outline" size="iconRound"
+                variant="outline"
+                size="iconRound"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
               <Button
                 onClick={() => setWeekOffset((o) => o + 1)}
                 aria-label="Semaine suivante"
-                variant="outline" size="iconRound"
+                variant="outline"
+                size="iconRound"
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </div>
-
 
         {/* One framed table in both layouts. Weekday labels sit above it as column
             headers (desktop only). The 1px grid gaps show the border colour behind,
@@ -237,7 +290,10 @@ function RepasPage() {
         <div className="mt-5">
           <div className="hidden lg:grid lg:grid-cols-7 lg:gap-px">
             {WEEKDAYS.map((d) => (
-              <div key={d} className="px-2.5 pb-2 text-xs uppercase tracking-eyebrow text-muted-foreground">
+              <div
+                key={d}
+                className="px-2.5 pb-2 text-xs uppercase tracking-eyebrow text-muted-foreground"
+              >
                 {d}
               </div>
             ))}
@@ -302,7 +358,13 @@ function RepasPage() {
 
 // ------------------------------------------------------------
 function DayCell({
-  date, plan, batches, hoveredDish, onHover, onSelect, onMove,
+  date,
+  plan,
+  batches,
+  hoveredDish,
+  onHover,
+  onSelect,
+  onMove,
 }: {
   date: Date;
   plan: PlanEntry[];
@@ -334,7 +396,9 @@ function DayCell({
       {/* Day header — date left, that day's weather right. The weather drives the
           suggestions. Without a weekday column below lg, the header carries the day. */}
       <div className="flex items-baseline justify-between gap-1 px-2.5 pt-2 lg:pt-2.5">
-        <span className={"font-semibold leading-none tabular-nums " + (today ? "text-primary" : "")}>
+        <span
+          className={"font-semibold leading-none tabular-nums " + (today ? "text-primary" : "")}
+        >
           <span className="text-lg lg:text-xl">{date.getDate()}</span>
           <Eyebrow as="span" className="ml-1.5 lg:hidden">
             {date.toLocaleDateString("fr-BE", { weekday: "long" })}
@@ -344,10 +408,14 @@ function DayCell({
           className="flex items-center gap-1 text-muted-foreground"
           title={`${w.minC}° / ${w.maxC}°${w.heatwave ? " · forte chaleur" : ""}`}
         >
-          {w.heatwave
-            ? <ThermometerSun className="h-4 w-4 text-warm" />
-            : <WeatherIcon cond={w.cond} className="h-4 w-4" />}
-          <span className={"text-xs tabular-nums " + (w.heatwave ? "text-warm" : "")}>{w.maxC}°</span>
+          {w.heatwave ? (
+            <ThermometerSun className="h-4 w-4 text-warm" />
+          ) : (
+            <WeatherIcon cond={w.cond} className="h-4 w-4" />
+          )}
+          <span className={"text-xs tabular-nums " + (w.heatwave ? "text-warm" : "")}>
+            {w.maxC}°
+          </span>
         </span>
       </div>
 
@@ -379,9 +447,18 @@ function DayCell({
 }
 
 function SlotCell({
-  date, slot, entry, batch, dimmed = false, onHover, onOpen, onDropFrom,
+  date,
+  slot,
+  entry,
+  batch,
+  dimmed = false,
+  onHover,
+  onOpen,
+  onDropFrom,
 }: {
-  date: string; slot: Slot; entry?: PlanEntry;
+  date: string;
+  slot: Slot;
+  entry?: PlanEntry;
   batch?: { shade: string; badge: string; iteration: number };
   dimmed?: boolean;
   onHover?: (dishId: string | null) => void;
@@ -393,7 +470,10 @@ function SlotCell({
 
   return (
     <div
-      onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setDragOver(true);
+      }}
       onDragLeave={() => setDragOver(false)}
       onDrop={(e) => {
         setDragOver(false);
@@ -462,7 +542,9 @@ function SlotCell({
           // to fill, so the target collapsed to the icon.
           className={
             "flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-lg border border-dashed text-xs text-muted-foreground transition-colors " +
-            (dragOver ? "border-primary bg-primary/5 text-primary" : "border-border hover:border-primary hover:text-primary")
+            (dragOver
+              ? "border-primary bg-primary/5 text-primary"
+              : "border-border hover:border-primary hover:text-primary")
           }
         >
           <SlotIcon slot={slot} className="opacity-60" />
@@ -475,9 +557,15 @@ function SlotCell({
 
 // ------------------------------------------------------------
 function SlotPicker({
-  date, slot, plan, onPick, onRemove,
+  date,
+  slot,
+  plan,
+  onPick,
+  onRemove,
 }: {
-  date: Date; slot: Slot; plan: PlanEntry[];
+  date: Date;
+  slot: Slot;
+  plan: PlanEntry[];
   onPick: (dish: Dish, batch: boolean) => void;
   onRemove?: () => void; // present only when the slot already holds a meal
 }) {
@@ -504,7 +592,13 @@ function SlotPicker({
   }, [date, slot, plan, hint]);
 
   const shown = useMemo(() => {
-    const keep = new Set(applyFilter(ranked.map((s) => s.dish), filter, query).map((d) => d.id));
+    const keep = new Set(
+      applyFilter(
+        ranked.map((s) => s.dish),
+        filter,
+        query,
+      ).map((d) => d.id),
+    );
     return ranked.filter((s) => keep.has(s.dish.id));
   }, [ranked, filter, query]);
 
@@ -556,7 +650,9 @@ function SlotPicker({
                 {activeCount}
               </span>
             )}
-            <ChevronDown className={"h-3.5 w-3.5 transition-transform " + (filtersOpen ? "rotate-180" : "")} />
+            <ChevronDown
+              className={"h-3.5 w-3.5 transition-transform " + (filtersOpen ? "rotate-180" : "")}
+            />
           </button>
         </div>
 
@@ -616,9 +712,13 @@ function SlotPicker({
 }
 
 function DishSection({
-  title, hint, items, onPick,
+  title,
+  hint,
+  items,
+  onPick,
 }: {
-  title: string; hint: string;
+  title: string;
+  hint: string;
   items: Suggestion[];
   onPick: (dish: Dish, batch: boolean) => void;
 }) {
@@ -631,8 +731,12 @@ function DishSection({
       <div className="grid gap-2 sm:grid-cols-2">
         {items.map(({ dish, reason, leftover, exhausted }) => (
           <SuggestionCard
-            key={dish.id} dish={dish} reason={reason}
-            leftover={leftover} exhausted={exhausted} onPick={onPick}
+            key={dish.id}
+            dish={dish}
+            reason={reason}
+            leftover={leftover}
+            exhausted={exhausted}
+            onPick={onPick}
           />
         ))}
       </div>
@@ -641,9 +745,16 @@ function DishSection({
 }
 
 function SuggestionCard({
-  dish, reason, leftover, exhausted, onPick,
+  dish,
+  reason,
+  leftover,
+  exhausted,
+  onPick,
 }: {
-  dish: Dish; reason: string; leftover?: boolean; exhausted?: boolean;
+  dish: Dish;
+  reason: string;
+  leftover?: boolean;
+  exhausted?: boolean;
   onPick: (dish: Dish, batch: boolean) => void;
 }) {
   // The card is the pick target — no "Choisir" button, no score badge.
@@ -653,7 +764,10 @@ function SuggestionCard({
       tabIndex={0}
       onClick={() => onPick(dish, false)}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onPick(dish, false); }
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onPick(dish, false);
+        }
       }}
       className={
         "group relative flex cursor-pointer flex-col rounded-xl border bg-card p-3 text-left transition-all hover:shadow-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-ring " +
@@ -664,16 +778,21 @@ function SuggestionCard({
       <DishCard
         dish={dish}
         status={
-          leftover ? <StatusPill tone="primary">{reason}</StatusPill>
-          // Already covered — say so, but discreetly: it stays a valid pick.
-          : exhausted ? <StatusPill tone="muted">{reason}</StatusPill>
-          : undefined
+          leftover ? (
+            <StatusPill tone="primary">{reason}</StatusPill>
+          ) : // Already covered — say so, but discreetly: it stays a valid pick.
+          exhausted ? (
+            <StatusPill tone="muted">{reason}</StatusPill>
+          ) : undefined
         }
         actions={
           dish.rendement > 1 && !leftover ? (
             <button
               type="button"
-              onClick={(e) => { e.stopPropagation(); onPick(dish, true); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onPick(dish, true);
+              }}
               title="Batch : une cuisson, deux créneaux"
               // Shaped like the attribute tags it sits with, but it acts — hence
               // the border and the hover.

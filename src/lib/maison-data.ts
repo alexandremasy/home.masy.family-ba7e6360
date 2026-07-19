@@ -35,9 +35,22 @@ export function fmtMinutes(min: number): string {
   return m ? `${h} h ${m}` : `${h} h`;
 }
 export type Base =
-  | "assiette" | "pâtes" | "bowl" | "salade" | "quiche" | "pizza" | "gratin"
-  | "soupe" | "wrap" | "tarte" | "chili" | "curry" | "raclette" | "potée"
-  | "risotto" | "lasagne";
+  | "assiette"
+  | "pâtes"
+  | "bowl"
+  | "salade"
+  | "quiche"
+  | "pizza"
+  | "gratin"
+  | "soupe"
+  | "wrap"
+  | "tarte"
+  | "chili"
+  | "curry"
+  | "raclette"
+  | "potée"
+  | "risotto"
+  | "lasagne";
 
 export interface Composant {
   name: string;
@@ -48,25 +61,25 @@ export interface Composant {
 
 export interface Dish {
   id: string;
-  name: string;                    // alias
+  name: string; // alias
   base: Base;
   modifiers: Composant[];
   densite: Densite;
   temperature: Temperature;
-  emportable: boolean;             // lunchbox friendly
+  emportable: boolean; // lunchbox friendly
   rechauffable: boolean;
-  effort: Effort;                  // weekend cooking load
-  rendement: 1 | 2 | 3;            // meals covered by one cook (couple)
-  tags?: string[];                 // season & mood: "été", "hiver", "convivial"
-  dernierServiLe?: string;         // ISO date
+  effort: Effort; // weekend cooking load
+  rendement: 1 | 2 | 3; // meals covered by one cook (couple)
+  tags?: string[]; // season & mood: "été", "hiver", "convivial"
+  dernierServiLe?: string; // ISO date
 }
 
 export type Slot = "midi" | "soir";
 export interface PlanEntry {
-  date: string;     // ISO yyyy-mm-dd
+  date: string; // ISO yyyy-mm-dd
   slot: Slot;
   dishId: string;
-  batchOfDate?: string;   // reference to the cook date, if this slot is a leftover from a batch
+  batchOfDate?: string; // reference to the cook date, if this slot is a leftover from a batch
   note?: string;
 }
 
@@ -75,46 +88,76 @@ export interface PlanEntry {
 // ------------------------------------------------------------
 export const dishes: Dish[] = [
   {
-    id: "saumon-riz-epinards", name: "Saumon riz épinards", base: "assiette",
+    id: "saumon-riz-epinards",
+    name: "Saumon riz épinards",
+    base: "assiette",
     modifiers: [
       { name: "Saumon", role: "protéine", qty: 400, unit: "g" },
       { name: "Riz", role: "féculent", qty: 300, unit: "g" },
       { name: "Épinards", role: "légume", qty: 300, unit: "g" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 1,
+    densite: "complet",
+    temperature: "chaud",
+    emportable: true,
+    rechauffable: true,
+    effort: 1,
+    rendement: 1,
     dernierServiLe: "2026-06-30",
   },
   {
-    id: "roti-haricots-croquettes", name: "Rôti haricots croquettes", base: "assiette",
+    id: "roti-haricots-croquettes",
+    name: "Rôti haricots croquettes",
+    base: "assiette",
     modifiers: [
       { name: "Rôti de porc", role: "protéine", qty: 500, unit: "g" },
       { name: "Haricots verts", role: "légume", qty: 400, unit: "g" },
       { name: "Croquettes", role: "féculent", qty: 12, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 2,
+    densite: "complet",
+    temperature: "chaud",
+    emportable: true,
+    rechauffable: true,
+    effort: 2,
+    rendement: 2,
     dernierServiLe: "2026-06-22",
   },
   {
-    id: "poulet-moutarde-gratin", name: "Poulet moutarde gratin dauphinois", base: "assiette",
+    id: "poulet-moutarde-gratin",
+    name: "Poulet moutarde gratin dauphinois",
+    base: "assiette",
     modifiers: [
       { name: "Cuisses de poulet", role: "protéine", qty: 4, unit: "pièce" },
       { name: "Haricots verts", role: "légume", qty: 300, unit: "g" },
       { name: "Pommes de terre", role: "féculent", qty: 1000, unit: "g" },
       { name: "Moutarde", role: "sauce", qty: 2, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 3, rendement: 2,
+    densite: "complet",
+    temperature: "chaud",
+    emportable: true,
+    rechauffable: true,
+    effort: 3,
+    rendement: 2,
   },
   {
-    id: "quiche-saumon-epinards", name: "Quiche saumon épinards", base: "quiche",
+    id: "quiche-saumon-epinards",
+    name: "Quiche saumon épinards",
+    base: "quiche",
     modifiers: [
       { name: "Saumon", role: "protéine", qty: 250, unit: "g" },
       { name: "Épinards", role: "légume", qty: 250, unit: "g" },
       { name: "Pâte brisée", role: "féculent", qty: 1, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 2,
+    densite: "complet",
+    temperature: "chaud",
+    emportable: true,
+    rechauffable: true,
+    effort: 1,
+    rendement: 2,
   },
   {
-    id: "pizza-poulet-oignon", name: "Pizza poulet oignon", base: "pizza",
+    id: "pizza-poulet-oignon",
+    name: "Pizza poulet oignon",
+    base: "pizza",
     modifiers: [
       { name: "Blanc de poulet", role: "protéine", qty: 300, unit: "g" },
       { name: "Oignon", role: "légume", qty: 2, unit: "pièce" },
@@ -122,10 +165,17 @@ export const dishes: Dish[] = [
       { name: "Tomate", role: "sauce", qty: 1, unit: "pièce" },
       { name: "Mozzarella", role: "garniture", qty: 250, unit: "g" },
     ],
-    densite: "complet", temperature: "chaud", emportable: false, rechauffable: true, effort: 1, rendement: 1,
+    densite: "complet",
+    temperature: "chaud",
+    emportable: false,
+    rechauffable: true,
+    effort: 1,
+    rendement: 1,
   },
   {
-    id: "chili", name: "Chili con carne", base: "chili",
+    id: "chili",
+    name: "Chili con carne",
+    base: "chili",
     modifiers: [
       { name: "Boeuf haché", role: "protéine", qty: 600, unit: "g" },
       { name: "Haricots rouges", role: "légume", qty: 500, unit: "g" },
@@ -133,10 +183,17 @@ export const dishes: Dish[] = [
       { name: "Oignon", role: "légume", qty: 2, unit: "pièce" },
       { name: "Poivron", role: "légume", qty: 2, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 3,
+    densite: "complet",
+    temperature: "chaud",
+    emportable: true,
+    rechauffable: true,
+    effort: 2,
+    rendement: 3,
   },
   {
-    id: "curry-poulet", name: "Curry de poulet", base: "curry",
+    id: "curry-poulet",
+    name: "Curry de poulet",
+    base: "curry",
     modifiers: [
       { name: "Blanc de poulet", role: "protéine", qty: 500, unit: "g" },
       { name: "Courgette", role: "légume", qty: 2, unit: "pièce" },
@@ -144,116 +201,198 @@ export const dishes: Dish[] = [
       { name: "Curry", role: "sauce", qty: 1, unit: "pièce" },
       { name: "Lait de coco", role: "sauce", qty: 1, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 2,
+    densite: "complet",
+    temperature: "chaud",
+    emportable: true,
+    rechauffable: true,
+    effort: 2,
+    rendement: 2,
   },
   {
-    id: "lasagne", name: "Lasagne bolognaise", base: "lasagne",
+    id: "lasagne",
+    name: "Lasagne bolognaise",
+    base: "lasagne",
     modifiers: [
       { name: "Boeuf haché", role: "protéine", qty: 500, unit: "g" },
       { name: "Tomate", role: "sauce", qty: 4, unit: "pièce" },
       { name: "Pâte lasagne", role: "féculent", qty: 1, unit: "pièce" },
       { name: "Mozzarella", role: "garniture", qty: 300, unit: "g" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 3, rendement: 3,
+    densite: "complet",
+    temperature: "chaud",
+    emportable: true,
+    rechauffable: true,
+    effort: 3,
+    rendement: 3,
   },
   {
-    id: "salade-poulet-avocat", name: "Salade repas poulet avocat", base: "salade",
+    id: "salade-poulet-avocat",
+    name: "Salade repas poulet avocat",
+    base: "salade",
     modifiers: [
       { name: "Blanc de poulet", role: "protéine", qty: 300, unit: "g" },
       { name: "Avocat", role: "légume", qty: 2, unit: "pièce" },
       { name: "Salade", role: "légume", qty: 1, unit: "pièce" },
       { name: "Tomate", role: "légume", qty: 3, unit: "pièce" },
     ],
-    densite: "complet", temperature: "froid", emportable: true, rechauffable: false, effort: 1, rendement: 1,
+    densite: "complet",
+    temperature: "froid",
+    emportable: true,
+    rechauffable: false,
+    effort: 1,
+    rendement: 1,
     tags: ["été"],
   },
   {
-    id: "wrap-thon", name: "Wrap thon crudités", base: "wrap",
+    id: "wrap-thon",
+    name: "Wrap thon crudités",
+    base: "wrap",
     modifiers: [
       { name: "Thon", role: "protéine", qty: 2, unit: "pièce" },
       { name: "Salade", role: "légume", qty: 1, unit: "pièce" },
       { name: "Tomate", role: "légume", qty: 2, unit: "pièce" },
       { name: "Wraps", role: "féculent", qty: 4, unit: "pièce" },
     ],
-    densite: "léger", temperature: "froid", emportable: true, rechauffable: false, effort: 1, rendement: 1,
+    densite: "léger",
+    temperature: "froid",
+    emportable: true,
+    rechauffable: false,
+    effort: 1,
+    rendement: 1,
   },
   {
-    id: "bowl-saumon-avocat", name: "Bowl saumon avocat riz", base: "bowl",
+    id: "bowl-saumon-avocat",
+    name: "Bowl saumon avocat riz",
+    base: "bowl",
     modifiers: [
       { name: "Saumon", role: "protéine", qty: 300, unit: "g" },
       { name: "Avocat", role: "légume", qty: 2, unit: "pièce" },
       { name: "Riz", role: "féculent", qty: 250, unit: "g" },
       { name: "Concombre", role: "légume", qty: 1, unit: "pièce" },
     ],
-    densite: "complet", temperature: "froid", emportable: true, rechauffable: false, effort: 1, rendement: 1,
+    densite: "complet",
+    temperature: "froid",
+    emportable: true,
+    rechauffable: false,
+    effort: 1,
+    rendement: 1,
   },
   {
-    id: "soupe-potiron", name: "Soupe de potiron", base: "soupe",
+    id: "soupe-potiron",
+    name: "Soupe de potiron",
+    base: "soupe",
     modifiers: [
       { name: "Potiron", role: "légume", qty: 1000, unit: "g" },
       { name: "Oignon", role: "légume", qty: 1, unit: "pièce" },
       { name: "Crème", role: "sauce", qty: 1, unit: "pièce" },
     ],
-    densite: "léger", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 2,
+    densite: "léger",
+    temperature: "chaud",
+    emportable: true,
+    rechauffable: true,
+    effort: 1,
+    rendement: 2,
   },
   {
-    id: "tarte-tomate-mozza", name: "Tarte tomate mozzarella", base: "tarte",
+    id: "tarte-tomate-mozza",
+    name: "Tarte tomate mozzarella",
+    base: "tarte",
     modifiers: [
       { name: "Tomate", role: "légume", qty: 5, unit: "pièce" },
       { name: "Mozzarella", role: "garniture", qty: 250, unit: "g" },
       { name: "Pâte brisée", role: "féculent", qty: 1, unit: "pièce" },
     ],
-    densite: "léger", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 2,
+    densite: "léger",
+    temperature: "chaud",
+    emportable: true,
+    rechauffable: true,
+    effort: 1,
+    rendement: 2,
   },
   {
-    id: "raclette", name: "Raclette", base: "raclette",
+    id: "raclette",
+    name: "Raclette",
+    base: "raclette",
     modifiers: [
       { name: "Fromage à raclette", role: "protéine", qty: 600, unit: "g" },
       { name: "Charcuterie", role: "protéine", qty: 400, unit: "g" },
       { name: "Pommes de terre", role: "féculent", qty: 1500, unit: "g" },
       { name: "Cornichons", role: "garniture", qty: 1, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: false, rechauffable: false, effort: 1, rendement: 1,
+    densite: "complet",
+    temperature: "chaud",
+    emportable: false,
+    rechauffable: false,
+    effort: 1,
+    rendement: 1,
     tags: ["hiver", "convivial"],
   },
   {
-    id: "risotto-champignons", name: "Risotto champignons", base: "risotto",
+    id: "risotto-champignons",
+    name: "Risotto champignons",
+    base: "risotto",
     modifiers: [
       { name: "Riz arborio", role: "féculent", qty: 300, unit: "g" },
       { name: "Champignons", role: "légume", qty: 400, unit: "g" },
       { name: "Parmesan", role: "garniture", qty: 100, unit: "g" },
       { name: "Oignon", role: "légume", qty: 1, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 2,
+    densite: "complet",
+    temperature: "chaud",
+    emportable: true,
+    rechauffable: true,
+    effort: 2,
+    rendement: 2,
   },
   {
-    id: "pates-pesto-poulet", name: "Pâtes pesto poulet", base: "pâtes",
+    id: "pates-pesto-poulet",
+    name: "Pâtes pesto poulet",
+    base: "pâtes",
     modifiers: [
       { name: "Pâtes", role: "féculent", qty: 400, unit: "g" },
       { name: "Blanc de poulet", role: "protéine", qty: 300, unit: "g" },
       { name: "Pesto", role: "sauce", qty: 1, unit: "pièce" },
       { name: "Tomate cerise", role: "légume", qty: 250, unit: "g" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 1,
+    densite: "complet",
+    temperature: "chaud",
+    emportable: true,
+    rechauffable: true,
+    effort: 1,
+    rendement: 1,
   },
   {
-    id: "gratin-courgettes", name: "Gratin de courgettes", base: "gratin",
+    id: "gratin-courgettes",
+    name: "Gratin de courgettes",
+    base: "gratin",
     modifiers: [
       { name: "Courgette", role: "légume", qty: 4, unit: "pièce" },
       { name: "Oeuf", role: "protéine", qty: 4, unit: "pièce" },
       { name: "Gruyère", role: "garniture", qty: 200, unit: "g" },
     ],
-    densite: "léger", temperature: "chaud", emportable: true, rechauffable: true, effort: 1, rendement: 2,
+    densite: "léger",
+    temperature: "chaud",
+    emportable: true,
+    rechauffable: true,
+    effort: 1,
+    rendement: 2,
   },
   {
-    id: "potee", name: "Potée liégeoise", base: "potée",
+    id: "potee",
+    name: "Potée liégeoise",
+    base: "potée",
     modifiers: [
       { name: "Saucisse", role: "protéine", qty: 4, unit: "pièce" },
       { name: "Chou vert", role: "légume", qty: 1, unit: "pièce" },
       { name: "Pommes de terre", role: "féculent", qty: 800, unit: "g" },
       { name: "Carotte", role: "légume", qty: 4, unit: "pièce" },
     ],
-    densite: "complet", temperature: "chaud", emportable: true, rechauffable: true, effort: 2, rendement: 3,
+    densite: "complet",
+    temperature: "chaud",
+    emportable: true,
+    rechauffable: true,
+    effort: 2,
+    rendement: 3,
     tags: ["hiver"],
   },
 ];
@@ -285,7 +424,11 @@ export function isWeekend(d: Date): boolean {
 }
 
 // Reference "today" — start-of-day so the window is stable across renders.
-export const TODAY = (() => { const t = new Date(); t.setHours(0, 0, 0, 0); return t; })();
+export const TODAY = (() => {
+  const t = new Date();
+  t.setHours(0, 0, 0, 0);
+  return t;
+})();
 
 // Window: from tomorrow through +10 days
 export const WINDOW_START = addDays(TODAY, 1);
@@ -311,11 +454,28 @@ export function calWeeks(offsetWeeks: number): Date[][] {
 // ------------------------------------------------------------
 // Per-day weather (mocked, deterministic from the date so SSR and client agree)
 // ------------------------------------------------------------
-export interface DayWeather { cond: WeatherCond; maxC: number; minC: number; heatwave: boolean }
+export interface DayWeather {
+  cond: WeatherCond;
+  maxC: number;
+  minC: number;
+  heatwave: boolean;
+}
 
 const COND_CYCLE: WeatherCond[] = [
-  "partly", "sun", "sun", "rain", "cloud", "partly", "sun",
-  "storm", "partly", "cloud", "sun", "rain", "partly", "sun",
+  "partly",
+  "sun",
+  "sun",
+  "rain",
+  "cloud",
+  "partly",
+  "sun",
+  "storm",
+  "partly",
+  "cloud",
+  "sun",
+  "rain",
+  "partly",
+  "sun",
 ];
 
 export function dayWeather(d: Date): DayWeather {
@@ -333,8 +493,13 @@ export function weatherHintFor(d: Date): WeatherHint {
 
 export function condLabel(c: WeatherCond): string {
   return {
-    sun: "Ensoleillé", cloud: "Couvert", partly: "Éclaircies",
-    rain: "Pluie", storm: "Orages", snow: "Neige", fog: "Brouillard",
+    sun: "Ensoleillé",
+    cloud: "Couvert",
+    partly: "Éclaircies",
+    rain: "Pluie",
+    storm: "Orages",
+    snow: "Neige",
+    fog: "Brouillard",
   }[c];
 }
 
@@ -423,7 +588,13 @@ export interface Suggestion {
  *
  * `limit` widens the ranked pool — 6 is the inspiration default, more when browsing.
  */
-export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: WeatherHint, limit = 6): Suggestion[] {
+export function suggestFor(
+  date: Date,
+  slot: Slot,
+  plan: PlanEntry[],
+  weather?: WeatherHint,
+  limit = 6,
+): Suggestion[] {
   const weekend = isWeekend(date);
   const isMidi = slot === "midi";
 
@@ -468,7 +639,10 @@ export function suggestFor(date: Date, slot: Slot, plan: PlanEntry[], weather?: 
     if (!weekend && dish.effort >= 3) s -= 12;
 
     // Variety, at component level (the pinned dish repeats, everything else varies)
-    const overlap = dish.modifiers.reduce((acc, m) => acc + Math.min(2, compCount.get(m.name) ?? 0), 0);
+    const overlap = dish.modifiers.reduce(
+      (acc, m) => acc + Math.min(2, compCount.get(m.name) ?? 0),
+      0,
+    );
     s -= overlap * 2;
 
     if (exhausted) {
@@ -540,7 +714,8 @@ export function coherenceSignals(plan: PlanEntry[]): CoherenceSignal[] {
       const d = dishById(p.dishId);
       return a + (d ? effortLevel(d.effort).minutes : 0);
     }, 0);
-  if (weekendMinutes >= 240) out.push({ tone: "warn", text: `Weekend chargé : ${fmtMinutes(weekendMinutes)} de cuisine.` });
+  if (weekendMinutes >= 240)
+    out.push({ tone: "warn", text: `Weekend chargé : ${fmtMinutes(weekendMinutes)} de cuisine.` });
 
   return out;
 }
@@ -553,7 +728,7 @@ export interface StapleItem {
   qty: number;
   unit: Unit;
   category: string;
-  checked: boolean;      // default = pre-checked (in the list)
+  checked: boolean; // default = pre-checked (in the list)
 }
 
 export const staples: StapleItem[] = [
@@ -584,13 +759,22 @@ export const componentCategory = (role: Role, name: string): string => {
   if (role === "légume") return "Fruits & légumes";
   if (role === "féculent") return "Épicerie";
   if (role === "sauce" || role === "garniture") {
-    if (["mozzarella", "gruyère", "parmesan", "fromage à raclette", "crème"].includes(name.toLowerCase())) return "Frais";
+    if (
+      ["mozzarella", "gruyère", "parmesan", "fromage à raclette", "crème"].includes(
+        name.toLowerCase(),
+      )
+    )
+      return "Frais";
     return "Épicerie";
   }
   return "Autres";
 };
 
-export function deriveCourses(plan: PlanEntry[], stapleState: StapleItem[], manual: CourseItem[]): CourseItem[] {
+export function deriveCourses(
+  plan: PlanEntry[],
+  stapleState: StapleItem[],
+  manual: CourseItem[],
+): CourseItem[] {
   // Only count cook events — a batch leftover reuses the same cook.
   const cookEvents = plan.filter((p) => !p.batchOfDate);
   const agg = new Map<string, { qty: number; unit: Unit; role: Role; dishes: Set<string> }>();
@@ -650,16 +834,16 @@ export function deriveCourses(plan: PlanEntry[], stapleState: StapleItem[], manu
 export interface MealComponent {
   name: string;
   role: Role;
-  qty: number;   // recipe quantity, shown as context only
+  qty: number; // recipe quantity, shown as context only
   unit: Unit;
 }
 export interface UpcomingMeal {
-  key: string;        // `${date}|${slot}` — stable per planned slot
+  key: string; // `${date}|${slot}` — stable per planned slot
   date: string;
   slot: Slot;
   dishId: string;
   dishName: string;
-  dish: Dish;         // the full dish, so callers can reuse <DishCard>
+  dish: Dish; // the full dish, so callers can reuse <DishCard>
   components: MealComponent[];
 }
 
@@ -676,15 +860,22 @@ export function upcomingMeals(plan: PlanEntry[], from: Date = TODAY, days = 10):
     .flatMap((p) => {
       const d = dishById(p.dishId);
       if (!d || !d.modifiers.length) return [];
-      return [{
-        key: `${p.date}|${p.slot}`,
-        date: p.date,
-        slot: p.slot,
-        dishId: p.dishId,
-        dishName: d.name,
-        dish: d,
-        components: d.modifiers.map((m) => ({ name: m.name, role: m.role, qty: m.qty, unit: m.unit })),
-      }];
+      return [
+        {
+          key: `${p.date}|${p.slot}`,
+          date: p.date,
+          slot: p.slot,
+          dishId: p.dishId,
+          dishName: d.name,
+          dish: d,
+          components: d.modifiers.map((m) => ({
+            name: m.name,
+            role: m.role,
+            qty: m.qty,
+            unit: m.unit,
+          })),
+        },
+      ];
     })
     .sort((a, b) => a.date.localeCompare(b.date) || (a.slot === "midi" ? -1 : 1));
 }
@@ -693,8 +884,8 @@ export function upcomingMeals(plan: PlanEntry[], from: Date = TODAY, days = 10):
 // Anniversaires
 // ------------------------------------------------------------
 export type SliderRegistre = number; // 0 pudique — 100 complice
-export type SliderChaleur = number;  // 0 sobre — 100 tendre
-export type SliderHumour = number;   // 0 sincère — 100 taquin
+export type SliderChaleur = number; // 0 sobre — 100 tendre
+export type SliderHumour = number; // 0 sincère — 100 taquin
 export type SliderLongueur = number; // 0 bref — 100 développé
 
 export interface Sliders {
@@ -712,11 +903,11 @@ export interface HistoryEntry {
 export interface Person {
   id: string;
   name: string;
-  dob: string;                // ISO
+  dob: string; // ISO
   langue: "fr" | "en";
-  relation: string;           // free label ("maman", "beau-frère", "amie d'enfance"…)
+  relation: string; // free label ("maman", "beau-frère", "amie d'enfance"…)
   defaultSliders: Sliders;
-  matiereLibre: string;       // free-form notes — the personalisation source
+  matiereLibre: string; // free-form notes — the personalisation source
   history: HistoryEntry[];
 }
 
@@ -747,8 +938,14 @@ export const people: Person[] = [
     matiereLibre:
       "Vient de déménager à Amsterdam pour un nouveau job (design d'interaction). On s'appelle presque tous les dimanches. En ce moment il apprend la guitare et il râle contre son voisin qui met du techno. Notre blague récurrente : le pain aux graines de sa mère qu'on planque quand il vient. On était partis rouler en Ardennes en septembre — souvenir des crêpes à minuit dans son van.",
     history: [
-      { year: REF_YEAR - 1, message: "Frangin. 33 ans. On roule encore mieux ensemble. Bon anniversaire." },
-      { year: REF_YEAR - 2, message: "Léo — tellement fier de ce que tu construis. Bises, à dimanche." },
+      {
+        year: REF_YEAR - 1,
+        message: "Frangin. 33 ans. On roule encore mieux ensemble. Bon anniversaire.",
+      },
+      {
+        year: REF_YEAR - 2,
+        message: "Léo — tellement fier de ce que tu construis. Bises, à dimanche.",
+      },
     ],
   },
   {
@@ -761,7 +958,11 @@ export const people: Person[] = [
     matiereLibre:
       "Retraitée depuis deux ans, s'est mise au jardinage sérieusement — a réussi ses tomates cœur de boeuf cette année. Adore quand on lui envoie des photos des enfants sans qu'elle demande. Petit passage difficile en début d'année avec papa mais ça va mieux. Notre rituel : tarte aux pommes du dimanche.",
     history: [
-      { year: REF_YEAR - 1, message: "Bon anniversaire maman. Merci pour tout, vraiment. On pense à toi très fort aujourd'hui." },
+      {
+        year: REF_YEAR - 1,
+        message:
+          "Bon anniversaire maman. Merci pour tout, vraiment. On pense à toi très fort aujourd'hui.",
+      },
     ],
   },
   {
@@ -774,7 +975,10 @@ export const people: Person[] = [
     matiereLibre:
       "20 ans qu'on se connaît. Bosse dans l'édition à Bruxelles. On a un running gag sur ses ex qui s'appellent tous Julien (elle en est à trois). Vient de finir son premier semi-marathon. Adore quand on lui envoie des memes de chats absurdes.",
     history: [
-      { year: REF_YEAR - 1, message: "Sophie ! 38 ans, toujours aussi insupportable. Je t'aime. Bisou." },
+      {
+        year: REF_YEAR - 1,
+        message: "Sophie ! 38 ans, toujours aussi insupportable. Je t'aime. Bisou.",
+      },
       { year: REF_YEAR - 3, message: "Bon anniv la miss. RDV pour un verre très vite promis." },
     ],
   },
@@ -799,7 +1003,11 @@ export const people: Person[] = [
     matiereLibre:
       "8 ans, en pleine phase 'je veux être vétérinaire ET astronaute'. On lui a offert des jumelles pour Noël, elle observe les oiseaux du balcon. Rire contagieux. On se voit peu (ses parents à Toulouse) mais on lit ensemble par visio le mardi soir.",
     history: [
-      { year: REF_YEAR - 1, message: "Joyeux 7 ans à la meilleure astronaute-vétérinaire du monde 🚀🐕 Gros bisous ma Clara." },
+      {
+        year: REF_YEAR - 1,
+        message:
+          "Joyeux 7 ans à la meilleure astronaute-vétérinaire du monde 🚀🐕 Gros bisous ma Clara.",
+      },
     ],
   },
   {
@@ -858,36 +1066,28 @@ export function generateMessage(p: Person, s: Sliders, comment: string, seed = 0
     s.registre < 40
       ? `Bon anniversaire ${p.name}.`
       : s.registre < 75
-      ? `Hey ${p.name} —`
-      : `${p.name} !!`;
+        ? `Hey ${p.name} —`
+        : `${p.name} !!`;
 
   const warmth =
     s.chaleur > 75
       ? " Je pense à toi très fort aujourd'hui."
       : s.chaleur > 45
-      ? " On pense à toi aujourd'hui."
-      : "";
+        ? " On pense à toi aujourd'hui."
+        : "";
 
   const humour =
     s.humour > 75
       ? ` ${age} ans — c'est officiel, tu es vieux/vieille (mais dans le bon sens).`
       : s.humour > 45
-      ? ` ${age} ans, et toujours aussi toi.`
-      : "";
+        ? ` ${age} ans, et toujours aussi toi.`
+        : "";
 
   const personal =
-    s.longueur > 60
-      ? ` ${detailA} ${detailB}`
-      : s.longueur > 30
-      ? ` ${detailA}`
-      : "";
+    s.longueur > 60 ? ` ${detailA} ${detailB}` : s.longueur > 30 ? ` ${detailA}` : "";
 
   const closing =
-    s.chaleur > 70
-      ? " Je t'embrasse."
-      : s.registre < 40
-      ? " À très vite."
-      : " Bisou.";
+    s.chaleur > 70 ? " Je t'embrasse." : s.registre < 40 ? " À très vite." : " Bisou.";
 
   let base = `${opening}${warmth}${humour}${personal}${closing}`.replace(/\s+/g, " ").trim();
 

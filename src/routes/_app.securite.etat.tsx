@@ -4,8 +4,16 @@ import { Section } from "@/components/Card";
 import { Switch } from "@/components/ui/switch";
 import { armModes, security, presence, perimeter, type ArmMode } from "@/lib/mock-data";
 import {
-  ShieldCheck, ShieldAlert, ShieldOff, Home, Moon, LogOut,
-  DoorOpen, Lock, Warehouse, MapPin,
+  ShieldCheck,
+  ShieldAlert,
+  ShieldOff,
+  Home,
+  Moon,
+  LogOut,
+  DoorOpen,
+  Lock,
+  Warehouse,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/Eyebrow";
@@ -16,7 +24,10 @@ export const Route = createFileRoute("/_app/securite/etat")({
 });
 
 const modeIcon: Record<ArmMode, typeof Home> = {
-  disarmed: ShieldOff, home: Home, night: Moon, away: LogOut,
+  disarmed: ShieldOff,
+  home: Home,
+  night: Moon,
+  away: LogOut,
 };
 
 function EtatTab() {
@@ -29,14 +40,23 @@ function EtatTab() {
 
       <Section
         title="Présence"
-        action={<span className="text-sm text-muted-foreground">{presence.filter((p) => p.home).length}/{presence.length} à la maison</span>}
+        action={
+          <span className="text-sm text-muted-foreground">
+            {presence.filter((p) => p.home).length}/{presence.length} à la maison
+          </span>
+        }
       >
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {presence.map((m) => (
-            <div key={m.name} className="flex items-center gap-3 rounded-xl border border-border/60 bg-card p-3">
-              <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full font-serif text-lg ${
-                m.home ? "bg-success/15 text-success" : "bg-secondary text-muted-foreground"
-              }`}>
+            <div
+              key={m.name}
+              className="flex items-center gap-3 rounded-xl border border-border/60 bg-card p-3"
+            >
+              <span
+                className={`grid h-10 w-10 shrink-0 place-items-center rounded-full font-serif text-lg ${
+                  m.home ? "bg-success/15 text-success" : "bg-secondary text-muted-foreground"
+                }`}
+              >
                 {m.initial}
               </span>
               <div className="min-w-0 flex-1">
@@ -45,14 +65,17 @@ function EtatTab() {
                   {m.home ? "À la maison" : m.place} · {m.since}
                 </p>
               </div>
-              <span className={`h-2 w-2 shrink-0 rounded-full ${m.home ? "bg-success" : "bg-muted-foreground/40"}`} />
+              <span
+                className={`h-2 w-2 shrink-0 rounded-full ${m.home ? "bg-success" : "bg-muted-foreground/40"}`}
+              />
             </div>
           ))}
         </div>
         {security.autoFollowPresence && (
           <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
             <MapPin className="h-3.5 w-3.5" />
-            Armement automatique · passe en <span className="font-semibold text-foreground">Absent</span> quand tout le monde part
+            Armement automatique · passe en{" "}
+            <span className="font-semibold text-foreground">Absent</span> quand tout le monde part
           </p>
         )}
       </Section>
@@ -60,7 +83,13 @@ function EtatTab() {
   );
 }
 
-function ArmingHero({ verdict, openPoints }: { verdict: "secure" | "attention"; openPoints: typeof perimeter }) {
+function ArmingHero({
+  verdict,
+  openPoints,
+}: {
+  verdict: "secure" | "attention";
+  openPoints: typeof perimeter;
+}) {
   const [mode, setMode] = useState<ArmMode>(security.mode);
   const [autoFollow, setAutoFollow] = useState(security.autoFollowPresence);
   const current = armModes.find((m) => m.key === mode)!;
@@ -68,26 +97,42 @@ function ArmingHero({ verdict, openPoints }: { verdict: "secure" | "attention"; 
 
   const headline =
     verdict === "attention"
-      ? openPoints.length === 1 ? `${openPoints[0].name} · ${openPoints[0].state === "open" ? "ouverte" : "déverrouillée"}` : `${openPoints.length} points à vérifier`
-      : armed ? "Maison sécurisée" : "Surveillance désactivée";
+      ? openPoints.length === 1
+        ? `${openPoints[0].name} · ${openPoints[0].state === "open" ? "ouverte" : "déverrouillée"}`
+        : `${openPoints.length} points à vérifier`
+      : armed
+        ? "Maison sécurisée"
+        : "Surveillance désactivée";
 
   const HeadIcon = verdict === "attention" ? ShieldAlert : armed ? ShieldCheck : ShieldOff;
 
   return (
-    <section className={`overflow-hidden rounded-2xl border p-6 shadow-soft sm:p-8 anim-slide-up ${
-      verdict === "attention" ? "border-warm/40 bg-warm/[0.06]" :
-      armed ? "border-success/30 bg-success/[0.05]" : "border-border/60 bg-card"
-    }`}>
+    <section
+      className={`overflow-hidden rounded-2xl border p-6 shadow-soft sm:p-8 anim-slide-up ${
+        verdict === "attention"
+          ? "border-warm/40 bg-warm/[0.06]"
+          : armed
+            ? "border-success/30 bg-success/[0.05]"
+            : "border-border/60 bg-card"
+      }`}
+    >
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
-          <span className={`grid h-14 w-14 shrink-0 place-items-center rounded-2xl ${
-            verdict === "attention" ? "bg-warm/15 text-warm" : armed ? "bg-success/15 text-success" : "bg-secondary text-muted-foreground"
-          }`}>
+          <span
+            className={`grid h-14 w-14 shrink-0 place-items-center rounded-2xl ${
+              verdict === "attention"
+                ? "bg-warm/15 text-warm"
+                : armed
+                  ? "bg-success/15 text-success"
+                  : "bg-secondary text-muted-foreground"
+            }`}
+          >
             <HeadIcon className="h-7 w-7 anim-breathe" />
           </span>
           <div>
             <Eyebrow>
-              Mode {current.label}{armed && ` · depuis ${security.armedSince}`}
+              Mode {current.label}
+              {armed && ` · depuis ${security.armedSince}`}
             </Eyebrow>
             <p className="mt-1 font-serif text-3xl leading-tight tracking-tight">{headline}</p>
             <p className="mt-0.5 text-sm text-muted-foreground">{current.hint}</p>
@@ -103,7 +148,9 @@ function ArmingHero({ verdict, openPoints }: { verdict: "secure" | "attention"; 
                 key={m.key}
                 onClick={() => setMode(m.key)}
                 className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-all ${
-                  active ? "bg-card text-foreground shadow-soft" : "text-muted-foreground hover:text-foreground"
+                  active
+                    ? "bg-card text-foreground shadow-soft"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -116,15 +163,29 @@ function ArmingHero({ verdict, openPoints }: { verdict: "secure" | "attention"; 
 
       {verdict === "attention" && (
         <div className="mt-5 flex flex-wrap items-center gap-2 rounded-xl border border-warm/30 bg-card/60 p-3">
-          <Eyebrow tone="current" as="span" className="text-warm">À vérifier</Eyebrow>
+          <Eyebrow tone="current" as="span" className="text-warm">
+            À vérifier
+          </Eyebrow>
           {openPoints.map((p) => (
-            <span key={p.name} className="inline-flex items-center gap-1 rounded-full bg-warm/10 px-2 py-0.5 text-xs text-warm">
-              {p.type === "garage" ? <Warehouse className="h-3 w-3" /> : <DoorOpen className="h-3 w-3" />}
+            <span
+              key={p.name}
+              className="inline-flex items-center gap-1 rounded-full bg-warm/10 px-2 py-0.5 text-xs text-warm"
+            >
+              {p.type === "garage" ? (
+                <Warehouse className="h-3 w-3" />
+              ) : (
+                <DoorOpen className="h-3 w-3" />
+              )}
               {p.name}
             </span>
           ))}
-          <Button variant="inverted" size="sm" className="ml-auto gap-1.5 rounded-full transition-transform hover:-translate-y-0.5">
-            <Lock className="h-3.5 w-3.5" />Tout verrouiller
+          <Button
+            variant="inverted"
+            size="sm"
+            className="ml-auto gap-1.5 rounded-full transition-transform hover:-translate-y-0.5"
+          >
+            <Lock className="h-3.5 w-3.5" />
+            Tout verrouiller
           </Button>
         </div>
       )}
@@ -134,7 +195,11 @@ function ArmingHero({ verdict, openPoints }: { verdict: "secure" | "attention"; 
           <MapPin className="h-4 w-4 text-muted-foreground" />
           <span>Armement automatique selon la présence</span>
         </div>
-        <Switch checked={autoFollow} onCheckedChange={setAutoFollow} aria-label="Armement automatique" />
+        <Switch
+          checked={autoFollow}
+          onCheckedChange={setAutoFollow}
+          aria-label="Armement automatique"
+        />
       </div>
     </section>
   );

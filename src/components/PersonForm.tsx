@@ -2,18 +2,37 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/Eyebrow";
 import { NO_BIRTH_YEAR, type Person, type Sliders } from "@/lib/maison-data";
 
 const MONTHS = [
-  "Janv.", "Févr.", "Mars", "Avr.", "Mai", "Juin",
-  "Juil.", "Août", "Sept.", "Oct.", "Nov.", "Déc.",
+  "Janv.",
+  "Févr.",
+  "Mars",
+  "Avr.",
+  "Mai",
+  "Juin",
+  "Juil.",
+  "Août",
+  "Sept.",
+  "Oct.",
+  "Nov.",
+  "Déc.",
 ];
 
 /** The editable fields of a person — id and history are the store's business. */
-export type PersonDraft = Pick<Person, "name" | "relation" | "dob" | "langue" | "matiereLibre" | "defaultSliders">;
+export type PersonDraft = Pick<
+  Person,
+  "name" | "relation" | "dob" | "langue" | "matiereLibre" | "defaultSliders"
+>;
 
 export const EMPTY_PERSON: PersonDraft = {
   name: "",
@@ -38,7 +57,8 @@ export function PersonForm({
 }) {
   const [d, setD] = useState<PersonDraft>(initial);
   const [touched, setTouched] = useState(false);
-  const set = <K extends keyof PersonDraft>(k: K, v: PersonDraft[K]) => setD((p) => ({ ...p, [k]: v }));
+  const set = <K extends keyof PersonDraft>(k: K, v: PersonDraft[K]) =>
+    setD((p) => ({ ...p, [k]: v }));
   const setSlider = <K extends keyof Sliders>(k: K, v: number) =>
     setD((p) => ({ ...p, defaultSliders: { ...p.defaultSliders, [k]: v } }));
 
@@ -64,14 +84,26 @@ export function PersonForm({
     <form onSubmit={submit} className="space-y-5">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Nom">
-          <Input value={d.name} onChange={(e) => set("name", e.target.value)} aria-invalid={touched && nameError} />
-          {touched && nameError && <p className="mt-1 text-xs text-destructive">Le nom est requis.</p>}
+          <Input
+            value={d.name}
+            onChange={(e) => set("name", e.target.value)}
+            aria-invalid={touched && nameError}
+          />
+          {touched && nameError && (
+            <p className="mt-1 text-xs text-destructive">Le nom est requis.</p>
+          )}
         </Field>
         <Field label="Relation">
-          <Input value={d.relation} onChange={(e) => set("relation", e.target.value)} placeholder="frère, maman, amie d'enfance…" />
+          <Input
+            value={d.relation}
+            onChange={(e) => set("relation", e.target.value)}
+            placeholder="frère, maman, amie d'enfance…"
+          />
         </Field>
         <div className="sm:col-span-2">
-          <Eyebrow size="xs" as="span">Date d'anniversaire</Eyebrow>
+          <Eyebrow size="xs" as="span">
+            Date d'anniversaire
+          </Eyebrow>
           <div className="mt-1.5 flex gap-2">
             <Input
               type="number"
@@ -89,7 +121,9 @@ export function PersonForm({
               </SelectTrigger>
               <SelectContent>
                 {MONTHS.map((mo, i) => (
-                  <SelectItem key={mo} value={String(i + 1).padStart(2, "0")}>{mo}</SelectItem>
+                  <SelectItem key={mo} value={String(i + 1).padStart(2, "0")}>
+                    {mo}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -101,7 +135,9 @@ export function PersonForm({
               className="w-28"
             />
           </div>
-          {touched && dobError && <p className="mt-1 text-xs text-destructive">Le jour et le mois sont requis.</p>}
+          {touched && dobError && (
+            <p className="mt-1 text-xs text-destructive">Le jour et le mois sont requis.</p>
+          )}
         </div>
       </div>
 
@@ -109,21 +145,53 @@ export function PersonForm({
         <p className="mb-1.5 text-2xs text-muted-foreground">
           Souvenirs, blagues, actualités — la source qui personnalise les messages.
         </p>
-        <Textarea value={d.matiereLibre} onChange={(e) => set("matiereLibre", e.target.value)} className="min-h-[140px]" />
+        <Textarea
+          value={d.matiereLibre}
+          onChange={(e) => set("matiereLibre", e.target.value)}
+          className="min-h-[140px]"
+        />
       </Field>
 
       <div>
-        <Eyebrow size="xs" as="span">Style par défaut</Eyebrow>
+        <Eyebrow size="xs" as="span">
+          Style par défaut
+        </Eyebrow>
         <div className="mt-2 grid gap-5 sm:grid-cols-2">
-          <SliderRow label="Registre" left="pudique" right="complice" value={d.defaultSliders.registre} onChange={(v) => setSlider("registre", v)} />
-          <SliderRow label="Chaleur" left="sobre" right="tendre" value={d.defaultSliders.chaleur} onChange={(v) => setSlider("chaleur", v)} />
-          <SliderRow label="Humour" left="sincère" right="taquin" value={d.defaultSliders.humour} onChange={(v) => setSlider("humour", v)} />
-          <SliderRow label="Longueur" left="bref" right="développé" value={d.defaultSliders.longueur} onChange={(v) => setSlider("longueur", v)} />
+          <SliderRow
+            label="Registre"
+            left="pudique"
+            right="complice"
+            value={d.defaultSliders.registre}
+            onChange={(v) => setSlider("registre", v)}
+          />
+          <SliderRow
+            label="Chaleur"
+            left="sobre"
+            right="tendre"
+            value={d.defaultSliders.chaleur}
+            onChange={(v) => setSlider("chaleur", v)}
+          />
+          <SliderRow
+            label="Humour"
+            left="sincère"
+            right="taquin"
+            value={d.defaultSliders.humour}
+            onChange={(v) => setSlider("humour", v)}
+          />
+          <SliderRow
+            label="Longueur"
+            left="bref"
+            right="développé"
+            value={d.defaultSliders.longueur}
+            onChange={(v) => setSlider("longueur", v)}
+          />
         </div>
       </div>
 
       <div className="flex items-center justify-end gap-2 border-t border-border/60 pt-4">
-        <Button type="button" variant="ghost" onClick={onCancel}>Annuler</Button>
+        <Button type="button" variant="ghost" onClick={onCancel}>
+          Annuler
+        </Button>
         <Button type="submit">{submitLabel}</Button>
       </div>
     </form>
@@ -134,16 +202,26 @@ export function PersonForm({
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <Eyebrow size="xs" as="span">{label}</Eyebrow>
+      <Eyebrow size="xs" as="span">
+        {label}
+      </Eyebrow>
       <div className="mt-1.5">{children}</div>
     </label>
   );
 }
 
 function SliderRow({
-  label, left, right, value, onChange,
+  label,
+  left,
+  right,
+  value,
+  onChange,
 }: {
-  label: string; left: string; right: string; value: number; onChange: (v: number) => void;
+  label: string;
+  left: string;
+  right: string;
+  value: number;
+  onChange: (v: number) => void;
 }) {
   return (
     <div>

@@ -17,7 +17,8 @@ export function CursorFollower() {
     const shape = shapeRef.current;
     if (!svg || !shape) return;
 
-    const INTERACTIVE = 'a, button, [role="button"], [data-cursor], input, select, textarea, summary, label';
+    const INTERACTIVE =
+      'a, button, [role="button"], [data-cursor], input, select, textarea, summary, label';
     const PAD = 8;
     const IDLE = 22; // diameter of the idle ring
 
@@ -94,13 +95,39 @@ export function CursorFollower() {
       <svg ref={svgRef} className="cursor-follower" aria-hidden style={{ opacity: 0 }}>
         <defs>
           <filter id="cursor-warp" x="-20%" y="-20%" width="140%" height="140%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.014" numOctaves="2" seed="3" result="warp">
-              <animate attributeName="baseFrequency" dur="9s" values="0.014;0.024;0.014" repeatCount="indefinite" />
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.014"
+              numOctaves="2"
+              seed="3"
+              result="warp"
+            >
+              <animate
+                attributeName="baseFrequency"
+                dur="9s"
+                values="0.014;0.024;0.014"
+                repeatCount="indefinite"
+              />
             </feTurbulence>
-            <feDisplacementMap in="SourceGraphic" in2="warp" scale="5" xChannelSelector="R" yChannelSelector="G" />
+            <feDisplacementMap
+              in="SourceGraphic"
+              in2="warp"
+              scale="5"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
           </filter>
         </defs>
-        <rect ref={shapeRef} className="cursor-follower__rect" x="1" y="1" width="36" height="36" rx="18" ry="18" />
+        <rect
+          ref={shapeRef}
+          className="cursor-follower__rect"
+          x="1"
+          y="1"
+          width="36"
+          height="36"
+          rx="18"
+          ry="18"
+        />
       </svg>
     </>
   );

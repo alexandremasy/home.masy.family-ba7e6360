@@ -29,10 +29,18 @@ export const Route = createFileRoute("/_app/tesla")({
 
 // --- Quarter helpers ---
 const MONTH_TO_Q: Record<string, number> = {
-  Jan: 1, Fév: 1, Mar: 1,
-  Avr: 2, Mai: 2, Juin: 2,
-  Juil: 3, Août: 3, Sep: 3,
-  Oct: 4, Nov: 4, Déc: 4,
+  Jan: 1,
+  Fév: 1,
+  Mar: 1,
+  Avr: 2,
+  Mai: 2,
+  Juin: 2,
+  Juil: 3,
+  Août: 3,
+  Sep: 3,
+  Oct: 4,
+  Nov: 4,
+  Déc: 4,
 };
 const Q_MONTHS_FR: Record<number, string[]> = {
   1: ["Jan", "Fév", "Mar"],
@@ -58,10 +66,29 @@ function TeslaPage() {
   const currentQKey = `${currentY}-Q${currentQ}`;
 
   // Aggregate by quarter
-  const quartersMap = new Map<string, { key: string; year: number; q: number; kWh: number; sessions: number; monthsCounted: number; months: MonthRow[] }>();
+  const quartersMap = new Map<
+    string,
+    {
+      key: string;
+      year: number;
+      q: number;
+      kWh: number;
+      sessions: number;
+      monthsCounted: number;
+      months: MonthRow[];
+    }
+  >();
   for (const row of history) {
     const k = quarterKey(row);
-    const cur = quartersMap.get(k) ?? { key: k, year: row.year, q: MONTH_TO_Q[row.month], kWh: 0, sessions: 0, monthsCounted: 0, months: [] };
+    const cur = quartersMap.get(k) ?? {
+      key: k,
+      year: row.year,
+      q: MONTH_TO_Q[row.month],
+      kWh: 0,
+      sessions: 0,
+      monthsCounted: 0,
+      months: [],
+    };
     cur.kWh += row.kWh;
     cur.sessions += row.sessions;
     cur.monthsCounted += 1;
@@ -76,7 +103,13 @@ function TeslaPage() {
     .filter((m) => !presentNames.has(m))
     .map((m) => {
       const prior = history.find((h) => h.month === m && h.year === currentY - 1);
-      return { month: m, year: currentY, kWh: prior?.kWh ?? 0, sessions: prior?.sessions ?? 0, projected: true };
+      return {
+        month: m,
+        year: currentY,
+        kWh: prior?.kWh ?? 0,
+        sessions: prior?.sessions ?? 0,
+        projected: true,
+      };
     });
   const currentQuarter = {
     ...currentQRaw,
@@ -117,7 +150,11 @@ function TeslaPage() {
   // Visible window: full quarters + current (which now always has 3 months thanks to projection)
   const visibleQuarters = quarters
     .filter((q) => q.monthsCounted === 3 || q.key === currentQKey)
-    .map((q) => (q.key === currentQKey ? { ...q, months: currentQuarter.months, kWh: estimatedKWh, monthsCounted: 3 } : q));
+    .map((q) =>
+      q.key === currentQKey
+        ? { ...q, months: currentQuarter.months, kWh: estimatedKWh, monthsCounted: 3 }
+        : q,
+    );
   const maxMonth = Math.max(...visibleQuarters.flatMap((q) => q.months.map((m) => m.kWh)));
 
   // Frosted bento surface, matching the dashboard tiles — sits on the sheet's
@@ -135,7 +172,11 @@ function TeslaPage() {
             : "bg-secondary/60 text-muted-foreground")
       }
     >
-      {tesla.charging ? <BatteryCharging className="h-3.5 w-3.5 anim-breathe" /> : <Plug className="h-3.5 w-3.5" />}
+      {tesla.charging ? (
+        <BatteryCharging className="h-3.5 w-3.5 anim-breathe" />
+      ) : (
+        <Plug className="h-3.5 w-3.5" />
+      )}
       {tesla.charging ? "En charge" : tesla.pluggedIn ? "Branchée" : "Débranchée"}
     </span>
   );
@@ -144,7 +185,13 @@ function TeslaPage() {
     <div className="space-y-6">
       {/* Standard overlay header, like Énergie — sticky glass PageHeader; the
           charging state rides along as the header action. */}
-      <PageHeader title="Bernard" subtitle={tesla.model} back={null} size="sm" action={chargeBadge} />
+      <PageHeader
+        title="Bernard"
+        subtitle={tesla.model}
+        back={null}
+        size="sm"
+        action={chargeBadge}
+      />
 
       {/* ============ 1. ÉTAT DE LA VOITURE ============ */}
       <section className="space-y-4">
@@ -152,7 +199,9 @@ function TeslaPage() {
           icon={<Gauge className="h-4 w-4" />}
           sub={
             <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-              <span className="inline-flex items-center gap-1"><Wifi className="h-3 w-3" /> Sync {tesla.lastSeen}</span>
+              <span className="inline-flex items-center gap-1">
+                <Wifi className="h-3 w-3" /> Sync {tesla.lastSeen}
+              </span>
               <span>· Logiciel {tesla.software}</span>
             </span>
           }
@@ -166,15 +215,31 @@ function TeslaPage() {
             <FloatStat label="Charge" value={`${tesla.charge}%`} accent />
             <FloatStat label="Autonomie" value={`${tesla.rangeKm} km`} />
             <FloatStat label="Limite" value={`${tesla.chargeLimit}%`} />
-            <FloatStat label="Intérieur" value={`${tesla.interior}°`} icon={<Flame className="h-3 w-3" />} />
-            <FloatStat label="Extérieur" value={`${tesla.exterior}°`} icon={<Snowflake className="h-3 w-3" />} />
-            <FloatStat label="Odomètre" value={`${(tesla.odometerKm / 1000).toFixed(1)}k km`} icon={<Gauge className="h-3 w-3" />} />
+            <FloatStat
+              label="Intérieur"
+              value={`${tesla.interior}°`}
+              icon={<Flame className="h-3 w-3" />}
+            />
+            <FloatStat
+              label="Extérieur"
+              value={`${tesla.exterior}°`}
+              icon={<Snowflake className="h-3 w-3" />}
+            />
+            <FloatStat
+              label="Odomètre"
+              value={`${(tesla.odometerKm / 1000).toFixed(1)}k km`}
+              icon={<Gauge className="h-3 w-3" />}
+            />
           </div>
 
           <div className="hidden flex-col items-end gap-3 text-right sm:flex">
             <FloatStat label="Charge" value={`${tesla.charge}%`} accent />
             <FloatStat label="Autonomie" value={`${tesla.rangeKm} km`} />
-            <FloatStat label="Intérieur" value={`${tesla.interior}°`} icon={<Flame className="h-3 w-3" />} />
+            <FloatStat
+              label="Intérieur"
+              value={`${tesla.interior}°`}
+              icon={<Flame className="h-3 w-3" />}
+            />
           </div>
 
           <div className="order-1 sm:order-none">
@@ -183,18 +248,29 @@ function TeslaPage() {
 
           <div className="hidden flex-col items-start gap-3 sm:flex">
             <FloatStat label="Limite" value={`${tesla.chargeLimit}%`} />
-            <FloatStat label="Odomètre" value={`${(tesla.odometerKm / 1000).toFixed(1)}k km`} icon={<Gauge className="h-3 w-3" />} />
-            <FloatStat label="Extérieur" value={`${tesla.exterior}°`} icon={<Snowflake className="h-3 w-3" />} />
+            <FloatStat
+              label="Odomètre"
+              value={`${(tesla.odometerKm / 1000).toFixed(1)}k km`}
+              icon={<Gauge className="h-3 w-3" />}
+            />
+            <FloatStat
+              label="Extérieur"
+              value={`${tesla.exterior}°`}
+              icon={<Snowflake className="h-3 w-3" />}
+            />
           </div>
         </div>
 
         <div className="relative mx-auto h-1.5 w-full max-w-md overflow-hidden rounded-full bg-secondary">
-          <div className="absolute left-0 top-0 h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${tesla.charge}%` }} />
-          <div className="absolute top-0 h-full w-px bg-foreground/40" style={{ left: `${tesla.chargeLimit}%` }} />
+          <div
+            className="absolute left-0 top-0 h-full rounded-full bg-primary transition-all duration-700"
+            style={{ width: `${tesla.charge}%` }}
+          />
+          <div
+            className="absolute top-0 h-full w-px bg-foreground/40"
+            style={{ left: `${tesla.chargeLimit}%` }}
+          />
         </div>
-
-
-
       </section>
 
       {/* ============ 2. TRIMESTRE EN COURS ============ */}
@@ -232,100 +308,155 @@ function TeslaPage() {
           then a grouped quarter axis under a top border. */}
       <section className={frosted}>
         <header className="-mx-4 flex flex-wrap items-start justify-between gap-3 border-b border-border/60 px-4 pb-3">
-          <SectionTitle icon={<BarChart3 className="h-4 w-4" />} sub={`Groupé par trimestre — médiane ${medianMonth} kWh/mois`}>
+          <SectionTitle
+            icon={<BarChart3 className="h-4 w-4" />}
+            sub={`Groupé par trimestre — médiane ${medianMonth} kWh/mois`}
+          >
             Historique mensuel
           </SectionTitle>
-          <span className={"inline-flex items-center gap-1 text-xs " + (qBetter ? "text-success" : "text-warm")}>
-            {qBetter ? <TrendingDown className="h-3.5 w-3.5" /> : <TrendingUp className="h-3.5 w-3.5" />}
+          <span
+            className={
+              "inline-flex items-center gap-1 text-xs " + (qBetter ? "text-success" : "text-warm")
+            }
+          >
+            {qBetter ? (
+              <TrendingDown className="h-3.5 w-3.5" />
+            ) : (
+              <TrendingUp className="h-3.5 w-3.5" />
+            )}
             {qBetter ? "sous" : "au-dessus de"} la médiane
           </span>
         </header>
 
         <div className="space-y-4 pt-4">
-        {/* Legend */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-secondary" />trimestres clos</span>
-          <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-primary" />trimestre en cours</span>
-          <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-primary/30 ring-1 ring-primary/50" />projection (N-1)</span>
-          <span className="inline-flex items-center gap-1.5"><span className="h-px w-4 border-t border-dashed border-foreground/40" />médiane</span>
-        </div>
-
-        {/* Chart — one responsive monthly bar row, median baseline */}
-        <div className="relative h-44">
-          <div
-            className="absolute inset-x-0 z-0 border-t border-dashed border-foreground/30"
-            style={{ bottom: `${(medianMonth / maxMonth) * 100}%` }}
-          >
-            <span className="absolute -top-4 right-0 rounded bg-background/80 px-1 text-2xs tabular-nums text-muted-foreground">
-              médiane {medianMonth}
+          {/* Legend */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-sm bg-secondary" />
+              trimestres clos
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-sm bg-primary" />
+              trimestre en cours
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-sm bg-primary/30 ring-1 ring-primary/50" />
+              projection (N-1)
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-px w-4 border-t border-dashed border-foreground/40" />
+              médiane
             </span>
           </div>
 
-          <div className="flex h-full items-end gap-2.5 sm:gap-6">
+          {/* Chart — one responsive monthly bar row, median baseline */}
+          <div className="relative h-44">
+            <div
+              className="absolute inset-x-0 z-0 border-t border-dashed border-foreground/30"
+              style={{ bottom: `${(medianMonth / maxMonth) * 100}%` }}
+            >
+              <span className="absolute -top-4 right-0 rounded bg-background/80 px-1 text-2xs tabular-nums text-muted-foreground">
+                médiane {medianMonth}
+              </span>
+            </div>
+
+            <div className="flex h-full items-end gap-2.5 sm:gap-6">
+              {visibleQuarters.map((q) => {
+                const isCurrent = q.key === currentQKey;
+                return (
+                  <div key={q.key} className="flex h-full flex-1 items-end gap-1 sm:gap-1.5">
+                    {q.months.map((m) => {
+                      const projected = !!m.projected;
+                      return (
+                        <div
+                          key={`${m.year}-${m.month}`}
+                          className="group relative flex h-full flex-1 flex-col justify-end"
+                        >
+                          <div
+                            className={
+                              "w-full rounded-t-md transition-all duration-700 " +
+                              (projected
+                                ? "bg-primary/25 ring-1 ring-inset ring-primary/50"
+                                : isCurrent
+                                  ? "bg-primary"
+                                  : "bg-secondary group-hover:bg-secondary/70")
+                            }
+                            style={{ height: `${Math.max((m.kWh / maxMonth) * 100, 4)}%` }}
+                          />
+                          <div className="pointer-events-none absolute -top-7 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-2xs text-background opacity-0 transition-opacity group-hover:opacity-100">
+                            {m.kWh} kWh{projected ? " · projection" : ""}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Quarter axis — month labels, then the quarter total under a top border */}
+          <div className="flex gap-2.5 sm:gap-6">
             {visibleQuarters.map((q) => {
               const isCurrent = q.key === currentQKey;
               return (
-                <div key={q.key} className="flex h-full flex-1 items-end gap-1 sm:gap-1.5">
-                  {q.months.map((m) => {
-                    const projected = !!m.projected;
-                    return (
-                      <div key={`${m.year}-${m.month}`} className="group relative flex h-full flex-1 flex-col justify-end">
-                        <div
-                          className={
-                            "w-full rounded-t-md transition-all duration-700 " +
-                            (projected
-                              ? "bg-primary/25 ring-1 ring-inset ring-primary/50"
-                              : isCurrent
-                                ? "bg-primary"
-                                : "bg-secondary group-hover:bg-secondary/70")
-                          }
-                          style={{ height: `${Math.max((m.kWh / maxMonth) * 100, 4)}%` }}
-                        />
-                        <div className="pointer-events-none absolute -top-7 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-2xs text-background opacity-0 transition-opacity group-hover:opacity-100">
-                          {m.kWh} kWh{projected ? " · projection" : ""}
-                        </div>
+                <div key={q.key} className="min-w-0 flex-1">
+                  <div className="flex gap-1 sm:gap-1.5">
+                    {q.months.map((m) => (
+                      <div
+                        key={`${m.year}-${m.month}-l`}
+                        className={
+                          "min-w-0 flex-1 truncate text-center text-2xs " +
+                          (m.projected
+                            ? "italic text-muted-foreground/60"
+                            : "text-muted-foreground")
+                        }
+                      >
+                        {m.month.slice(0, 3)}
                       </div>
-                    );
-                  })}
+                    ))}
+                  </div>
+                  <div
+                    className={
+                      "mt-1.5 flex flex-col items-center gap-0.5 border-t pt-1.5 " +
+                      (isCurrent ? "border-primary" : "border-border/60")
+                    }
+                  >
+                    <span
+                      className={
+                        "text-2xs font-medium uppercase tracking-eyebrow " +
+                        (isCurrent ? "font-semibold text-primary" : "text-muted-foreground")
+                      }
+                    >
+                      {qLabel(q.year, q.q)}
+                      {isCurrent && (
+                        <span className="ml-1 normal-case tracking-normal opacity-70">est.</span>
+                      )}
+                    </span>
+                    <span
+                      className={
+                        "font-serif text-base leading-none " +
+                        (isCurrent ? "text-primary" : "text-foreground")
+                      }
+                    >
+                      {q.kWh}
+                      <span className="ml-0.5 text-2xs font-sans text-muted-foreground">kWh</span>
+                    </span>
+                    <span className="text-2xs tabular-nums text-muted-foreground">
+                      {fmtEur(cost(q.kWh))}
+                    </span>
+                  </div>
                 </div>
               );
             })}
           </div>
-        </div>
 
-        {/* Quarter axis — month labels, then the quarter total under a top border */}
-        <div className="flex gap-2.5 sm:gap-6">
-          {visibleQuarters.map((q) => {
-            const isCurrent = q.key === currentQKey;
-            return (
-              <div key={q.key} className="min-w-0 flex-1">
-                <div className="flex gap-1 sm:gap-1.5">
-                  {q.months.map((m) => (
-                    <div
-                      key={`${m.year}-${m.month}-l`}
-                      className={"min-w-0 flex-1 truncate text-center text-2xs " + (m.projected ? "italic text-muted-foreground/60" : "text-muted-foreground")}
-                    >
-                      {m.month.slice(0, 3)}
-                    </div>
-                  ))}
-                </div>
-                <div className={"mt-1.5 flex flex-col items-center gap-0.5 border-t pt-1.5 " + (isCurrent ? "border-primary" : "border-border/60")}>
-                  <span className={"text-2xs font-medium uppercase tracking-eyebrow " + (isCurrent ? "font-semibold text-primary" : "text-muted-foreground")}>
-                    {qLabel(q.year, q.q)}{isCurrent && <span className="ml-1 normal-case tracking-normal opacity-70">est.</span>}
-                  </span>
-                  <span className={"font-serif text-base leading-none " + (isCurrent ? "text-primary" : "text-foreground")}>
-                    {q.kWh}<span className="ml-0.5 text-2xs font-sans text-muted-foreground">kWh</span>
-                  </span>
-                  <span className="text-2xs tabular-nums text-muted-foreground">{fmtEur(cost(q.kWh))}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <p className="text-xs text-muted-foreground">
-          Médiane <span className="text-foreground">mensuelle</span> ({medianMonth} kWh) sur {previousFull.length} trimestres clos · moyenne trimestrielle {avgPrevKWh} kWh ({fmtEur(cost(avgPrevKWh))}). Les mois manquants du trimestre en cours sont projetés sur base de l'année précédente.
-        </p>
+          <p className="text-xs text-muted-foreground">
+            Médiane <span className="text-foreground">mensuelle</span> ({medianMonth} kWh) sur{" "}
+            {previousFull.length} trimestres clos · moyenne trimestrielle {avgPrevKWh} kWh (
+            {fmtEur(cost(avgPrevKWh))}). Les mois manquants du trimestre en cours sont projetés sur
+            base de l'année précédente.
+          </p>
         </div>
       </section>
     </div>
@@ -336,14 +467,24 @@ function TeslaPage() {
 
 // One header pattern for every section: a teal colour ball + a serif label, with
 // an optional sub-line sitting right under the label (to the right of the ball).
-function SectionTitle({ icon, sub, children }: { icon: React.ReactNode; sub?: React.ReactNode; children: React.ReactNode }) {
+function SectionTitle({
+  icon,
+  sub,
+  children,
+}: {
+  icon: React.ReactNode;
+  sub?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex items-center gap-2.5">
       <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
         {icon}
       </span>
       <div className="min-w-0">
-        <h2 className="font-serif text-base font-semibold leading-tight tracking-tight">{children}</h2>
+        <h2 className="font-serif text-base font-semibold leading-tight tracking-tight">
+          {children}
+        </h2>
         {sub && <div className="mt-0.5 text-xs text-muted-foreground">{sub}</div>}
       </div>
     </div>
@@ -369,17 +510,35 @@ function FloatStat({
         {icon}
         {label}
       </Eyebrow>
-      <p className={"font-serif text-base font-medium " + (accent ? "text-primary" : "text-foreground")}>{value}</p>
+      <p
+        className={
+          "font-serif text-base font-medium " + (accent ? "text-primary" : "text-foreground")
+        }
+      >
+        {value}
+      </p>
     </div>
   );
 }
 
-
-function TeslaCar({ charging, locked, location }: { charging: boolean; locked: boolean; location: string }) {
+function TeslaCar({
+  charging,
+  locked,
+  location,
+}: {
+  charging: boolean;
+  locked: boolean;
+  location: string;
+}) {
   // Playful Tesla Model 3 illustration — red body, chunky wheels, sparkles
   return (
     <div className="relative flex flex-col items-center">
-      <svg viewBox="0 0 260 130" className="h-32 w-52 sm:h-36 sm:w-60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        viewBox="0 0 260 130"
+        className="h-32 w-52 sm:h-36 sm:w-60"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <defs>
           <linearGradient id="teslaBody" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="hsl(0, 78%, 62%)" />
@@ -404,7 +563,10 @@ function TeslaCar({ charging, locked, location }: { charging: boolean; locked: b
         <ellipse cx="130" cy="118" rx="105" ry="5" className="fill-foreground/10" />
 
         {/* lower bumper / chrome */}
-        <path d="M22 92 Q26 84 36 84 L224 84 Q234 84 238 92 L236 100 L24 100 Z" className="fill-secondary" />
+        <path
+          d="M22 92 Q26 84 36 84 L224 84 Q234 84 238 92 L236 100 L24 100 Z"
+          className="fill-secondary"
+        />
 
         {/* main body */}
         <path
@@ -416,12 +578,16 @@ function TeslaCar({ charging, locked, location }: { charging: boolean; locked: b
         <path d="M40 84 Q90 76 200 78 Q220 80 224 86 L40 86 Z" className="fill-white/20" />
 
         {/* greenhouse / windows */}
-        <path
-          d="M92 64 L108 44 Q119 40 130 40 Q141 40 152 44 L168 64 Z"
-          fill="url(#teslaGlass)"
-        />
+        <path d="M92 64 L108 44 Q119 40 130 40 Q141 40 152 44 L168 64 Z" fill="url(#teslaGlass)" />
         {/* B-pillar */}
-        <line x1="130" y1="40" x2="130" y2="64" className="stroke-foreground/70" strokeWidth="1.4" />
+        <line
+          x1="130"
+          y1="40"
+          x2="130"
+          y2="64"
+          className="stroke-foreground/70"
+          strokeWidth="1.4"
+        />
         {/* window outline */}
         <path
           d="M92 64 L108 44 Q119 40 130 40 Q141 40 152 44 L168 64"
@@ -455,7 +621,10 @@ function TeslaCar({ charging, locked, location }: { charging: boolean; locked: b
 
         {/* sparkles */}
         <g className="fill-white">
-          <path d="M170 50 l1.5 3 l3 1.5 l-3 1.5 l-1.5 3 l-1.5 -3 l-3 -1.5 l3 -1.5 z" opacity="0.9" />
+          <path
+            d="M170 50 l1.5 3 l3 1.5 l-3 1.5 l-1.5 3 l-1.5 -3 l-3 -1.5 l3 -1.5 z"
+            opacity="0.9"
+          />
           <path d="M70 78 l1 2 l2 1 l-2 1 l-1 2 l-1 -2 l-2 -1 l2 -1 z" opacity="0.8" />
           <path d="M210 92 l1 2 l2 1 l-2 1 l-1 2 l-1 -2 l-2 -1 l2 -1 z" opacity="0.7" />
         </g>
@@ -475,7 +644,12 @@ function TeslaCar({ charging, locked, location }: { charging: boolean; locked: b
         </g>
       </svg>
       <div className="mt-1 flex flex-wrap items-center justify-center gap-2 text-2xs">
-        <span className={"inline-flex items-center gap-1 rounded-full px-2 py-0.5 " + (locked ? "bg-success/10 text-success" : "bg-warm/10 text-warm")}>
+        <span
+          className={
+            "inline-flex items-center gap-1 rounded-full px-2 py-0.5 " +
+            (locked ? "bg-success/10 text-success" : "bg-warm/10 text-warm")
+          }
+        >
           {locked ? <Lock className="h-3 w-3" /> : <LockOpen className="h-3 w-3" />}
           {locked ? "Verrouillée" : "Ouverte"}
         </span>
@@ -509,7 +683,18 @@ function BigStat({
         {icon}
         {label}
       </Eyebrow>
-      <p className={"mt-1.5 font-serif text-lg font-semibold " + (accent ? "text-primary" : trend === "down" ? "text-success" : trend === "up" ? "text-mustard" : "text-foreground")}>
+      <p
+        className={
+          "mt-1.5 font-serif text-lg font-semibold " +
+          (accent
+            ? "text-primary"
+            : trend === "down"
+              ? "text-success"
+              : trend === "up"
+                ? "text-mustard"
+                : "text-foreground")
+        }
+      >
         {value}
       </p>
       {sub && <p className="mt-1 text-xs text-muted-foreground">{sub}</p>}

@@ -13,12 +13,55 @@ export interface Room {
 }
 
 export const rooms: Room[] = [
-  { key: "salon", name: "Salon", icon: "sofa", hasSensors: true, lightsOn: true, scene: "Film", occupied: true },
-  { key: "bureau", name: "Bureau", icon: "briefcase", hasSensors: true, lightsOn: true, temperature: 20.8, climate: { on: true, setpoint: 21 }, scene: "Travail", occupied: true },
-  { key: "cuisine", name: "Cuisine", icon: "utensils", hasSensors: true, lightsOn: false, temperature: 22.1, climate: { on: false }, scene: "Off" },
-  { key: "chambre", name: "Chambre", icon: "bed", hasSensors: true, lightsOn: false, temperature: 19.6, climate: { on: false }, scene: "Off" },
+  {
+    key: "salon",
+    name: "Salon",
+    icon: "sofa",
+    hasSensors: true,
+    lightsOn: true,
+    scene: "Film",
+    occupied: true,
+  },
+  {
+    key: "bureau",
+    name: "Bureau",
+    icon: "briefcase",
+    hasSensors: true,
+    lightsOn: true,
+    temperature: 20.8,
+    climate: { on: true, setpoint: 21 },
+    scene: "Travail",
+    occupied: true,
+  },
+  {
+    key: "cuisine",
+    name: "Cuisine",
+    icon: "utensils",
+    hasSensors: true,
+    lightsOn: false,
+    temperature: 22.1,
+    climate: { on: false },
+    scene: "Off",
+  },
+  {
+    key: "chambre",
+    name: "Chambre",
+    icon: "bed",
+    hasSensors: true,
+    lightsOn: false,
+    temperature: 19.6,
+    climate: { on: false },
+    scene: "Off",
+  },
   { key: "escalier", name: "Escalier", icon: "footprints", hasSensors: false },
-  { key: "buanderie", name: "Buanderie", icon: "washing-machine", hasSensors: true, temperature: 18.2, occupied: false },
+  {
+    key: "buanderie",
+    name: "Buanderie",
+    icon: "washing-machine",
+    hasSensors: true,
+    temperature: 18.2,
+    occupied: false,
+  },
 ];
 
 export const tesla = {
@@ -63,7 +106,12 @@ export const tesla = {
 export const reseau = {
   wifi1: { ssid: "private.masy.family", on: true, clients: 14 },
   wifi2: { ssid: "masy.family", on: true, clients: 6 },
-  internet: { on: true, speedMbps: 450, latencyMs: 12, lastSpeedtest: { downMbps: 472, upMbps: 38, pingMs: 11, when: "il y a 2h" } },
+  internet: {
+    on: true,
+    speedMbps: 450,
+    latencyMs: 12,
+    lastSpeedtest: { downMbps: 472, upMbps: 38, pingMs: 11, when: "il y a 2h" },
+  },
   homelab: { cpu: 28, memory: 61, disk: 42, uptimeDays: 47 },
   twingate: true,
   pihole: {
@@ -155,19 +203,19 @@ export const energie = {
   // Net grid consumption shown on the elec chart = (jour + nuit) - solar,
   // which goes negative in summer when production exceeds consumption.
   history: [
-    { month: "Avr", eau: 8.6, jour: 168, nuit: 142, mazout: 1320, solar: 180 },  // Apr 2025
-    { month: "Mai", eau: 9.4, jour: 152, nuit: 134, mazout: 980,  solar: 320 },  // May 2025
+    { month: "Avr", eau: 8.6, jour: 168, nuit: 142, mazout: 1320, solar: 180 }, // Apr 2025
+    { month: "Mai", eau: 9.4, jour: 152, nuit: 134, mazout: 980, solar: 320 }, // May 2025
     { month: "Juin", eau: 10.2, jour: 138, nuit: 122, mazout: 540, solar: 340 }, // Jun 2025
     { month: "Juil", eau: 11.1, jour: 132, nuit: 118, mazout: 320, solar: 360 }, // Jul 2025 (net -110)
     { month: "Août", eau: 10.8, jour: 128, nuit: 116, mazout: 280, solar: 330 }, // Aug 2025 (net -86)
-    { month: "Sep", eau: 9.6, jour: 142, nuit: 126, mazout: 620,  solar: 230 },  // Sep 2025
-    { month: "Oct", eau: 8.8, jour: 168, nuit: 148, mazout: 1180, solar: 110 },  // Oct 2025
-    { month: "Nov", eau: 8.2, jour: 198, nuit: 168, mazout: 1620, solar: 40 },   // Nov 2025
-    { month: "Déc", eau: 7.9, jour: 224, nuit: 184, mazout: 1980, solar: 20 },   // Dec 2025
-    { month: "Jan", eau: 8.2, jour: 210, nuit: 165, mazout: 1850, solar: 30 },   // Jan 2026
-    { month: "Fév", eau: 7.6, jour: 198, nuit: 172, mazout: 1620, solar: 70 },   // Feb 2026
-    { month: "Mar", eau: 9.1, jour: 184, nuit: 158, mazout: 1430, solar: 160 },  // Mar 2026
-    { month: "Avr", eau: 8.4, jour: 162, nuit: 140, mazout: 1280, solar: 220 },  // Apr 2026
+    { month: "Sep", eau: 9.6, jour: 142, nuit: 126, mazout: 620, solar: 230 }, // Sep 2025
+    { month: "Oct", eau: 8.8, jour: 168, nuit: 148, mazout: 1180, solar: 110 }, // Oct 2025
+    { month: "Nov", eau: 8.2, jour: 198, nuit: 168, mazout: 1620, solar: 40 }, // Nov 2025
+    { month: "Déc", eau: 7.9, jour: 224, nuit: 184, mazout: 1980, solar: 20 }, // Dec 2025
+    { month: "Jan", eau: 8.2, jour: 210, nuit: 165, mazout: 1850, solar: 30 }, // Jan 2026
+    { month: "Fév", eau: 7.6, jour: 198, nuit: 172, mazout: 1620, solar: 70 }, // Feb 2026
+    { month: "Mar", eau: 9.1, jour: 184, nuit: 158, mazout: 1430, solar: 160 }, // Mar 2026
+    { month: "Avr", eau: 8.4, jour: 162, nuit: 140, mazout: 1280, solar: 220 }, // Apr 2026
   ],
 };
 
@@ -205,21 +253,39 @@ export const meteo = {
 export type MediaSource = "musiq3" | "off";
 
 // Room detail mocks
-export const roomDetails: Record<RoomKey, {
-  lights?: { zones: { name: string; on: boolean }[]; scene: string; scenes: string[]; brightness: number; hideBrightness?: boolean };
-  climate?:
-    | { mode: "auto" | 20 | 21 | 22; current: number }
-    | { dual: true; mode: "off" | "heat" | "cool"; heatSetpoint: number; coolSetpoint: number; current: number };
-  media?: { source: MediaSource; nowPlaying?: string; artist?: string; cover?: string };
-  devices?: {
-    ink?: { c: number; m: number; y: number; k: number };
-    batteries: { name: string; level: number }[];
-    appliances?: { name: string; on: boolean }[];
-  };
-}> = {
+export const roomDetails: Record<
+  RoomKey,
+  {
+    lights?: {
+      zones: { name: string; on: boolean }[];
+      scene: string;
+      scenes: string[];
+      brightness: number;
+      hideBrightness?: boolean;
+    };
+    climate?:
+      | { mode: "auto" | 20 | 21 | 22; current: number }
+      | {
+          dual: true;
+          mode: "off" | "heat" | "cool";
+          heatSetpoint: number;
+          coolSetpoint: number;
+          current: number;
+        };
+    media?: { source: MediaSource; nowPlaying?: string; artist?: string; cover?: string };
+    devices?: {
+      ink?: { c: number; m: number; y: number; k: number };
+      batteries: { name: string; level: number }[];
+      appliances?: { name: string; on: boolean }[];
+    };
+  }
+> = {
   salon: {
     lights: {
-      zones: [{ name: "Table", on: false }, { name: "Divan", on: true }],
+      zones: [
+        { name: "Table", on: false },
+        { name: "Divan", on: true },
+      ],
       scene: "50%",
       scenes: ["10%", "25%", "50%", "75%", "100%"],
       brightness: 50,
@@ -236,7 +302,16 @@ export const roomDetails: Record<RoomKey, {
     },
   },
   cuisine: {
-    lights: { zones: [{ name: "Table", on: false }, { name: "Plan de travail", on: false }], scene: "Off", scenes: [], brightness: 0, hideBrightness: true },
+    lights: {
+      zones: [
+        { name: "Table", on: false },
+        { name: "Plan de travail", on: false },
+      ],
+      scene: "Off",
+      scenes: [],
+      brightness: 0,
+      hideBrightness: true,
+    },
     climate: { mode: "auto", current: 22.1 },
     devices: { batteries: [{ name: "Radiateur", level: 84 }] },
   },
@@ -268,12 +343,26 @@ export const roomDetails: Record<RoomKey, {
     },
   },
   chambre: {
-    lights: { zones: [{ name: "Plafond", on: false }, { name: "Chevet", on: false }], scene: "Off", scenes: ["Réveil", "Lecture", "Nuit", "Off"], brightness: 0 },
+    lights: {
+      zones: [
+        { name: "Plafond", on: false },
+        { name: "Chevet", on: false },
+      ],
+      scene: "Off",
+      scenes: ["Réveil", "Lecture", "Nuit", "Off"],
+      brightness: 0,
+    },
     climate: { mode: "auto", current: 19.6 },
   },
   escalier: {},
   buanderie: {
-    lights: { zones: [{ name: "Plafond", on: false }], scene: "Off", scenes: [], brightness: 0, hideBrightness: true },
+    lights: {
+      zones: [{ name: "Plafond", on: false }],
+      scene: "Off",
+      scenes: [],
+      brightness: 0,
+      hideBrightness: true,
+    },
     devices: {
       batteries: [{ name: "Détecteur fumée", level: 88 }],
       appliances: [
@@ -288,13 +377,7 @@ export const roomDetails: Record<RoomKey, {
 // Sécurité — caméras & sonnette
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type CameraId =
-  | "front-door"
-  | "driveway"
-  | "garden"
-  | "backyard"
-  | "salon"
-  | "buanderie";
+export type CameraId = "front-door" | "driveway" | "garden" | "backyard" | "salon" | "buanderie";
 export type CameraKind = "indoor" | "outdoor" | "doorbell";
 export type CameraState = "online" | "offline" | "recording" | "installing";
 export type CameraScene = "front" | "driveway" | "garden" | "backyard" | "living" | "utility";
@@ -305,45 +388,95 @@ export interface Camera {
   location: string;
   kind: CameraKind;
   state: CameraState;
-  night: boolean;      // night-vision mode
-  motion: boolean;     // motion detected right now
+  night: boolean; // night-vision mode
+  motion: boolean; // motion detected right now
   lastMotion?: string; // "il y a 12 min"
   scene: CameraScene;
   batteryPct?: number; // undefined = wired
   wired: boolean;
-  installed: boolean;  // false = arrive bientôt
+  installed: boolean; // false = arrive bientôt
 }
 
 export const cameras: Camera[] = [
   {
-    id: "front-door", name: "Sonnette", location: "Entrée principale",
-    kind: "doorbell", state: "installing", night: false, motion: false,
-    scene: "front", wired: true, installed: false,
+    id: "front-door",
+    name: "Sonnette",
+    location: "Entrée principale",
+    kind: "doorbell",
+    state: "installing",
+    night: false,
+    motion: false,
+    scene: "front",
+    wired: true,
+    installed: false,
   },
   {
-    id: "driveway", name: "Allée", location: "Extérieur — devant",
-    kind: "outdoor", state: "recording", night: false, motion: true,
-    lastMotion: "à l'instant", scene: "driveway", batteryPct: 84, wired: false, installed: true,
+    id: "driveway",
+    name: "Allée",
+    location: "Extérieur — devant",
+    kind: "outdoor",
+    state: "recording",
+    night: false,
+    motion: true,
+    lastMotion: "à l'instant",
+    scene: "driveway",
+    batteryPct: 84,
+    wired: false,
+    installed: true,
   },
   {
-    id: "garden", name: "Jardin", location: "Extérieur — côté",
-    kind: "outdoor", state: "online", night: false, motion: false,
-    lastMotion: "il y a 34 min", scene: "garden", batteryPct: 62, wired: false, installed: true,
+    id: "garden",
+    name: "Jardin",
+    location: "Extérieur — côté",
+    kind: "outdoor",
+    state: "online",
+    night: false,
+    motion: false,
+    lastMotion: "il y a 34 min",
+    scene: "garden",
+    batteryPct: 62,
+    wired: false,
+    installed: true,
   },
   {
-    id: "backyard", name: "Arrière", location: "Extérieur — arrière",
-    kind: "outdoor", state: "online", night: true, motion: false,
-    lastMotion: "il y a 2 h", scene: "backyard", batteryPct: 41, wired: false, installed: true,
+    id: "backyard",
+    name: "Arrière",
+    location: "Extérieur — arrière",
+    kind: "outdoor",
+    state: "online",
+    night: true,
+    motion: false,
+    lastMotion: "il y a 2 h",
+    scene: "backyard",
+    batteryPct: 41,
+    wired: false,
+    installed: true,
   },
   {
-    id: "salon", name: "Salon", location: "Intérieur — salon",
-    kind: "indoor", state: "online", night: false, motion: false,
-    lastMotion: "il y a 12 min", scene: "living", wired: true, installed: true,
+    id: "salon",
+    name: "Salon",
+    location: "Intérieur — salon",
+    kind: "indoor",
+    state: "online",
+    night: false,
+    motion: false,
+    lastMotion: "il y a 12 min",
+    scene: "living",
+    wired: true,
+    installed: true,
   },
   {
-    id: "buanderie", name: "Buanderie", location: "Intérieur — buanderie",
-    kind: "indoor", state: "online", night: false, motion: false,
-    lastMotion: "il y a 1 h", scene: "utility", wired: true, installed: true,
+    id: "buanderie",
+    name: "Buanderie",
+    location: "Intérieur — buanderie",
+    kind: "indoor",
+    state: "online",
+    night: false,
+    motion: false,
+    lastMotion: "il y a 1 h",
+    scene: "utility",
+    wired: true,
+    installed: true,
   },
 ];
 
@@ -351,18 +484,60 @@ export interface MotionEvent {
   id: string;
   cameraId: CameraId;
   label: string;
-  time: string;    // e.g. "18:42"
-  ago: string;     // e.g. "il y a 6 min"
+  time: string; // e.g. "18:42"
+  ago: string; // e.g. "il y a 6 min"
   kind: "person" | "vehicle" | "animal" | "package" | "movement";
 }
 
 export const motionEvents: MotionEvent[] = [
-  { id: "e1", cameraId: "driveway", label: "Véhicule détecté", time: "18:46", ago: "à l'instant", kind: "vehicle" },
-  { id: "e2", cameraId: "salon",    label: "Mouvement",         time: "18:34", ago: "il y a 12 min", kind: "movement" },
-  { id: "e3", cameraId: "garden",   label: "Personne détectée", time: "18:12", ago: "il y a 34 min", kind: "person" },
-  { id: "e4", cameraId: "driveway", label: "Colis déposé",      time: "16:22", ago: "il y a 2 h",  kind: "package" },
-  { id: "e5", cameraId: "backyard", label: "Animal (chat)",     time: "15:58", ago: "il y a 2 h",  kind: "animal" },
-  { id: "e6", cameraId: "buanderie",label: "Mouvement",         time: "14:41", ago: "il y a 4 h",  kind: "movement" },
+  {
+    id: "e1",
+    cameraId: "driveway",
+    label: "Véhicule détecté",
+    time: "18:46",
+    ago: "à l'instant",
+    kind: "vehicle",
+  },
+  {
+    id: "e2",
+    cameraId: "salon",
+    label: "Mouvement",
+    time: "18:34",
+    ago: "il y a 12 min",
+    kind: "movement",
+  },
+  {
+    id: "e3",
+    cameraId: "garden",
+    label: "Personne détectée",
+    time: "18:12",
+    ago: "il y a 34 min",
+    kind: "person",
+  },
+  {
+    id: "e4",
+    cameraId: "driveway",
+    label: "Colis déposé",
+    time: "16:22",
+    ago: "il y a 2 h",
+    kind: "package",
+  },
+  {
+    id: "e5",
+    cameraId: "backyard",
+    label: "Animal (chat)",
+    time: "15:58",
+    ago: "il y a 2 h",
+    kind: "animal",
+  },
+  {
+    id: "e6",
+    cameraId: "buanderie",
+    label: "Mouvement",
+    time: "14:41",
+    ago: "il y a 4 h",
+    kind: "movement",
+  },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -375,9 +550,9 @@ export type SecurityVerdict = "secure" | "attention" | "alarm";
 
 export const armModes: { key: ArmMode; label: string; hint: string }[] = [
   { key: "disarmed", label: "Désarmé", hint: "Aucune surveillance active" },
-  { key: "home",     label: "Maison",  hint: "Périmètre armé, intérieur libre" },
-  { key: "night",    label: "Nuit",    hint: "Périmètre + rez armés" },
-  { key: "away",     label: "Absent",  hint: "Tout armé, alertes push" },
+  { key: "home", label: "Maison", hint: "Périmètre armé, intérieur libre" },
+  { key: "night", label: "Nuit", hint: "Périmètre + rez armés" },
+  { key: "away", label: "Absent", hint: "Tout armé, alertes push" },
 ];
 
 export const security = {
@@ -391,13 +566,13 @@ export interface PresenceMember {
   name: string;
   initial: string;
   home: boolean;
-  place?: string;   // quand absent
-  since: string;    // "depuis 08:12" / "il y a 2 h"
+  place?: string; // quand absent
+  since: string; // "depuis 08:12" / "il y a 2 h"
 }
 export const presence: PresenceMember[] = [
-  { name: "Alex",  initial: "A", home: true,  since: "depuis ce matin" },
-  { name: "Sam",   initial: "S", home: false, place: "Bruxelles · Flagey", since: "il y a 2 h" },
-  { name: "Léa",   initial: "L", home: true,  since: "depuis 16:20" },
+  { name: "Alex", initial: "A", home: true, since: "depuis ce matin" },
+  { name: "Sam", initial: "S", home: false, place: "Bruxelles · Flagey", since: "il y a 2 h" },
+  { name: "Léa", initial: "L", home: true, since: "depuis 16:20" },
 ];
 
 // 3 ── Périmètre (intégrité physique : portes, fenêtres, serrures)
@@ -410,25 +585,33 @@ export interface PerimeterPoint {
   state: OpeningState;
 }
 export const perimeter: PerimeterPoint[] = [
-  { name: "Porte d'entrée",   zone: "Rez",      type: "door",   state: "secure" },
-  { name: "Baie salon",       zone: "Rez",      type: "window", state: "secure" },
-  { name: "Fenêtre cuisine",  zone: "Rez",      type: "window", state: "secure" },
-  { name: "Porte terrasse",   zone: "Rez",      type: "door",   state: "unlocked" },
-  { name: "Porte garage",     zone: "Garage",   type: "garage", state: "open" },
-  { name: "Fenêtre chambre",  zone: "Étage",    type: "window", state: "secure" },
-  { name: "Velux bureau",     zone: "Étage",    type: "window", state: "secure" },
-  { name: "Fenêtre buanderie",zone: "Sous-sol", type: "window", state: "secure" },
+  { name: "Porte d'entrée", zone: "Rez", type: "door", state: "secure" },
+  { name: "Baie salon", zone: "Rez", type: "window", state: "secure" },
+  { name: "Fenêtre cuisine", zone: "Rez", type: "window", state: "secure" },
+  { name: "Porte terrasse", zone: "Rez", type: "door", state: "unlocked" },
+  { name: "Porte garage", zone: "Garage", type: "garage", state: "open" },
+  { name: "Fenêtre chambre", zone: "Étage", type: "window", state: "secure" },
+  { name: "Velux bureau", zone: "Étage", type: "window", state: "secure" },
+  { name: "Fenêtre buanderie", zone: "Sous-sol", type: "window", state: "secure" },
 ];
 export const locks: { name: string; locked: boolean }[] = [
   { name: "Porte d'entrée", locked: true },
-  { name: "Porte garage",   locked: false },
+  { name: "Porte garage", locked: false },
   { name: "Porte terrasse", locked: false },
 ];
 
 // 4 ── Activité (timeline unifiée, tous capteurs confondus)
 export type ActivityKind =
-  | "person" | "vehicle" | "animal" | "package" | "motion"
-  | "door" | "lock" | "doorbell" | "arm" | "system";
+  | "person"
+  | "vehicle"
+  | "animal"
+  | "package"
+  | "motion"
+  | "door"
+  | "lock"
+  | "doorbell"
+  | "arm"
+  | "system";
 export interface ActivityItem {
   id: string;
   kind: ActivityKind;
@@ -439,14 +622,71 @@ export interface ActivityItem {
   level?: "info" | "warn" | "alert";
 }
 export const activity: ActivityItem[] = [
-  { id: "a1", kind: "door",     label: "Porte garage ouverte",       where: "Garage", time: "18:52", ago: "à l'instant",  level: "warn" },
-  { id: "a2", kind: "vehicle",  label: "Véhicule détecté",           where: "Allée",  time: "18:46", ago: "il y a 6 min" },
-  { id: "a3", kind: "arm",      label: "Passé en mode Maison",       where: "Système",time: "18:40", ago: "il y a 12 min" },
-  { id: "a4", kind: "person",   label: "Personne détectée",          where: "Jardin", time: "18:12", ago: "il y a 40 min" },
-  { id: "a5", kind: "doorbell", label: "Sonnette",                   where: "Entrée", time: "17:30", ago: "il y a 1 h" },
-  { id: "a6", kind: "package",  label: "Colis déposé",               where: "Allée",  time: "16:22", ago: "il y a 2 h" },
-  { id: "a7", kind: "lock",     label: "Porte d'entrée verrouillée", where: "Rez",    time: "08:12", ago: "ce matin" },
-  { id: "a8", kind: "animal",   label: "Animal (chat)",              where: "Arrière",time: "07:58", ago: "ce matin" },
+  {
+    id: "a1",
+    kind: "door",
+    label: "Porte garage ouverte",
+    where: "Garage",
+    time: "18:52",
+    ago: "à l'instant",
+    level: "warn",
+  },
+  {
+    id: "a2",
+    kind: "vehicle",
+    label: "Véhicule détecté",
+    where: "Allée",
+    time: "18:46",
+    ago: "il y a 6 min",
+  },
+  {
+    id: "a3",
+    kind: "arm",
+    label: "Passé en mode Maison",
+    where: "Système",
+    time: "18:40",
+    ago: "il y a 12 min",
+  },
+  {
+    id: "a4",
+    kind: "person",
+    label: "Personne détectée",
+    where: "Jardin",
+    time: "18:12",
+    ago: "il y a 40 min",
+  },
+  {
+    id: "a5",
+    kind: "doorbell",
+    label: "Sonnette",
+    where: "Entrée",
+    time: "17:30",
+    ago: "il y a 1 h",
+  },
+  {
+    id: "a6",
+    kind: "package",
+    label: "Colis déposé",
+    where: "Allée",
+    time: "16:22",
+    ago: "il y a 2 h",
+  },
+  {
+    id: "a7",
+    kind: "lock",
+    label: "Porte d'entrée verrouillée",
+    where: "Rez",
+    time: "08:12",
+    ago: "ce matin",
+  },
+  {
+    id: "a8",
+    kind: "animal",
+    label: "Animal (chat)",
+    where: "Arrière",
+    time: "07:58",
+    ago: "ce matin",
+  },
 ];
 
 // 6 ── Santé du système
@@ -460,8 +700,8 @@ export const securityHealth = {
   offline: [{ name: "Capteur fenêtre garage", since: "il y a 2 j" }],
   batteries: [
     { name: "Capteur porte cuisine", level: 18 },
-    { name: "Détecteur salon",       level: 46 },
-    { name: "Sonnette",              level: 72 },
+    { name: "Détecteur salon", level: 46 },
+    { name: "Sonnette", level: 72 },
   ],
 };
 
@@ -519,14 +759,13 @@ export const vacuum = {
     rooms: ["Salon", "Cuisine", "Buanderie"],
   },
   plan: [
-    { room: "Salon",     status: "done" as const },
-    { room: "Cuisine",   status: "done" as const },
-    { room: "Bureau",    status: "active" as const },
-    { room: "Chambre",   status: "todo" as const },
+    { room: "Salon", status: "done" as const },
+    { room: "Cuisine", status: "done" as const },
+    { room: "Bureau", status: "active" as const },
+    { room: "Chambre", status: "todo" as const },
     { room: "Buanderie", status: "todo" as const },
   ],
 };
-
 
 // A pinch of fun for the footer — rotates by day-of-year
 export const footerLines = [

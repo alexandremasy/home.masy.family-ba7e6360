@@ -16,7 +16,8 @@ const alertVariants = cva(
       variant: {
         default: "border-border bg-card text-card-foreground",
         warn: "border-warm/30 bg-warm/10 text-foreground [&>svg]:text-warm",
-        destructive: "border-destructive/30 bg-destructive/10 text-destructive [&>svg]:text-destructive",
+        destructive:
+          "border-destructive/30 bg-destructive/10 text-destructive [&>svg]:text-destructive",
       },
     },
     defaultVariants: { variant: "default" },

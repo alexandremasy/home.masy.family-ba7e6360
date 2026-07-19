@@ -71,7 +71,10 @@ const panelPadding = {
  * Section is built on it — don't add a third box.
  */
 export function Panel({
-  children, padding = "md", className, as: As = "section",
+  children,
+  padding = "md",
+  className,
+  as: As = "section",
 }: {
   children: ReactNode;
   padding?: keyof typeof panelPadding;
@@ -79,7 +82,9 @@ export function Panel({
   as?: "section" | "div" | "article";
 }) {
   return (
-    <As className={cn("rounded-lg border border-border/60 bg-card", panelPadding[padding], className)}>
+    <As
+      className={cn("rounded-lg border border-border/60 bg-card", panelPadding[padding], className)}
+    >
       {children}
     </As>
   );
@@ -100,7 +105,9 @@ export function Section({
   return (
     <Panel padding="md" className={cn("anim-slide-up pt-4 sm:pt-5", className)}>
       <header className="mb-4 flex items-end justify-between gap-4">
-        <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">{title}</h2>
+        <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">
+          {title}
+        </h2>
         {action}
       </header>
       {children}

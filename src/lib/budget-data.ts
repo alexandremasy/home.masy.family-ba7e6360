@@ -1,14 +1,61 @@
 import {
-  Home, Zap, Car, ShoppingBasket, Heart, Sparkles, Repeat,
-  Music, PawPrint, Gift, Package, Wallet, PiggyBank, type LucideIcon,
+  Home,
+  Zap,
+  Car,
+  ShoppingBasket,
+  Heart,
+  Sparkles,
+  Repeat,
+  Music,
+  PawPrint,
+  Gift,
+  Package,
+  Wallet,
+  PiggyBank,
+  type LucideIcon,
 } from "lucide-react";
 
-export const MONTHS_FR = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
-export const MONTHS_FR_LONG = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+export const MONTHS_FR = [
+  "Jan",
+  "Fév",
+  "Mar",
+  "Avr",
+  "Mai",
+  "Juin",
+  "Juil",
+  "Août",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Déc",
+];
+export const MONTHS_FR_LONG = [
+  "Janvier",
+  "Février",
+  "Mars",
+  "Avril",
+  "Mai",
+  "Juin",
+  "Juillet",
+  "Août",
+  "Septembre",
+  "Octobre",
+  "Novembre",
+  "Décembre",
+];
 
 export type CatKey =
-  | "logement" | "energie" | "transport" | "alimentation" | "sante"
-  | "personnel" | "abonnements" | "loisirs" | "animaux" | "cadeaux" | "divers";
+  | "logement"
+  | "energie"
+  | "transport"
+  | "alimentation"
+  | "sante"
+  | "personnel"
+  | "abonnements"
+  | "loisirs"
+  | "animaux"
+  | "cadeaux"
+  | "divers";
 
 export type Category = {
   key: CatKey;
@@ -21,64 +68,185 @@ export type Category = {
 };
 
 export const categories: Category[] = [
-  { key: "logement", label: "Logement", icon: Home, budget: 1300, actual: 1320, color: "oklch(0.62 0.10 195)",
-    subs: [{ label: "Loyer", actual: 1100 }, { label: "Charges", actual: 180 }, { label: "Entretien", actual: 40 }] },
-  { key: "energie", label: "Énergie", icon: Zap, budget: 220, actual: 240, color: "oklch(0.74 0.14 65)",
-    subs: [{ label: "Électricité", actual: 140 }, { label: "Gaz", actual: 100 }] },
-  { key: "transport", label: "Transport", icon: Car, budget: 350, actual: 310, color: "oklch(0.74 0.13 35)",
-    subs: [{ label: "Carburant", actual: 220 }, { label: "Parking", actual: 60 }, { label: "Entretien", actual: 30 }] },
-  { key: "alimentation", label: "Alimentation", icon: ShoppingBasket, budget: 750, actual: 820, color: "oklch(0.68 0.13 145)",
-    subs: [{ label: "Courses", actual: 620 }, { label: "Restaurants", actual: 140 }, { label: "Livraison", actual: 60 }] },
-  { key: "sante", label: "Santé", icon: Heart, budget: 180, actual: 95, color: "oklch(0.70 0.14 10)",
-    subs: [{ label: "Pharmacie", actual: 55 }, { label: "Médecin", actual: 40 }] },
-  { key: "personnel", label: "Personnel", icon: Sparkles, budget: 150, actual: 210, color: "oklch(0.72 0.10 305)",
-    subs: [{ label: "Soins", actual: 120 }, { label: "Vêtements", actual: 90 }] },
-  { key: "abonnements", label: "Abonnements", icon: Repeat, budget: 90, actual: 90, color: "oklch(0.65 0.12 250)",
-    subs: [{ label: "Netflix", actual: 18 }, { label: "Spotify", actual: 12 }, { label: "iCloud", actual: 10 }, { label: "Téléphone", actual: 50 }] },
-  { key: "loisirs", label: "Loisirs", icon: Music, budget: 200, actual: 260, color: "oklch(0.70 0.13 100)",
-    subs: [{ label: "Sorties", actual: 160 }, { label: "Cinéma", actual: 40 }, { label: "Livres", actual: 60 }] },
-  { key: "animaux", label: "Animaux", icon: PawPrint, budget: 120, actual: 110, color: "oklch(0.66 0.10 50)",
-    subs: [{ label: "Croquettes", actual: 80 }, { label: "Vétérinaire", actual: 30 }] },
-  { key: "cadeaux", label: "Cadeaux", icon: Gift, budget: 50, actual: 30, color: "oklch(0.70 0.14 340)",
-    subs: [{ label: "Anniversaires", actual: 30 }] },
-  { key: "divers", label: "Divers", icon: Package, budget: 80, actual: 140, color: "oklch(0.55 0.02 220)",
-    subs: [{ label: "Non catégorisé", actual: 140 }] },
+  {
+    key: "logement",
+    label: "Logement",
+    icon: Home,
+    budget: 1300,
+    actual: 1320,
+    color: "oklch(0.62 0.10 195)",
+    subs: [
+      { label: "Loyer", actual: 1100 },
+      { label: "Charges", actual: 180 },
+      { label: "Entretien", actual: 40 },
+    ],
+  },
+  {
+    key: "energie",
+    label: "Énergie",
+    icon: Zap,
+    budget: 220,
+    actual: 240,
+    color: "oklch(0.74 0.14 65)",
+    subs: [
+      { label: "Électricité", actual: 140 },
+      { label: "Gaz", actual: 100 },
+    ],
+  },
+  {
+    key: "transport",
+    label: "Transport",
+    icon: Car,
+    budget: 350,
+    actual: 310,
+    color: "oklch(0.74 0.13 35)",
+    subs: [
+      { label: "Carburant", actual: 220 },
+      { label: "Parking", actual: 60 },
+      { label: "Entretien", actual: 30 },
+    ],
+  },
+  {
+    key: "alimentation",
+    label: "Alimentation",
+    icon: ShoppingBasket,
+    budget: 750,
+    actual: 820,
+    color: "oklch(0.68 0.13 145)",
+    subs: [
+      { label: "Courses", actual: 620 },
+      { label: "Restaurants", actual: 140 },
+      { label: "Livraison", actual: 60 },
+    ],
+  },
+  {
+    key: "sante",
+    label: "Santé",
+    icon: Heart,
+    budget: 180,
+    actual: 95,
+    color: "oklch(0.70 0.14 10)",
+    subs: [
+      { label: "Pharmacie", actual: 55 },
+      { label: "Médecin", actual: 40 },
+    ],
+  },
+  {
+    key: "personnel",
+    label: "Personnel",
+    icon: Sparkles,
+    budget: 150,
+    actual: 210,
+    color: "oklch(0.72 0.10 305)",
+    subs: [
+      { label: "Soins", actual: 120 },
+      { label: "Vêtements", actual: 90 },
+    ],
+  },
+  {
+    key: "abonnements",
+    label: "Abonnements",
+    icon: Repeat,
+    budget: 90,
+    actual: 90,
+    color: "oklch(0.65 0.12 250)",
+    subs: [
+      { label: "Netflix", actual: 18 },
+      { label: "Spotify", actual: 12 },
+      { label: "iCloud", actual: 10 },
+      { label: "Téléphone", actual: 50 },
+    ],
+  },
+  {
+    key: "loisirs",
+    label: "Loisirs",
+    icon: Music,
+    budget: 200,
+    actual: 260,
+    color: "oklch(0.70 0.13 100)",
+    subs: [
+      { label: "Sorties", actual: 160 },
+      { label: "Cinéma", actual: 40 },
+      { label: "Livres", actual: 60 },
+    ],
+  },
+  {
+    key: "animaux",
+    label: "Animaux",
+    icon: PawPrint,
+    budget: 120,
+    actual: 110,
+    color: "oklch(0.66 0.10 50)",
+    subs: [
+      { label: "Croquettes", actual: 80 },
+      { label: "Vétérinaire", actual: 30 },
+    ],
+  },
+  {
+    key: "cadeaux",
+    label: "Cadeaux",
+    icon: Gift,
+    budget: 50,
+    actual: 30,
+    color: "oklch(0.70 0.14 340)",
+    subs: [{ label: "Anniversaires", actual: 30 }],
+  },
+  {
+    key: "divers",
+    label: "Divers",
+    icon: Package,
+    budget: 80,
+    actual: 140,
+    color: "oklch(0.55 0.02 220)",
+    subs: [{ label: "Non catégorisé", actual: 140 }],
+  },
 ];
 
 export const rolling12 = [
   { m: "Juil", spend: 4150, income: 5200 },
   { m: "Août", spend: 4680, income: 5200 },
-  { m: "Sep",  spend: 4100, income: 5200 },
-  { m: "Oct",  spend: 4520, income: 5200 },
-  { m: "Nov",  spend: 4610, income: 5200 },
-  { m: "Déc",  spend: 4720, income: 7100 },
-  { m: "Jan",  spend: 4080, income: 5200 },
-  { m: "Fév",  spend: 4020, income: 5200 },
-  { m: "Mar",  spend: 4380, income: 5200 },
-  { m: "Avr",  spend: 4150, income: 5200 },
-  { m: "Mai",  spend: 4200, income: 7880 },
+  { m: "Sep", spend: 4100, income: 5200 },
+  { m: "Oct", spend: 4520, income: 5200 },
+  { m: "Nov", spend: 4610, income: 5200 },
+  { m: "Déc", spend: 4720, income: 7100 },
+  { m: "Jan", spend: 4080, income: 5200 },
+  { m: "Fév", spend: 4020, income: 5200 },
+  { m: "Mar", spend: 4380, income: 5200 },
+  { m: "Avr", spend: 4150, income: 5200 },
+  { m: "Mai", spend: 4200, income: 7880 },
   { m: "Juin", spend: 4400, income: 5200 },
 ];
 
 export type Bill = { label: string; amount: number; kind?: "income" };
 export const calendarBills: Record<number, Bill[]> = {
-  0: [], 1: [],
+  0: [],
+  1: [],
   2: [{ label: "Eau (T1)", amount: 180 }],
   3: [],
   4: [{ label: "Pécule", amount: 2680, kind: "income" }],
-  5: [], 6: [],
+  5: [],
+  6: [],
   7: [{ label: "Assurance habitation", amount: 420 }],
   8: [],
   9: [{ label: "Mazout", amount: 1100 }],
   10: [{ label: "Taxe de circulation", amount: 320 }],
-  11: [{ label: "Prime", amount: 1900, kind: "income" }, { label: "Mutuelle", amount: 480 }],
+  11: [
+    { label: "Prime", amount: 1900, kind: "income" },
+    { label: "Mutuelle", amount: 480 },
+  ],
 };
 
 export const envelopes = [
-  { key: "annualisation", label: "Annualisation", contrib: 650, balance: 4100, tone: "primary" as const },
-  { key: "projets",       label: "Projets",       contrib: 425, balance: 5100, tone: "mustard"  as const },
-  { key: "loisirs",       label: "Loisirs",       contrib: 425, balance: 2300, tone: "mustard" as const },
-  { key: "pension",       label: "Pension",       contrib: 170, balance: 2040, tone: "primary" as const },
+  {
+    key: "annualisation",
+    label: "Annualisation",
+    contrib: 650,
+    balance: 4100,
+    tone: "primary" as const,
+  },
+  { key: "projets", label: "Projets", contrib: 425, balance: 5100, tone: "mustard" as const },
+  { key: "loisirs", label: "Loisirs", contrib: 425, balance: 2300, tone: "mustard" as const },
+  { key: "pension", label: "Pension", contrib: 170, balance: 2040, tone: "primary" as const },
 ];
 
 export const monthlyAnnualProvision = 650;
@@ -91,10 +259,19 @@ export const incomeSources = [
 ];
 
 export const eur = (n: number) =>
-  new Intl.NumberFormat("fr-BE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n);
+  new Intl.NumberFormat("fr-BE", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  }).format(n);
 
 export const eur2 = (n: number) =>
-  new Intl.NumberFormat("fr-BE", { style: "currency", currency: "EUR", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+  new Intl.NumberFormat("fr-BE", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(n);
 
 // ---------- Transactions (mock) ----------
 
@@ -120,46 +297,406 @@ const _ym = (d: number) => {
 };
 
 export const transactionsSeed: Transaction[] = [
-  { id: "t01", date: _ym(1),  label: "Loyer",                    category: "logement",    sub: "Loyer",         amount: -1100, recurrence: "Mensuelle", provenance: "Importé" },
-  { id: "t02", date: _ym(2),  label: "Carrefour Drive",          category: "alimentation", sub: "Courses",      amount: -86.40, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t03", date: _ym(2),  label: "Total Énergie - Élec",     category: "energie",     sub: "Électricité",   amount: -140,  recurrence: "Mensuelle", provenance: "Importé" },
-  { id: "t04", date: _ym(3),  label: "Netflix",                  category: "abonnements", sub: "Netflix",       amount: -17.99, recurrence: "Mensuelle", provenance: "Importé" },
-  { id: "t05", date: _ym(3),  label: "Spotify Family",           category: "abonnements", sub: "Spotify",       amount: -12.99, recurrence: "Mensuelle", provenance: "Importé" },
-  { id: "t06", date: _ym(4),  label: "Colruyt",                  category: "alimentation", sub: "Courses",      amount: -64.20, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t07", date: _ym(5),  label: "Pharmacie de la Place",    category: "sante",       sub: "Pharmacie",     amount: -22.30, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t08", date: _ym(5),  label: "Q8 Carburant",             category: "transport",   sub: "Carburant",     amount: -78.50, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t09", date: _ym(6),  label: "Restaurant Da Mimmo",      category: "alimentation", sub: "Restaurants",  amount: -56.00, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t10", date: _ym(6),  label: "Gaz Naturel",              category: "energie",     sub: "Gaz",           amount: -100,  recurrence: "Mensuelle", provenance: "Importé" },
-  { id: "t11", date: _ym(7),  label: "Carrefour",                category: "alimentation", sub: "Courses",      amount: -112.80, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t12", date: _ym(7),  label: "Charges communes",         category: "logement",    sub: "Charges",       amount: -180,  recurrence: "Mensuelle", provenance: "Importé" },
-  { id: "t13", date: _ym(8),  label: "Cinéma UGC",               category: "loisirs",     sub: "Cinéma",        amount: -28.00, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t14", date: _ym(9),  label: "Vétérinaire — Mila",       category: "animaux",     sub: "Vétérinaire",   amount: -30.00, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t15", date: _ym(9),  label: "Royal Canin 12kg",         category: "animaux",     sub: "Croquettes",    amount: -80.00, recurrence: "Trimestrielle", provenance: "Importé" },
-  { id: "t16", date: _ym(10), label: "Bar à vin",                category: "loisirs",     sub: "Sorties",       amount: -42.50, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t17", date: _ym(10), label: "Salaire net",              category: "divers",      sub: "Salaire",       amount: 4600,  recurrence: "Mensuelle", provenance: "Importé" },
-  { id: "t18", date: _ym(11), label: "Carrefour",                category: "alimentation", sub: "Courses",      amount: -97.10, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t19", date: _ym(11), label: "Coiffeur",                 category: "personnel",   sub: "Soins",         amount: -45.00, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t20", date: _ym(12), label: "Zara",                     category: "personnel",   sub: "Vêtements",     amount: -89.90, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t21", date: _ym(12), label: "Amazon — divers",          category: "divers",      sub: "Non catégorisé", amount: -34.99, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t22", date: _ym(13), label: "Restaurant — Jules",       category: "alimentation", sub: "Restaurants",  amount: -84.00, recurrence: "Au besoin", provenance: "Édité" },
-  { id: "t23", date: _ym(13), label: "Proximus Mobile",          category: "abonnements", sub: "Téléphone",     amount: -50.00, recurrence: "Mensuelle", provenance: "Importé" },
-  { id: "t24", date: _ym(14), label: "Q8 Carburant",             category: "transport",   sub: "Carburant",     amount: -71.80, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t25", date: _ym(14), label: "Parking Indigo",           category: "transport",   sub: "Parking",       amount: -60.00, recurrence: "Mensuelle", provenance: "Importé" },
-  { id: "t26", date: _ym(15), label: "Allocations familiales",   category: "divers",      sub: "Allocations",   amount: 320,   recurrence: "Mensuelle", provenance: "Importé" },
-  { id: "t27", date: _ym(15), label: "Colruyt",                  category: "alimentation", sub: "Courses",      amount: -78.40, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t28", date: _ym(16), label: "iCloud+",                  category: "abonnements", sub: "iCloud",        amount: -9.99, recurrence: "Mensuelle", provenance: "Importé" },
-  { id: "t29", date: _ym(16), label: "Médecin généraliste",      category: "sante",       sub: "Médecin",       amount: -40.00, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t30", date: _ym(17), label: "Brico — petit outillage",  category: "logement",    sub: "Entretien",     amount: -40.00, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t31", date: _ym(17), label: "Uber Eats",                category: "alimentation", sub: "Livraison",    amount: -32.50, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t32", date: _ym(18), label: "Cadeau anniv Marie",       category: "cadeaux",     sub: "Anniversaires", amount: -30.00, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t33", date: _ym(18), label: "Librairie Filigranes",     category: "loisirs",     sub: "Livres",        amount: -60.00, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t34", date: _ym(19), label: "Carrefour",                category: "alimentation", sub: "Courses",      amount: -103.20, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t35", date: _ym(19), label: "Total Carburant",          category: "transport",   sub: "Carburant",     amount: -69.90, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t36", date: _ym(20), label: "Sorties bar",              category: "loisirs",     sub: "Sorties",       amount: -38.00, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t37", date: _ym(20), label: "Soins esthétiques",        category: "personnel",   sub: "Soins",         amount: -75.00, recurrence: "Au besoin", provenance: "Édité" },
-  { id: "t38", date: _ym(21), label: "Apple — divers",           category: "divers",      sub: "Non catégorisé", amount: -29.99, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t39", date: _ym(22), label: "Carrefour",                category: "alimentation", sub: "Courses",      amount: -88.50, recurrence: "Au besoin", provenance: "Importé" },
-  { id: "t40", date: _ym(22), label: "Restaurant — sushi",       category: "alimentation", sub: "Restaurants",  amount: -54.00, recurrence: "Au besoin", provenance: "Importé" },
+  {
+    id: "t01",
+    date: _ym(1),
+    label: "Loyer",
+    category: "logement",
+    sub: "Loyer",
+    amount: -1100,
+    recurrence: "Mensuelle",
+    provenance: "Importé",
+  },
+  {
+    id: "t02",
+    date: _ym(2),
+    label: "Carrefour Drive",
+    category: "alimentation",
+    sub: "Courses",
+    amount: -86.4,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t03",
+    date: _ym(2),
+    label: "Total Énergie - Élec",
+    category: "energie",
+    sub: "Électricité",
+    amount: -140,
+    recurrence: "Mensuelle",
+    provenance: "Importé",
+  },
+  {
+    id: "t04",
+    date: _ym(3),
+    label: "Netflix",
+    category: "abonnements",
+    sub: "Netflix",
+    amount: -17.99,
+    recurrence: "Mensuelle",
+    provenance: "Importé",
+  },
+  {
+    id: "t05",
+    date: _ym(3),
+    label: "Spotify Family",
+    category: "abonnements",
+    sub: "Spotify",
+    amount: -12.99,
+    recurrence: "Mensuelle",
+    provenance: "Importé",
+  },
+  {
+    id: "t06",
+    date: _ym(4),
+    label: "Colruyt",
+    category: "alimentation",
+    sub: "Courses",
+    amount: -64.2,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t07",
+    date: _ym(5),
+    label: "Pharmacie de la Place",
+    category: "sante",
+    sub: "Pharmacie",
+    amount: -22.3,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t08",
+    date: _ym(5),
+    label: "Q8 Carburant",
+    category: "transport",
+    sub: "Carburant",
+    amount: -78.5,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t09",
+    date: _ym(6),
+    label: "Restaurant Da Mimmo",
+    category: "alimentation",
+    sub: "Restaurants",
+    amount: -56.0,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t10",
+    date: _ym(6),
+    label: "Gaz Naturel",
+    category: "energie",
+    sub: "Gaz",
+    amount: -100,
+    recurrence: "Mensuelle",
+    provenance: "Importé",
+  },
+  {
+    id: "t11",
+    date: _ym(7),
+    label: "Carrefour",
+    category: "alimentation",
+    sub: "Courses",
+    amount: -112.8,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t12",
+    date: _ym(7),
+    label: "Charges communes",
+    category: "logement",
+    sub: "Charges",
+    amount: -180,
+    recurrence: "Mensuelle",
+    provenance: "Importé",
+  },
+  {
+    id: "t13",
+    date: _ym(8),
+    label: "Cinéma UGC",
+    category: "loisirs",
+    sub: "Cinéma",
+    amount: -28.0,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t14",
+    date: _ym(9),
+    label: "Vétérinaire — Mila",
+    category: "animaux",
+    sub: "Vétérinaire",
+    amount: -30.0,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t15",
+    date: _ym(9),
+    label: "Royal Canin 12kg",
+    category: "animaux",
+    sub: "Croquettes",
+    amount: -80.0,
+    recurrence: "Trimestrielle",
+    provenance: "Importé",
+  },
+  {
+    id: "t16",
+    date: _ym(10),
+    label: "Bar à vin",
+    category: "loisirs",
+    sub: "Sorties",
+    amount: -42.5,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t17",
+    date: _ym(10),
+    label: "Salaire net",
+    category: "divers",
+    sub: "Salaire",
+    amount: 4600,
+    recurrence: "Mensuelle",
+    provenance: "Importé",
+  },
+  {
+    id: "t18",
+    date: _ym(11),
+    label: "Carrefour",
+    category: "alimentation",
+    sub: "Courses",
+    amount: -97.1,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t19",
+    date: _ym(11),
+    label: "Coiffeur",
+    category: "personnel",
+    sub: "Soins",
+    amount: -45.0,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t20",
+    date: _ym(12),
+    label: "Zara",
+    category: "personnel",
+    sub: "Vêtements",
+    amount: -89.9,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t21",
+    date: _ym(12),
+    label: "Amazon — divers",
+    category: "divers",
+    sub: "Non catégorisé",
+    amount: -34.99,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t22",
+    date: _ym(13),
+    label: "Restaurant — Jules",
+    category: "alimentation",
+    sub: "Restaurants",
+    amount: -84.0,
+    recurrence: "Au besoin",
+    provenance: "Édité",
+  },
+  {
+    id: "t23",
+    date: _ym(13),
+    label: "Proximus Mobile",
+    category: "abonnements",
+    sub: "Téléphone",
+    amount: -50.0,
+    recurrence: "Mensuelle",
+    provenance: "Importé",
+  },
+  {
+    id: "t24",
+    date: _ym(14),
+    label: "Q8 Carburant",
+    category: "transport",
+    sub: "Carburant",
+    amount: -71.8,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t25",
+    date: _ym(14),
+    label: "Parking Indigo",
+    category: "transport",
+    sub: "Parking",
+    amount: -60.0,
+    recurrence: "Mensuelle",
+    provenance: "Importé",
+  },
+  {
+    id: "t26",
+    date: _ym(15),
+    label: "Allocations familiales",
+    category: "divers",
+    sub: "Allocations",
+    amount: 320,
+    recurrence: "Mensuelle",
+    provenance: "Importé",
+  },
+  {
+    id: "t27",
+    date: _ym(15),
+    label: "Colruyt",
+    category: "alimentation",
+    sub: "Courses",
+    amount: -78.4,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t28",
+    date: _ym(16),
+    label: "iCloud+",
+    category: "abonnements",
+    sub: "iCloud",
+    amount: -9.99,
+    recurrence: "Mensuelle",
+    provenance: "Importé",
+  },
+  {
+    id: "t29",
+    date: _ym(16),
+    label: "Médecin généraliste",
+    category: "sante",
+    sub: "Médecin",
+    amount: -40.0,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t30",
+    date: _ym(17),
+    label: "Brico — petit outillage",
+    category: "logement",
+    sub: "Entretien",
+    amount: -40.0,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t31",
+    date: _ym(17),
+    label: "Uber Eats",
+    category: "alimentation",
+    sub: "Livraison",
+    amount: -32.5,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t32",
+    date: _ym(18),
+    label: "Cadeau anniv Marie",
+    category: "cadeaux",
+    sub: "Anniversaires",
+    amount: -30.0,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t33",
+    date: _ym(18),
+    label: "Librairie Filigranes",
+    category: "loisirs",
+    sub: "Livres",
+    amount: -60.0,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t34",
+    date: _ym(19),
+    label: "Carrefour",
+    category: "alimentation",
+    sub: "Courses",
+    amount: -103.2,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t35",
+    date: _ym(19),
+    label: "Total Carburant",
+    category: "transport",
+    sub: "Carburant",
+    amount: -69.9,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t36",
+    date: _ym(20),
+    label: "Sorties bar",
+    category: "loisirs",
+    sub: "Sorties",
+    amount: -38.0,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t37",
+    date: _ym(20),
+    label: "Soins esthétiques",
+    category: "personnel",
+    sub: "Soins",
+    amount: -75.0,
+    recurrence: "Au besoin",
+    provenance: "Édité",
+  },
+  {
+    id: "t38",
+    date: _ym(21),
+    label: "Apple — divers",
+    category: "divers",
+    sub: "Non catégorisé",
+    amount: -29.99,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t39",
+    date: _ym(22),
+    label: "Carrefour",
+    category: "alimentation",
+    sub: "Courses",
+    amount: -88.5,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
+  {
+    id: "t40",
+    date: _ym(22),
+    label: "Restaurant — sushi",
+    category: "alimentation",
+    sub: "Restaurants",
+    amount: -54.0,
+    recurrence: "Au besoin",
+    provenance: "Importé",
+  },
 ];
 
 export const RECURRENCES: Recurrence[] = ["Mensuelle", "Trimestrielle", "Annuelle", "Au besoin"];
@@ -168,12 +705,35 @@ export const importPreviewMock = {
   filename: "isavemoney-export-juin.xlsx",
   totals: { nouvelles: 12, inchangees: 38, modifiees: 3, protegees: 2 },
   modifiees: [
-    { label: "Carrefour Drive", date: "2025-06-02", oldAmount: 86.4, newAmount: 92.1, category: "Alimentation › Courses" },
-    { label: "Q8 Carburant", date: "2025-06-05", oldAmount: 78.5, newAmount: 82.0, category: "Transport › Carburant" },
-    { label: "Restaurant Da Mimmo", date: "2025-06-06", oldAmount: 56.0, newAmount: 61.5, category: "Alimentation › Restaurants" },
+    {
+      label: "Carrefour Drive",
+      date: "2025-06-02",
+      oldAmount: 86.4,
+      newAmount: 92.1,
+      category: "Alimentation › Courses",
+    },
+    {
+      label: "Q8 Carburant",
+      date: "2025-06-05",
+      oldAmount: 78.5,
+      newAmount: 82.0,
+      category: "Transport › Carburant",
+    },
+    {
+      label: "Restaurant Da Mimmo",
+      date: "2025-06-06",
+      oldAmount: 56.0,
+      newAmount: 61.5,
+      category: "Alimentation › Restaurants",
+    },
   ],
   protegees: [
-    { label: "Restaurant — Jules", date: "2025-06-13", amount: 84.0, category: "Alimentation › Restaurants" },
+    {
+      label: "Restaurant — Jules",
+      date: "2025-06-13",
+      amount: 84.0,
+      category: "Alimentation › Restaurants",
+    },
     { label: "Soins esthétiques", date: "2025-06-20", amount: 75.0, category: "Personnel › Soins" },
   ],
   nouvelles: [
@@ -184,9 +744,27 @@ export const importPreviewMock = {
 };
 
 export const importHistory = [
-  { filename: "isavemoney-export-mai.xlsx", date: "2025-06-01", month: "Mai 2025", added: 41, updated: 2 },
-  { filename: "isavemoney-export-avril.xlsx", date: "2025-05-02", month: "Avril 2025", added: 38, updated: 1 },
-  { filename: "isavemoney-export-mars.xlsx", date: "2025-04-03", month: "Mars 2025", added: 44, updated: 4 },
+  {
+    filename: "isavemoney-export-mai.xlsx",
+    date: "2025-06-01",
+    month: "Mai 2025",
+    added: 41,
+    updated: 2,
+  },
+  {
+    filename: "isavemoney-export-avril.xlsx",
+    date: "2025-05-02",
+    month: "Avril 2025",
+    added: 38,
+    updated: 1,
+  },
+  {
+    filename: "isavemoney-export-mars.xlsx",
+    date: "2025-04-03",
+    month: "Mars 2025",
+    added: 44,
+    updated: 4,
+  },
 ];
 
 // ---------- Planification: recurring postes ----------
@@ -199,14 +777,14 @@ export type Poste = {
   category: CatKey;
   sub: string;
   label: string;
-  amount: number;        // unit amount per occurrence
-  budget: number;        // planned budget per occurrence
+  amount: number; // unit amount per occurrence
+  budget: number; // planned budget per occurrence
   recurrence: Recurrence4;
-  months: number[];      // 0..11 occurrences
+  months: number[]; // 0..11 occurrences
 };
 
 export function defaultMonthsFor(rec: Recurrence4, anchor = 0): number[] {
-  if (rec === "Mensuelle") return [0,1,2,3,4,5,6,7,8,9,10,11];
+  if (rec === "Mensuelle") return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
   if (rec === "Trimestrielle") {
     const base = ((anchor % 3) + 3) % 3;
     return [base, base + 3, base + 6, base + 9];
@@ -216,38 +794,245 @@ export function defaultMonthsFor(rec: Recurrence4, anchor = 0): number[] {
 
 export const postesSeed: Poste[] = [
   // Logement
-  { id: "p01", category: "logement",    sub: "Loyer",                label: "Loyer",                amount: 1100, budget: 1100, recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "p02", category: "logement",    sub: "Charges",              label: "Charges communes",     amount: 180,  budget: 180,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "p03", category: "logement",    sub: "Eau",                  label: "Eau",                  amount: 180,  budget: 180,  recurrence: "Trimestrielle", months: defaultMonthsFor("Trimestrielle", 2) },
-  { id: "p04", category: "logement",    sub: "Assurance",            label: "Assurance habitation", amount: 420,  budget: 420,  recurrence: "Annuelle",      months: [7] },
-  { id: "p05", category: "logement",    sub: "Entretien",            label: "Petits travaux",       amount: 200,  budget: 250,  recurrence: "Au besoin",     months: [9] },
+  {
+    id: "p01",
+    category: "logement",
+    sub: "Loyer",
+    label: "Loyer",
+    amount: 1100,
+    budget: 1100,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "p02",
+    category: "logement",
+    sub: "Charges",
+    label: "Charges communes",
+    amount: 180,
+    budget: 180,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "p03",
+    category: "logement",
+    sub: "Eau",
+    label: "Eau",
+    amount: 180,
+    budget: 180,
+    recurrence: "Trimestrielle",
+    months: defaultMonthsFor("Trimestrielle", 2),
+  },
+  {
+    id: "p04",
+    category: "logement",
+    sub: "Assurance",
+    label: "Assurance habitation",
+    amount: 420,
+    budget: 420,
+    recurrence: "Annuelle",
+    months: [7],
+  },
+  {
+    id: "p05",
+    category: "logement",
+    sub: "Entretien",
+    label: "Petits travaux",
+    amount: 200,
+    budget: 250,
+    recurrence: "Au besoin",
+    months: [9],
+  },
   // Énergie
-  { id: "p10", category: "energie",     sub: "Électricité",          label: "Électricité",          amount: 140,  budget: 140,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "p11", category: "energie",     sub: "Gaz",                  label: "Gaz",                  amount: 100,  budget: 100,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "p12", category: "energie",     sub: "Mazout",               label: "Mazout",               amount: 1500, budget: 1500, recurrence: "Annuelle",      months: [9] },
+  {
+    id: "p10",
+    category: "energie",
+    sub: "Électricité",
+    label: "Électricité",
+    amount: 140,
+    budget: 140,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "p11",
+    category: "energie",
+    sub: "Gaz",
+    label: "Gaz",
+    amount: 100,
+    budget: 100,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "p12",
+    category: "energie",
+    sub: "Mazout",
+    label: "Mazout",
+    amount: 1500,
+    budget: 1500,
+    recurrence: "Annuelle",
+    months: [9],
+  },
   // Alimentation
-  { id: "p20", category: "alimentation",sub: "Courses",              label: "Courses",              amount: 600,  budget: 650,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  {
+    id: "p20",
+    category: "alimentation",
+    sub: "Courses",
+    label: "Courses",
+    amount: 600,
+    budget: 650,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
   // Transport
-  { id: "p30", category: "transport",   sub: "Carburant",            label: "Carburant",            amount: 220,  budget: 220,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "p31", category: "transport",   sub: "Parking",              label: "Parking",              amount: 60,   budget: 60,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "p32", category: "transport",   sub: "Taxe de circulation",  label: "Taxe de circulation",  amount: 320,  budget: 320,  recurrence: "Annuelle",      months: [10] },
-  { id: "p33", category: "transport",   sub: "Entretien voiture",    label: "Entretien voiture",    amount: 600,  budget: 600,  recurrence: "Annuelle",      months: [3] },
+  {
+    id: "p30",
+    category: "transport",
+    sub: "Carburant",
+    label: "Carburant",
+    amount: 220,
+    budget: 220,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "p31",
+    category: "transport",
+    sub: "Parking",
+    label: "Parking",
+    amount: 60,
+    budget: 60,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "p32",
+    category: "transport",
+    sub: "Taxe de circulation",
+    label: "Taxe de circulation",
+    amount: 320,
+    budget: 320,
+    recurrence: "Annuelle",
+    months: [10],
+  },
+  {
+    id: "p33",
+    category: "transport",
+    sub: "Entretien voiture",
+    label: "Entretien voiture",
+    amount: 600,
+    budget: 600,
+    recurrence: "Annuelle",
+    months: [3],
+  },
   // Santé
-  { id: "p40", category: "sante",       sub: "Mutuelle",             label: "Mutuelle",             amount: 480,  budget: 480,  recurrence: "Annuelle",      months: [11] },
+  {
+    id: "p40",
+    category: "sante",
+    sub: "Mutuelle",
+    label: "Mutuelle",
+    amount: 480,
+    budget: 480,
+    recurrence: "Annuelle",
+    months: [11],
+  },
   // Abonnements
-  { id: "p50", category: "abonnements", sub: "Téléphone",            label: "Proximus Mobile",      amount: 50,   budget: 50,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "p51", category: "abonnements", sub: "Netflix",              label: "Netflix",              amount: 18,   budget: 18,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "p52", category: "abonnements", sub: "Spotify",              label: "Spotify",              amount: 13,   budget: 13,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "p53", category: "abonnements", sub: "iCloud",               label: "iCloud+",              amount: 10,   budget: 10,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  {
+    id: "p50",
+    category: "abonnements",
+    sub: "Téléphone",
+    label: "Proximus Mobile",
+    amount: 50,
+    budget: 50,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "p51",
+    category: "abonnements",
+    sub: "Netflix",
+    label: "Netflix",
+    amount: 18,
+    budget: 18,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "p52",
+    category: "abonnements",
+    sub: "Spotify",
+    label: "Spotify",
+    amount: 13,
+    budget: 13,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "p53",
+    category: "abonnements",
+    sub: "iCloud",
+    label: "iCloud+",
+    amount: 10,
+    budget: 10,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
   // Loisirs
-  { id: "p60", category: "loisirs",     sub: "Sorties",              label: "Sorties & restos",     amount: 150,  budget: 200,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "p61", category: "loisirs",     sub: "Vacances",             label: "Vacances été",         amount: 1800, budget: 1800, recurrence: "Annuelle",      months: [6] },
+  {
+    id: "p60",
+    category: "loisirs",
+    sub: "Sorties",
+    label: "Sorties & restos",
+    amount: 150,
+    budget: 200,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "p61",
+    category: "loisirs",
+    sub: "Vacances",
+    label: "Vacances été",
+    amount: 1800,
+    budget: 1800,
+    recurrence: "Annuelle",
+    months: [6],
+  },
   // Animaux
-  { id: "p70", category: "animaux",     sub: "Croquettes",           label: "Royal Canin 12kg",     amount: 80,   budget: 80,   recurrence: "Trimestrielle", months: defaultMonthsFor("Trimestrielle", 0) },
+  {
+    id: "p70",
+    category: "animaux",
+    sub: "Croquettes",
+    label: "Royal Canin 12kg",
+    amount: 80,
+    budget: 80,
+    recurrence: "Trimestrielle",
+    months: defaultMonthsFor("Trimestrielle", 0),
+  },
   // Cadeaux
-  { id: "p80", category: "cadeaux",     sub: "Cadeaux fin d'année",  label: "Cadeaux fin d'année",  amount: 600,  budget: 600,  recurrence: "Annuelle",      months: [11] },
+  {
+    id: "p80",
+    category: "cadeaux",
+    sub: "Cadeaux fin d'année",
+    label: "Cadeaux fin d'année",
+    amount: 600,
+    budget: 600,
+    recurrence: "Annuelle",
+    months: [11],
+  },
   // Divers
-  { id: "p90", category: "divers",      sub: "Impôts",               label: "Solde impôts",         amount: 900,  budget: 900,  recurrence: "Annuelle",      months: [5] },
+  {
+    id: "p90",
+    category: "divers",
+    sub: "Impôts",
+    label: "Solde impôts",
+    amount: 900,
+    budget: 900,
+    recurrence: "Annuelle",
+    months: [5],
+  },
 ];
 
 export const _now = new Date();
@@ -265,17 +1050,17 @@ export function temporalState(monthIdx: number, year = currentYear): TemporalSta
 
 // Projected amount = sum of postes whose `months` includes this index.
 export function projectedForMonth(postes: Poste[], idx: number): number {
-  return postes.filter(p => p.months.includes(idx)).reduce((s, p) => s + p.amount, 0);
+  return postes.filter((p) => p.months.includes(idx)).reduce((s, p) => s + p.amount, 0);
 }
 export function budgetForMonth(postes: Poste[], idx: number): number {
-  return postes.filter(p => p.months.includes(idx)).reduce((s, p) => s + p.budget, 0);
+  return postes.filter((p) => p.months.includes(idx)).reduce((s, p) => s + p.budget, 0);
 }
 
 // Non-monthly bills landing in `idx` (used for pressure strip projections).
 export function nonMonthlyBills(postes: Poste[], idx: number) {
   return postes
-    .filter(p => p.recurrence !== "Mensuelle" && p.months.includes(idx))
-    .map(p => ({ label: p.label, amount: p.amount }));
+    .filter((p) => p.recurrence !== "Mensuelle" && p.months.includes(idx))
+    .map((p) => ({ label: p.label, amount: p.amount }));
 }
 
 // Monthly annualisation provision = (Σ annuel + Σ trimestriel) / 12.
@@ -284,7 +1069,7 @@ export function nonMonthlyBills(postes: Poste[], idx: number) {
 // lands, it is never provisioned. Mensuel is excluded too (already a flat flow).
 export function annualisationProvision(postes: Poste[]): number {
   const total = postes
-    .filter(p => p.recurrence === "Trimestrielle" || p.recurrence === "Annuelle")
+    .filter((p) => p.recurrence === "Trimestrielle" || p.recurrence === "Annuelle")
     .reduce((s, p) => s + p.amount * p.months.length, 0);
   return Math.round(total / 12);
 }
@@ -314,14 +1099,14 @@ export type PlanOccurrence = { m: number; amount: number }; // m = 0..11
 
 export type PlanPoste = {
   id: string;
-  cat: string;        // catégorie (Logement, Famille, …)
-  group: string;      // sous-groupe (Énergies, Voiture, …)
-  label: string;      // poste (Mazout, Carburant, …)
-  amount: number;     // prévu per occurrence (per month for Mensuelle); ignored for Ponctuel
+  cat: string; // catégorie (Logement, Famille, …)
+  group: string; // sous-groupe (Énergies, Voiture, …)
+  label: string; // poste (Mazout, Carburant, …)
+  amount: number; // prévu per occurrence (per month for Mensuelle); ignored for Ponctuel
   recurrence: PlanRecurrence;
-  months: number[];   // planned occurrence months (0..11) — kept in sync with occurrences for Ponctuel
+  months: number[]; // planned occurrence months (0..11) — kept in sync with occurrences for Ponctuel
   occurrences?: PlanOccurrence[]; // only for Ponctuel — dated, per-hit amounts (primes)
-  sensor?: "mazout";  // physical-state signal surfaced beside the poste
+  sensor?: "mazout"; // physical-state signal surfaced beside the poste
 };
 
 // Annual prévu of a poste, in its own cadence. Ponctuel = Σ occurrence amounts; else amount × hits.
@@ -345,62 +1130,411 @@ export const PLAN_CATS: { cat: string; icon: LucideIcon; kind: PlanKind }[] = [
   { cat: "Épargne", icon: PiggyBank, kind: "epargne" },
 ];
 
-const CAT_KIND = new Map<string, PlanKind>(PLAN_CATS.map(c => [c.cat, c.kind]));
+const CAT_KIND = new Map<string, PlanKind>(PLAN_CATS.map((c) => [c.cat, c.kind]));
 export const planKindOf = (p: PlanPoste): PlanKind => CAT_KIND.get(p.cat) ?? "depense";
 
 export const planPostesSeed: PlanPoste[] = [
   // ---- Entrées ----
-  { id: "e-sal",   cat: "Entrées", group: "Revenus", label: "Salaires",           amount: 4350, recurrence: "Mensuelle", months: defaultMonthsFor("Mensuelle") },
-  { id: "e-alloc", cat: "Entrées", group: "Revenus", label: "Allocations",         amount: 320,  recurrence: "Mensuelle", months: defaultMonthsFor("Mensuelle") },
-  { id: "e-palim", cat: "Entrées", group: "Revenus", label: "Pension alimentaire", amount: 200,  recurrence: "Mensuelle", months: defaultMonthsFor("Mensuelle") },
-  { id: "e-prime", cat: "Entrées", group: "Revenus", label: "Primes",              amount: 0,    recurrence: "Ponctuel",  months: [4, 11], occurrences: [{ m: 4, amount: 2680 }, { m: 11, amount: 1900 }] },
+  {
+    id: "e-sal",
+    cat: "Entrées",
+    group: "Revenus",
+    label: "Salaires",
+    amount: 4350,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "e-alloc",
+    cat: "Entrées",
+    group: "Revenus",
+    label: "Allocations",
+    amount: 320,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "e-palim",
+    cat: "Entrées",
+    group: "Revenus",
+    label: "Pension alimentaire",
+    amount: 200,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "e-prime",
+    cat: "Entrées",
+    group: "Revenus",
+    label: "Primes",
+    amount: 0,
+    recurrence: "Ponctuel",
+    months: [4, 11],
+    occurrences: [
+      { m: 4, amount: 2680 },
+      { m: 11, amount: 1900 },
+    ],
+  },
   // ---- Logement ----
-  { id: "l-hab",   cat: "Logement", group: "Assurances",     label: "Habitation",          amount: 513,  recurrence: "Annuelle",      months: [7] },
-  { id: "l-dec",   cat: "Logement", group: "Assurances",     label: "Décès",               amount: 526,  recurrence: "Annuelle",      months: [9] },
-  { id: "l-mai",   cat: "Logement", group: "Crédits",        label: "Maison",              amount: 847,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "l-toit",  cat: "Logement", group: "Crédits",        label: "Toit & Bardage",      amount: 89,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "l-elec",  cat: "Logement", group: "Énergies",       label: "Électricité",         amount: 140,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "l-eau",   cat: "Logement", group: "Énergies",       label: "Eau",                 amount: 100,  recurrence: "Trimestrielle", months: defaultMonthsFor("Trimestrielle", 2) },
-  { id: "l-maz",   cat: "Logement", group: "Énergies",       label: "Mazout",              amount: 1000, recurrence: "Annuelle",      months: [9], sensor: "mazout" },
-  { id: "l-pel",   cat: "Logement", group: "Énergies",       label: "Pellet",              amount: 500,  recurrence: "Annuelle",      months: [10] },
-  { id: "l-cad",   cat: "Logement", group: "Taxes & Impôts", label: "Cadastre",            amount: 150,  recurrence: "Annuelle",      months: [8] },
-  { id: "l-pou",   cat: "Logement", group: "Taxes & Impôts", label: "Poubelles",           amount: 100,  recurrence: "Annuelle",      months: [10] },
+  {
+    id: "l-hab",
+    cat: "Logement",
+    group: "Assurances",
+    label: "Habitation",
+    amount: 513,
+    recurrence: "Annuelle",
+    months: [7],
+  },
+  {
+    id: "l-dec",
+    cat: "Logement",
+    group: "Assurances",
+    label: "Décès",
+    amount: 526,
+    recurrence: "Annuelle",
+    months: [9],
+  },
+  {
+    id: "l-mai",
+    cat: "Logement",
+    group: "Crédits",
+    label: "Maison",
+    amount: 847,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "l-toit",
+    cat: "Logement",
+    group: "Crédits",
+    label: "Toit & Bardage",
+    amount: 89,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "l-elec",
+    cat: "Logement",
+    group: "Énergies",
+    label: "Électricité",
+    amount: 140,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "l-eau",
+    cat: "Logement",
+    group: "Énergies",
+    label: "Eau",
+    amount: 100,
+    recurrence: "Trimestrielle",
+    months: defaultMonthsFor("Trimestrielle", 2),
+  },
+  {
+    id: "l-maz",
+    cat: "Logement",
+    group: "Énergies",
+    label: "Mazout",
+    amount: 1000,
+    recurrence: "Annuelle",
+    months: [9],
+    sensor: "mazout",
+  },
+  {
+    id: "l-pel",
+    cat: "Logement",
+    group: "Énergies",
+    label: "Pellet",
+    amount: 500,
+    recurrence: "Annuelle",
+    months: [10],
+  },
+  {
+    id: "l-cad",
+    cat: "Logement",
+    group: "Taxes & Impôts",
+    label: "Cadastre",
+    amount: 150,
+    recurrence: "Annuelle",
+    months: [8],
+  },
+  {
+    id: "l-pou",
+    cat: "Logement",
+    group: "Taxes & Impôts",
+    label: "Poubelles",
+    amount: 100,
+    recurrence: "Annuelle",
+    months: [10],
+  },
   // ---- Famille ----
-  { id: "f-pen",   cat: "Famille", group: "Épargnes",        label: "Pension",             amount: 165,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "f-1pw",   cat: "Famille", group: "Services",        label: "1Password",           amount: 115,  recurrence: "Annuelle",      months: [5] },
-  { id: "f-net",   cat: "Famille", group: "Services",        label: "Internet",            amount: 55,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "f-tel",   cat: "Famille", group: "Services",        label: "Téléphonie",          amount: 40,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "f-coif",  cat: "Famille", group: "Soins",           label: "Coiffeur",            amount: 40,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "f-ong",   cat: "Famille", group: "Soins",           label: "Ongles",              amount: 25,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "f-netf",  cat: "Famille", group: "Loisirs",         label: "Netflix",             amount: 19,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "f-spo",   cat: "Famille", group: "Loisirs",         label: "Spotify",             amount: 15,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "f-spt",   cat: "Famille", group: "Loisirs",         label: "Sport",               amount: 50,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "f-vac",   cat: "Famille", group: "Loisirs",         label: "Vacances",            amount: 1500, recurrence: "Au besoin",     months: [6] },
+  {
+    id: "f-pen",
+    cat: "Famille",
+    group: "Épargnes",
+    label: "Pension",
+    amount: 165,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "f-1pw",
+    cat: "Famille",
+    group: "Services",
+    label: "1Password",
+    amount: 115,
+    recurrence: "Annuelle",
+    months: [5],
+  },
+  {
+    id: "f-net",
+    cat: "Famille",
+    group: "Services",
+    label: "Internet",
+    amount: 55,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "f-tel",
+    cat: "Famille",
+    group: "Services",
+    label: "Téléphonie",
+    amount: 40,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "f-coif",
+    cat: "Famille",
+    group: "Soins",
+    label: "Coiffeur",
+    amount: 40,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "f-ong",
+    cat: "Famille",
+    group: "Soins",
+    label: "Ongles",
+    amount: 25,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "f-netf",
+    cat: "Famille",
+    group: "Loisirs",
+    label: "Netflix",
+    amount: 19,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "f-spo",
+    cat: "Famille",
+    group: "Loisirs",
+    label: "Spotify",
+    amount: 15,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "f-spt",
+    cat: "Famille",
+    group: "Loisirs",
+    label: "Sport",
+    amount: 50,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "f-vac",
+    cat: "Famille",
+    group: "Loisirs",
+    label: "Vacances",
+    amount: 1500,
+    recurrence: "Au besoin",
+    months: [6],
+  },
   // ---- Déplacements ----
-  { id: "d-ass",   cat: "Déplacements", group: "Voiture",    label: "Assurance",           amount: 127,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "d-car",   cat: "Déplacements", group: "Voiture",    label: "Carburant",           amount: 90,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "d-ent",   cat: "Déplacements", group: "Voiture",    label: "Entretien",           amount: 500,  recurrence: "Annuelle",      months: [3] },
-  { id: "d-tax",   cat: "Déplacements", group: "Voiture",    label: "Taxe de circulation", amount: 340,  recurrence: "Annuelle",      months: [10] },
-  { id: "d-par",   cat: "Déplacements", group: "Voiture",    label: "Parking",             amount: 55,   recurrence: "Au besoin",     months: [0] },
+  {
+    id: "d-ass",
+    cat: "Déplacements",
+    group: "Voiture",
+    label: "Assurance",
+    amount: 127,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "d-car",
+    cat: "Déplacements",
+    group: "Voiture",
+    label: "Carburant",
+    amount: 90,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "d-ent",
+    cat: "Déplacements",
+    group: "Voiture",
+    label: "Entretien",
+    amount: 500,
+    recurrence: "Annuelle",
+    months: [3],
+  },
+  {
+    id: "d-tax",
+    cat: "Déplacements",
+    group: "Voiture",
+    label: "Taxe de circulation",
+    amount: 340,
+    recurrence: "Annuelle",
+    months: [10],
+  },
+  {
+    id: "d-par",
+    cat: "Déplacements",
+    group: "Voiture",
+    label: "Parking",
+    amount: 55,
+    recurrence: "Au besoin",
+    months: [0],
+  },
   // ---- Nourriture ----
-  { id: "n-cou",   cat: "Nourriture", group: "Courses",      label: "Courses",             amount: 750,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "n-res",   cat: "Nourriture", group: "Extérieur",    label: "Restaurant",          amount: 150,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "n-ani",   cat: "Nourriture", group: "Animaux",      label: "Animalerie",          amount: 150,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  {
+    id: "n-cou",
+    cat: "Nourriture",
+    group: "Courses",
+    label: "Courses",
+    amount: 750,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "n-res",
+    cat: "Nourriture",
+    group: "Extérieur",
+    label: "Restaurant",
+    amount: 150,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "n-ani",
+    cat: "Nourriture",
+    group: "Animaux",
+    label: "Animalerie",
+    amount: 150,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
   // ---- Santé & Soins ----
-  { id: "s-cot",   cat: "Santé & Soins", group: "Mutuelle",  label: "Cotisation",          amount: 300,  recurrence: "Annuelle",      months: [0] },
-  { id: "s-kin",   cat: "Santé & Soins", group: "Services",  label: "Kinésithérapeute",    amount: 280,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "s-ost",   cat: "Santé & Soins", group: "Services",  label: "Ostéopathe",          amount: 400,  recurrence: "Annuelle",      months: [4] },
-  { id: "s-vet",   cat: "Santé & Soins", group: "Services",  label: "Vétérinaire",         amount: 200,  recurrence: "Annuelle",      months: [2] },
-  { id: "s-pha",   cat: "Santé & Soins", group: "Biens",     label: "Pharmacie",           amount: 50,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  {
+    id: "s-cot",
+    cat: "Santé & Soins",
+    group: "Mutuelle",
+    label: "Cotisation",
+    amount: 300,
+    recurrence: "Annuelle",
+    months: [0],
+  },
+  {
+    id: "s-kin",
+    cat: "Santé & Soins",
+    group: "Services",
+    label: "Kinésithérapeute",
+    amount: 280,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "s-ost",
+    cat: "Santé & Soins",
+    group: "Services",
+    label: "Ostéopathe",
+    amount: 400,
+    recurrence: "Annuelle",
+    months: [4],
+  },
+  {
+    id: "s-vet",
+    cat: "Santé & Soins",
+    group: "Services",
+    label: "Vétérinaire",
+    amount: 200,
+    recurrence: "Annuelle",
+    months: [2],
+  },
+  {
+    id: "s-pha",
+    cat: "Santé & Soins",
+    group: "Biens",
+    label: "Pharmacie",
+    amount: 50,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
   // ---- Cadeaux & Donations ----
-  { id: "c-fin",   cat: "Cadeaux & Donations", group: "Occasions", label: "Cadeaux fin d'année", amount: 600, recurrence: "Annuelle", months: [11] },
-  { id: "c-ann",   cat: "Cadeaux & Donations", group: "Occasions", label: "Anniversaires",       amount: 400, recurrence: "Au besoin", months: [3] },
+  {
+    id: "c-fin",
+    cat: "Cadeaux & Donations",
+    group: "Occasions",
+    label: "Cadeaux fin d'année",
+    amount: 600,
+    recurrence: "Annuelle",
+    months: [11],
+  },
+  {
+    id: "c-ann",
+    cat: "Cadeaux & Donations",
+    group: "Occasions",
+    label: "Anniversaires",
+    amount: 400,
+    recurrence: "Au besoin",
+    months: [3],
+  },
   // ---- Divers ----
-  { id: "x-vis",   cat: "Divers", group: "Divers",           label: "Visa",                amount: 60,   recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  {
+    id: "x-vis",
+    cat: "Divers",
+    group: "Divers",
+    label: "Visa",
+    amount: 60,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
   // ---- Épargne (cibles) ----
-  { id: "s-proj",  cat: "Épargne", group: "Enveloppes",      label: "Projets",             amount: 500,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "s-lois",  cat: "Épargne", group: "Enveloppes",      label: "Loisirs",             amount: 300,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
-  { id: "s-pens",  cat: "Épargne", group: "Enveloppes",      label: "Pension (retraite)",  amount: 165,  recurrence: "Mensuelle",     months: defaultMonthsFor("Mensuelle") },
+  {
+    id: "s-proj",
+    cat: "Épargne",
+    group: "Enveloppes",
+    label: "Projets",
+    amount: 500,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "s-lois",
+    cat: "Épargne",
+    group: "Enveloppes",
+    label: "Loisirs",
+    amount: 300,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
+  {
+    id: "s-pens",
+    cat: "Épargne",
+    group: "Enveloppes",
+    label: "Pension (retraite)",
+    amount: 165,
+    recurrence: "Mensuelle",
+    months: defaultMonthsFor("Mensuelle"),
+  },
 ];
 
 // Per-year plan. The household budget grows ~5%/yr, so past years read leaner and next year
@@ -412,11 +1546,11 @@ export const PLAN_MAX_YEAR = currentYear + 1;
 export function planPostesForYear(year: number): PlanPoste[] {
   if (year === currentYear) return planPostesSeed;
   const factor = Math.pow(0.95, currentYear - year); // past → <1, next year → indexed up
-  return planPostesSeed.map(p => ({
+  return planPostesSeed.map((p) => ({
     ...p,
     id: `${p.id}@${year}`,
     amount: Math.round(p.amount * factor),
-    occurrences: p.occurrences?.map(o => ({ ...o, amount: Math.round(o.amount * factor) })),
+    occurrences: p.occurrences?.map((o) => ({ ...o, amount: Math.round(o.amount * factor) })),
   }));
 }
 
@@ -427,7 +1561,7 @@ export function planPostesForYear(year: number): PlanPoste[] {
 function baselinePoste(p: PlanPoste): PlanPoste {
   const [, ys] = p.id.split("@");
   const yr = ys ? Number(ys) : currentYear;
-  return planPostesForYear(yr).find(x => x.id === p.id) ?? p;
+  return planPostesForYear(yr).find((x) => x.id === p.id) ?? p;
 }
 
 // The 12 imported monthly actuals for a poste (the "data liées"). Deterministic mock, anchored
@@ -440,21 +1574,26 @@ export function posteMonthly(p: PlanPoste): number[] {
   const seed = b.id.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
   const out = new Array(12).fill(0);
   if (b.recurrence === "Mensuelle") {
-    for (let i = 0; i < 12; i++) out[i] = Math.round(b.amount * (1 + Math.sin((i + seed) * 0.9) * 0.09));
+    for (let i = 0; i < 12; i++)
+      out[i] = Math.round(b.amount * (1 + Math.sin((i + seed) * 0.9) * 0.09));
   } else if (b.recurrence === "Trimestrielle") {
-    b.months.forEach(m => { out[m] = Math.round(b.amount * (1 + ((seed % 9) - 4) / 100)); });
+    b.months.forEach((m) => {
+      out[m] = Math.round(b.amount * (1 + ((seed % 9) - 4) / 100));
+    });
   } else if (b.recurrence === "Annuelle") {
     const planned = b.months[0] ?? 0;
-    const shift = (seed % 3) - 1;               // -1, 0, +1 → the real payment may drift
-    const actual = ((planned + shift) % 12 + 12) % 12;
+    const shift = (seed % 3) - 1; // -1, 0, +1 → the real payment may drift
+    const actual = (((planned + shift) % 12) + 12) % 12;
     out[actual] = Math.round(b.amount * (1 + ((seed % 11) - 4) / 100));
-  } else if (b.recurrence === "Ponctuel") {     // each dated occurrence lands at its month, may drift ±1
+  } else if (b.recurrence === "Ponctuel") {
+    // each dated occurrence lands at its month, may drift ±1
     (b.occurrences ?? []).forEach((o, k) => {
       const shift = ((seed + k) % 3) - 1;
-      const actual = ((o.m + shift) % 12 + 12) % 12;
+      const actual = (((o.m + shift) % 12) + 12) % 12;
       out[actual] += Math.round(o.amount * (1 + (((seed + k) % 11) - 4) / 100));
     });
-  } else { // Au besoin — scattered small hits
+  } else {
+    // Au besoin — scattered small hits
     const n = 2 + (seed % 3);
     for (let k = 0; k < n; k++) {
       const m = (seed * 7 + k * 5) % 12;
@@ -471,10 +1610,19 @@ export const planPrevuYear = (p: PlanPoste): number => planPosteYear(p);
 // Mensuelle → flat; Ponctuel → its dated occurrences; else → the amount at each occurrence month.
 export function prevuMonthly(p: PlanPoste): number[] {
   const out = new Array(12).fill(0);
-  if (p.recurrence === "Mensuelle") { for (let i = 0; i < 12; i++) out[i] = p.amount; }
-  else if (p.recurrence === "Ponctuel") { (p.occurrences ?? []).forEach(o => { out[o.m] += o.amount; }); }
-  else if (p.recurrence === "Au besoin") { /* envelope — no scheduled monthly prévu */ }
-  else { p.months.forEach(m => { out[m] = p.amount; }); } // Trimestrielle / Annuelle
+  if (p.recurrence === "Mensuelle") {
+    for (let i = 0; i < 12; i++) out[i] = p.amount;
+  } else if (p.recurrence === "Ponctuel") {
+    (p.occurrences ?? []).forEach((o) => {
+      out[o.m] += o.amount;
+    });
+  } else if (p.recurrence === "Au besoin") {
+    /* envelope — no scheduled monthly prévu */
+  } else {
+    p.months.forEach((m) => {
+      out[m] = p.amount;
+    });
+  } // Trimestrielle / Annuelle
   return out;
 }
 
@@ -482,13 +1630,15 @@ export function prevuMonthly(p: PlanPoste): number[] {
 // Matches on the base id (strips the `@year` suffix planPostesForYear appends).
 export function planPostePrevYear(p: PlanPoste, year: number): PlanPoste | undefined {
   const base = p.id.split("@")[0];
-  return planPostesForYear(year - 1).find(x => x.id.split("@")[0] === base);
+  return planPostesForYear(year - 1).find((x) => x.id.split("@")[0] === base);
 }
 
 // Median of the réel over the months where something actually landed (robust "typical hit",
 // less skewed by an outlier month than the mean). Zero months are ignored.
 export function planReelMedian(p: PlanPoste): number {
-  const hits = posteMonthly(p).filter(v => v > 0).sort((a, b) => a - b);
+  const hits = posteMonthly(p)
+    .filter((v) => v > 0)
+    .sort((a, b) => a - b);
   if (!hits.length) return 0;
   const mid = Math.floor(hits.length / 2);
   return hits.length % 2 ? hits[mid] : Math.round((hits[mid - 1] + hits[mid]) / 2);
@@ -497,7 +1647,7 @@ export function planReelMedian(p: PlanPoste): number {
 // Mensuelle & Trimestrielle, year total for Annuelle & Au besoin. Like-for-like with prévu.
 export function planReelCadence(p: PlanPoste): number {
   if (p.recurrence === "Mensuelle" || p.recurrence === "Trimestrielle") {
-    const hits = posteMonthly(p).filter(v => v > 0);
+    const hits = posteMonthly(p).filter((v) => v > 0);
     return hits.length ? Math.round(hits.reduce((s, v) => s + v, 0) / hits.length) : 0;
   }
   return planReelYear(p);
@@ -509,19 +1659,29 @@ export function planReelCadence(p: PlanPoste): number {
 // `provision` (the monthly set-aside for the non-mensuel) and `auBesoin` are informational;
 // au besoin is excluded from the equilibrium (it hits the margin when it lands).
 export type PlanCascade = {
-  entrees: number; depenses: number; epargne: number; marge: number; // annual €
+  entrees: number;
+  depenses: number;
+  epargne: number;
+  marge: number; // annual €
   provision: number; // monthly set-aside (info)
-  auBesoin: number;  // annual, out of plan (info)
+  auBesoin: number; // annual, out of plan (info)
 };
 export function planCascade(postes: PlanPoste[]): PlanCascade {
-  let entrees = 0, depenses = 0, epargne = 0, auBesoin = 0, provBase = 0;
+  let entrees = 0,
+    depenses = 0,
+    epargne = 0,
+    auBesoin = 0,
+    provBase = 0;
   for (const p of postes) {
     const kind = planKindOf(p);
     const yearly = planPosteYear(p);
     if (kind === "entree") entrees += yearly;
     else if (kind === "epargne") epargne += yearly;
     else if (p.recurrence === "Au besoin") auBesoin += yearly;
-    else { depenses += yearly; if (p.recurrence !== "Mensuelle") provBase += yearly; }
+    else {
+      depenses += yearly;
+      if (p.recurrence !== "Mensuelle") provBase += yearly;
+    }
   }
   const marge = entrees - depenses - epargne;
   return { entrees, depenses, epargne, marge, provision: Math.round(provBase / 12), auBesoin };
@@ -556,7 +1716,14 @@ export type AnnualVerdict = {
   status: VerdictStatus;
   label: string;
   hint: string;
-  axes: { label: string; tone: "ok" | "warn" | "over"; value: string; pct?: string; tag: string; explain: string }[];
+  axes: {
+    label: string;
+    tone: "ok" | "warn" | "over";
+    value: string;
+    pct?: string;
+    tag: string;
+    explain: string;
+  }[];
   budgetYear: number;
   realisedYTD: number;
   projectedRest: number;
@@ -590,8 +1757,13 @@ export function annualVerdict(view: BudgetView = "rolling"): AnnualVerdict {
   let projSpend = 0;
   let projIncome = 0;
   for (const c of cells) {
-    if (c.isReal) { realisedYTD += c.spend; realisedIncome += c.income; }
-    else { projSpend += c.spend; projIncome += c.income; }
+    if (c.isReal) {
+      realisedYTD += c.spend;
+      realisedIncome += c.income;
+    } else {
+      projSpend += c.spend;
+      projIncome += c.income;
+    }
   }
   const projectedTotal = realisedYTD + projSpend;
   const projectedIncome = realisedIncome + projIncome;
@@ -605,7 +1777,8 @@ export function annualVerdict(view: BudgetView = "rolling"): AnnualVerdict {
   const spendDeltaPct = expectedByNow > 0 ? (spendDeltaYTD / expectedByNow) * 100 : 0;
 
   const netProjected = projectedIncome - projectedTotal;
-  const savingsRate = projectedIncome > 0 ? Math.max(0, Math.round((netProjected / projectedIncome) * 100)) : 0;
+  const savingsRate =
+    projectedIncome > 0 ? Math.max(0, Math.round((netProjected / projectedIncome) * 100)) : 0;
 
   // Reserve health — same trajectory as the Réserve chart (stock vs healthy floor).
   const stock = savingsStockSeries(view);
@@ -617,8 +1790,8 @@ export function annualVerdict(view: BudgetView = "rolling"): AnnualVerdict {
 
   // Grammar: severity from the CONSEQUENCE (the reserve), label names the CAUSE (budget).
   const overBudget = deltaPct > TRAJECTORY_TOLERANCE_PCT;
-  const draining = reserveEnd < reserveStart;      // year ends with less than it started
-  const belowFloor = reserveEnd < reserveFloor;    // reserve too thin to be safe
+  const draining = reserveEnd < reserveStart; // year ends with less than it started
+  const belowFloor = reserveEnd < reserveFloor; // reserve too thin to be safe
 
   let status: VerdictStatus;
   let label: string;
@@ -646,16 +1819,26 @@ export function annualVerdict(view: BudgetView = "rolling"): AnnualVerdict {
   // Two boxes. LEFT = the year's finances: how far off budget (combien) + how GRAVE it
   // is (gravity = the consequence on the reserve, not the size). RIGHT = the reserve:
   // where it lands at the current pace + is it healthy.
-  const gravityWord = status === "over" ? "Critique" : status === "warn" ? "À surveiller" : status === "absorbed" ? "Absorbé" : "Sain";
-  const gravityTone: "ok" | "warn" | "over" = status === "over" ? "over" : status === "warn" ? "warn" : "ok";
+  const gravityWord =
+    status === "over"
+      ? "Critique"
+      : status === "warn"
+        ? "À surveiller"
+        : status === "absorbed"
+          ? "Absorbé"
+          : "Sain";
+  const gravityTone: "ok" | "warn" | "over" =
+    status === "over" ? "over" : status === "warn" ? "warn" : "ok";
   const gravityExplain =
     status === "over"
-      ? (draining ? "Le dépassement fait reculer la réserve — on désépargne." : "Les dépenses passent devant les revenus — à corriger.")
+      ? draining
+        ? "Le dépassement fait reculer la réserve — on désépargne."
+        : "Les dépenses passent devant les revenus — à corriger."
       : status === "warn"
-      ? "Le dépassement fait tomber la réserve sous le seuil sain — à surveiller."
-      : status === "absorbed"
-      ? "Dépassement couvert par les revenus : on épargne moins, mais la réserve tient."
-      : "Dépenses dans le budget, réserve saine — rien à signaler.";
+        ? "Le dépassement fait tomber la réserve sous le seuil sain — à surveiller."
+        : status === "absorbed"
+          ? "Dépassement couvert par les revenus : on épargne moins, mais la réserve tient."
+          : "Dépenses dans le budget, réserve saine — rien à signaler.";
 
   const axes: AnnualVerdict["axes"] = [
     {
@@ -674,19 +1857,32 @@ export function annualVerdict(view: BudgetView = "rolling"): AnnualVerdict {
       explain: draining
         ? `Au rythme actuel, la réserve recule vers ${eur(reserveEnd)} ${horizonWord}, sous son point de départ (${eur(reserveStart)}).`
         : belowFloor
-        ? `Au rythme actuel, la réserve atterrit à ${eur(reserveEnd)} ${horizonWord}, sous le seuil sain de ${eur(reserveFloor)}.`
-        : `Au rythme actuel, la réserve atterrit à ${eur(reserveEnd)} ${horizonWord}, au-dessus du seuil sain de ${eur(reserveFloor)}.`,
+          ? `Au rythme actuel, la réserve atterrit à ${eur(reserveEnd)} ${horizonWord}, sous le seuil sain de ${eur(reserveFloor)}.`
+          : `Au rythme actuel, la réserve atterrit à ${eur(reserveEnd)} ${horizonWord}, au-dessus du seuil sain de ${eur(reserveFloor)}.`,
     },
   ];
 
   return {
-    status, label, hint, axes,
-    budgetYear, realisedYTD, projectedRest,
-    projectedTotal, deltaEur, deltaPct, expectedByNow,
-    netProjected, savingsRate,
-    spendDeltaYTD, spendDeltaPct,
-    savingsTarget, savingsOnTrack,
-    reserveStart, reserveEnd, reserveFloor,
+    status,
+    label,
+    hint,
+    axes,
+    budgetYear,
+    realisedYTD,
+    projectedRest,
+    projectedTotal,
+    deltaEur,
+    deltaPct,
+    expectedByNow,
+    netProjected,
+    savingsRate,
+    spendDeltaYTD,
+    spendDeltaPct,
+    savingsTarget,
+    savingsOnTrack,
+    reserveStart,
+    reserveEnd,
+    reserveFloor,
   };
 }
 
@@ -738,7 +1934,11 @@ export function projectionBasis() {
     depSum += flows[i].spend;
     n++;
   }
-  return { avgIncome: n ? Math.round(inSum / n) : 0, avgSpend: n ? Math.round(depSum / n) : 0, realizedMonths: n };
+  return {
+    avgIncome: n ? Math.round(inSum / n) : 0,
+    avgSpend: n ? Math.round(depSum / n) : 0,
+    realizedMonths: n,
+  };
 }
 
 export type BudgetView = "rolling" | number; // 'rolling' window, or a calendar year
@@ -747,9 +1947,14 @@ export const viewTitle = (view: BudgetView): string =>
   view === "rolling" ? "Budget glissant" : `Année ${view}`;
 
 export interface HorizonCell {
-  label: string; calIdx: number; abs: number;
-  isReal: boolean; isToday: boolean; isLastImport: boolean;
-  income: number; spend: number;
+  label: string;
+  calIdx: number;
+  abs: number;
+  isReal: boolean;
+  isToday: boolean;
+  isLastImport: boolean;
+  income: number;
+  spend: number;
 }
 
 // The ordered months for a view. Rolling = a 12-month window around now (5 back → 6
@@ -770,7 +1975,10 @@ export function horizonMonths(view: BudgetView): HorizonCell[] {
     const isReal = abs <= lastImportAbs;
     const lump = lumpFor(calIdx);
     return {
-      label: MONTHS_FR[calIdx], calIdx, abs, isReal,
+      label: MONTHS_FR[calIdx],
+      calIdx,
+      abs,
+      isReal,
       isToday: abs === currentAbs,
       isLastImport: abs === lastImportAbs,
       income: isReal ? flows[calIdx].income : avgIncome + lump.income,
@@ -789,16 +1997,23 @@ export function horizonMonths(view: BudgetView): HorizonCell[] {
 export function flowsSeries(view: BudgetView = "rolling") {
   const cells = horizonMonths(view);
   let lastRealIdx = -1;
-  cells.forEach((c, i) => { if (c.isReal) lastRealIdx = i; });
+  cells.forEach((c, i) => {
+    if (c.isReal) lastRealIdx = i;
+  });
   return cells.map((c, i) => {
     const ep = Math.max(0, c.income - c.spend);
     const projected = !c.isReal;
     const bridge = projected || i === lastRealIdx; // projeté line starts at the last real point
     return {
-      m: c.label, idx: i,
-      calIdx: c.calIdx, year: Math.floor(c.abs / 12),
-      isReal: c.isReal, isToday: c.isToday, isLastImport: c.isLastImport,
-      spend: c.spend, income: c.income,
+      m: c.label,
+      idx: i,
+      calIdx: c.calIdx,
+      year: Math.floor(c.abs / 12),
+      isReal: c.isReal,
+      isToday: c.isToday,
+      isLastImport: c.isLastImport,
+      spend: c.spend,
+      income: c.income,
       inReel: projected ? null : c.income,
       inProj: bridge ? c.income : null,
       depReel: projected ? null : c.spend,
@@ -817,7 +2032,14 @@ export function monthlyOverview(rolling = false) {
   const rows = MONTHS_FR.map((m, i) => {
     const income = flows[i].income;
     const spend = flows[i].spend;
-    return { m, idx: i, income, spend, epargne: Math.max(0, income - spend), state: temporalState(i) };
+    return {
+      m,
+      idx: i,
+      income,
+      spend,
+      epargne: Math.max(0, income - spend),
+      state: temporalState(i),
+    };
   });
   if (!rolling) return rows;
   // Rolling 12: window ending at current month → [current-11 … current].
@@ -842,7 +2064,9 @@ export function savingsStockSeries(view: BudgetView = "rolling", floorMonths = 3
   const floor = Math.round(avgSpend * floorMonths);
   const anchor = envelopes.reduce((s, e) => s + e.balance, 0); // known reserve at the last import
   let lastRealIdx = -1;
-  cells.forEach((c, i) => { if (c.isReal) lastRealIdx = i; });
+  cells.forEach((c, i) => {
+    if (c.isReal) lastRealIdx = i;
+  });
   let cum = 0;
   const cums = cells.map((c) => (cum += c.income - c.spend));
   const cumAtAnchor = lastRealIdx >= 0 ? cums[lastRealIdx] : 0;
@@ -850,7 +2074,13 @@ export function savingsStockSeries(view: BudgetView = "rolling", floorMonths = 3
     const stock = Math.max(0, Math.round(anchor + cums[i] - cumAtAnchor));
     const projected = !c.isReal;
     const bridge = projected || i === lastRealIdx;
-    return { m: c.label, idx: i, reel: projected ? null : stock, proj: bridge ? stock : null, floor };
+    return {
+      m: c.label,
+      idx: i,
+      reel: projected ? null : stock,
+      proj: bridge ? stock : null,
+      floor,
+    };
   });
   const last = series[series.length - 1];
   const projectedEnd = last.proj ?? last.reel ?? 0;
@@ -944,9 +2174,7 @@ export function upcomingBills(monthsAhead = 12): UpcomingBill[] {
   const results: UpcomingBill[] = [];
   for (let step = 0; step < monthsAhead; step++) {
     const idx = (currentMonthIdx + step) % 12;
-    const bills = postesSeed.filter(
-      (p) => p.recurrence !== "Mensuelle" && p.months.includes(idx),
-    );
+    const bills = postesSeed.filter((p) => p.recurrence !== "Mensuelle" && p.months.includes(idx));
     for (const b of bills) {
       const provisionAvailable = startBalance + provisionPerMonth * step;
       const coveragePct = Math.min(100, Math.round((provisionAvailable / b.amount) * 100));
@@ -972,14 +2200,19 @@ export function upcomingBills(monthsAhead = 12): UpcomingBill[] {
 // Monthly balance history for an envelope — the reserve sparkline plots these REAL points
 // (1 point = 1 month, coherent with the monthly timeline). Seeded ~8 months back, ending at the
 // current month = `balance`. In the app, each manual reconciliation (or import) appends a month.
-export function envelopeHistory(env: { key: string; balance: number; contrib: number }): { m: string; v: number }[] {
+export function envelopeHistory(env: {
+  key: string;
+  balance: number;
+  contrib: number;
+}): { m: string; v: number }[] {
   const N = 8;
   const seed = env.key.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
   return Array.from({ length: N }, (_, i) => {
     const back = N - 1 - i; // months before the current one
-    const calIdx = ((currentMonthIdx - back) % 12 + 12) % 12;
+    const calIdx = (((currentMonthIdx - back) % 12) + 12) % 12;
     const wobble = Math.sin((i + seed) * 0.9) * env.contrib * 0.3;
-    const v = back === 0 ? env.balance : Math.max(0, Math.round(env.balance - env.contrib * back + wobble));
+    const v =
+      back === 0 ? env.balance : Math.max(0, Math.round(env.balance - env.contrib * back + wobble));
     return { m: MONTHS_FR[calIdx], v };
   });
 }
@@ -998,13 +2231,17 @@ export function envelopeSeries(env: { key: string; balance: number; contrib: num
 // plus ?"), split RÉEL (known, ≤ dernier import) vs PROJETÉ (anticipated, dashed after), same
 // boundary as the flux/reserve. Deterministic, centered on the typical monthly `actual` with a
 // per-category drift so the direction reads; `v` is the raw value (for the vs-budget average).
-export function categoryTrend12(cat: Category): { m: string; v: number; real: number | null; proj: number | null }[] {
+export function categoryTrend12(
+  cat: Category,
+): { m: string; v: number; real: number | null; proj: number | null }[] {
   const seed = cat.key.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
   const slope = (((seed % 7) - 3) / 3) * cat.actual * 0.04; // per-month drift ≈ ±4% of actual
   const absList: number[] = [];
   for (let o = -5; o <= 6; o++) absList.push(currentAbs + o);
   let lastRealIdx = -1;
-  absList.forEach((abs, i) => { if (abs <= lastImportAbs) lastRealIdx = i; });
+  absList.forEach((abs, i) => {
+    if (abs <= lastImportAbs) lastRealIdx = i;
+  });
   return absList.map((abs, i) => {
     const calIdx = ((abs % 12) + 12) % 12;
     const wobble = Math.sin((i + seed) * 0.8) * cat.actual * 0.06;
@@ -1024,7 +2261,9 @@ export function categoryYoY(cat: Category): number {
   return Math.round((1 / factor - 1) * 100);
 }
 
-export function nextBillForCategory(catKey: CatKey): { monthIdx: number; label: string; amount: number } | null {
+export function nextBillForCategory(
+  catKey: CatKey,
+): { monthIdx: number; label: string; amount: number } | null {
   for (let step = 0; step < 12; step++) {
     const idx = (currentMonthIdx + step) % 12;
     const b = postesSeed.find(
@@ -1041,7 +2280,11 @@ export function nextBillForCategory(catKey: CatKey): { monthIdx: number; label: 
 // expectedToDate = « où on devrait être aujourd'hui » = budget mensuel × mois écoulés → permet de
 //                  lire le RYTHME (dérape-t-on ?) au lieu de comparer au budget annuel entier (qui,
 //                  en milieu d'année, laisse tout paraître sous contrôle).
-export function annualForCategory(cat: Category): { ytdActual: number; annualBudget: number; expectedToDate: number } {
+export function annualForCategory(cat: Category): {
+  ytdActual: number;
+  annualBudget: number;
+  expectedToDate: number;
+} {
   const day = _now.getDate();
   const daysInMonth = new Date(currentYear, currentMonthIdx + 1, 0).getDate();
   const monthsFactor = currentMonthIdx + day / daysInMonth;
@@ -1051,6 +2294,3 @@ export function annualForCategory(cat: Category): { ytdActual: number; annualBud
     expectedToDate: Math.round(cat.budget * monthsFactor),
   };
 }
-
-
-

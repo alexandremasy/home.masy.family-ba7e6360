@@ -1,16 +1,44 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
-import { EFFORT_LEVELS, fmtMinutes, type Dish, type Base, type Role, type Unit, type Composant } from "@/lib/maison-data";
+import {
+  EFFORT_LEVELS,
+  fmtMinutes,
+  type Dish,
+  type Base,
+  type Role,
+  type Unit,
+  type Composant,
+} from "@/lib/maison-data";
 import { cap } from "@/lib/utils";
 import { Eyebrow } from "@/components/Eyebrow";
 
 const BASES: Base[] = [
-  "assiette", "pâtes", "bowl", "salade", "quiche", "pizza", "gratin",
-  "soupe", "wrap", "tarte", "chili", "curry", "raclette", "potée", "risotto", "lasagne",
+  "assiette",
+  "pâtes",
+  "bowl",
+  "salade",
+  "quiche",
+  "pizza",
+  "gratin",
+  "soupe",
+  "wrap",
+  "tarte",
+  "chili",
+  "curry",
+  "raclette",
+  "potée",
+  "risotto",
+  "lasagne",
 ];
 const ROLES: Role[] = ["protéine", "légume", "féculent", "sauce", "garniture"];
 const UNITS: Unit[] = ["pièce", "g", "gousse", "botte"];
@@ -33,7 +61,9 @@ export const EMPTY_DRAFT: DishDraft = {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <Eyebrow size="xs" as="span">{label}</Eyebrow>
+      <Eyebrow size="xs" as="span">
+        {label}
+      </Eyebrow>
       <div className="mt-1.5">{children}</div>
     </label>
   );
@@ -43,7 +73,9 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 function FieldGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="block">
-      <Eyebrow size="xs" as="span">{label}</Eyebrow>
+      <Eyebrow size="xs" as="span">
+        {label}
+      </Eyebrow>
       <div className="mt-1.5">{children}</div>
     </div>
   );
@@ -59,7 +91,10 @@ function FieldGroup({ label, children }: { label: string; children: React.ReactN
  * neutral hover surface, not a selected state.
  */
 function Segmented<T extends string | number | boolean>({
-  value, options, onChange, label,
+  value,
+  options,
+  onChange,
+  label,
 }: {
   value: T;
   options: ReadonlyArray<{ value: T; label: string }>;
@@ -96,10 +131,16 @@ const EFFORT_OPTIONS = EFFORT_LEVELS.map((l) => ({
   label: `${l.label} · ${fmtMinutes(l.minutes)}`,
 }));
 
-const YES_NO = [{ value: true, label: "Oui" }, { value: false, label: "Non" }];
+const YES_NO = [
+  { value: true, label: "Oui" },
+  { value: false, label: "Non" },
+];
 
 export function DishForm({
-  initial, submitLabel, onSubmit, onCancel,
+  initial,
+  submitLabel,
+  onSubmit,
+  onCancel,
 }: {
   initial: DishDraft;
   submitLabel: string;
@@ -113,9 +154,15 @@ export function DishForm({
   const nameError = d.name.trim().length === 0;
 
   const setMod = (i: number, patch: Partial<Composant>) =>
-    setD((p) => ({ ...p, modifiers: p.modifiers.map((m, j) => (j === i ? { ...m, ...patch } : m)) }));
+    setD((p) => ({
+      ...p,
+      modifiers: p.modifiers.map((m, j) => (j === i ? { ...m, ...patch } : m)),
+    }));
   const addMod = () =>
-    setD((p) => ({ ...p, modifiers: [...p.modifiers, { name: "", role: "protéine", qty: 1, unit: "pièce" }] }));
+    setD((p) => ({
+      ...p,
+      modifiers: [...p.modifiers, { name: "", role: "protéine", qty: 1, unit: "pièce" }],
+    }));
   const removeMod = (i: number) =>
     setD((p) => ({ ...p, modifiers: p.modifiers.filter((_, j) => j !== i) }));
 
@@ -137,7 +184,9 @@ export function DishForm({
           aria-invalid={touched && nameError}
           className="sm:max-w-sm"
         />
-        {touched && nameError && <p className="mt-1 text-xs text-destructive">Le nom est requis.</p>}
+        {touched && nameError && (
+          <p className="mt-1 text-xs text-destructive">Le nom est requis.</p>
+        )}
       </Field>
 
       {/* Every axis of the dish reads the same way: a segmented choice. */}
@@ -146,7 +195,10 @@ export function DishForm({
           <Segmented
             label="Densité"
             value={d.densite}
-            options={[{ value: "complet", label: "Complet" }, { value: "léger", label: "Léger" }]}
+            options={[
+              { value: "complet", label: "Complet" },
+              { value: "léger", label: "Léger" },
+            ]}
             onChange={(v) => set("densite", v)}
           />
         </FieldGroup>
@@ -154,30 +206,50 @@ export function DishForm({
           <Segmented
             label="Température"
             value={d.temperature}
-            options={[{ value: "chaud", label: "Chaud" }, { value: "froid", label: "Froid" }]}
+            options={[
+              { value: "chaud", label: "Chaud" },
+              { value: "froid", label: "Froid" },
+            ]}
             onChange={(v) => set("temperature", v)}
           />
         </FieldGroup>
         <FieldGroup label="Emportable">
-          <Segmented label="Emportable" value={d.emportable} options={YES_NO} onChange={(v) => set("emportable", v)} />
+          <Segmented
+            label="Emportable"
+            value={d.emportable}
+            options={YES_NO}
+            onChange={(v) => set("emportable", v)}
+          />
         </FieldGroup>
         <FieldGroup label="Réchauffable">
-          <Segmented label="Réchauffable" value={d.rechauffable} options={YES_NO} onChange={(v) => set("rechauffable", v)} />
+          <Segmented
+            label="Réchauffable"
+            value={d.rechauffable}
+            options={YES_NO}
+            onChange={(v) => set("rechauffable", v)}
+          />
         </FieldGroup>
       </div>
       <div className="flex flex-wrap gap-x-8 gap-y-5">
         <FieldGroup label="Effort">
-          <Segmented label="Effort" value={d.effort} options={EFFORT_OPTIONS} onChange={(v) => set("effort", v)} />
+          <Segmented
+            label="Effort"
+            value={d.effort}
+            options={EFFORT_OPTIONS}
+            onChange={(v) => set("effort", v)}
+          />
         </FieldGroup>
         <FieldGroup label="Une cuisson couvre">
           <Segmented
             label="Une cuisson couvre"
             value={d.rendement}
-            options={[
-              { value: 1, label: "1 repas" },
-              { value: 2, label: "2 repas" },
-              { value: 3, label: "3 repas" },
-            ] as Array<{ value: Dish["rendement"]; label: string }>}
+            options={
+              [
+                { value: 1, label: "1 repas" },
+                { value: 2, label: "2 repas" },
+                { value: 3, label: "3 repas" },
+              ] as Array<{ value: Dish["rendement"]; label: string }>
+            }
             onChange={(v) => set("rendement", v)}
           />
         </FieldGroup>
@@ -185,9 +257,18 @@ export function DishForm({
 
       <div>
         <div className="flex items-center justify-between">
-          <Eyebrow size="xs" as="span">Composants</Eyebrow>
-          <Button type="button" size="sm" variant="outline" onClick={addMod} className="h-7 gap-1 text-xs">
-            <Plus className="h-3 w-3" />Ajouter
+          <Eyebrow size="xs" as="span">
+            Composants
+          </Eyebrow>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={addMod}
+            className="h-7 gap-1 text-xs"
+          >
+            <Plus className="h-3 w-3" />
+            Ajouter
           </Button>
         </div>
 
@@ -197,11 +278,18 @@ export function DishForm({
           <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-secondary/40 p-1.5">
             <span className="w-20 shrink-0 pl-1 text-xs text-muted-foreground">Base</span>
             <Select value={d.base} onValueChange={(v) => set("base", v as Base)}>
-              <SelectTrigger aria-label="Base du plat" className="h-8 flex-1 bg-background capitalize">
+              <SelectTrigger
+                aria-label="Base du plat"
+                className="h-8 flex-1 bg-background capitalize"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {BASES.map((b) => <SelectItem key={b} value={b} className="capitalize">{cap(b)}</SelectItem>)}
+                {BASES.map((b) => (
+                  <SelectItem key={b} value={b} className="capitalize">
+                    {cap(b)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -212,13 +300,23 @@ export function DishForm({
             </p>
           ) : (
             d.modifiers.map((m, i) => (
-              <div key={i} className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border/60 p-1.5">
+              <div
+                key={i}
+                className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border/60 p-1.5"
+              >
                 <Select value={m.role} onValueChange={(v) => setMod(i, { role: v as Role })}>
-                  <SelectTrigger aria-label="Rôle du composant" className="h-8 w-28 shrink-0 bg-background px-2 text-xs capitalize">
+                  <SelectTrigger
+                    aria-label="Rôle du composant"
+                    className="h-8 w-28 shrink-0 bg-background px-2 text-xs capitalize"
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {ROLES.map((r) => <SelectItem key={r} value={r} className="capitalize">{r}</SelectItem>)}
+                    {ROLES.map((r) => (
+                      <SelectItem key={r} value={r} className="capitalize">
+                        {r}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <Input
@@ -230,21 +328,32 @@ export function DishForm({
                   className="h-8 min-w-32 flex-1 text-sm"
                 />
                 <Input
-                  type="number" min={0} step="any"
+                  type="number"
+                  min={0}
+                  step="any"
                   value={m.qty}
                   onChange={(e) => setMod(i, { qty: Number(e.target.value) })}
                   className="h-8 w-20 text-sm"
                 />
                 <Select value={m.unit} onValueChange={(v) => setMod(i, { unit: v as Unit })}>
-                  <SelectTrigger aria-label="Unité" className="h-8 w-24 shrink-0 bg-background px-2 text-xs">
+                  <SelectTrigger
+                    aria-label="Unité"
+                    className="h-8 w-24 shrink-0 bg-background px-2 text-xs"
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {UNITS.map((u) => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                    {UNITS.map((u) => (
+                      <SelectItem key={u} value={u}>
+                        {u}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <button
-                  type="button" onClick={() => removeMod(i)} aria-label={`Retirer ${m.name || "le composant"}`}
+                  type="button"
+                  onClick={() => removeMod(i)}
+                  aria-label={`Retirer ${m.name || "le composant"}`}
                   className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-destructive"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
@@ -257,7 +366,9 @@ export function DishForm({
 
       <div className="flex items-center gap-2 border-t border-border/60 pt-4">
         <Button type="submit">{submitLabel}</Button>
-        <Button type="button" variant="ghost" onClick={onCancel}>Annuler</Button>
+        <Button type="button" variant="ghost" onClick={onCancel}>
+          Annuler
+        </Button>
       </div>
     </form>
   );

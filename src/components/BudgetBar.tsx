@@ -13,7 +13,10 @@ import { cn } from "@/lib/utils";
  * Overflow is the ONE place warm belongs here: going over budget is the alert.
  */
 export function BudgetBar({
-  value, projected, overflow, className,
+  value,
+  projected,
+  overflow,
+  className,
 }: {
   /** Spent, as a % of budget. Clamped to 100 — the spill goes to `overflow`. */
   value: number;
@@ -29,7 +32,10 @@ export function BudgetBar({
   return (
     <ProgressPrimitive.Root
       value={spent}
-      className={cn("relative mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary", className)}
+      className={cn(
+        "relative mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary",
+        className,
+      )}
     >
       {projected != null && (
         <div

@@ -4,12 +4,42 @@ import { PageHeader } from "@/components/PageHeader";
 import { energie } from "@/lib/mock-data";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, Droplet, Zap, Flame, TrendingDown, TrendingUp, Minus, AlertTriangle, CalendarDays, Sun, Moon, Sparkles, Pencil, Check, X, SunMedium } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  ArrowRight,
+  Droplet,
+  Zap,
+  Flame,
+  TrendingDown,
+  TrendingUp,
+  Minus,
+  AlertTriangle,
+  CalendarDays,
+  Sun,
+  Moon,
+  Sparkles,
+  Pencil,
+  Check,
+  X,
+  SunMedium,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/Eyebrow";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { AreaChart, Area, BarChart, Bar, Cell, XAxis, YAxis, ReferenceLine } from "recharts";
 
 export const Route = createFileRoute("/_app/energie/")({
@@ -21,13 +51,25 @@ type Trend = "up" | "down" | "stable";
 
 // ---------- helpers ----------
 
-function TrendBadge({ trend, pct, suffix = "vs 90j" }: { trend: Trend; pct: number; suffix?: string }) {
+function TrendBadge({
+  trend,
+  pct,
+  suffix = "vs 90j",
+}: {
+  trend: Trend;
+  pct: number;
+  suffix?: string;
+}) {
   const Icon = trend === "down" ? TrendingDown : trend === "up" ? TrendingUp : Minus;
-  const tone = trend === "down" ? "text-success" : trend === "up" ? "text-mustard" : "text-muted-foreground";
+  const tone =
+    trend === "down" ? "text-success" : trend === "up" ? "text-mustard" : "text-muted-foreground";
   return (
     <span className={"inline-flex items-center gap-1 text-sm " + tone}>
       <Icon className="h-4 w-4" />
-      <span className="font-semibold tabular-nums">{pct > 0 ? "+" : ""}{pct}%</span>
+      <span className="font-semibold tabular-nums">
+        {pct > 0 ? "+" : ""}
+        {pct}%
+      </span>
       <span className="text-muted-foreground">{suffix}</span>
     </span>
   );
@@ -38,7 +80,10 @@ function Sparkline({ data, tone = "primary" }: { data: number[]; tone?: "primary
   const gid = `spark-fill-${tone}`;
   const chartData = data.map((v, i) => ({ i, v }));
   return (
-    <ChartContainer config={{ v: { color } }} className="aspect-auto h-7 w-full [&_.recharts-surface]:overflow-visible">
+    <ChartContainer
+      config={{ v: { color } }}
+      className="aspect-auto h-7 w-full [&_.recharts-surface]:overflow-visible"
+    >
       <AreaChart data={chartData} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
         <defs>
           <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
@@ -46,7 +91,15 @@ function Sparkline({ data, tone = "primary" }: { data: number[]; tone?: "primary
             <stop offset="100%" stopColor={color} stopOpacity={0} />
           </linearGradient>
         </defs>
-        <Area dataKey="v" type="monotone" stroke={color} strokeWidth={1.5} fill={`url(#${gid})`} dot={false} isAnimationActive={false} />
+        <Area
+          dataKey="v"
+          type="monotone"
+          stroke={color}
+          strokeWidth={1.5}
+          fill={`url(#${gid})`}
+          dot={false}
+          isAnimationActive={false}
+        />
       </AreaChart>
     </ChartContainer>
   );
@@ -66,20 +119,35 @@ function makeSeries(base: number, count = 30, jitter = 0.12) {
 
 type Domain = "elec" | "eau" | "mazout";
 
-const domainConfig: Record<Domain, { label: string; unit: string; icon: typeof Zap; pick: (h: typeof energie.history[number]) => number; seasonal: number[] }> = {
+const domainConfig: Record<
+  Domain,
+  {
+    label: string;
+    unit: string;
+    icon: typeof Zap;
+    pick: (h: (typeof energie.history)[number]) => number;
+    seasonal: number[];
+  }
+> = {
   elec: {
-    label: "Électricité", unit: "kWh", icon: Zap,
+    label: "Électricité",
+    unit: "kWh",
+    icon: Zap,
     // Net grid consumption — negative when solar injection > consumption.
     pick: (h) => h.jour + h.nuit - (h.solar ?? 0),
     seasonal: [1.15, 1.18, 1.05, 0.95, 0.85, 0.75, 0.7, 0.75, 0.85, 0.95, 1.1, 1.18],
   },
   eau: {
-    label: "Eau", unit: "m³", icon: Droplet,
+    label: "Eau",
+    unit: "m³",
+    icon: Droplet,
     pick: (h) => h.eau,
     seasonal: [0.95, 0.95, 1, 1, 1.05, 1.1, 1.12, 1.1, 1.05, 1, 0.95, 0.95],
   },
   mazout: {
-    label: "Mazout", unit: "L", icon: Flame,
+    label: "Mazout",
+    unit: "L",
+    icon: Flame,
     pick: (h) => h.mazout,
     seasonal: [1.3, 1.25, 1.05, 0.85, 0.6, 0.45, 0.4, 0.45, 0.65, 0.9, 1.15, 1.3],
   },
@@ -89,7 +157,20 @@ const domainConfig: Record<Domain, { label: string; unit: string; icon: typeof Z
 // Readings happen on the 1st of each month and cover the *previous* month.
 // So the latest recorded month = (month of lastReadingDate) - 1.
 function buildHistory(domain: Domain) {
-  const monthLabels = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
+  const monthLabels = [
+    "Jan",
+    "Fév",
+    "Mar",
+    "Avr",
+    "Mai",
+    "Juin",
+    "Juil",
+    "Août",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Déc",
+  ];
   const now = new Date();
   const recorded = new Map<string, number>();
   const cfg = domainConfig[domain];
@@ -107,7 +188,14 @@ function buildHistory(domain: Domain) {
   const recent = recVals.slice(-3);
   const avg = recent.reduce((a, b) => a + b, 0) / Math.max(1, recent.length);
 
-  const series: { key: string; label: string; year: number; monthIdx: number; value: number; projected: boolean }[] = [];
+  const series: {
+    key: string;
+    label: string;
+    year: number;
+    monthIdx: number;
+    value: number;
+    projected: boolean;
+  }[] = [];
   for (let i = 11; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const m = d.getMonth();
@@ -127,7 +215,6 @@ function buildHistory(domain: Domain) {
   return series;
 }
 
-
 // ---------- history chart ----------
 
 type HistoDatum = {
@@ -144,17 +231,42 @@ type HistoDatum = {
 function barStyle(d: HistoDatum): React.SVGProps<SVGRectElement> {
   if (d.isNeg) {
     return d.projected
-      ? { fill: "var(--success)", fillOpacity: 0.12, stroke: "var(--success)", strokeOpacity: 0.4, strokeDasharray: "4 4" }
+      ? {
+          fill: "var(--success)",
+          fillOpacity: 0.12,
+          stroke: "var(--success)",
+          strokeOpacity: 0.4,
+          strokeDasharray: "4 4",
+        }
       : { fill: "var(--success)", fillOpacity: 0.7 };
   }
   if (d.projected) {
-    return { fill: "var(--muted-foreground)", fillOpacity: 0.1, stroke: "var(--muted-foreground)", strokeOpacity: 0.4, strokeDasharray: "4 4" };
+    return {
+      fill: "var(--muted-foreground)",
+      fillOpacity: 0.1,
+      stroke: "var(--muted-foreground)",
+      strokeOpacity: 0.4,
+      strokeDasharray: "4 4",
+    };
   }
   return d.isCurrent ? { fill: "var(--primary)" } : { fill: "var(--secondary)" };
 }
 
 // Month label under each bar; the latest recorded month is emphasized.
-function MonthTick({ x, y, payload, index, currentIdx }: any) {
+function MonthTick({
+  x,
+  y,
+  payload,
+  index,
+  currentIdx,
+}: {
+  // recharts injects x/y/payload/index at render; the JSX only sets currentIdx.
+  x?: number;
+  y?: number;
+  payload?: { value?: string | number };
+  index?: number;
+  currentIdx: number;
+}) {
   return (
     <text
       x={x}
@@ -164,17 +276,27 @@ function MonthTick({ x, y, payload, index, currentIdx }: any) {
       fontSize={12}
       className={index === currentIdx ? "fill-foreground font-semibold" : "fill-muted-foreground"}
     >
-      {payload.value}
+      {payload?.value}
     </text>
   );
 }
 
-function HistoTooltip({ active, payload, unit }: { active?: boolean; payload?: any[]; unit?: string }) {
+function HistoTooltip({
+  active,
+  payload,
+  unit,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload: HistoDatum }>;
+  unit?: string;
+}) {
   if (!active || !payload?.length) return null;
   const d = payload[0].payload as HistoDatum;
   return (
     <div className="rounded-lg border border-border/60 bg-popover px-2 py-1 text-xs shadow-lift">
-      <p className="font-semibold capitalize">{d.label} {d.year}</p>
+      <p className="font-semibold capitalize">
+        {d.label} {d.year}
+      </p>
       <p className="tabular-nums text-muted-foreground">
         {d.value} {unit}
         {d.isNeg ? " · injection solaire" : ""}
@@ -187,7 +309,11 @@ function HistoTooltip({ active, payload, unit }: { active?: boolean; payload?: a
 // ---------- card shell ----------
 
 function MetricCard({
-  label, icon, accent = "primary", alert = false, children,
+  label,
+  icon,
+  accent = "primary",
+  alert = false,
+  children,
 }: {
   label: string;
   icon: React.ReactNode;
@@ -199,23 +325,21 @@ function MetricCard({
     <div
       className={
         "group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-card p-5 shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 " +
-        (alert
-          ? "border-warm/40 hover:border-warm/60"
-          : "border-border/60 hover:border-border")
+        (alert ? "border-warm/40 hover:border-warm/60" : "border-border/60 hover:border-border")
       }
     >
       <div className="flex items-center gap-2.5">
         <span
           className={
             "grid h-9 w-9 shrink-0 place-items-center rounded-full " +
-            (accent === "warm" || alert
-              ? "bg-warm/15 text-warm"
-              : "bg-primary/10 text-primary")
+            (accent === "warm" || alert ? "bg-warm/15 text-warm" : "bg-primary/10 text-primary")
           }
         >
           {icon}
         </span>
-        <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">{label}</h2>
+        <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">
+          {label}
+        </h2>
       </div>
       {children}
     </div>
@@ -234,11 +358,16 @@ function EnergiePage() {
   const DomainIcon = cfg.icon;
   const lastReading = new Date(lastReadingDate);
   const lastReadingFmt = lastReading.toLocaleDateString("fr-BE", {
-    day: "numeric", month: "long", year: "numeric",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
   });
   // The reading on the 1st covers the previous month
   const coveredMonth = new Date(lastReading.getFullYear(), lastReading.getMonth() - 1, 1);
-  const coveredMonthLabel = coveredMonth.toLocaleDateString("fr-BE", { month: "long", year: "numeric" });
+  const coveredMonthLabel = coveredMonth.toLocaleDateString("fr-BE", {
+    month: "long",
+    year: "numeric",
+  });
   const coveredMonthShort = coveredMonth.toLocaleDateString("fr-BE", { month: "long" });
 
   // Build sparkline series for each top block
@@ -275,16 +404,26 @@ function EnergiePage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Énergie" subtitle="Vue d'ensemble de la consommation" icon={<Zap className="h-4 w-4" />} back={null} size="sm" />
+      <PageHeader
+        title="Énergie"
+        subtitle="Vue d'ensemble de la consommation"
+        icon={<Zap className="h-4 w-4" />}
+        back={null}
+        size="sm"
+      />
 
       {energie.monthlyDue ? (
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-warm p-5 text-warm-foreground sm:p-6 anim-pop-in">
           <div>
-            <Eyebrow tone="current" className="opacity-70">À faire</Eyebrow>
+            <Eyebrow tone="current" className="opacity-70">
+              À faire
+            </Eyebrow>
             <p className="mt-1 font-serif text-xl">Relevé mensuel à saisir</p>
           </div>
           <Button asChild variant="inverted" className="group gap-2 rounded-full">
-            <Link to="/energie/saisie">Saisir <ArrowRight className="h-4 w-4 icon-hover-x transition-transform" /></Link>
+            <Link to="/energie/saisie">
+              Saisir <ArrowRight className="h-4 w-4 icon-hover-x transition-transform" />
+            </Link>
           </Button>
         </div>
       ) : (
@@ -292,206 +431,269 @@ function EnergiePage() {
           <span className="inline-flex items-center gap-2 text-muted-foreground">
             <CalendarDays className="h-4 w-4" />
             Relevé du <strong className="text-foreground">{lastReadingFmt}</strong>
-            <span className="hidden sm:inline">— consommation de <strong className="text-foreground capitalize">{coveredMonthLabel}</strong></span>
+            <span className="hidden sm:inline">
+              — consommation de{" "}
+              <strong className="text-foreground capitalize">{coveredMonthLabel}</strong>
+            </span>
           </span>
           <Button asChild variant="inverted" size="sm" className="group gap-1.5 rounded-full">
-            <Link to="/energie/saisie">Nouveau relevé <ArrowRight className="h-3.5 w-3.5 icon-hover-x transition-transform" /></Link>
+            <Link to="/energie/saisie">
+              Nouveau relevé{" "}
+              <ArrowRight className="h-3.5 w-3.5 icon-hover-x transition-transform" />
+            </Link>
           </Button>
         </div>
       )}
 
       <Tabs defaultValue="dashboard" className="space-y-6">
         <TabsList className="h-10 bg-secondary/70 p-1">
-          <TabsTrigger value="dashboard" className="px-4">Vue d'ensemble</TabsTrigger>
-          <TabsTrigger value="relevés" className="px-4">Relevés</TabsTrigger>
+          <TabsTrigger value="dashboard" className="px-4">
+            Vue d'ensemble
+          </TabsTrigger>
+          <TabsTrigger value="relevés" className="px-4">
+            Relevés
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="dashboard" className="space-y-6 mt-0">
-
-      <div className="grid gap-5 stagger lg:grid-cols-3">
-        {/* ELECTRICITY */}
-        <MetricCard label="Électricité" icon={<Zap className="h-4 w-4 anim-glow" />}>
-          <div className="mt-4 flex items-baseline gap-1.5">
-            <span className="font-serif text-2xl tracking-tight">{electricity.dailyKWh}</span>
-            <span className="text-base text-muted-foreground">kWh / jour</span>
-          </div>
-          <div className="mt-2"><TrendBadge trend={electricity.trend} pct={electricity.trendPct} /></div>
-
-          <p className="mt-2 text-sm text-muted-foreground">
-            <span className="font-serif tabular-nums text-foreground">{electricity.monthKWh} kWh</span> en {coveredMonthLabel}
-          </p>
-
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            <div className="rounded-xl bg-secondary/60 p-3">
-              <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Sun className="h-3.5 w-3.5 text-warm" /> Jour
-              </p>
-              <p className="mt-1 font-serif text-lg tabular-nums">{electricity.dayTotal}<span className="ml-1 text-xs text-muted-foreground">kWh</span></p>
-            </div>
-            <div className="rounded-xl bg-secondary/60 p-3">
-              <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Moon className="h-3.5 w-3.5 text-foreground/70" /> Nuit
-              </p>
-              <p className="mt-1 font-serif text-lg tabular-nums">{electricity.nightTotal}<span className="ml-1 text-xs text-muted-foreground">kWh</span></p>
-            </div>
-          </div>
-
-          <div className="mt-auto pt-5">
-            <Sparkline data={elecSeries} />
-          </div>
-        </MetricCard>
-
-        {/* WATER */}
-        <MetricCard label="Eau" icon={<Droplet className="h-4 w-4 anim-float" />}>
-          <div className="mt-4 flex items-baseline gap-1.5">
-            <span className="font-serif text-2xl tracking-tight">{water.dailyM3}</span>
-            <span className="text-base text-muted-foreground">m³ / jour</span>
-          </div>
-          <div className="mt-2"><TrendBadge trend={water.trend} pct={water.trendPct} suffix="vs période préc." /></div>
-          <p className="mt-2 text-sm text-muted-foreground tabular-nums">≈ {water.dailyL} L par jour</p>
-
-          <div className="mt-5 rounded-xl bg-secondary/60 p-3 text-sm text-muted-foreground">
-            Tendance stable sur les 30 derniers jours — aucune anomalie détectée.
-          </div>
-
-          <div className="mt-auto pt-5">
-            <Sparkline data={waterSeries} />
-          </div>
-        </MetricCard>
-
-        {/* OIL */}
-        <MetricCard
-          label="Mazout"
-          icon={<Flame className={"h-4 w-4 " + (oil.status === "alert" ? "anim-wiggle" : "anim-breathe")} />}
-          accent={oil.status === "alert" ? "warm" : "primary"}
-          alert={oil.status === "alert"}
-        >
-          <div className="mt-4 flex items-baseline gap-1.5">
-            <span className="font-serif text-2xl tracking-tight">{oil.tankPct}</span>
-            <span className="text-base text-muted-foreground">% citerne</span>
-          </div>
-          <p className="mt-0.5 text-sm text-muted-foreground tabular-nums">
-            {oil.tankLiters.toLocaleString("fr-BE")} / {oil.tankCapacity.toLocaleString("fr-BE")} L
-          </p>
-
-          <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-secondary">
-            <div
-              className={"h-full rounded-full transition-all duration-700 " + (oil.status === "alert" ? "bg-warm" : "bg-primary")}
-              style={{ width: `${oil.tankPct}%` }}
-            />
-          </div>
-
-          {oil.status === "alert" && (
-            <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-warm/15 px-2.5 py-1 text-sm text-warm">
-              <span className="relative grid h-5 w-5 place-items-center rounded-full anim-pulse-ring">
-                <AlertTriangle className="h-3.5 w-3.5" />
-              </span>
-              <span className="font-semibold tracking-tight">Niveau faible — prévoir une commande</span>
-            </div>
-          )}
-
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            <div className="rounded-xl bg-secondary/60 p-3">
-              <p className="text-xs text-muted-foreground">30 derniers jours</p>
-              <p className="mt-1 font-serif text-lg tabular-nums">{oil.last30dLiters}<span className="ml-1 text-xs text-muted-foreground">L</span></p>
-            </div>
-            <div className="rounded-xl bg-secondary/60 p-3">
-              <p className="text-xs text-muted-foreground">Autonomie</p>
-              <p className={"mt-1 font-serif text-lg tabular-nums " + (oil.status === "alert" ? "text-warm" : "")}>~{oil.autonomyDays}<span className="ml-1 text-xs text-muted-foreground">j</span></p>
-            </div>
-          </div>
-
-          <div className="mt-auto pt-5">
-            <Sparkline data={oilSeries} />
-          </div>
-        </MetricCard>
-      </div>
-
-      {/* HISTORY CHART */}
-      <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-6 anim-slide-up">
-        <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <div className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-                <DomainIcon className="h-4 w-4" />
-              </span>
-              <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">Historique {cfg.label.toLowerCase()}</h2>
-            </div>
-            <p className="mt-1 text-sm text-muted-foreground">12 derniers mois — vue glissante</p>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            {/* Domain switcher */}
-            <Tabs value={domain} onValueChange={(v) => setDomain(v as Domain)}>
-              <TabsList className="h-10 bg-secondary/70 p-1">
-                {(Object.keys(domainConfig) as Domain[]).map((d) => {
-                  const Icon = domainConfig[d].icon;
-                  return (
-                    <TabsTrigger key={d} value={d} className="gap-1.5 px-3">
-                      <Icon className="h-3.5 w-3.5" />
-                      {domainConfig[d].label}
-                    </TabsTrigger>
-                  );
-                })}
-              </TabsList>
-            </Tabs>
-            <span className="flex w-full flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground sm:w-auto">
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-sm bg-primary" /> Relevé
-              </span>
-              {domain === "elec" && (
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-sm bg-success/70" /> Injection solaire
-                </span>
-              )}
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-sm border border-dashed border-muted-foreground/60" /> Projeté
-              </span>
-            </span>
-          </div>
-        </header>
-
-        <ChartContainer config={{}} className="aspect-auto h-56 w-full">
-          <BarChart data={chartData} margin={{ top: 8, right: 0, bottom: 0, left: 0 }} barCategoryGap="18%">
-            <YAxis hide domain={[maxNeg > 0 ? -maxNeg : 0, maxPos]} />
-            <XAxis
-              dataKey="label"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              interval={0}
-              tick={<MonthTick currentIdx={latestRecordedIdx} />}
-            />
-            {maxNeg > 0 && <ReferenceLine y={0} stroke="var(--border)" />}
-            <ChartTooltip cursor={{ fill: "var(--muted)", fillOpacity: 0.4 }} content={<HistoTooltip unit={cfg.unit} />} />
-            <Bar dataKey="value" maxBarSize={60} radius={[6, 6, 0, 0]} isAnimationActive={false}>
-              {chartData.map((d, i) => (
-                <Cell key={i} {...barStyle(d)} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ChartContainer>
-
-        {/* Year axis */}
-        <div className="mt-2 flex gap-2 sm:gap-3">
-          {yearGroups.map((g) => {
-            const span = g.end - g.start + 1;
-            return (
-              <div
-                key={g.year}
-                className="flex min-w-0 items-center justify-center border-t border-border/60 pt-1.5 text-xs uppercase tracking-eyebrow text-muted-foreground"
-                style={{ flex: span }}
-              >
-                {g.year}
+          <div className="grid gap-5 stagger lg:grid-cols-3">
+            {/* ELECTRICITY */}
+            <MetricCard label="Électricité" icon={<Zap className="h-4 w-4 anim-glow" />}>
+              <div className="mt-4 flex items-baseline gap-1.5">
+                <span className="font-serif text-2xl tracking-tight">{electricity.dailyKWh}</span>
+                <span className="text-base text-muted-foreground">kWh / jour</span>
               </div>
-            );
-          })}
-        </div>
+              <div className="mt-2">
+                <TrendBadge trend={electricity.trend} pct={electricity.trendPct} />
+              </div>
 
-        <p className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Sparkles className="h-3 w-3" />
-          Les barres en pointillés sont des estimations basées sur la moyenne récente, en l'absence de relevé.
-        </p>
-      </div>
+              <p className="mt-2 text-sm text-muted-foreground">
+                <span className="font-serif tabular-nums text-foreground">
+                  {electricity.monthKWh} kWh
+                </span>{" "}
+                en {coveredMonthLabel}
+              </p>
+
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <div className="rounded-xl bg-secondary/60 p-3">
+                  <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Sun className="h-3.5 w-3.5 text-warm" /> Jour
+                  </p>
+                  <p className="mt-1 font-serif text-lg tabular-nums">
+                    {electricity.dayTotal}
+                    <span className="ml-1 text-xs text-muted-foreground">kWh</span>
+                  </p>
+                </div>
+                <div className="rounded-xl bg-secondary/60 p-3">
+                  <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Moon className="h-3.5 w-3.5 text-foreground/70" /> Nuit
+                  </p>
+                  <p className="mt-1 font-serif text-lg tabular-nums">
+                    {electricity.nightTotal}
+                    <span className="ml-1 text-xs text-muted-foreground">kWh</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-auto pt-5">
+                <Sparkline data={elecSeries} />
+              </div>
+            </MetricCard>
+
+            {/* WATER */}
+            <MetricCard label="Eau" icon={<Droplet className="h-4 w-4 anim-float" />}>
+              <div className="mt-4 flex items-baseline gap-1.5">
+                <span className="font-serif text-2xl tracking-tight">{water.dailyM3}</span>
+                <span className="text-base text-muted-foreground">m³ / jour</span>
+              </div>
+              <div className="mt-2">
+                <TrendBadge trend={water.trend} pct={water.trendPct} suffix="vs période préc." />
+              </div>
+              <p className="mt-2 text-sm text-muted-foreground tabular-nums">
+                ≈ {water.dailyL} L par jour
+              </p>
+
+              <div className="mt-5 rounded-xl bg-secondary/60 p-3 text-sm text-muted-foreground">
+                Tendance stable sur les 30 derniers jours — aucune anomalie détectée.
+              </div>
+
+              <div className="mt-auto pt-5">
+                <Sparkline data={waterSeries} />
+              </div>
+            </MetricCard>
+
+            {/* OIL */}
+            <MetricCard
+              label="Mazout"
+              icon={
+                <Flame
+                  className={"h-4 w-4 " + (oil.status === "alert" ? "anim-wiggle" : "anim-breathe")}
+                />
+              }
+              accent={oil.status === "alert" ? "warm" : "primary"}
+              alert={oil.status === "alert"}
+            >
+              <div className="mt-4 flex items-baseline gap-1.5">
+                <span className="font-serif text-2xl tracking-tight">{oil.tankPct}</span>
+                <span className="text-base text-muted-foreground">% citerne</span>
+              </div>
+              <p className="mt-0.5 text-sm text-muted-foreground tabular-nums">
+                {oil.tankLiters.toLocaleString("fr-BE")} /{" "}
+                {oil.tankCapacity.toLocaleString("fr-BE")} L
+              </p>
+
+              <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-secondary">
+                <div
+                  className={
+                    "h-full rounded-full transition-all duration-700 " +
+                    (oil.status === "alert" ? "bg-warm" : "bg-primary")
+                  }
+                  style={{ width: `${oil.tankPct}%` }}
+                />
+              </div>
+
+              {oil.status === "alert" && (
+                <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-warm/15 px-2.5 py-1 text-sm text-warm">
+                  <span className="relative grid h-5 w-5 place-items-center rounded-full anim-pulse-ring">
+                    <AlertTriangle className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="font-semibold tracking-tight">
+                    Niveau faible — prévoir une commande
+                  </span>
+                </div>
+              )}
+
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                <div className="rounded-xl bg-secondary/60 p-3">
+                  <p className="text-xs text-muted-foreground">30 derniers jours</p>
+                  <p className="mt-1 font-serif text-lg tabular-nums">
+                    {oil.last30dLiters}
+                    <span className="ml-1 text-xs text-muted-foreground">L</span>
+                  </p>
+                </div>
+                <div className="rounded-xl bg-secondary/60 p-3">
+                  <p className="text-xs text-muted-foreground">Autonomie</p>
+                  <p
+                    className={
+                      "mt-1 font-serif text-lg tabular-nums " +
+                      (oil.status === "alert" ? "text-warm" : "")
+                    }
+                  >
+                    ~{oil.autonomyDays}
+                    <span className="ml-1 text-xs text-muted-foreground">j</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-auto pt-5">
+                <Sparkline data={oilSeries} />
+              </div>
+            </MetricCard>
+          </div>
+
+          {/* HISTORY CHART */}
+          <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-6 anim-slide-up">
+            <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-2.5">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                    <DomainIcon className="h-4 w-4" />
+                  </span>
+                  <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">
+                    Historique {cfg.label.toLowerCase()}
+                  </h2>
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  12 derniers mois — vue glissante
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                {/* Domain switcher */}
+                <Tabs value={domain} onValueChange={(v) => setDomain(v as Domain)}>
+                  <TabsList className="h-10 bg-secondary/70 p-1">
+                    {(Object.keys(domainConfig) as Domain[]).map((d) => {
+                      const Icon = domainConfig[d].icon;
+                      return (
+                        <TabsTrigger key={d} value={d} className="gap-1.5 px-3">
+                          <Icon className="h-3.5 w-3.5" />
+                          {domainConfig[d].label}
+                        </TabsTrigger>
+                      );
+                    })}
+                  </TabsList>
+                </Tabs>
+                <span className="flex w-full flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground sm:w-auto">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-sm bg-primary" /> Relevé
+                  </span>
+                  {domain === "elec" && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <span className="h-2.5 w-2.5 rounded-sm bg-success/70" /> Injection solaire
+                    </span>
+                  )}
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-sm border border-dashed border-muted-foreground/60" />{" "}
+                    Projeté
+                  </span>
+                </span>
+              </div>
+            </header>
+
+            <ChartContainer config={{}} className="aspect-auto h-56 w-full">
+              <BarChart
+                data={chartData}
+                margin={{ top: 8, right: 0, bottom: 0, left: 0 }}
+                barCategoryGap="18%"
+              >
+                <YAxis hide domain={[maxNeg > 0 ? -maxNeg : 0, maxPos]} />
+                <XAxis
+                  dataKey="label"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  interval={0}
+                  tick={<MonthTick currentIdx={latestRecordedIdx} />}
+                />
+                {maxNeg > 0 && <ReferenceLine y={0} stroke="var(--border)" />}
+                <ChartTooltip
+                  cursor={{ fill: "var(--muted)", fillOpacity: 0.4 }}
+                  content={<HistoTooltip unit={cfg.unit} />}
+                />
+                <Bar
+                  dataKey="value"
+                  maxBarSize={60}
+                  radius={[6, 6, 0, 0]}
+                  isAnimationActive={false}
+                >
+                  {chartData.map((d, i) => (
+                    <Cell key={i} {...barStyle(d)} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ChartContainer>
+
+            {/* Year axis */}
+            <div className="mt-2 flex gap-2 sm:gap-3">
+              {yearGroups.map((g) => {
+                const span = g.end - g.start + 1;
+                return (
+                  <div
+                    key={g.year}
+                    className="flex min-w-0 items-center justify-center border-t border-border/60 pt-1.5 text-xs uppercase tracking-eyebrow text-muted-foreground"
+                    style={{ flex: span }}
+                  >
+                    {g.year}
+                  </div>
+                );
+              })}
+            </div>
+
+            <p className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Sparkles className="h-3 w-3" />
+              Les barres en pointillés sont des estimations basées sur la moyenne récente, en
+              l'absence de relevé.
+            </p>
+          </div>
         </TabsContent>
 
         <TabsContent value="relevés" className="mt-0">
@@ -516,14 +718,55 @@ type ReleveRow = {
   solar: number;
 };
 
-const monthNames = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+const monthNames = [
+  "janvier",
+  "février",
+  "mars",
+  "avril",
+  "mai",
+  "juin",
+  "juillet",
+  "août",
+  "septembre",
+  "octobre",
+  "novembre",
+  "décembre",
+];
 
-const typeMeta: Record<Exclude<ReleveType, "all">, { label: string; unit: string; icon: React.ReactNode; tone: string }> = {
-  eau: { label: "Eau", unit: "m³", icon: <Droplet className="h-3.5 w-3.5" />, tone: "text-primary" },
-  jour: { label: "Élec. jour", unit: "kWh", icon: <Sun className="h-3.5 w-3.5" />, tone: "text-warm" },
-  nuit: { label: "Élec. nuit", unit: "kWh", icon: <Moon className="h-3.5 w-3.5" />, tone: "text-foreground/70" },
-  mazout: { label: "Mazout", unit: "L", icon: <Flame className="h-3.5 w-3.5" />, tone: "text-warm" },
-  solar: { label: "Solaire", unit: "kWh", icon: <SunMedium className="h-3.5 w-3.5" />, tone: "text-success" },
+const typeMeta: Record<
+  Exclude<ReleveType, "all">,
+  { label: string; unit: string; icon: React.ReactNode; tone: string }
+> = {
+  eau: {
+    label: "Eau",
+    unit: "m³",
+    icon: <Droplet className="h-3.5 w-3.5" />,
+    tone: "text-primary",
+  },
+  jour: {
+    label: "Élec. jour",
+    unit: "kWh",
+    icon: <Sun className="h-3.5 w-3.5" />,
+    tone: "text-warm",
+  },
+  nuit: {
+    label: "Élec. nuit",
+    unit: "kWh",
+    icon: <Moon className="h-3.5 w-3.5" />,
+    tone: "text-foreground/70",
+  },
+  mazout: {
+    label: "Mazout",
+    unit: "L",
+    icon: <Flame className="h-3.5 w-3.5" />,
+    tone: "text-warm",
+  },
+  solar: {
+    label: "Solaire",
+    unit: "kWh",
+    icon: <SunMedium className="h-3.5 w-3.5" />,
+    tone: "text-success",
+  },
 };
 
 function buildInitialReleves(): ReleveRow[] {
@@ -562,24 +805,39 @@ function ReleveList() {
     setEditing(row.id);
     setDraft({ ...row });
   };
-  const cancel = () => { setEditing(null); setDraft({}); };
+  const cancel = () => {
+    setEditing(null);
+    setDraft({});
+  };
   const save = () => {
-    setRows((rs) => rs.map((r) => (r.id === editing ? { ...r, ...draft } as ReleveRow : r)));
+    setRows((rs) => rs.map((r) => (r.id === editing ? ({ ...r, ...draft } as ReleveRow) : r)));
     cancel();
   };
 
   const rowActions = (row: ReleveRow, isEditing: boolean) =>
     isEditing ? (
       <div className="inline-flex gap-1">
-        <button onClick={save} className="grid h-7 w-7 place-items-center rounded-md bg-foreground text-background hover:opacity-90" aria-label="Enregistrer">
+        <button
+          onClick={save}
+          className="grid h-7 w-7 place-items-center rounded-md bg-foreground text-background hover:opacity-90"
+          aria-label="Enregistrer"
+        >
           <Check className="h-3.5 w-3.5" />
         </button>
-        <button onClick={cancel} className="grid h-7 w-7 place-items-center rounded-md border border-border hover:bg-secondary" aria-label="Annuler">
+        <button
+          onClick={cancel}
+          className="grid h-7 w-7 place-items-center rounded-md border border-border hover:bg-secondary"
+          aria-label="Annuler"
+        >
           <X className="h-3.5 w-3.5" />
         </button>
       </div>
     ) : (
-      <button onClick={() => startEdit(row)} className="grid h-7 w-7 place-items-center rounded-md border border-border/60 text-muted-foreground hover:text-foreground hover:bg-secondary" aria-label="Modifier">
+      <button
+        onClick={() => startEdit(row)}
+        className="grid h-7 w-7 place-items-center rounded-md border border-border/60 text-muted-foreground hover:text-foreground hover:bg-secondary"
+        aria-label="Modifier"
+      >
         <Pencil className="h-3.5 w-3.5" />
       </button>
     );
@@ -588,13 +846,19 @@ function ReleveList() {
     <div className="rounded-2xl border border-border/60 bg-card shadow-soft overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-5 py-4">
         <div>
-          <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">Historique des relevés</h2>
-          <p className="text-xs text-muted-foreground mt-0.5">{rows.length} entrées — modifiables</p>
+          <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">
+            Historique des relevés
+          </h2>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {rows.length} entrées — modifiables
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground">Type</span>
           <Select value={filter} onValueChange={(v) => setFilter(v as ReleveType)}>
-            <SelectTrigger className="h-9 w-[170px]"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-9 w-[170px]">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tous les types</SelectItem>
               <SelectItem value="eau">Eau</SelectItem>
@@ -618,7 +882,9 @@ function ReleveList() {
                   <div className={"flex items-center justify-end gap-1.5 " + typeMeta[c].tone}>
                     {typeMeta[c].icon}
                     {typeMeta[c].label}
-                    <span className="font-normal normal-case text-muted-foreground/70">{typeMeta[c].unit}</span>
+                    <span className="font-normal normal-case text-muted-foreground/70">
+                      {typeMeta[c].unit}
+                    </span>
                   </div>
                 </TableHead>
               ))}
@@ -633,9 +899,15 @@ function ReleveList() {
               return (
                 <TableRow key={row.id}>
                   <TableCell className="px-5 py-3">
-                    <p className="font-semibold capitalize">{monthNames[covered.getMonth()]} {covered.getFullYear()}</p>
+                    <p className="font-semibold capitalize">
+                      {monthNames[covered.getMonth()]} {covered.getFullYear()}
+                    </p>
                     <p className="text-xs text-muted-foreground">
-                      {d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}
+                      {d.toLocaleDateString("fr-BE", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </p>
                   </TableCell>
                   {visibleCols.map((c) => (
@@ -644,8 +916,10 @@ function ReleveList() {
                         <Input
                           type="number"
                           step="0.1"
-                          value={String((draft as any)[c] ?? row[c])}
-                          onChange={(e) => setDraft((dr) => ({ ...dr, [c]: Number(e.target.value) }))}
+                          value={String((draft as Record<string, number>)[c] ?? row[c])}
+                          onChange={(e) =>
+                            setDraft((dr) => ({ ...dr, [c]: Number(e.target.value) }))
+                          }
                           className="ml-auto h-8 w-24 text-right"
                         />
                       ) : (
@@ -653,7 +927,9 @@ function ReleveList() {
                       )}
                     </TableCell>
                   ))}
-                  <TableCell className="px-3 py-3 text-right">{rowActions(row, isEditing)}</TableCell>
+                  <TableCell className="px-3 py-3 text-right">
+                    {rowActions(row, isEditing)}
+                  </TableCell>
                 </TableRow>
               );
             })}
@@ -671,17 +947,32 @@ function ReleveList() {
             <div key={row.id} className="p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-semibold capitalize">{monthNames[covered.getMonth()]} {covered.getFullYear()}</p>
+                  <p className="font-semibold capitalize">
+                    {monthNames[covered.getMonth()]} {covered.getFullYear()}
+                  </p>
                   <p className="text-xs text-muted-foreground">
-                    {d.toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" })}
+                    {d.toLocaleDateString("fr-BE", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </p>
                 </div>
                 {rowActions(row, isEditing)}
               </div>
-              <div className={"mt-3 grid gap-2 " + (visibleCols.length === 1 ? "grid-cols-1" : "grid-cols-2")}>
+              <div
+                className={
+                  "mt-3 grid gap-2 " + (visibleCols.length === 1 ? "grid-cols-1" : "grid-cols-2")
+                }
+              >
                 {visibleCols.map((c) => (
                   <div key={c} className="rounded-lg bg-secondary/50 px-3 py-2">
-                    <p className={"inline-flex items-center gap-1.5 text-2xs uppercase tracking-eyebrow " + typeMeta[c].tone}>
+                    <p
+                      className={
+                        "inline-flex items-center gap-1.5 text-2xs uppercase tracking-eyebrow " +
+                        typeMeta[c].tone
+                      }
+                    >
                       {typeMeta[c].icon}
                       {typeMeta[c].label}
                     </p>
@@ -689,13 +980,16 @@ function ReleveList() {
                       <Input
                         type="number"
                         step="0.1"
-                        value={String((draft as any)[c] ?? row[c])}
+                        value={String((draft as Record<string, number>)[c] ?? row[c])}
                         onChange={(e) => setDraft((dr) => ({ ...dr, [c]: Number(e.target.value) }))}
                         className="mt-1 h-8 w-full tabular-nums"
                       />
                     ) : (
                       <p className="mt-0.5 font-serif text-base tabular-nums">
-                        {row[c]}<span className="ml-1 text-xs text-muted-foreground">{typeMeta[c].unit}</span>
+                        {row[c]}
+                        <span className="ml-1 text-xs text-muted-foreground">
+                          {typeMeta[c].unit}
+                        </span>
                       </p>
                     )}
                   </div>

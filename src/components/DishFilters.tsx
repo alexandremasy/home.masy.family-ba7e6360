@@ -1,6 +1,12 @@
 import type { Dish, Base, Densite, Temperature } from "@/lib/maison-data";
 import { Package, Repeat, Zap, X } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cap } from "@/lib/utils";
 
 /** Radix Select rejects "" as a value — the all-bases option needs a real one. */
@@ -20,8 +26,12 @@ export interface DishFilter {
 }
 
 export const EMPTY_FILTER: DishFilter = {
-  base: null, densite: null, temperature: null,
-  emportable: false, rapide: false, batch: false,
+  base: null,
+  densite: null,
+  temperature: null,
+  emportable: false,
+  rapide: false,
+  batch: false,
 };
 
 export function isFilterActive(f: DishFilter): boolean {
@@ -30,8 +40,14 @@ export function isFilterActive(f: DishFilter): boolean {
 
 /** How many axes are narrowed — so a collapsed filter bar can still say so. */
 export function countFilters(f: DishFilter): number {
-  return [f.base, f.densite, f.temperature, f.emportable || null, f.rapide || null, f.batch || null]
-    .filter(Boolean).length;
+  return [
+    f.base,
+    f.densite,
+    f.temperature,
+    f.emportable || null,
+    f.rapide || null,
+    f.batch || null,
+  ].filter(Boolean).length;
 }
 
 export function applyFilter(list: Dish[], f: DishFilter, query = ""): Dish[] {
@@ -43,14 +59,25 @@ export function applyFilter(list: Dish[], f: DishFilter, query = ""): Dish[] {
     if (f.emportable && !d.emportable) return false;
     if (f.rapide && d.effort > 1) return false;
     if (f.batch && d.rendement < 2) return false;
-    if (q && !d.name.toLowerCase().includes(q) && !d.modifiers.some((m) => m.name.toLowerCase().includes(q))) return false;
+    if (
+      q &&
+      !d.name.toLowerCase().includes(q) &&
+      !d.modifiers.some((m) => m.name.toLowerCase().includes(q))
+    )
+      return false;
     return true;
   });
 }
 
 function Chip({
-  active, onClick, children,
-}: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
       type="button"
@@ -68,40 +95,54 @@ function Chip({
 }
 
 export function DishFilters({
-  value, onChange, bases,
+  value,
+  onChange,
+  bases,
 }: {
   value: DishFilter;
   onChange: (f: DishFilter) => void;
   /** Bases actually present in the list being filtered — no dead options. */
   bases: Base[];
 }) {
-  const set = <K extends keyof DishFilter>(k: K, v: DishFilter[K]) => onChange({ ...value, [k]: v });
+  const set = <K extends keyof DishFilter>(k: K, v: DishFilter[K]) =>
+    onChange({ ...value, [k]: v });
   const toggle = <K extends keyof DishFilter>(k: K, v: DishFilter[K]) =>
     set(k, (value[k] === v ? null : v) as DishFilter[K]);
 
   return (
     <div className="flex flex-wrap items-center gap-1.5">
-      <Chip active={value.densite === "complet"} onClick={() => toggle("densite", "complet")}>Complet</Chip>
-      <Chip active={value.densite === "léger"} onClick={() => toggle("densite", "léger")}>Léger</Chip>
+      <Chip active={value.densite === "complet"} onClick={() => toggle("densite", "complet")}>
+        Complet
+      </Chip>
+      <Chip active={value.densite === "léger"} onClick={() => toggle("densite", "léger")}>
+        Léger
+      </Chip>
 
       <span className="mx-0.5 h-4 w-px bg-border" />
 
-      <Chip active={value.temperature === "chaud"} onClick={() => toggle("temperature", "chaud")}>Chaud</Chip>
-      <Chip active={value.temperature === "froid"} onClick={() => toggle("temperature", "froid")}>Froid</Chip>
+      <Chip active={value.temperature === "chaud"} onClick={() => toggle("temperature", "chaud")}>
+        Chaud
+      </Chip>
+      <Chip active={value.temperature === "froid"} onClick={() => toggle("temperature", "froid")}>
+        Froid
+      </Chip>
 
       <span className="mx-0.5 h-4 w-px bg-border" />
 
       <Chip active={value.emportable} onClick={() => set("emportable", !value.emportable)}>
-        <Package className="h-3 w-3" />Emportable
+        <Package className="h-3 w-3" />
+        Emportable
       </Chip>
       <Chip active={value.rapide} onClick={() => set("rapide", !value.rapide)}>
-        <Zap className="h-3 w-3" />Rapide
+        <Zap className="h-3 w-3" />
+        Rapide
       </Chip>
       {/* Same wording as the card's "Couvre N repas" tag — it filters on the very
           same property (rendement ≥ 2). "Batch" said nothing and collided with
           two other meanings of the word. */}
       <Chip active={value.batch} onClick={() => set("batch", !value.batch)}>
-        <Repeat className="h-3 w-3" />Couvre 2+ repas
+        <Repeat className="h-3 w-3" />
+        Couvre 2+ repas
       </Chip>
 
       <span className="mx-0.5 h-4 w-px bg-border" />
@@ -115,14 +156,20 @@ export function DishFilters({
           aria-label="Filtrer par base"
           className={
             "h-[26px] w-auto shrink-0 gap-1 rounded-full px-2.5 text-xs shadow-none " +
-            (value.base ? "border-foreground bg-foreground text-background" : "border-border/60 bg-transparent text-muted-foreground")
+            (value.base
+              ? "border-foreground bg-foreground text-background"
+              : "border-border/60 bg-transparent text-muted-foreground")
           }
         >
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value={ALL_BASES}>Toutes les bases</SelectItem>
-          {bases.map((b) => <SelectItem key={b} value={b} className="capitalize">{cap(b)}</SelectItem>)}
+          {bases.map((b) => (
+            <SelectItem key={b} value={b} className="capitalize">
+              {cap(b)}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
 
@@ -132,7 +179,8 @@ export function DishFilters({
           onClick={() => onChange(EMPTY_FILTER)}
           className="inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
         >
-          <X className="h-3 w-3" />Effacer
+          <X className="h-3 w-3" />
+          Effacer
         </button>
       )}
     </div>

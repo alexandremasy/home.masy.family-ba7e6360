@@ -9,6 +9,8 @@ export const getRouter = () => {
     routeTree,
     context: { queryClient },
     scrollRestoration: true,
+    // Prefetch a route on intent (hover/touch-start) so it's warm on navigate.
+    defaultPreload: "intent",
     defaultPreloadStaleTime: 0,
   });
 

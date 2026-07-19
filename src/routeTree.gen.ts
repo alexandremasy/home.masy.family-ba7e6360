@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as McpRouteImport } from './routes/mcp'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTeslaRouteImport } from './routes/_app.tesla'
@@ -18,8 +17,6 @@ import { Route as AppRepasRouteImport } from './routes/_app.repas'
 import { Route as AppDesignSystemRouteImport } from './routes/_app.design-system'
 import { Route as AppBudgetRouteImport } from './routes/_app.budget'
 import { Route as AppAnniversairesRouteImport } from './routes/_app.anniversaires'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
-import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AppSecuriteIndexRouteImport } from './routes/_app.securite.index'
 import { Route as AppRepasIndexRouteImport } from './routes/_app.repas.index'
 import { Route as AppEnergieIndexRouteImport } from './routes/_app.energie.index'
@@ -40,17 +37,11 @@ import { Route as AppBudgetPlanificationRouteImport } from './routes/_app.budget
 import { Route as AppBudgetMensuelRouteImport } from './routes/_app.budget.mensuel'
 import { Route as AppBudgetImportRouteImport } from './routes/_app.budget.import'
 import { Route as AppBudgetAnnuelRouteImport } from './routes/_app.budget.annuel'
-import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as AppRepasPlatsIndexRouteImport } from './routes/_app.repas.plats.index'
 import { Route as AppRepasPlatsNouveauRouteImport } from './routes/_app.repas.plats.nouveau'
 import { Route as AppRepasPlatsDishIdRouteImport } from './routes/_app.repas.plats.$dishId'
 import { Route as AppBudgetVueReserveRouteImport } from './routes/_app.budget.vue.reserve'
 
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -90,18 +81,6 @@ const AppAnniversairesRoute = AppAnniversairesRouteImport.update({
   path: '/anniversaires',
   getParentRoute: () => AppRoute,
 } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const Char91DotmcpChar93ListToolsRoute =
-  Char91DotmcpChar93ListToolsRouteImport.update({
-    id: '/.mcp/list-tools',
-    path: '/.mcp/list-tools',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const AppSecuriteIndexRoute = AppSecuriteIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -202,12 +181,6 @@ const AppBudgetAnnuelRoute = AppBudgetAnnuelRouteImport.update({
   path: '/annuel',
   getParentRoute: () => AppBudgetRoute,
 } as any)
-const Char91DotmcpChar93InvokeToolToolRoute =
-  Char91DotmcpChar93InvokeToolToolRouteImport.update({
-    id: '/.mcp/invoke-tool/$tool',
-    path: '/.mcp/invoke-tool/$tool',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const AppRepasPlatsIndexRoute = AppRepasPlatsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -231,16 +204,12 @@ const AppBudgetVueReserveRoute = AppBudgetVueReserveRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
-  '/mcp': typeof McpRoute
-  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/anniversaires': typeof AppAnniversairesRouteWithChildren
   '/budget': typeof AppBudgetRouteWithChildren
   '/design-system': typeof AppDesignSystemRoute
   '/repas': typeof AppRepasRouteWithChildren
   '/securite': typeof AppSecuriteRouteWithChildren
   '/tesla': typeof AppTeslaRoute
-  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/budget/annuel': typeof AppBudgetAnnuelRoute
   '/budget/import': typeof AppBudgetImportRoute
   '/budget/mensuel': typeof AppBudgetMensuelRoute
@@ -267,13 +236,9 @@ export interface FileRoutesByFullPath {
   '/repas/plats/': typeof AppRepasPlatsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/mcp': typeof McpRoute
-  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/design-system': typeof AppDesignSystemRoute
   '/tesla': typeof AppTeslaRoute
   '/': typeof AppIndexRoute
-  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/budget/annuel': typeof AppBudgetAnnuelRoute
   '/budget/import': typeof AppBudgetImportRoute
   '/budget/mensuel': typeof AppBudgetMensuelRoute
@@ -301,9 +266,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
-  '/mcp': typeof McpRoute
-  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_app/anniversaires': typeof AppAnniversairesRouteWithChildren
   '/_app/budget': typeof AppBudgetRouteWithChildren
   '/_app/design-system': typeof AppDesignSystemRoute
@@ -311,7 +273,6 @@ export interface FileRoutesById {
   '/_app/securite': typeof AppSecuriteRouteWithChildren
   '/_app/tesla': typeof AppTeslaRoute
   '/_app/': typeof AppIndexRoute
-  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_app/budget/annuel': typeof AppBudgetAnnuelRoute
   '/_app/budget/import': typeof AppBudgetImportRoute
   '/_app/budget/mensuel': typeof AppBudgetMensuelRoute
@@ -341,16 +302,12 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/mcp'
-    | '/.mcp/list-tools'
-    | '/.well-known/oauth-protected-resource'
     | '/anniversaires'
     | '/budget'
     | '/design-system'
     | '/repas'
     | '/securite'
     | '/tesla'
-    | '/.mcp/invoke-tool/$tool'
     | '/budget/annuel'
     | '/budget/import'
     | '/budget/mensuel'
@@ -377,13 +334,9 @@ export interface FileRouteTypes {
     | '/repas/plats/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/mcp'
-    | '/.mcp/list-tools'
-    | '/.well-known/oauth-protected-resource'
     | '/design-system'
     | '/tesla'
     | '/'
-    | '/.mcp/invoke-tool/$tool'
     | '/budget/annuel'
     | '/budget/import'
     | '/budget/mensuel'
@@ -410,9 +363,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
-    | '/mcp'
-    | '/.mcp/list-tools'
-    | '/.well-known/oauth-protected-resource'
     | '/_app/anniversaires'
     | '/_app/budget'
     | '/_app/design-system'
@@ -420,7 +370,6 @@ export interface FileRouteTypes {
     | '/_app/securite'
     | '/_app/tesla'
     | '/_app/'
-    | '/.mcp/invoke-tool/$tool'
     | '/_app/budget/annuel'
     | '/_app/budget/import'
     | '/_app/budget/mensuel'
@@ -449,21 +398,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
-  McpRoute: typeof McpRoute
-  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
-  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
-  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -519,20 +457,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/anniversaires'
       preLoaderRoute: typeof AppAnniversairesRouteImport
       parentRoute: typeof AppRoute
-    }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/.mcp/list-tools': {
-      id: '/.mcp/list-tools'
-      path: '/.mcp/list-tools'
-      fullPath: '/.mcp/list-tools'
-      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/_app/securite/': {
       id: '/_app/securite/'
@@ -673,13 +597,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/budget/annuel'
       preLoaderRoute: typeof AppBudgetAnnuelRouteImport
       parentRoute: typeof AppBudgetRoute
-    }
-    '/.mcp/invoke-tool/$tool': {
-      id: '/.mcp/invoke-tool/$tool'
-      path: '/.mcp/invoke-tool/$tool'
-      fullPath: '/.mcp/invoke-tool/$tool'
-      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/_app/repas/plats/': {
       id: '/_app/repas/plats/'
@@ -843,22 +760,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
-  McpRoute: McpRoute,
-  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
-  Char91DotwellKnownChar93OauthProtectedResourceRoute:
-    Char91DotwellKnownChar93OauthProtectedResourceRoute,
-  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

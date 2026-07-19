@@ -22,8 +22,14 @@ const animMap: Record<WeatherCond, string> = {
 };
 
 export function WeatherIcon({
-  cond, className, animated = true,
-}: { cond: WeatherCond; className?: string; animated?: boolean }) {
+  cond,
+  className,
+  animated = true,
+}: {
+  cond: WeatherCond;
+  className?: string;
+  animated?: boolean;
+}) {
   const Icon = iconMap[cond];
   const anim = animated ? " " + animMap[cond] : "";
   return <Icon className={(className ?? "") + anim} />;

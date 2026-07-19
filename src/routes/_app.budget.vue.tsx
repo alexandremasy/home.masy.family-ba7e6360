@@ -1,21 +1,53 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
-  Area, AreaChart, CartesianGrid, ComposedChart, Line, ReferenceLine,
-  ResponsiveContainer, Tooltip as RTooltip, XAxis, YAxis,
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ComposedChart,
+  Line,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip as RTooltip,
+  XAxis,
+  YAxis,
 } from "recharts";
 import {
-  ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, PiggyBank, Sparkles,
-  TrendingUp, TrendingDown, Clock, CheckCircle2, CalendarClock,
+  ArrowLeft,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  PiggyBank,
+  Sparkles,
+  TrendingUp,
+  TrendingDown,
+  Clock,
+  CheckCircle2,
+  CalendarClock,
 } from "lucide-react";
 import { CountUp } from "@/components/CountUp";
 import {
-  categories, postesSeed, MONTHS_FR, MONTHS_FR_LONG, eur,
-  temporalState, currentMonthIdx, currentYear, incomeSources,
-  annualisationProvision, annualVerdict, dataFreshness, viewTitle,
-  flowsSeries, upcomingBills, nonMonthlyBills,
-  categoryTrend12, categoryYoY,
-  type TemporalState, type UpcomingBill, type BudgetView,
+  categories,
+  postesSeed,
+  MONTHS_FR,
+  MONTHS_FR_LONG,
+  eur,
+  temporalState,
+  currentMonthIdx,
+  currentYear,
+  incomeSources,
+  annualisationProvision,
+  annualVerdict,
+  dataFreshness,
+  viewTitle,
+  flowsSeries,
+  upcomingBills,
+  nonMonthlyBills,
+  categoryTrend12,
+  categoryYoY,
+  type TemporalState,
+  type UpcomingBill,
+  type BudgetView,
 } from "@/lib/budget-data";
 import { Button } from "@/components/ui/button";
 import { BudgetBar } from "@/components/BudgetBar";
@@ -27,13 +59,22 @@ export const Route = createFileRoute("/_app/budget/vue")({
   head: () => ({
     meta: [
       { title: "Vue d'ensemble — Budget" },
-      { name: "description", content: "Trajectoire de l'année, échéances à venir et épargne — d'un coup d'œil." },
+      {
+        name: "description",
+        content: "Trajectoire de l'année, échéances à venir et épargne — d'un coup d'œil.",
+      },
     ],
   }),
 });
 
 // Navigator: rolling budget first (default), then calendar years going back.
-const NAV_VIEWS: BudgetView[] = ["rolling", currentYear, currentYear - 1, currentYear - 2, currentYear - 3];
+const NAV_VIEWS: BudgetView[] = [
+  "rolling",
+  currentYear,
+  currentYear - 1,
+  currentYear - 2,
+  currentYear - 3,
+];
 
 function VuePage() {
   const [navIdx, setNavIdx] = useState(0);
@@ -54,9 +95,12 @@ function VuePage() {
             {zoom !== null ? (
               <Button
                 onClick={() => setZoom(null)}
-                variant="outline" size="iconRound"
+                variant="outline"
+                size="iconRound"
                 aria-label="Retour à la vue d'ensemble"
-              ><ArrowLeft className="h-5 w-5" /></Button>
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
             ) : (
               <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-mustard/15 text-mustard">
                 <PiggyBank className="h-6 w-6" />
@@ -67,49 +111,95 @@ function VuePage() {
                 Budget · {zoom === null ? "Vue d'ensemble" : "Mois"}
               </Eyebrow>
               <h1 className="font-serif text-2xl tracking-tight sm:text-3xl">
-                {zoom === null
-                  ? viewTitle(view)
-                  : <>
-                      <button onClick={() => setZoom(null)} className="text-muted-foreground hover:text-foreground transition-colors">{viewTitle(view)}</button>
-                      <span className="mx-2 text-muted-foreground/50">/</span>
-                      <span className="capitalize">{MONTHS_FR_LONG[zoom.monthIdx]} {zoom.year}</span>
-                    </>}
+                {zoom === null ? (
+                  viewTitle(view)
+                ) : (
+                  <>
+                    <button
+                      onClick={() => setZoom(null)}
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {viewTitle(view)}
+                    </button>
+                    <span className="mx-2 text-muted-foreground/50">/</span>
+                    <span className="capitalize">
+                      {MONTHS_FR_LONG[zoom.monthIdx]} {zoom.year}
+                    </span>
+                  </>
+                )}
               </h1>
               {zoom === null && (
-                <p className="text-sm text-muted-foreground">Trajectoire de l'année, échéances et épargne.</p>
+                <p className="text-sm text-muted-foreground">
+                  Trajectoire de l'année, échéances et épargne.
+                </p>
               )}
             </div>
           </div>
           {zoom === null && (
             <div className="flex shrink-0 items-center gap-2">
-              <Button onClick={() => setNavIdx((i) => Math.max(0, i - 1))} disabled={navIdx === 0}
+              <Button
+                onClick={() => setNavIdx((i) => Math.max(0, i - 1))}
+                disabled={navIdx === 0}
                 aria-label="Vers le glissant"
-                variant="outline" size="iconRound"
-              ><ChevronLeft className="h-4 w-4" /></Button>
-              <Button onClick={() => setNavIdx((i) => Math.min(NAV_VIEWS.length - 1, i + 1))} disabled={navIdx === NAV_VIEWS.length - 1}
+                variant="outline"
+                size="iconRound"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                onClick={() => setNavIdx((i) => Math.min(NAV_VIEWS.length - 1, i + 1))}
+                disabled={navIdx === NAV_VIEWS.length - 1}
                 aria-label="Vers les années passées"
-                variant="outline" size="iconRound"
-              ><ChevronRight className="h-4 w-4" /></Button>
+                variant="outline"
+                size="iconRound"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
             </div>
           )}
         </header>
 
         <div className="relative">
-        <div className={(zoom === null ? "opacity-100" : "pointer-events-none hidden") + " transition-opacity duration-300"}>
-          <YearView view={view} onPickMonth={(year, monthIdx) => setZoom({ year, monthIdx })} />
+          <div
+            className={
+              (zoom === null ? "opacity-100" : "pointer-events-none hidden") +
+              " transition-opacity duration-300"
+            }
+          >
+            <YearView view={view} onPickMonth={(year, monthIdx) => setZoom({ year, monthIdx })} />
+          </div>
+          <div
+            className={
+              (zoom !== null ? "opacity-100 block" : "hidden") + " transition-opacity duration-300"
+            }
+          >
+            {zoom !== null && (
+              <MonthView
+                key={`${zoom.year}-${zoom.monthIdx}`}
+                year={zoom.year}
+                monthIdx={zoom.monthIdx}
+                onPrev={() =>
+                  setZoom(
+                    (z) =>
+                      z &&
+                      (z.monthIdx > 0
+                        ? { ...z, monthIdx: z.monthIdx - 1 }
+                        : { year: z.year - 1, monthIdx: 11 }),
+                  )
+                }
+                onNext={() =>
+                  setZoom(
+                    (z) =>
+                      z &&
+                      (z.monthIdx < 11
+                        ? { ...z, monthIdx: z.monthIdx + 1 }
+                        : { year: z.year + 1, monthIdx: 0 }),
+                  )
+                }
+              />
+            )}
+          </div>
         </div>
-        <div className={(zoom !== null ? "opacity-100 block" : "hidden") + " transition-opacity duration-300"}>
-          {zoom !== null && (
-            <MonthView
-              key={`${zoom.year}-${zoom.monthIdx}`}
-              year={zoom.year}
-              monthIdx={zoom.monthIdx}
-              onPrev={() => setZoom((z) => z && (z.monthIdx > 0 ? { ...z, monthIdx: z.monthIdx - 1 } : { year: z.year - 1, monthIdx: 11 }))}
-              onNext={() => setZoom((z) => z && (z.monthIdx < 11 ? { ...z, monthIdx: z.monthIdx + 1 } : { year: z.year + 1, monthIdx: 0 }))}
-            />
-          )}
-        </div>
-      </div>
 
         {/* Nested modal routes (e.g. /budget/vue/reserve) render here, over the vue */}
         <Outlet />
@@ -120,7 +210,13 @@ function VuePage() {
 
 /* ============================ YEAR VIEW ============================ */
 
-function YearView({ view, onPickMonth }: { view: BudgetView; onPickMonth: (year: number, monthIdx: number) => void }) {
+function YearView({
+  view,
+  onPickMonth,
+}: {
+  view: BudgetView;
+  onPickMonth: (year: number, monthIdx: number) => void;
+}) {
   const verdict = useMemo(() => annualVerdict(view), [view]);
   const flows = useMemo(() => flowsSeries(view), [view]);
   const upcoming = useMemo(() => upcomingBills(12), []);
@@ -130,7 +226,14 @@ function YearView({ view, onPickMonth }: { view: BudgetView; onPickMonth: (year:
     <div className="space-y-6 sm:space-y-8">
       {/* FLUX — verdict integrated on top, then the glissant curve; + categories drill-down.
           The Réserve verdict box links to its own page (/budget/reserve), room-page style. */}
-      <FluxBlock verdict={verdict} flows={flows} upcoming={upcoming} provision={provision} view={view} onPickMonth={onPickMonth} />
+      <FluxBlock
+        verdict={verdict}
+        flows={flows}
+        upcoming={upcoming}
+        provision={provision}
+        view={view}
+        onPickMonth={onPickMonth}
+      />
       <CategoriesGrid />
     </div>
   );
@@ -144,26 +247,55 @@ const axisCls = {
   over: { fg: "text-destructive", dot: "bg-destructive", bg: "bg-destructive/15" },
 } as const;
 
-function AxisStatus({ axis, to }: { axis: ReturnType<typeof annualVerdict>["axes"][number]; to?: { view: BudgetView } }) {
+function AxisStatus({
+  axis,
+  to,
+}: {
+  axis: ReturnType<typeof annualVerdict>["axes"][number];
+  to?: { view: BudgetView };
+}) {
   const c = axisCls[axis.tone];
-  const base = "block h-full w-full rounded-xl border border-border/50 bg-secondary/25 px-4 py-3.5 text-left";
+  const base =
+    "block h-full w-full rounded-xl border border-border/50 bg-secondary/25 px-4 py-3.5 text-left";
   const inner = (
     <>
       <p className="flex items-center gap-1.5 text-2xs uppercase tracking-eyebrow text-muted-foreground">
         <span className={"h-1.5 w-1.5 rounded-full " + c.dot} /> {axis.label}
-        {to && <ChevronRight className="ml-auto h-3.5 w-3.5 text-muted-foreground/60 transition-transform group-hover/axis:translate-x-0.5" />}
+        {to && (
+          <ChevronRight className="ml-auto h-3.5 w-3.5 text-muted-foreground/60 transition-transform group-hover/axis:translate-x-0.5" />
+        )}
       </p>
       <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-        <span className="font-serif text-lg leading-none tabular-nums text-foreground sm:text-xl">{axis.value}</span>
-        {axis.pct && <span className="text-sm tabular-nums text-muted-foreground">· {axis.pct}</span>}
-        <span className={"inline-flex items-center self-center rounded-full px-2.5 py-0.5 text-xs font-semibold " + c.bg + " " + c.fg}>{axis.tag}</span>
+        <span className="font-serif text-lg leading-none tabular-nums text-foreground sm:text-xl">
+          {axis.value}
+        </span>
+        {axis.pct && (
+          <span className="text-sm tabular-nums text-muted-foreground">· {axis.pct}</span>
+        )}
+        <span
+          className={
+            "inline-flex items-center self-center rounded-full px-2.5 py-0.5 text-xs font-semibold " +
+            c.bg +
+            " " +
+            c.fg
+          }
+        >
+          {axis.tag}
+        </span>
       </div>
       <p className="mt-2 text-sm leading-snug text-muted-foreground">{axis.explain}</p>
     </>
   );
   if (to) {
     return (
-      <Link to="/budget/vue/reserve" search={to} className={"group/axis transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-lift " + base}>
+      <Link
+        to="/budget/vue/reserve"
+        search={to}
+        className={
+          "group/axis transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-lift " +
+          base
+        }
+      >
         {inner}
       </Link>
     );
@@ -174,8 +306,13 @@ function AxisStatus({ axis, to }: { axis: ReturnType<typeof annualVerdict>["axes
 // Same look as the default recharts tooltip, but shows each metric once: at the
 // junction month both réel and projeté carry a value (for line continuity) — we pick
 // réel when present, else projeté. Recharts' default can't drop the duplicate row.
-function FlowTip({ active, payload, label }: {
-  active?: boolean; label?: string;
+function FlowTip({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  label?: string;
   payload?: { dataKey?: string | number; value?: number | null }[];
 }) {
   if (!active || !payload?.length) return null;
@@ -184,25 +321,51 @@ function FlowTip({ active, payload, label }: {
     return typeof hit?.value === "number" ? hit.value : null;
   };
   const rows = [
-    { name: "Entrées", val: v("inReel") ?? v("inProj"), reel: v("inReel") != null, color: "var(--success)" },
-    { name: "Dépenses", val: v("depReel") ?? v("depProj"), reel: v("depReel") != null, color: "var(--warm)" },
-    { name: "Épargne", val: v("epReel") ?? v("epProj"), reel: v("epReel") != null, color: "var(--primary)" },
+    {
+      name: "Entrées",
+      val: v("inReel") ?? v("inProj"),
+      reel: v("inReel") != null,
+      color: "var(--success)",
+    },
+    {
+      name: "Dépenses",
+      val: v("depReel") ?? v("depProj"),
+      reel: v("depReel") != null,
+      color: "var(--warm)",
+    },
+    {
+      name: "Épargne",
+      val: v("epReel") ?? v("epProj"),
+      reel: v("epReel") != null,
+      color: "var(--primary)",
+    },
   ].filter((r) => r.val != null);
   const projected = rows.length > 0 && rows.every((r) => !r.reel);
   return (
-    <div style={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12 }}
-      className="px-3 py-2 text-xs shadow-lift">
+    <div
+      style={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12 }}
+      className="px-3 py-2 text-xs shadow-lift"
+    >
       <p className="mb-1 font-semibold text-popover-foreground">
-        {label}{projected && <span className="font-normal text-muted-foreground"> · projeté</span>}
+        {label}
+        {projected && <span className="font-normal text-muted-foreground"> · projeté</span>}
       </p>
       {rows.map((r) => (
-        <p key={r.name} className="tabular-nums" style={{ color: r.color }}>{r.name} : {eur(r.val!)}</p>
+        <p key={r.name} className="tabular-nums" style={{ color: r.color }}>
+          {r.name} : {eur(r.val!)}
+        </p>
       ))}
     </div>
   );
 }
 
-function VerdictHeader({ verdict, view }: { verdict: ReturnType<typeof annualVerdict>; view: BudgetView }) {
+function VerdictHeader({
+  verdict,
+  view,
+}: {
+  verdict: ReturnType<typeof annualVerdict>;
+  view: BudgetView;
+}) {
   const freshness = dataFreshness();
   return (
     <div>
@@ -221,36 +384,65 @@ function VerdictHeader({ verdict, view }: { verdict: ReturnType<typeof annualVer
   );
 }
 
-
-function SecondaryReading({ label, primary, secondary, tone }: {
-  label: string; primary: string; secondary?: string;
+function SecondaryReading({
+  label,
+  primary,
+  secondary,
+  tone,
+}: {
+  label: string;
+  primary: string;
+  secondary?: string;
   tone: "primary" | "warm" | "mustard" | "success" | "destructive";
 }) {
-  const cls = tone === "warm" ? "text-warm"
-    : tone === "success" ? "text-success"
-    : tone === "destructive" ? "text-destructive"
-    : "text-foreground";
+  const cls =
+    tone === "warm"
+      ? "text-warm"
+      : tone === "success"
+        ? "text-success"
+        : tone === "destructive"
+          ? "text-destructive"
+          : "text-foreground";
   return (
     <div className="rounded-xl bg-secondary/40 p-3 lg:bg-transparent lg:p-0">
       <Eyebrow size="xs">{label}</Eyebrow>
-      <p className={"mt-1 font-serif text-lg leading-none tabular-nums sm:text-xl " + cls}>{primary}</p>
-      {secondary && <p className="mt-1.5 text-xs tabular-nums text-muted-foreground">{secondary}</p>}
+      <p className={"mt-1 font-serif text-lg leading-none tabular-nums sm:text-xl " + cls}>
+        {primary}
+      </p>
+      {secondary && (
+        <p className="mt-1.5 text-xs tabular-nums text-muted-foreground">{secondary}</p>
+      )}
     </div>
   );
 }
 
-function MicroStat({ label, primary, secondary, tone }: {
-  label: string; primary: string; secondary?: string;
+function MicroStat({
+  label,
+  primary,
+  secondary,
+  tone,
+}: {
+  label: string;
+  primary: string;
+  secondary?: string;
   tone: "primary" | "warm" | "mustard" | "success" | "destructive";
 }) {
-  const cls = tone === "warm" ? "text-warm"
-    : tone === "success" ? "text-success"
-    : tone === "destructive" ? "text-destructive"
-    : "text-foreground";
+  const cls =
+    tone === "warm"
+      ? "text-warm"
+      : tone === "success"
+        ? "text-success"
+        : tone === "destructive"
+          ? "text-destructive"
+          : "text-foreground";
   return (
     <div className="rounded-xl bg-secondary/40 p-2.5 lg:bg-transparent lg:p-0">
-      <Eyebrow size="xs" className="sm:text-2xs">{label}</Eyebrow>
-      <p className={"mt-1 font-serif text-lg leading-none tabular-nums sm:text-lg " + cls}>{primary}</p>
+      <Eyebrow size="xs" className="sm:text-2xs">
+        {label}
+      </Eyebrow>
+      <p className={"mt-1 font-serif text-lg leading-none tabular-nums sm:text-lg " + cls}>
+        {primary}
+      </p>
       {secondary && <p className="mt-1 text-2xs tabular-nums text-muted-foreground">{secondary}</p>}
     </div>
   );
@@ -265,7 +457,14 @@ function useYAxis(values: number[], step = 15000) {
   }, [values.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
+function FluxBlock({
+  verdict,
+  flows,
+  upcoming,
+  provision,
+  view,
+  onPickMonth,
+}: {
   verdict: ReturnType<typeof annualVerdict>;
   flows: ReturnType<typeof flowsSeries>;
   upcoming: UpcomingBill[];
@@ -275,7 +474,10 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
 }) {
   const total6m = upcoming.filter((b) => b.monthsAway < 6).reduce((s, b) => s + b.amount, 0);
   const provisionIn6m = provision * 6;
-  const flowAxis = useYAxis(flows.flatMap(f => [f.inReel ?? 0, f.inProj ?? 0, f.depReel ?? 0, f.depProj ?? 0]), 2000);
+  const flowAxis = useYAxis(
+    flows.flatMap((f) => [f.inReel ?? 0, f.inProj ?? 0, f.depReel ?? 0, f.depProj ?? 0]),
+    2000,
+  );
   const monthlyBudget = categories.reduce((s, c) => s + c.budget, 0);
   const lastImportX = flows.find((f) => f.isLastImport)?.m;
   const todayX = flows.find((f) => f.isToday)?.m;
@@ -289,34 +491,129 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
           <Eyebrow size="xs">Entrées · Dépenses · Épargne — par mois</Eyebrow>
           <div className="flex flex-wrap items-center gap-3 text-2xs uppercase tracking-eyebrow text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--success)" }} /> Entrées</span>
-            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--warm)" }} /> Dépenses</span>
-            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3" style={{ background: "var(--primary)" }} /> Épargne</span>
-            <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 border-t border-dashed border-muted-foreground/60" /> Projeté</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-0.5 w-3" style={{ background: "var(--success)" }} /> Entrées
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-0.5 w-3" style={{ background: "var(--warm)" }} /> Dépenses
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-0.5 w-3" style={{ background: "var(--primary)" }} /> Épargne
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-0.5 w-3 border-t border-dashed border-muted-foreground/60" />{" "}
+              Projeté
+            </span>
           </div>
         </div>
         <div className="h-56 w-full sm:h-72">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={flows} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
               <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="m" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} interval={0} />
-              <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false}
-                domain={[0, flowAxis.yTop]} ticks={flowAxis.yTicks} tickFormatter={(v) => `${Math.round(v / 1000)}k`} width={42} />
+              <XAxis
+                dataKey="m"
+                stroke="var(--muted-foreground)"
+                fontSize={10}
+                tickLine={false}
+                axisLine={false}
+                interval={0}
+              />
+              <YAxis
+                stroke="var(--muted-foreground)"
+                fontSize={10}
+                tickLine={false}
+                axisLine={false}
+                domain={[0, flowAxis.yTop]}
+                ticks={flowAxis.yTicks}
+                tickFormatter={(v) => `${Math.round(v / 1000)}k`}
+                width={42}
+              />
               <RTooltip content={<FlowTip />} />
               {lastImportX && (
-                <ReferenceLine x={lastImportX} stroke="var(--foreground)" strokeOpacity={0.28} strokeDasharray="3 3"
-                  label={{ value: "dernier import", position: "insideTopLeft", fontSize: 10, fill: "var(--muted-foreground)" }} />
+                <ReferenceLine
+                  x={lastImportX}
+                  stroke="var(--foreground)"
+                  strokeOpacity={0.28}
+                  strokeDasharray="3 3"
+                  label={{
+                    value: "dernier import",
+                    position: "insideTopLeft",
+                    fontSize: 10,
+                    fill: "var(--muted-foreground)",
+                  }}
+                />
               )}
               {todayX && todayX !== lastImportX && (
-                <ReferenceLine x={todayX} stroke="var(--foreground)" strokeOpacity={0.4} strokeDasharray="2 4"
-                  label={{ value: "aujourd'hui", position: "top", fontSize: 10, fill: "var(--muted-foreground)" }} />
+                <ReferenceLine
+                  x={todayX}
+                  stroke="var(--foreground)"
+                  strokeOpacity={0.4}
+                  strokeDasharray="2 4"
+                  label={{
+                    value: "aujourd'hui",
+                    position: "top",
+                    fontSize: 10,
+                    fill: "var(--muted-foreground)",
+                  }}
+                />
               )}
-              <Line type="monotone" dataKey="inReel" stroke="var(--success)" strokeWidth={2.5} dot={false} name="Entrées" connectNulls={false} />
-              <Line type="monotone" dataKey="inProj" stroke="var(--success)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Entrées (proj.)" connectNulls={false} />
-              <Line type="monotone" dataKey="depReel" stroke="var(--mustard)" strokeWidth={2.5} dot={false} name="Dépenses" connectNulls={false} />
-              <Line type="monotone" dataKey="depProj" stroke="var(--mustard)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Dépenses (proj.)" connectNulls={false} />
-              <Line type="monotone" dataKey="epReel" stroke="var(--primary)" strokeWidth={2.5} dot={false} name="Épargne" connectNulls={false} />
-              <Line type="monotone" dataKey="epProj" stroke="var(--primary)" strokeWidth={2} strokeDasharray="5 4" dot={false} name="Épargne (proj.)" connectNulls={false} />
+              <Line
+                type="monotone"
+                dataKey="inReel"
+                stroke="var(--success)"
+                strokeWidth={2.5}
+                dot={false}
+                name="Entrées"
+                connectNulls={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="inProj"
+                stroke="var(--success)"
+                strokeWidth={2}
+                strokeDasharray="5 4"
+                dot={false}
+                name="Entrées (proj.)"
+                connectNulls={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="depReel"
+                stroke="var(--mustard)"
+                strokeWidth={2.5}
+                dot={false}
+                name="Dépenses"
+                connectNulls={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="depProj"
+                stroke="var(--mustard)"
+                strokeWidth={2}
+                strokeDasharray="5 4"
+                dot={false}
+                name="Dépenses (proj.)"
+                connectNulls={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="epReel"
+                stroke="var(--primary)"
+                strokeWidth={2.5}
+                dot={false}
+                name="Épargne"
+                connectNulls={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="epProj"
+                stroke="var(--primary)"
+                strokeWidth={2}
+                strokeDasharray="5 4"
+                dot={false}
+                name="Épargne (proj.)"
+                connectNulls={false}
+              />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
@@ -338,21 +635,47 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
             // stays neutral, colour is reserved for months that materially break the budget.
             const notable = ecart > monthlyBudget * 0.3;
             const under = ecart < -monthlyBudget * 0.1;
-            const ecartCls = notable ? "text-warm" : under ? "text-success" : "text-muted-foreground";
+            const ecartCls = notable
+              ? "text-warm"
+              : under
+                ? "text-success"
+                : "text-muted-foreground";
             return (
-              <button key={f.idx} onClick={() => onPickMonth(f.year, f.calIdx)}
+              <button
+                key={f.idx}
+                onClick={() => onPickMonth(f.year, f.calIdx)}
                 title={f.isReal ? "Réel" : "Projeté"}
-                className={"group relative flex min-w-[58px] flex-1 flex-col items-center gap-1 rounded-lg border bg-card px-1.5 py-2 transition-all hover:-translate-y-0.5 hover:shadow-lift " +
+                className={
+                  "group relative flex min-w-[58px] flex-1 flex-col items-center gap-1 rounded-lg border bg-card px-1.5 py-2 transition-all hover:-translate-y-0.5 hover:shadow-lift " +
                   (f.isReal ? "border-solid border-border " : "border-transparent ") +
-                  (f.isToday ? "ring-1 ring-primary/50 bg-primary/5 " : "")}>
+                  (f.isToday ? "ring-1 ring-primary/50 bg-primary/5 " : "")
+                }
+              >
                 {!f.isReal && (
-                  <svg className="pointer-events-none absolute inset-[0.5px] h-[calc(100%-1px)] w-[calc(100%-1px)]" aria-hidden>
-                    <rect width="100%" height="100%" rx="7.5" ry="7.5" fill="none"
-                      stroke="var(--border)" strokeOpacity={0.7} strokeWidth={1} strokeDasharray="5 4" />
+                  <svg
+                    className="pointer-events-none absolute inset-[0.5px] h-[calc(100%-1px)] w-[calc(100%-1px)]"
+                    aria-hidden
+                  >
+                    <rect
+                      width="100%"
+                      height="100%"
+                      rx="7.5"
+                      ry="7.5"
+                      fill="none"
+                      stroke="var(--border)"
+                      strokeOpacity={0.7}
+                      strokeWidth={1}
+                      strokeDasharray="5 4"
+                    />
                   </svg>
                 )}
                 <span className="flex items-center gap-1 text-xs uppercase tracking-wide text-muted-foreground">
-                  {f.isLastImport && <span className="h-1.5 w-1.5 rounded-full bg-foreground" title="dernier import" />}
+                  {f.isLastImport && (
+                    <span
+                      className="h-1.5 w-1.5 rounded-full bg-foreground"
+                      title="dernier import"
+                    />
+                  )}
                   {f.m}
                 </span>
                 <span className={"text-sm font-semibold tabular-nums " + ecartCls}>
@@ -373,17 +696,28 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
           </div>
           <div className="-mx-1 flex gap-1 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {upcoming.map((b) => {
-              const dot = b.coverage === "covered" ? "bg-success" : b.coverage === "partial" ? "bg-warm" : "bg-destructive";
+              const dot =
+                b.coverage === "covered"
+                  ? "bg-success"
+                  : b.coverage === "partial"
+                    ? "bg-warm"
+                    : "bg-destructive";
               const year = Math.floor((currentMonthIdx + b.monthsAway) / 12) + currentYear;
               return (
-                <button key={b.id} onClick={() => onPickMonth(year, b.monthIdx)}
+                <button
+                  key={b.id}
+                  onClick={() => onPickMonth(year, b.monthIdx)}
                   title={`${b.label} · couverture ${b.coveragePct}%`}
-                  className="group flex min-w-[140px] shrink-0 items-center gap-2 rounded-lg border border-border/60 bg-card px-2.5 py-2 text-left transition-all hover:-translate-y-0.5 hover:shadow-lift">
+                  className="group flex min-w-[140px] shrink-0 items-center gap-2 rounded-lg border border-border/60 bg-card px-2.5 py-2 text-left transition-all hover:-translate-y-0.5 hover:shadow-lift"
+                >
                   <span className={"h-1.5 w-1.5 shrink-0 rounded-full " + dot} />
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-semibold leading-tight">{b.label}</span>
+                    <span className="block truncate text-sm font-semibold leading-tight">
+                      {b.label}
+                    </span>
                     <span className="block text-xs uppercase tracking-wide text-muted-foreground">
-                      {MONTHS_FR[b.monthIdx]} · <span className="tabular-nums text-warm">−{eur(b.amount)}</span>
+                      {MONTHS_FR[b.monthIdx]} ·{" "}
+                      <span className="tabular-nums text-warm">−{eur(b.amount)}</span>
                     </span>
                   </span>
                 </button>
@@ -391,11 +725,29 @@ function FluxBlock({ verdict, flows, upcoming, provision, view, onPickMonth }: {
             })}
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-            <span>6 mois <span className="tabular-nums font-semibold text-foreground">{eur(total6m)}</span></span>
+            <span>
+              6 mois{" "}
+              <span className="tabular-nums font-semibold text-foreground">{eur(total6m)}</span>
+            </span>
             <span className="text-muted-foreground/40">·</span>
-            <span>Provision <span className="tabular-nums font-semibold text-foreground">{eur(provisionIn6m)}</span></span>
+            <span>
+              Provision{" "}
+              <span className="tabular-nums font-semibold text-foreground">
+                {eur(provisionIn6m)}
+              </span>
+            </span>
             <span className="text-muted-foreground/40">·</span>
-            <span>Marge <span className={"tabular-nums font-semibold " + (provisionIn6m - total6m >= 0 ? "text-success" : "text-destructive")}>{eur(provisionIn6m - total6m)}</span></span>
+            <span>
+              Marge{" "}
+              <span
+                className={
+                  "tabular-nums font-semibold " +
+                  (provisionIn6m - total6m >= 0 ? "text-success" : "text-destructive")
+                }
+              >
+                {eur(provisionIn6m - total6m)}
+              </span>
+            </span>
           </div>
         </div>
       )}
@@ -412,21 +764,27 @@ function CategoriesGrid() {
         <div>
           <h2 className="font-serif text-lg tracking-tight sm:text-xl">Catégories</h2>
           <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-            Tendance sur 12 mois glissants (plein = réel, pointillé = anticipé) · le chip = écart au budget. Clic pour le détail.
+            Tendance sur 12 mois glissants (plein = réel, pointillé = anticipé) · le chip = écart au
+            budget. Clic pour le détail.
           </p>
         </div>
-        <Link to="/budget/mensuel" className="text-xs text-primary underline-offset-4 hover:underline">
+        <Link
+          to="/budget/mensuel"
+          className="text-xs text-primary underline-offset-4 hover:underline"
+        >
           Vue mensuelle →
         </Link>
       </header>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {categories.map(c => <CategoryMiniCard key={c.key} cat={c} />)}
+        {categories.map((c) => (
+          <CategoryMiniCard key={c.key} cat={c} />
+        ))}
       </div>
     </section>
   );
 }
 
-function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
+function CategoryMiniCard({ cat }: { cat: (typeof categories)[number] }) {
   const Icon = cat.icon;
   // Glissant reading — this is NOT a single month: a trailing-12-month TREND (où dépense-t-on plus ?)
   // + how the average sits vs the budget (au-dessus / en-dessous des prévisions) + a year-over-year
@@ -437,14 +795,21 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
   const over = vsBudget > 5;
   const under = vsBudget < -5;
   const yoy = categoryYoY(cat);
-  const budgetChip = over ? "bg-warm/15 text-warm" : under ? "bg-success/15 text-success" : "bg-secondary text-muted-foreground";
+  const budgetChip = over
+    ? "bg-warm/15 text-warm"
+    : under
+      ? "bg-success/15 text-success"
+      : "bg-secondary text-muted-foreground";
   // Évolution sur la période affichée (début → fin de la fenêtre glissante).
-  const periodDelta = trend[0].v > 0 ? Math.round((trend[trend.length - 1].v / trend[0].v - 1) * 100) : 0;
+  const periodDelta =
+    trend[0].v > 0 ? Math.round((trend[trend.length - 1].v / trend[0].v - 1) * 100) : 0;
   const TrendIcon = periodDelta >= 0 ? TrendingUp : TrendingDown;
 
   return (
-    <Link to="/budget/mensuel"
-      className="group flex flex-col rounded-xl border border-border/50 bg-card p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift">
+    <Link
+      to="/budget/mensuel"
+      className="group flex flex-col rounded-xl border border-border/50 bg-card p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift"
+    >
       <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
           <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-secondary text-foreground/70">
@@ -452,16 +817,27 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
           </span>
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold">{cat.label}</p>
-            <p className="truncate text-2xs tabular-nums text-muted-foreground">Budget {eur(cat.budget)}/mois</p>
+            <p className="truncate text-2xs tabular-nums text-muted-foreground">
+              Budget {eur(cat.budget)}/mois
+            </p>
           </div>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
-          <span className={"rounded-full px-1.5 py-0.5 text-2xs font-semibold tabular-nums " + budgetChip}
-            title="Écart au budget, moyenne sur 12 mois">
-            {vsBudget >= 0 ? "+" : "−"}{Math.abs(vsBudget)}%
+          <span
+            className={
+              "rounded-full px-1.5 py-0.5 text-2xs font-semibold tabular-nums " + budgetChip
+            }
+            title="Écart au budget, moyenne sur 12 mois"
+          >
+            {vsBudget >= 0 ? "+" : "−"}
+            {Math.abs(vsBudget)}%
           </span>
-          <span className="text-2xs tabular-nums text-muted-foreground" title={`Vs ${currentYear - 1}`}>
-            vs {currentYear - 1} {yoy >= 0 ? "+" : "−"}{Math.abs(yoy)}%
+          <span
+            className="text-2xs tabular-nums text-muted-foreground"
+            title={`Vs ${currentYear - 1}`}
+          >
+            vs {currentYear - 1} {yoy >= 0 ? "+" : "−"}
+            {Math.abs(yoy)}%
           </span>
         </div>
       </div>
@@ -477,49 +853,97 @@ function CategoryMiniCard({ cat }: { cat: typeof categories[number] }) {
               </linearGradient>
             </defs>
             <XAxis dataKey="m" hide />
-            <RTooltip cursor={{ stroke: "var(--border)" }}
-              contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 10, fontSize: 11, color: "var(--popover-foreground)", padding: "4px 8px" }}
-              formatter={(val: unknown, name) => [typeof val === "number" ? eur(val) : "—", name as string]}
-              labelFormatter={(l) => l as string} />
-            <Area type="monotone" dataKey="real" name="Réel" stroke={cat.color} strokeWidth={1.5} fill={`url(#cat-${cat.key})`} connectNulls={false} />
-            <Line type="monotone" dataKey="proj" name="Projeté" stroke={cat.color} strokeWidth={1.5} strokeDasharray="4 3" dot={false} connectNulls={false} />
+            <RTooltip
+              cursor={{ stroke: "var(--border)" }}
+              contentStyle={{
+                background: "var(--popover)",
+                border: "1px solid var(--border)",
+                borderRadius: 10,
+                fontSize: 11,
+                color: "var(--popover-foreground)",
+                padding: "4px 8px",
+              }}
+              formatter={(val: unknown, name) => [
+                typeof val === "number" ? eur(val) : "—",
+                name as string,
+              ]}
+              labelFormatter={(l) => l as string}
+            />
+            <Area
+              type="monotone"
+              dataKey="real"
+              name="Réel"
+              stroke={cat.color}
+              strokeWidth={1.5}
+              fill={`url(#cat-${cat.key})`}
+              connectNulls={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="proj"
+              name="Projeté"
+              stroke={cat.color}
+              strokeWidth={1.5}
+              strokeDasharray="4 3"
+              dot={false}
+              connectNulls={false}
+            />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
 
-      <p className="mt-1 flex items-center justify-end gap-1 text-xs tabular-nums text-muted-foreground" title="Évolution sur la période affichée">
-        <TrendIcon className="h-3 w-3" /> Période {periodDelta >= 0 ? "+" : "−"}{Math.abs(periodDelta)}%
+      <p
+        className="mt-1 flex items-center justify-end gap-1 text-xs tabular-nums text-muted-foreground"
+        title="Évolution sur la période affichée"
+      >
+        <TrendIcon className="h-3 w-3" /> Période {periodDelta >= 0 ? "+" : "−"}
+        {Math.abs(periodDelta)}%
       </p>
     </Link>
   );
 }
 
 /* keep unused-import guards happy */
-void incomeSources; void nonMonthlyBills; void ArrowRight; void Sparkles; void CheckCircle2; void Clock;
-
-
-
+void incomeSources;
+void nonMonthlyBills;
+void ArrowRight;
+void Sparkles;
+void CheckCircle2;
+void Clock;
 
 /* ============================ MONTH VIEW ============================ */
 
-function MonthView({ year, monthIdx, onPrev, onNext }: { year: number; monthIdx: number; onPrev: () => void; onNext: () => void }) {
+function MonthView({
+  year,
+  monthIdx,
+  onPrev,
+  onNext,
+}: {
+  year: number;
+  monthIdx: number;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
   const state = temporalState(monthIdx, year);
   const origin = `${((monthIdx + 0.5) / 12) * 100}% 0%`;
 
   return (
     <div
       className="space-y-6"
-      style={{ animation: "pop-in 0.45s cubic-bezier(0.2,0.7,0.2,1) both", transformOrigin: origin }}
+      style={{
+        animation: "pop-in 0.45s cubic-bezier(0.2,0.7,0.2,1) both",
+        transformOrigin: origin,
+      }}
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <StateBadge state={state} />
         <div className="flex items-center gap-2">
-          <Button onClick={onPrev} disabled={monthIdx === 0}
-            variant="outline" size="iconRound"
-          ><ChevronLeft className="h-4 w-4" /></Button>
-          <Button onClick={onNext} disabled={monthIdx === 11}
-            variant="outline" size="iconRound"
-          ><ChevronRight className="h-4 w-4" /></Button>
+          <Button onClick={onPrev} disabled={monthIdx === 0} variant="outline" size="iconRound">
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button onClick={onNext} disabled={monthIdx === 11} variant="outline" size="iconRound">
+            <ChevronRight className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
@@ -531,11 +955,16 @@ function MonthView({ year, monthIdx, onPrev, onNext }: { year: number; monthIdx:
 }
 
 function StateBadge({ state }: { state: TemporalState }) {
-  const cfg = state === "passe"
-    ? { label: "Mois clos · rapport", cls: "bg-secondary text-foreground/70", Icon: CheckCircle2 }
-    : state === "en-cours"
-      ? { label: "En cours · réel + projection", cls: "bg-primary/10 text-primary ring-1 ring-primary/30", Icon: Clock }
-      : { label: "À venir · projection", cls: "bg-warm/10 text-warm", Icon: CalendarClock };
+  const cfg =
+    state === "passe"
+      ? { label: "Mois clos · rapport", cls: "bg-secondary text-foreground/70", Icon: CheckCircle2 }
+      : state === "en-cours"
+        ? {
+            label: "En cours · réel + projection",
+            cls: "bg-primary/10 text-primary ring-1 ring-primary/30",
+            Icon: Clock,
+          }
+        : { label: "À venir · projection", cls: "bg-warm/10 text-warm", Icon: CalendarClock };
   return (
     <span className={"inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs " + cfg.cls}>
       <cfg.Icon className="h-3.5 w-3.5" /> {cfg.label}
@@ -556,39 +985,61 @@ function PasseView({ monthIdx }: { monthIdx: number }) {
       <div className="grid gap-3 sm:grid-cols-3">
         <SmallStat label="Entrées" value={entrees} tone="primary" />
         <SmallStat label="Dépenses" value={totalActual} tone="mustard" />
-        <SmallStat label="Écart vs prévu" value={delta} tone={delta > 0 ? "warm" : "success"} signed />
+        <SmallStat
+          label="Écart vs prévu"
+          value={delta}
+          tone={delta > 0 ? "warm" : "success"}
+          signed
+        />
       </div>
 
       <Panel>
         <header className="mb-4">
           <h3 className="font-serif text-lg tracking-tight">Prévu vs réel</h3>
-          <p className="mt-1 text-sm text-muted-foreground">Variance par catégorie pour ce mois clos.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Variance par catégorie pour ce mois clos.
+          </p>
         </header>
         <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-          {[...categories].sort((a,b)=>a.label.localeCompare(b.label,"fr")).map((c) => {
-            const over = c.actual > c.budget;
-            const pct = Math.min(100, (c.actual / c.budget) * 100);
-            const Icon = c.icon;
-            return (
-              <li key={c.key} className={"rounded-xl border bg-card/40 px-3 py-3 " + (over ? "border-warm/30" : "border-border/40")}>
-                <div className="flex items-center gap-3">
-                  <span className={"grid h-9 w-9 place-items-center rounded-full " + (over ? "bg-warm/15 text-warm" : "bg-secondary text-foreground/70")}>
-                    <Icon className="h-4 w-4" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline justify-between gap-2">
-                      <p className="truncate font-semibold">{c.label}</p>
-                      <p className="shrink-0 text-sm tabular-nums">
-                        <span className={over ? "font-semibold text-warm" : ""}>{eur(c.actual)}</span>
-                        <span className="text-muted-foreground"> / {eur(c.budget)}</span>
-                      </p>
+          {[...categories]
+            .sort((a, b) => a.label.localeCompare(b.label, "fr"))
+            .map((c) => {
+              const over = c.actual > c.budget;
+              const pct = Math.min(100, (c.actual / c.budget) * 100);
+              const Icon = c.icon;
+              return (
+                <li
+                  key={c.key}
+                  className={
+                    "rounded-xl border bg-card/40 px-3 py-3 " +
+                    (over ? "border-warm/30" : "border-border/40")
+                  }
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={
+                        "grid h-9 w-9 place-items-center rounded-full " +
+                        (over ? "bg-warm/15 text-warm" : "bg-secondary text-foreground/70")
+                      }
+                    >
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <p className="truncate font-semibold">{c.label}</p>
+                        <p className="shrink-0 text-sm tabular-nums">
+                          <span className={over ? "font-semibold text-warm" : ""}>
+                            {eur(c.actual)}
+                          </span>
+                          <span className="text-muted-foreground"> / {eur(c.budget)}</span>
+                        </p>
+                      </div>
+                      <BudgetBar value={pct} overflow={over ? Math.min(100, pct - 100) : 0} />
                     </div>
-                    <BudgetBar value={pct} overflow={over ? Math.min(100, pct - 100) : 0} />
                   </div>
-                </div>
-              </li>
-            );
-          })}
+                </li>
+              );
+            })}
         </ul>
       </Panel>
 
@@ -604,7 +1055,7 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
   const progress = day / total;
   const fullActual = categories.reduce((s, c) => s + c.actual, 0);
   const dejaDepense = Math.round(fullActual * progress);
-  const encorePrevu = Math.round(categories.reduce((s,c)=>s+c.budget,0) * (1 - progress));
+  const encorePrevu = Math.round(categories.reduce((s, c) => s + c.budget, 0) * (1 - progress));
   const entrees = incomeSources.reduce((s, i) => s + i.value, 0);
   const bills = nonMonthlyBills(postesSeed, monthIdx);
 
@@ -612,7 +1063,12 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
     <div className="space-y-6">
       <div className="grid gap-3 sm:grid-cols-3">
         <SmallStat label="Entrées" value={entrees} tone="primary" />
-        <SmallStat label="Déjà dépensé" value={dejaDepense} tone="mustard" hint={`${Math.round(progress*100)}% du mois`} />
+        <SmallStat
+          label="Déjà dépensé"
+          value={dejaDepense}
+          tone="mustard"
+          hint={`${Math.round(progress * 100)}% du mois`}
+        />
         <SmallStat label="Encore prévu" value={encorePrevu} tone="primary" hint="projection" />
       </div>
 
@@ -620,35 +1076,46 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
         <header className="mb-4 flex items-end justify-between gap-3">
           <div>
             <h3 className="font-serif text-lg tracking-tight">Réel à date + projection</h3>
-            <p className="mt-1 text-sm text-muted-foreground">La barre marque la frontière entre les deux.</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              La barre marque la frontière entre les deux.
+            </p>
           </div>
-          <Eyebrow size="xs">Jour {day}/{total}</Eyebrow>
+          <Eyebrow size="xs">
+            Jour {day}/{total}
+          </Eyebrow>
         </header>
         <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-          {[...categories].sort((a,b)=>a.label.localeCompare(b.label,"fr")).map((c) => {
-            const realPct = Math.min(100, (c.actual * progress / c.budget) * 100);
-            const projPct = Math.min(100, (c.budget / c.budget) * 100);
-            const Icon = c.icon;
-            return (
-              <li key={c.key} className="rounded-xl border border-border/40 bg-card/40 px-3 py-3">
-                <div className="flex items-center gap-3">
-                  <span className="grid h-9 w-9 place-items-center rounded-full bg-secondary text-foreground/70">
-                    <Icon className="h-4 w-4" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline justify-between gap-2">
-                      <p className="truncate font-semibold">{c.label}</p>
-                      <p className="shrink-0 text-xs tabular-nums text-muted-foreground">
-                        <span className="text-foreground">{eur(Math.round(c.actual*progress))}</span>
-                        <span className="opacity-60"> + {eur(c.budget - Math.round(c.actual*progress))} prévu</span>
-                      </p>
+          {[...categories]
+            .sort((a, b) => a.label.localeCompare(b.label, "fr"))
+            .map((c) => {
+              const realPct = Math.min(100, ((c.actual * progress) / c.budget) * 100);
+              const projPct = Math.min(100, (c.budget / c.budget) * 100);
+              const Icon = c.icon;
+              return (
+                <li key={c.key} className="rounded-xl border border-border/40 bg-card/40 px-3 py-3">
+                  <div className="flex items-center gap-3">
+                    <span className="grid h-9 w-9 place-items-center rounded-full bg-secondary text-foreground/70">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <p className="truncate font-semibold">{c.label}</p>
+                        <p className="shrink-0 text-xs tabular-nums text-muted-foreground">
+                          <span className="text-foreground">
+                            {eur(Math.round(c.actual * progress))}
+                          </span>
+                          <span className="opacity-60">
+                            {" "}
+                            + {eur(c.budget - Math.round(c.actual * progress))} prévu
+                          </span>
+                        </p>
+                      </div>
+                      <BudgetBar value={realPct} projected={projPct} />
                     </div>
-                    <BudgetBar value={realPct} projected={projPct} />
                   </div>
-                </div>
-              </li>
-            );
-          })}
+                </li>
+              );
+            })}
         </ul>
       </Panel>
 
@@ -659,10 +1126,12 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
 
 /* ---- Futur ---- */
 function FuturView({ monthIdx }: { monthIdx: number }) {
-  const ofMonth = postesSeed.filter(p => p.months.includes(monthIdx));
+  const ofMonth = postesSeed.filter((p) => p.months.includes(monthIdx));
   const prevuTotal = ofMonth.reduce((s, p) => s + p.amount, 0);
-  const byCat = ofMonth.reduce<Record<string, { label: string; total: number; postes: typeof ofMonth }>>((acc, p) => {
-    const c = categories.find(c => c.key === p.category)!;
+  const byCat = ofMonth.reduce<
+    Record<string, { label: string; total: number; postes: typeof ofMonth }>
+  >((acc, p) => {
+    const c = categories.find((c) => c.key === p.category)!;
     acc[c.key] ??= { label: c.label, total: 0, postes: [] };
     acc[c.key].total += p.amount;
     acc[c.key].postes.push(p);
@@ -679,43 +1148,63 @@ function FuturView({ monthIdx }: { monthIdx: number }) {
     <div className="space-y-6">
       <div className="grid gap-3 sm:grid-cols-3">
         <SmallStat label="Entrées prévues" value={5200} tone="primary" hint="salaire net" />
-        <SmallStat label="Dépenses prévues" value={prevuTotal} tone="mustard" hint={`${ofMonth.length} postes`} />
-        <SmallStat label="Net projeté" value={5200 - prevuTotal} tone={(5200 - prevuTotal) >= 0 ? "success" : "warm"} />
+        <SmallStat
+          label="Dépenses prévues"
+          value={prevuTotal}
+          tone="mustard"
+          hint={`${ofMonth.length} postes`}
+        />
+        <SmallStat
+          label="Net projeté"
+          value={5200 - prevuTotal}
+          tone={5200 - prevuTotal >= 0 ? "success" : "warm"}
+        />
       </div>
 
       <section className="rounded-2xl border border-dashed border-border/60 bg-card/60 p-5 shadow-soft sm:p-7">
         <header className="mb-4 flex items-end justify-between gap-3">
           <div>
             <h3 className="font-serif text-lg tracking-tight">Postes prévus</h3>
-            <p className="mt-1 text-sm text-muted-foreground">Projection issue de la Planification — aucune réelle dépense.</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Projection issue de la Planification — aucune réelle dépense.
+            </p>
           </div>
-          <Link to="/budget/planification" className="text-xs text-primary underline-offset-4 hover:underline">Modifier →</Link>
+          <Link
+            to="/budget/planification"
+            className="text-xs text-primary underline-offset-4 hover:underline"
+          >
+            Modifier →
+          </Link>
         </header>
 
         {ofMonth.length === 0 ? (
           <p className="text-sm text-muted-foreground">Aucun poste planifié ce mois-ci.</p>
         ) : (
           <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-            {Object.entries(byCat).sort((a,b)=>a[1].label.localeCompare(b[1].label,"fr")).map(([k, g]) => {
-              const cat = categories.find(c => c.key === k as any)!;
-              const Icon = cat.icon;
-              return (
-                <li key={k} className="rounded-xl border border-border/40 bg-card/40 px-3 py-3">
-                  <div className="flex items-center gap-3">
-                    <span className="grid h-9 w-9 place-items-center rounded-full bg-secondary text-foreground/70">
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-baseline justify-between gap-2">
-                        <p className="truncate font-semibold">{g.label}</p>
-                        <p className="shrink-0 text-sm tabular-nums text-warm">{eur(g.total)}</p>
+            {Object.entries(byCat)
+              .sort((a, b) => a[1].label.localeCompare(b[1].label, "fr"))
+              .map(([k, g]) => {
+                const cat = categories.find((c) => c.key === k)!;
+                const Icon = cat.icon;
+                return (
+                  <li key={k} className="rounded-xl border border-border/40 bg-card/40 px-3 py-3">
+                    <div className="flex items-center gap-3">
+                      <span className="grid h-9 w-9 place-items-center rounded-full bg-secondary text-foreground/70">
+                        <Icon className="h-4 w-4" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <p className="truncate font-semibold">{g.label}</p>
+                          <p className="shrink-0 text-sm tabular-nums text-warm">{eur(g.total)}</p>
+                        </div>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          {g.postes.map((p) => p.label).join(" · ")}
+                        </p>
                       </div>
-                      <p className="mt-0.5 text-xs text-muted-foreground">{g.postes.map(p=>p.label).join(" · ")}</p>
                     </div>
-                  </div>
-                </li>
-              );
-            })}
+                  </li>
+                );
+              })}
           </ul>
         )}
 
@@ -728,9 +1217,22 @@ function FuturView({ monthIdx }: { monthIdx: number }) {
                   <stop offset="100%" stopColor="var(--mustard)" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="d" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} />
+              <XAxis
+                dataKey="d"
+                stroke="var(--muted-foreground)"
+                fontSize={10}
+                tickLine={false}
+                axisLine={false}
+              />
               <YAxis hide />
-              <Area type="monotone" dataKey="v" stroke="var(--mustard)" strokeWidth={1.5} fill="url(#futurGrad)" strokeDasharray="4 3" />
+              <Area
+                type="monotone"
+                dataKey="v"
+                stroke="var(--mustard)"
+                strokeWidth={1.5}
+                fill="url(#futurGrad)"
+                strokeDasharray="4 3"
+              />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -745,7 +1247,10 @@ function BillsBar({ bills, label }: { bills: { label: string; amount: number }[]
       <Eyebrow size="xs">{label}</Eyebrow>
       <div className="mt-3 flex flex-wrap gap-2">
         {bills.map((b, i) => (
-          <span key={i} className="inline-flex items-center gap-2 rounded-full border border-warm/30 bg-warm/10 px-3 py-1.5 text-sm text-warm">
+          <span
+            key={i}
+            className="inline-flex items-center gap-2 rounded-full border border-warm/30 bg-warm/10 px-3 py-1.5 text-sm text-warm"
+          >
             {b.label}
             <span className="font-semibold tabular-nums">−{eur(b.amount)}</span>
           </span>
@@ -755,13 +1260,34 @@ function BillsBar({ bills, label }: { bills: { label: string; amount: number }[]
   );
 }
 
-function SmallStat({ label, value, tone, hint, signed }: { label: string; value: number; tone: "primary"|"warm"|"mustard"|"success"; hint?: string; signed?: boolean }) {
-  const cls = tone === "warm" ? "text-warm" : tone === "mustard" ? "text-mustard" : tone === "success" ? "text-success" : "text-foreground";
+function SmallStat({
+  label,
+  value,
+  tone,
+  hint,
+  signed,
+}: {
+  label: string;
+  value: number;
+  tone: "primary" | "warm" | "mustard" | "success";
+  hint?: string;
+  signed?: boolean;
+}) {
+  const cls =
+    tone === "warm"
+      ? "text-warm"
+      : tone === "mustard"
+        ? "text-mustard"
+        : tone === "success"
+          ? "text-success"
+          : "text-foreground";
   return (
     <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft">
       <Eyebrow size="xs">{label}</Eyebrow>
       <p className={"mt-2 font-serif text-xl tracking-tight tabular-nums " + cls}>
-        {signed && value > 0 ? "+" : ""}<CountUp to={value} /><span className="ml-1 text-sm text-muted-foreground">€</span>
+        {signed && value > 0 ? "+" : ""}
+        <CountUp to={value} />
+        <span className="ml-1 text-sm text-muted-foreground">€</span>
       </p>
       {hint && <p className="mt-0.5 text-xs text-muted-foreground">{hint}</p>}
     </div>

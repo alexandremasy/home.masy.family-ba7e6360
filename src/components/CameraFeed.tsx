@@ -11,12 +11,15 @@ function SceneArt({ scene, night }: { scene: CameraScene; night: boolean }) {
   const bg = night
     ? "linear-gradient(180deg, oklch(0.22 0.08 145) 0%, oklch(0.15 0.06 145) 100%)"
     : {
-        front:    "linear-gradient(180deg, oklch(0.55 0.06 240) 0%, oklch(0.72 0.05 60) 55%, oklch(0.35 0.03 40) 100%)",
-        driveway: "linear-gradient(180deg, oklch(0.62 0.08 250) 0%, oklch(0.55 0.04 230) 50%, oklch(0.30 0.02 230) 100%)",
-        garden:   "linear-gradient(180deg, oklch(0.78 0.10 210) 0%, oklch(0.72 0.14 140) 55%, oklch(0.38 0.08 140) 100%)",
+        front:
+          "linear-gradient(180deg, oklch(0.55 0.06 240) 0%, oklch(0.72 0.05 60) 55%, oklch(0.35 0.03 40) 100%)",
+        driveway:
+          "linear-gradient(180deg, oklch(0.62 0.08 250) 0%, oklch(0.55 0.04 230) 50%, oklch(0.30 0.02 230) 100%)",
+        garden:
+          "linear-gradient(180deg, oklch(0.78 0.10 210) 0%, oklch(0.72 0.14 140) 55%, oklch(0.38 0.08 140) 100%)",
         backyard: "linear-gradient(180deg, oklch(0.45 0.05 260) 0%, oklch(0.30 0.04 250) 100%)",
-        living:   "linear-gradient(180deg, oklch(0.35 0.02 60) 0%, oklch(0.55 0.06 60) 100%)",
-        utility:  "linear-gradient(180deg, oklch(0.42 0.02 230) 0%, oklch(0.30 0.02 230) 100%)",
+        living: "linear-gradient(180deg, oklch(0.35 0.02 60) 0%, oklch(0.55 0.06 60) 100%)",
+        utility: "linear-gradient(180deg, oklch(0.42 0.02 230) 0%, oklch(0.30 0.02 230) 100%)",
       }[scene];
 
   const stroke = night ? "oklch(0.85 0.14 145)" : "rgba(255,255,255,0.55)";
@@ -24,10 +27,22 @@ function SceneArt({ scene, night }: { scene: CameraScene; night: boolean }) {
 
   return (
     <div className="absolute inset-0 overflow-hidden" style={{ background: bg }}>
-      <svg viewBox="0 0 200 120" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice">
+      <svg
+        viewBox="0 0 200 120"
+        className="absolute inset-0 h-full w-full"
+        preserveAspectRatio="xMidYMid slice"
+      >
         {scene === "front" && (
           <>
-            <rect x="60" y="35" width="80" height="70" fill={fill} stroke={stroke} strokeWidth="0.8" />
+            <rect
+              x="60"
+              y="35"
+              width="80"
+              height="70"
+              fill={fill}
+              stroke={stroke}
+              strokeWidth="0.8"
+            />
             <rect x="92" y="55" width="16" height="50" fill={stroke} opacity="0.35" />
             <circle cx="103" cy="80" r="1.2" fill={stroke} />
             <path d="M 0 105 L 200 105" stroke={stroke} strokeWidth="0.6" opacity="0.6" />
@@ -44,7 +59,11 @@ function SceneArt({ scene, night }: { scene: CameraScene; night: boolean }) {
         )}
         {scene === "garden" && (
           <>
-            <path d="M 0 90 Q 50 70 100 90 T 200 90 L 200 120 L 0 120 Z" fill={fill} opacity="0.5" />
+            <path
+              d="M 0 90 Q 50 70 100 90 T 200 90 L 200 120 L 0 120 Z"
+              fill={fill}
+              opacity="0.5"
+            />
             <circle cx="40" cy="80" r="14" fill={stroke} opacity="0.35" />
             <rect x="38" y="80" width="4" height="18" fill={stroke} opacity="0.5" />
             <circle cx="160" cy="72" r="18" fill={stroke} opacity="0.3" />
@@ -79,11 +98,20 @@ function SceneArt({ scene, night }: { scene: CameraScene; night: boolean }) {
         )}
       </svg>
       {/* Scan lines */}
-      <div className="pointer-events-none absolute inset-0 opacity-30 mix-blend-overlay"
-           style={{ backgroundImage: "repeating-linear-gradient(0deg, rgba(0,0,0,0.25) 0 1px, transparent 1px 3px)" }} />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-30 mix-blend-overlay"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg, rgba(0,0,0,0.25) 0 1px, transparent 1px 3px)",
+        }}
+      />
       {/* Vignette */}
-      <div className="pointer-events-none absolute inset-0"
-           style={{ background: "radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.35) 100%)" }} />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: "radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.35) 100%)",
+        }}
+      />
     </div>
   );
 }
@@ -103,12 +131,16 @@ export function CameraFeed({ camera, size = "md", showChrome = true }: CameraFee
       {notInstalled ? (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-secondary text-muted-foreground">
           <Bell className="h-6 w-6 opacity-60" />
-          <Eyebrow tone="current" as="span">Bientôt installée</Eyebrow>
+          <Eyebrow tone="current" as="span">
+            Bientôt installée
+          </Eyebrow>
         </div>
       ) : offline ? (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-foreground/80 text-background/60">
           <WifiOff className="h-6 w-6" />
-          <Eyebrow tone="current" as="span">Hors-ligne</Eyebrow>
+          <Eyebrow tone="current" as="span">
+            Hors-ligne
+          </Eyebrow>
         </div>
       ) : (
         <>

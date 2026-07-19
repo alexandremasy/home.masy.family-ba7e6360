@@ -1,4 +1,12 @@
-import { Sofa, Briefcase, UtensilsCrossed, Bed, Footprints, WashingMachine, type LucideProps } from "lucide-react";
+import {
+  Sofa,
+  Briefcase,
+  UtensilsCrossed,
+  Bed,
+  Footprints,
+  WashingMachine,
+  type LucideProps,
+} from "lucide-react";
 import type { Room } from "@/lib/mock-data";
 
 const map = {

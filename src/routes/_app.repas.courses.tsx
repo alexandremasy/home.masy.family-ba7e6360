@@ -3,14 +3,36 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  upcomingMeals, initialPlan, frLongDay, addDays, iso, TODAY,
-  type UpcomingMeal, type Slot,
+  upcomingMeals,
+  initialPlan,
+  frLongDay,
+  addDays,
+  iso,
+  TODAY,
+  type UpcomingMeal,
+  type Slot,
 } from "@/lib/maison-data";
-import { Check, Plus, Minus, X, ShoppingBasket, UtensilsCrossed, Sun, Moon, ChevronUp } from "lucide-react";
+import {
+  Check,
+  Plus,
+  Minus,
+  X,
+  ShoppingBasket,
+  UtensilsCrossed,
+  Sun,
+  Moon,
+  ChevronUp,
+} from "lucide-react";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { DishCard } from "@/components/DishCard";
-import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 
 export const Route = createFileRoute("/_app/repas/courses")({
   component: CoursesPage,
@@ -45,9 +67,10 @@ function CoursesPage() {
   // upcomingMeals already excludes leftovers). This is the quantity's base.
   const mealCount = useMemo(() => {
     const c = new Map<string, number>();
-    for (const m of meals) for (const comp of m.components) {
-      if (selected.has(compKey(m.key, comp.name))) c.set(comp.name, (c.get(comp.name) ?? 0) + 1);
-    }
+    for (const m of meals)
+      for (const comp of m.components) {
+        if (selected.has(compKey(m.key, comp.name))) c.set(comp.name, (c.get(comp.name) ?? 0) + 1);
+      }
     return c;
   }, [meals, selected]);
 
@@ -89,14 +112,20 @@ function CoursesPage() {
     const removing = selected.has(k);
     setSelected((prev) => {
       const next = new Set(prev);
-      if (next.has(k)) next.delete(k); else next.add(k);
+      if (next.has(k)) next.delete(k);
+      else next.add(k);
       return next;
     });
     // If that was the last meal carrying this ingredient, drop a leftover negative
     // adjustment so a later re-add doesn't resurface a stale quantity.
     if (removing) {
       const stillHas = meals.some((m) => m.key !== mealKey && selected.has(compKey(m.key, name)));
-      if (!stillHas && (adjust[name] ?? 0) <= 0) setAdjust((a) => { const c = { ...a }; delete c[name]; return c; });
+      if (!stillHas && (adjust[name] ?? 0) <= 0)
+        setAdjust((a) => {
+          const c = { ...a };
+          delete c[name];
+          return c;
+        });
     }
   };
 
@@ -105,12 +134,17 @@ function CoursesPage() {
     if (next <= 0) {
       // The one rule: 0 unchecks every meal carrying it and drops the adjustment,
       // so it leaves the list entirely.
-      if (base > 0) setSelected((prev) => {
-        const s = new Set(prev);
-        for (const m of meals) s.delete(compKey(m.key, name));
-        return s;
+      if (base > 0)
+        setSelected((prev) => {
+          const s = new Set(prev);
+          for (const m of meals) s.delete(compKey(m.key, name));
+          return s;
+        });
+      setAdjust((a) => {
+        const c = { ...a };
+        delete c[name];
+        return c;
       });
-      setAdjust((a) => { const c = { ...a }; delete c[name]; return c; });
       return;
     }
     // Store the delta from the meal base — positive above it, negative below.
@@ -135,11 +169,14 @@ function CoursesPage() {
           placeholder="Ajouter un article…"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") addManual(); }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") addManual();
+          }}
           className="h-9"
         />
         <Button size="sm" variant="inverted" onClick={addManual} className="h-9 shrink-0 gap-1">
-          <Plus className="h-3.5 w-3.5" />Ajouter
+          <Plus className="h-3.5 w-3.5" />
+          Ajouter
         </Button>
       </div>
 
@@ -150,7 +187,10 @@ function CoursesPage() {
       ) : (
         <ul className="-mx-2">
           {sortedItems.map((it) => (
-            <li key={it.name} className="group flex items-center gap-2 rounded-lg px-2 py-1.5 odd:bg-muted/40">
+            <li
+              key={it.name}
+              className="group flex items-center gap-2 rounded-lg px-2 py-1.5 odd:bg-muted/40"
+            >
               <p className="min-w-0 flex-1 truncate text-sm">{it.name}</p>
               <div className="flex shrink-0 items-center gap-0.5 rounded-md border border-border/60 bg-background">
                 <button
@@ -182,7 +222,6 @@ function CoursesPage() {
           ))}
         </ul>
       )}
-
     </>
   );
 
@@ -222,7 +261,9 @@ function CoursesPage() {
         <div className="space-y-5">
           {days.map(({ date, cells }) => (
             <div key={date}>
-              <Eyebrow size="xs" className="mb-3">{frLongDay(new Date(date))}</Eyebrow>
+              <Eyebrow size="xs" className="mb-3">
+                {frLongDay(new Date(date))}
+              </Eyebrow>
               <div className="grid items-stretch gap-3 sm:grid-cols-2">
                 {cells.map((cell) => {
                   // The slot marker (sun for midi, moon for soir) is a badge that
@@ -240,8 +281,12 @@ function CoursesPage() {
                       {!cell.meal ? (
                         <Empty className="h-full rounded-xl border border-border/60 p-4 md:p-6">
                           <EmptyHeader>
-                            <EmptyMedia variant="icon" className="text-muted-foreground/60"><UtensilsCrossed /></EmptyMedia>
-                            <EmptyTitle className="text-base font-normal text-muted-foreground/70">Rien de planifié</EmptyTitle>
+                            <EmptyMedia variant="icon" className="text-muted-foreground/60">
+                              <UtensilsCrossed />
+                            </EmptyMedia>
+                            <EmptyTitle className="text-base font-normal text-muted-foreground/70">
+                              Rien de planifié
+                            </EmptyTitle>
                           </EmptyHeader>
                         </Empty>
                       ) : (
@@ -264,7 +309,11 @@ function CoursesPage() {
                                           : "border-border/60 text-muted-foreground hover:border-border hover:text-foreground")
                                       }
                                     >
-                                      {checked ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
+                                      {checked ? (
+                                        <Check className="h-3 w-3" />
+                                      ) : (
+                                        <Plus className="h-3 w-3" />
+                                      )}
                                       {c.name}
                                     </button>
                                   );

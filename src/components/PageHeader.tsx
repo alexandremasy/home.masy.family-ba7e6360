@@ -36,12 +36,12 @@ export function PageHeader({
 }) {
   const bleed =
     variant === "page"
-      // Sticks BELOW the TopNav. At top-0 it would stick behind it (z-20 vs z-30)
-      // and the fade would cut in the wrong place — or vanish entirely on mobile,
-      // where the nav is 109px tall.
-      ? "top-[var(--nav-h)] -mx-4 -mt-6 px-4 pt-6 sm:-mx-6 sm:-mt-10 sm:px-6 sm:pt-10"
-      // The overlay covers the TopNav, so there it really is the top.
-      : "top-0 -mx-5 -mt-7 px-5 pt-7 md:-mx-8 md:-mt-10 md:px-8 md:pt-10";
+      ? // Sticks BELOW the TopNav. At top-0 it would stick behind it (z-20 vs z-30)
+        // and the fade would cut in the wrong place — or vanish entirely on mobile,
+        // where the nav is 109px tall.
+        "top-[var(--nav-h)] -mx-4 -mt-6 px-4 pt-6 sm:-mx-6 sm:-mt-10 sm:px-6 sm:pt-10"
+      : // The overlay covers the TopNav, so there it really is the top.
+        "top-0 -mx-5 -mt-7 px-5 pt-7 md:-mx-8 md:-mt-10 md:px-8 md:pt-10";
 
   const titleCls =
     size === "sm"
@@ -76,7 +76,10 @@ export function PageHeader({
           )}
           <div className="min-w-0">
             {back && (
-              <Link to={back} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+              <Link
+                to={back}
+                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
                 ← {backLabel}
               </Link>
             )}
