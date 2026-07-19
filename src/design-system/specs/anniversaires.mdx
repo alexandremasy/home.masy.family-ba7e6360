@@ -1,0 +1,42 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Specs/Anniversaires" />
+
+# Anniversaires — spec
+
+Tracked people with derived birthday fields, a kept message history, and a two-way sync with
+the Google "🎂 Anniversaires" calendar.
+
+## Purpose
+
+Never miss a birthday: import the household's real birthdays, surface who's coming up, and
+help draft a message in the right tone.
+
+## Behaviour
+
+- People are **imported from Google Calendar** — only **live, all-day** birthday events. The
+  legacy/corrupt 2018 duplicates (broken `dateTime`, expired recurrence) are skipped.
+- Import **dedups by natural key** (`name` + month-day), so duplicate calendar entries collapse
+  onto one person.
+- Deleting a person in the cockpit **removes their event from the calendar** (the sync scope is
+  the anniversaires calendar, not `primary`).
+- The reconcile is **non-reentrant** (one sweep at a time) so the cron and an on-demand run
+  can't race and double-insert.
+
+## States
+
+- **Upcoming** — people whose birthday falls within N days, sorted by soonest.
+- **Unknown year** — `dob` uses `0000-MM-DD`; age is hidden, next-occurrence still computed.
+- **Message drafted** — a kept entry in the person's history (tone preset applied).
+
+## Data contract
+
+- Source of truth is the **api** (`/v1/anniversaires`), never the mockup. `dob` is TEXT
+  (`YYYY-MM-DD`, year `0000` = unknown). Derived fields (`nextBirthday`,
+  `daysUntilNextBirthday`, `upcomingAge`, `hasBirthYear`) are computed server-side.
+- Person ↔ Calendar sync is bidirectional; the natural key drives dedup + matching.
+
+## Open questions
+
+- Notify ahead of time (push / calendar reminder) vs. surface only in the dashboard?
+- Multiple message drafts per year, or one kept per birthday?

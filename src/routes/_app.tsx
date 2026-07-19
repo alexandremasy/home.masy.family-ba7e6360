@@ -25,9 +25,7 @@ function AppLayout() {
     pathname.startsWith("/budget") ||
     pathname.startsWith("/securite") ||
     pathname.startsWith("/repas") ||
-    pathname.startsWith("/anniversaires") ||
-    // Not in any nav — a reference page, reachable by URL.
-    pathname.startsWith("/design-system");
+    pathname.startsWith("/anniversaires");
   const isOverlay = !isFullBleed && pathname !== "/";
 
   // Close plays the exit animation, then navigates home — shared with in-page modals

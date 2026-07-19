@@ -3,7 +3,12 @@ import type { StorybookConfig } from "@storybook/react-vite";
 const config: StorybookConfig = {
   framework: { name: "@storybook/react-vite", options: {} },
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(ts|tsx)"],
-  addons: ["@storybook/addon-a11y", "@storybook/addon-themes", "@storybook/addon-mcp"],
+  addons: [
+    "@storybook/addon-docs",
+    "@storybook/addon-a11y",
+    "@storybook/addon-themes",
+    "@storybook/addon-mcp",
+  ],
   // @storybook/react-vite already merges the project vite.config.ts (Tailwind v4, @/ alias,
   // tsconfigPaths come for free). We only re-assert the proxied handling here, because
   // Storybook overrides Vite's `server`. Served at the root of design.masy.family behind

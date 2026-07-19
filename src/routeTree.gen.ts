@@ -14,7 +14,6 @@ import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTeslaRouteImport } from './routes/_app.tesla'
 import { Route as AppSecuriteRouteImport } from './routes/_app.securite'
 import { Route as AppRepasRouteImport } from './routes/_app.repas'
-import { Route as AppDesignSystemRouteImport } from './routes/_app.design-system'
 import { Route as AppBudgetRouteImport } from './routes/_app.budget'
 import { Route as AppAnniversairesRouteImport } from './routes/_app.anniversaires'
 import { Route as AppSecuriteIndexRouteImport } from './routes/_app.securite.index'
@@ -64,11 +63,6 @@ const AppSecuriteRoute = AppSecuriteRouteImport.update({
 const AppRepasRoute = AppRepasRouteImport.update({
   id: '/repas',
   path: '/repas',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDesignSystemRoute = AppDesignSystemRouteImport.update({
-  id: '/design-system',
-  path: '/design-system',
   getParentRoute: () => AppRoute,
 } as any)
 const AppBudgetRoute = AppBudgetRouteImport.update({
@@ -206,7 +200,6 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/anniversaires': typeof AppAnniversairesRouteWithChildren
   '/budget': typeof AppBudgetRouteWithChildren
-  '/design-system': typeof AppDesignSystemRoute
   '/repas': typeof AppRepasRouteWithChildren
   '/securite': typeof AppSecuriteRouteWithChildren
   '/tesla': typeof AppTeslaRoute
@@ -236,7 +229,6 @@ export interface FileRoutesByFullPath {
   '/repas/plats/': typeof AppRepasPlatsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/design-system': typeof AppDesignSystemRoute
   '/tesla': typeof AppTeslaRoute
   '/': typeof AppIndexRoute
   '/budget/annuel': typeof AppBudgetAnnuelRoute
@@ -268,7 +260,6 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/_app/anniversaires': typeof AppAnniversairesRouteWithChildren
   '/_app/budget': typeof AppBudgetRouteWithChildren
-  '/_app/design-system': typeof AppDesignSystemRoute
   '/_app/repas': typeof AppRepasRouteWithChildren
   '/_app/securite': typeof AppSecuriteRouteWithChildren
   '/_app/tesla': typeof AppTeslaRoute
@@ -304,7 +295,6 @@ export interface FileRouteTypes {
     | '/'
     | '/anniversaires'
     | '/budget'
-    | '/design-system'
     | '/repas'
     | '/securite'
     | '/tesla'
@@ -334,7 +324,6 @@ export interface FileRouteTypes {
     | '/repas/plats/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/design-system'
     | '/tesla'
     | '/'
     | '/budget/annuel'
@@ -365,7 +354,6 @@ export interface FileRouteTypes {
     | '/_app'
     | '/_app/anniversaires'
     | '/_app/budget'
-    | '/_app/design-system'
     | '/_app/repas'
     | '/_app/securite'
     | '/_app/tesla'
@@ -435,13 +423,6 @@ declare module '@tanstack/react-router' {
       path: '/repas'
       fullPath: '/repas'
       preLoaderRoute: typeof AppRepasRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/design-system': {
-      id: '/_app/design-system'
-      path: '/design-system'
-      fullPath: '/design-system'
-      preLoaderRoute: typeof AppDesignSystemRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/budget': {
@@ -733,7 +714,6 @@ const AppSecuriteRouteWithChildren = AppSecuriteRoute._addFileChildren(
 interface AppRouteChildren {
   AppAnniversairesRoute: typeof AppAnniversairesRouteWithChildren
   AppBudgetRoute: typeof AppBudgetRouteWithChildren
-  AppDesignSystemRoute: typeof AppDesignSystemRoute
   AppRepasRoute: typeof AppRepasRouteWithChildren
   AppSecuriteRoute: typeof AppSecuriteRouteWithChildren
   AppTeslaRoute: typeof AppTeslaRoute
@@ -746,7 +726,6 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAnniversairesRoute: AppAnniversairesRouteWithChildren,
   AppBudgetRoute: AppBudgetRouteWithChildren,
-  AppDesignSystemRoute: AppDesignSystemRoute,
   AppRepasRoute: AppRepasRouteWithChildren,
   AppSecuriteRoute: AppSecuriteRouteWithChildren,
   AppTeslaRoute: AppTeslaRoute,

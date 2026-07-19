@@ -1,0 +1,45 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Specs/Repas · Courses" />
+
+# Repas · Courses — spec
+
+The shopping list is **opt-in per meal**, not auto-derived. This is the decision that kept
+getting re-litigated — it lives here now.
+
+## Purpose
+
+Turn the meal plan into a shopping list the household actually builds, and mirror it to
+Google Tasks so it's usable at the store.
+
+## Behaviour
+
+- Adding a meal to the plan adds **nothing** to the list.
+- Clicking a component pill on a meal opts **that meal's** contribution in. Quantity is the
+  **sum** of the included meals, so the same ingredient (poulet in the wrap _and_ in the
+  salad) is independent and accumulates.
+- Removing a meal's pill deducts only its share; the others remain.
+- Editing a quantity directly in the list is a manual override. Setting a line to **0**
+  clears that ingredient's inclusions across every meal.
+- Staples are always on the list; manual lines can be added by hand.
+
+## States
+
+- **Empty** — a planned week with nothing opted in yet (an empty card invites adding, not a
+  filter button).
+- **Built** — lines grouped by aisle, quantities summed from included meals + staples + manual.
+- **Acquired** — checking a line off (or completing its Google task) removes it from the list.
+
+## Data contract
+
+- Source of truth is the **api** (`/v1/repas`), never the mockup. The list is **server-derived**:
+  `loadCourseList(from, to)` = plan + dishes + staples merged with `repas_course_line_state`,
+  filtered by per-meal `repas_course_inclusions` (`plan_entry_id` + `name|unit`).
+- Natural id of a line: `` `${name}|${unit}` ``.
+- Google Tasks sync is **bidirectional** (title = `"Nom · qty unit"`, no technical note);
+  completing a task there clears the line here.
+
+## Open questions
+
+- Should staples be per-household-configurable, or stay a fixed list?
+- Multi-store split (e.g. pharmacy vs grocery) — out of scope for now.

@@ -1,0 +1,43 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Specs/Énergie" />
+
+# Énergie — spec
+
+Monthly meter readings (eau, électricité jour/nuit, citerne mazout), their history, and a
+contextual "à saisir" prompt.
+
+## Purpose
+
+Track household consumption from manually-entered monthly readings, surface the trend, and
+nudge when the current month's reading is missing.
+
+## Behaviour
+
+- The domain is **contextual**: a warm "Relevé mensuel à saisir" banner shows only when no
+  reading exists for the current month (`isMonthlyDue`). Otherwise a quiet info bar shows the
+  last reading + a "Nouveau relevé" affordance.
+- Entering a reading (`/energie/saisie`) upserts the four meters for a date, then **must
+  invalidate the energy queries** so the banner clears immediately (queries have a 1h
+  staleTime — skipping invalidation is why the banner used to persist after entry).
+- Oil is a level/tank meter (autonomy in days); the others are cumulative counters (delta =
+  consumption between readings).
+
+## States
+
+- **Due** — no current-month reading → warm banner.
+- **Done** — reading present → info bar with last date + covered month.
+- **History** — per-month charts (elec kWh, water m³, oil liters) + an editable relevés table.
+
+## Data contract
+
+- Source of truth is the **api** (`/v1/energy`), never the mockup. Reads: `/summary`,
+  `/meters`, `/readings`, per-meter `consumption`. Writes: `POST /readings` (idempotent upsert
+  on meter+date).
+- `isMonthlyDue(rows)` = latest reading predates the current month.
+- Presentation (formatting, alert thresholds like oil < 25%) lives in the consumer, not the api.
+
+## Open questions
+
+- Auto-ingest readings (photo OCR / smart meter) instead of manual entry?
+- Per-meter alert thresholds configurable, or fixed?
