@@ -136,16 +136,17 @@ export function Dashboard() {
               <SalonTile key="salon-v3" room={room} variant="idle" />,
             ];
           }
+          // Placement belongs to the cell, never to the card: on the Card this class
+          // sat one level too deep and did nothing, so Bureau stayed one column.
           const bureauCls = room.key === "bureau" ? "sm:col-span-2" : "";
           return [
-            <BentoItem key={room.key} span={1}>
+            <BentoItem key={room.key} span={1} className={bureauCls}>
               <Card
                 to={`/room/${room.key}`}
                 variant="glass"
                 padding="sm"
                 icon={<RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />}
                 title={room.name}
-                className={bureauCls}
               >
                 {typeof room.temperature === "number" ? (
                   <p className="text-2xl tracking-tight">
@@ -285,12 +286,7 @@ export function Dashboard() {
 
         {/* PRIORITY 3 — Bernard (compact) */}
         <BentoItem span={2}>
-          <Card
-            to="/tesla"
-            variant="inverted"
-            padding="sm"
-            className="relative isolate col-span-1 sm:col-span-2"
-          >
+          <Card to="/tesla" variant="inverted" padding="sm" className="isolate">
             <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-80" />
             <span className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 rounded-b-[inherit] bg-gradient-to-t from-foreground via-foreground/70 to-transparent" />
 
