@@ -1,36 +1,70 @@
-import { type ReactNode, type HTMLAttributes } from "react";
+import { type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
-interface BaseProps {
-  children: ReactNode;
-  className?: string;
-  span?: 1 | 2 | 3 | 4 | 6;
-  rowSpan?: 2;
-  tone?: "default" | "primary" | "warm" | "mustard" | "dark";
-}
+/* ────────────────────────────────────────────────────────────────────────────
+   ONE card. Not three, not four.
 
-type TileVariant = "solid" | "glass" | "pill";
+   An audit of four views (énergie, Bernard, dashboard, pièces) found the same
+   skeleton written ten times — three competing named components (`Section`,
+   `SectionTitle`, `MetricCard`) plus seven inline copies, across 152 card-shaped
+   surfaces and 50 distinct signatures. They agreed on the structure and diverged
+   on the surface, which is a consequence rather than the problem.
 
-// The three real Tile surfaces (was ~6 ad-hoc `!`-override flavors across the dashboard).
-// `solid` is the default card; `glass` a frosted translucent tile; `pill` a rounded row.
-const tileSurface: Record<TileVariant, string> = {
-  solid:
-    "rounded-2xl border border-border/50 bg-card text-card-foreground p-5 shadow-soft hover:border-border",
+   The anatomy: a header of four slots (icon · title · subline · action), a body
+   that is a pure slot, and a footer the component pins itself. The `action` slot
+   is the one that never existed, which is why every view smuggled its badge,
+   filter, tabs or toggle in some other way.
+
+   One grammar (decided 2026-07-20): icon left in its tinted circle, title beside
+   it. There is no `layout` prop — the dashboard's tonal "eyebrow + icon right"
+   tiles migrate onto this one.
+
+   Padding lives on the slots rather than on the box: that is what lets `divided`
+   draw a true full-bleed rule with no negative-margin trick, and lets a body run
+   edge-to-edge (the relevé table) while its header stays padded.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+export type CardVariant = "solid" | "soft" | "glass" | "pill" | "inset";
+export type CardTone = "default" | "primary" | "warm" | "mustard" | "dark";
+export type CardPadding = "sm" | "md" | "lg";
+
+/** The five real surfaces, clustered from the audit. Nature, not decoration. */
+const surface: Record<CardVariant, string> = {
+  solid: "rounded-xl border border-border/60 bg-card text-card-foreground",
+  soft: "rounded-2xl border border-border/60 bg-card text-card-foreground shadow-soft",
   glass:
-    "rounded-2xl border border-white bg-card/60 text-card-foreground p-4 shadow-xs backdrop-blur-md dark:border-white/10",
-  pill: "flex min-h-[3.5rem] items-center rounded-full border-0 bg-card/70 text-card-foreground px-5 py-2.5 backdrop-blur-md",
+    "rounded-2xl border border-white bg-card/60 text-card-foreground shadow-xs backdrop-blur-md dark:border-white/10",
+  pill: "flex min-h-[3.5rem] items-center rounded-full bg-card/70 text-card-foreground backdrop-blur-md",
+  inset: "rounded-xl border border-border/60 bg-secondary/50",
 };
 
-// Tint (bg + text) for a solid tile. `default` is left to the surface's own bg.
-const toneClasses: Record<Exclude<NonNullable<BaseProps["tone"]>, "default">, string> = {
+/** Tint applied over the surface. `default` leaves the surface's own background. */
+const toneClasses: Record<Exclude<CardTone, "default">, string> = {
   primary: "bg-primary text-primary-foreground",
   warm: "bg-warm text-warm-foreground",
   mustard: "bg-mustard text-mustard-foreground",
   dark: "bg-foreground text-background",
 };
 
-const spanClasses: Record<NonNullable<BaseProps["span"]>, string> = {
+/** Per-slot padding, so a rule can span the full width without negative margins. */
+const pad: Record<CardPadding, { x: string; head: string; body: string; foot: string }> = {
+  sm: { x: "px-4", head: "pt-4 pb-3", body: "last:pb-4", foot: "pt-3 pb-4" },
+  md: {
+    x: "px-5 sm:px-6",
+    head: "pt-5 pb-4 sm:pt-6",
+    body: "last:pb-5 sm:last:pb-6",
+    foot: "pt-4 pb-5 sm:pb-6",
+  },
+  lg: {
+    x: "px-6 sm:px-8",
+    head: "pt-6 pb-4 sm:pt-8",
+    body: "last:pb-6 sm:last:pb-8",
+    foot: "pt-4 pb-6 sm:pb-8",
+  },
+};
+
+const spanClasses: Record<NonNullable<CardProps["span"]>, string> = {
   1: "col-span-1",
   2: "col-span-2",
   3: "col-span-2 sm:col-span-3",
@@ -38,257 +72,159 @@ const spanClasses: Record<NonNullable<BaseProps["span"]>, string> = {
   6: "col-span-2 sm:col-span-4 lg:col-span-6",
 };
 
-export function Tile({
-  children,
-  className,
-  span = 2,
-  rowSpan,
-  tone = "default",
-  variant = "solid",
-  to,
-  ...rest
-}: BaseProps & { variant?: TileVariant; to?: string } & Omit<
-    HTMLAttributes<HTMLDivElement>,
-    "children"
-  >) {
-  // cn (tailwind-merge) resolves conflicts, so a tint or a `className` override wins
-  // WITHOUT `!important` — that's what killed the per-site override surgery.
-  const cls = cn(
-    "group relative overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift",
-    tileSurface[variant],
-    tone !== "default" && toneClasses[tone],
-    spanClasses[span],
-    rowSpan === 2 && "row-span-2",
-    className,
-  );
-
-  if (to) {
-    return (
-      <Link to={to} data-cursor className={cls} {...(rest as object)}>
-        {children}
-      </Link>
-    );
-  }
-  return (
-    <div className={cls} {...rest}>
-      {children}
-    </div>
-  );
+export interface CardProps {
+  /** The body. A pure slot — a number, a gauge, a list, a chart, controls, or nothing. */
+  children?: ReactNode;
+  /** Header title. Omit it and no header renders at all. */
+  title?: ReactNode;
+  /** Rendered inside the 36px tinted circle, left of the title. Needs `title`. */
+  icon?: ReactNode;
+  /** Secondary line under the title. A node, not a string — Bernard composes JSX here. */
+  subline?: ReactNode;
+  /** Right end of the header row: a badge, a filter, tabs, a legend — or a real control. */
+  action?: ReactNode;
+  /** Pinned to the bottom, so footers line up across a grid. Sparkline, meta line, legend. */
+  footer?: ReactNode;
+  /**
+   * The surface. `solid` is the plain content box; `soft` adds the shadow for a
+   * card that floats on the page; `glass` is the frosted dashboard tile; `pill` a
+   * rounded row; `inset` a tinted box *inside* another card.
+   */
+  variant?: CardVariant;
+  /** Tint for a feature card. `default` keeps the surface's own background. */
+  tone?: CardTone;
+  /** Inner spacing. `md` is what the 25 hand-built panels converged on. */
+  padding?: CardPadding;
+  /** Draw a hairline under the header and above the footer. */
+  divided?: boolean;
+  /** Drop the body's horizontal padding, for edge-to-edge content such as a table. */
+  bleed?: boolean;
+  /** Column span in the bento grid. Ignored outside a grid. */
+  span?: 1 | 2 | 3 | 4 | 6;
+  /** Make the card two rows tall in the bento grid. */
+  rowSpan?: 2;
+  /** Render the whole card as a router Link to this route. */
+  to?: string;
+  /** Element used when the card is not a link. */
+  as?: "section" | "div" | "article";
+  /** Escape hatch for a genuine one-off. Merged with `cn`, so it wins without `!important`. */
+  className?: string;
 }
-
-const panelPadding = {
-  sm: "p-4",
-  md: "p-5 sm:p-7", // what the 25 hand-built panels converged on
-  lg: "p-6 sm:p-8",
-} as const;
-
-export type PanelVariant = "flat" | "compact" | "soft" | "inset";
-
-// The four real content-box surfaces, clustered from a repo-wide audit of the
-// hand-rolled ones (152 card-shaped surfaces, 50 signatures). Surface only —
-// padding stays an orthogonal prop, which is what made the flavors multiply.
-//   flat    what Panel/Section already render (~31 sites)
-//   compact rounded-xl, no shadow — the most common hand-rolled card (~21)
-//   soft    rounded-2xl + shadow-soft — the budget/securite views (~13)
-//   inset   a secondary-tinted box INSIDE a card, not a card itself (~21)
-// No `raised`: shadow-lift turned out to be for overlays/tooltips/sticky bars,
-// never a content box.
-const panelSurface: Record<PanelVariant, string> = {
-  flat: "rounded-lg border border-border/60 bg-card",
-  compact: "rounded-xl border border-border/60 bg-card",
-  soft: "rounded-2xl border border-border/60 bg-card shadow-soft",
-  inset: "rounded-xl border border-border/60 bg-secondary/50",
-};
 
 /**
- * The card-shaped box a page section sits in. It was hand-written 31 times with
- * SIX paddings for one role; this names the role and offers three.
- *
- * Section is built on it — don't add a third box.
+ * The card. Header slots are props (`icon`, `title`, `subline`, `action`), the
+ * body is `children`, the footer is `footer` — one component, one props table.
  */
-export function Panel({
-  children,
-  padding = "md",
-  variant = "flat",
-  className,
-  as: As = "section",
-}: {
-  children: ReactNode;
-  padding?: keyof typeof panelPadding;
-  variant?: PanelVariant;
-  className?: string;
-  as?: "section" | "div" | "article";
-}) {
-  return (
-    <As className={cn(panelSurface[variant], panelPadding[padding], className)}>{children}</As>
-  );
-}
-
-/* ────────────────────────────────────────────────────────────────────────────
-   The anatomy — Card + CardHeader / CardBody / CardFooter.
-
-   An audit of 4 views (énergie, Bernard, dashboard, pièces) found the SAME card
-   skeleton written 10 times: 3 competing named components (Section, SectionTitle,
-   MetricCard) plus 7 inline copies. They agree on the structure and disagree on
-   nothing that matters.
-
-   ONE header, FOUR slots — icon, title, subline, action. The 4th is the one that
-   was always missing, so every view smuggled its badge / filter / tabs / toggle
-   in some other way.
-
-   ONE grammar (decided 2026-07-20, Alex): icon left in its tinted circle, title
-   beside it. No `layout` prop — the "eyebrow + icon right" variant of the tonal
-   dashboard tiles is a divergence, not a need, and those tiles migrate onto this.
-
-   Padding lives on the SLOTS, not on Card. That is what lets `divided` draw a
-   real full-bleed rule with no negative-margin trick, and lets a body go
-   edge-to-edge (the relevé table) while its header stays padded.
-   ──────────────────────────────────────────────────────────────────────────── */
-
-/** The card surface. Holds no padding — the slots do. */
 export function Card({
   children,
-  variant = "soft",
-  className,
-  as: As = "section",
-}: {
-  children: ReactNode;
-  variant?: PanelVariant;
-  className?: string;
-  as?: "section" | "div" | "article";
-}) {
-  return (
-    <As className={cn("flex h-full flex-col overflow-hidden", panelSurface[variant], className)}>
-      {children}
-    </As>
-  );
-}
-
-/**
- * The four slots. `icon` renders in the 36px tinted circle every view already
- * hand-rolls; `subline` is a ReactNode because Bernard composes JSX in it;
- * `action` takes anything — a badge, a Select, Tabs, or a real control (the room
- * on/off toggle lives in the page header today only because this slot was absent).
- */
-export function CardHeader({
   title,
   icon,
   subline,
   action,
+  footer,
+  variant = "soft",
+  tone = "default",
+  padding = "md",
   divided = false,
-  className,
-}: {
-  title: ReactNode;
-  icon?: ReactNode;
-  subline?: ReactNode;
-  action?: ReactNode;
-  divided?: boolean;
-  className?: string;
-}) {
-  return (
-    <header
-      className={cn(
-        "flex items-start justify-between gap-4 px-5 pt-5 pb-4 sm:px-6 sm:pt-6",
-        divided && "border-b border-border/60",
-        className,
-      )}
-    >
-      <div className="flex min-w-0 items-center gap-2.5">
-        {icon && (
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-            {icon}
-          </span>
-        )}
-        <div className="min-w-0">
-          <h2 className="truncate font-serif text-base font-semibold tracking-tight text-foreground">
-            {title}
-          </h2>
-          {subline && <p className="mt-0.5 text-sm text-muted-foreground">{subline}</p>}
-        </div>
-      </div>
-      {action && <div className="shrink-0">{action}</div>}
-    </header>
-  );
-}
-
-/**
- * The body is a pure slot — the audit found a big number, a gauge, a list, a
- * recharts chart, controls, and nothing at all. There is no variant to add here;
- * parameterising it is what produced the fifty flavors in the first place.
- *
- * `bleed` drops the horizontal padding for edge-to-edge content (tables).
- */
-export function CardBody({
-  children,
   bleed = false,
+  span,
+  rowSpan,
+  to,
+  as: As = "section",
   className,
-}: {
-  children: ReactNode;
-  bleed?: boolean;
-  className?: string;
-}) {
-  return (
-    <div
-      className={cn(
-        "flex-1",
-        bleed ? "last:pb-5 sm:last:pb-6" : "px-5 last:pb-5 sm:px-6 sm:last:pb-6",
-        className,
-      )}
-    >
-      {children}
-    </div>
+}: CardProps) {
+  const p = pad[padding];
+
+  // cn (tailwind-merge) resolves conflicts, so a tone or a className override wins
+  // WITHOUT `!important` — that is what killed the per-site override surgery.
+  const cls = cn(
+    "flex h-full flex-col overflow-hidden",
+    surface[variant],
+    tone !== "default" && toneClasses[tone],
+    span && spanClasses[span],
+    rowSpan === 2 && "row-span-2",
+    to && "group relative transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift",
+    className,
   );
+
+  const inner = (
+    <>
+      {title && (
+        <header
+          className={cn(
+            "flex items-start justify-between gap-4",
+            p.x,
+            p.head,
+            divided && "border-b border-border/60",
+          )}
+        >
+          <div className="flex min-w-0 items-center gap-2.5">
+            {icon && (
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                {icon}
+              </span>
+            )}
+            <div className="min-w-0">
+              <h2 className="truncate font-serif text-base font-semibold tracking-tight">
+                {title}
+              </h2>
+              {subline && <p className="mt-0.5 text-sm text-muted-foreground">{subline}</p>}
+            </div>
+          </div>
+          {action && <div className="shrink-0">{action}</div>}
+        </header>
+      )}
+
+      {children != null && (
+        <div className={cn("flex-1", !bleed && p.x, p.body, !title && p.head)}>{children}</div>
+      )}
+
+      {footer && (
+        <div className={cn("mt-auto", p.x, p.foot, divided && "border-t border-border/60")}>
+          {footer}
+        </div>
+      )}
+    </>
+  );
+
+  if (to) {
+    return (
+      <Link to={to} data-cursor className={cls}>
+        {inner}
+      </Link>
+    );
+  }
+  return <As className={cls}>{inner}</As>;
 }
 
-/**
- * Pinned to the bottom by `mt-auto` — that is the whole point of it belonging to
- * the component. In a grid, footers that each caller positions never line up.
- */
-export function CardFooter({
-  children,
-  divided = false,
-  className,
-}: {
-  children: ReactNode;
-  divided?: boolean;
-  className?: string;
-}) {
-  return (
-    <div
-      className={cn(
-        "mt-auto px-5 pt-4 pb-5 sm:px-6 sm:pb-6",
-        divided && "border-t border-border/60",
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
+/* ── Migration shims — delete once every call site moves to <Card> ────────────
+   These keep the ~56 existing usages rendering while the views are migrated one
+   by one. They hold no styling of their own: everything routes through Card, so
+   there is still exactly one implementation. */
+
+/** @deprecated Use `<Card variant="glass" span={…}>`. Kept only until the dashboard migrates. */
+export function Tile({
+  variant = "solid",
+  ...rest
+}: Omit<CardProps, "variant"> & { variant?: "solid" | "glass" | "pill" }) {
+  return <Card {...rest} variant={variant === "solid" ? "soft" : variant} as="div" />;
 }
 
-/** A Panel with a title row. */
-export function Section({
-  title,
-  children,
-  action,
+/** @deprecated Use `<Card>`. Kept only until the content views migrate. */
+export function Panel({
   variant = "flat",
-  className,
-}: {
-  title: string;
-  children: ReactNode;
-  action?: ReactNode;
-  variant?: PanelVariant;
-  className?: string;
-}) {
+  ...rest
+}: Omit<CardProps, "variant"> & { variant?: "flat" | "compact" | "soft" | "inset" }) {
   return (
-    <Panel padding="md" variant={variant} className={cn("anim-slide-up pt-4 sm:pt-5", className)}>
-      <header className="mb-4 flex items-end justify-between gap-4">
-        <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">
-          {title}
-        </h2>
-        {action}
-      </header>
-      {children}
-    </Panel>
+    <Card
+      {...rest}
+      variant={variant === "flat" || variant === "compact" ? "solid" : variant}
+      as="section"
+    />
   );
+}
+
+/** @deprecated Use `<Card title=… action=…>`. Kept only until the room/saisie views migrate. */
+export function Section({ title, ...rest }: CardProps & { title: ReactNode }) {
+  return <Card {...rest} title={title} variant="solid" />;
 }
