@@ -43,7 +43,7 @@ function AppLayout() {
   return (
     // Expanded by default — the full navigation stays visible (rooms, tools,
     // modes). The rail can still collapse to icons on demand (trigger / Cmd+B).
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={false}>
       <AppSidebar />
       {/* Below md the rail is replaced by a floating bottom bar, so reserve the
           room it needs (bar height + its bottom offset). */}

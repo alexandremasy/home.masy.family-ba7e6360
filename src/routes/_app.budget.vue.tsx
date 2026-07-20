@@ -801,19 +801,12 @@ function CategoryMiniCard({ cat }: { cat: (typeof categories)[number] }) {
   const TrendIcon = periodDelta >= 0 ? TrendingUp : TrendingDown;
 
   return (
-    <Card to="/budget/mensuel">
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex min-w-0 items-center gap-2">
-          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-secondary text-foreground/70">
-            <Icon className="h-4 w-4" />
-          </span>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold">{cat.label}</p>
-            <p className="truncate text-2xs tabular-nums text-muted-foreground">
-              Budget {eur(cat.budget)}/mois
-            </p>
-          </div>
-        </div>
+    <Card
+      to="/budget/mensuel"
+      icon={<Icon className="h-4 w-4" />}
+      title={cat.label}
+      subline={`Budget ${eur(cat.budget)}/mois`}
+      action={
         <div className="flex shrink-0 flex-col items-end gap-1">
           <span
             className={
@@ -832,10 +825,10 @@ function CategoryMiniCard({ cat }: { cat: (typeof categories)[number] }) {
             {Math.abs(yoy)}%
           </span>
         </div>
-      </div>
-
+      }
+    >
       {/* Tendance — 12 mois glissants : réel (plein) jusqu'au dernier import, projeté (pointillé) ensuite */}
-      <div className="-mx-1 mt-3 h-12">
+      <div className="-mx-1 h-12">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={trend} margin={{ top: 2, right: 2, left: 2, bottom: 0 }}>
             <defs>

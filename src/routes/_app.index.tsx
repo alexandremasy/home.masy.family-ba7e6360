@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BentoItem } from "@/blocks/bento";
+import { BentoGrid, BentoItem } from "@/blocks/bento";
 import { Card } from "@/components/card";
 import { CountUp } from "@/components/count-up";
 import { MapPinBg } from "@/components/map-pin-bg";
@@ -126,7 +126,7 @@ export function Dashboard() {
         </div>
       </header>
 
-      <div className="grid-bento stagger">
+      <BentoGrid rows="fixed" className="stagger">
         {/* PRIORITY 2 — Rooms. Idle ones share a single reduced slot (below). */}
         {activeRooms.flatMap((room) => {
           if (room.key === "salon") {
@@ -392,7 +392,7 @@ export function Dashboard() {
 
         {/* PRIORITY 3 — Réseau: the speed as a dial, everything else quiet */}
         <ReseauTile />
-      </div>
+      </BentoGrid>
     </div>
   );
 }

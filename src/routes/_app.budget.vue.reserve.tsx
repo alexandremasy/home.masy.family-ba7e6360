@@ -133,13 +133,7 @@ function ReserveOverlay() {
                 <div className="page-header__bg pointer-events-none absolute inset-0 bg-background/85 backdrop-blur-xl" />
                 <div className="page-header__fade pointer-events-none absolute inset-x-0 top-full h-8 bg-gradient-to-b from-background to-transparent" />
                 <div className="relative">
-                  <Link
-                    to="/budget/vue"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    ← Vue d'ensemble
-                  </Link>
-                  <div className="mt-2 flex items-center gap-3">
+                  <div className="flex items-center gap-3">
                     <span className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/12 text-primary">
                       <PiggyBank className="h-5 w-5 anim-float" />
                     </span>
@@ -272,18 +266,15 @@ function ReserveOverlay() {
                   </span>
                 }
               >
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {/* Cells of one card, divided by hairlines — same shape as Bernard's
+                    "Trimestre en cours". A card inside a card is one box too many. */}
+                <div className="grid divide-y divide-border/60 sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 [&>*]:py-4 sm:[&>*]:px-4 sm:[&>*:not(:first-child)]:border-l sm:[&>*:not(:first-child)]:border-border/60 sm:[&>*]:py-0 sm:[&>*:first-child]:pl-0 sm:[&>*:last-child]:pr-0">
                   {displayed.map((env) => {
                     const stroke = env.tone === "mustard" ? "var(--mustard)" : "var(--primary)";
                     const editing = editKey === env.key;
                     const nextM = nextMonthFor(env.history);
                     return (
-                      <Card
-                        key={env.key}
-                        variant="inset"
-                        as="div"
-                        className="group relative transition-all hover:-translate-y-0.5 hover:shadow-lift"
-                      >
+                      <div key={env.key} className="group relative">
                         <div className="flex items-start justify-between">
                           <Eyebrow size="xs">{env.label}</Eyebrow>
                           {!editing && (
@@ -396,7 +387,7 @@ function ReserveOverlay() {
                             </AreaChart>
                           </ResponsiveContainer>
                         </div>
-                      </Card>
+                      </div>
                     );
                   })}
                 </div>

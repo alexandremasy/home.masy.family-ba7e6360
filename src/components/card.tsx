@@ -166,16 +166,34 @@ export function Card({
 }: CardProps) {
   const p = pad[padding];
 
+  /*
+   * The caret marks a link card, the way PersonCard did — but it earns its place
+   * only when the right end of the header is free. It steps aside for `action`,
+   * which carries real information, and it never shows on `glass`: those are the
+   * narrow bento tiles, where it cost enough width to truncate "Bureau" to "Bur…".
+   * In both cases the whole card lifts on hover, so the affordance survives.
+   */
+  const caret = Boolean(to) && !action && variant !== "glass";
+
   // cn (tailwind-merge) resolves conflicts, so a tone or a className override wins
   // WITHOUT `!important` — that is what killed the per-site override surgery.
   const cls = cn(
-    "flex h-full flex-col",
+    // `relative` unconditionally: a card is the positioning context for its own
+    // decoration. Without it, absolutely-placed art (the PMC bag, Bernard's map)
+    // anchors to whatever ancestor happens to be positioned — which put the bag on
+    // the neighbouring tile.
+    "relative flex h-full flex-col",
     surface[variant],
     radiusClass[radius],
+    // Variants with a sheet let it do the clipping, so the sheet's own shadow is
+    // not cut off. The ones without a sheet still have to clip here — otherwise
+    // decorative art bleeding out of the box (the PMC bag, Bernard's map) escapes
+    // the card entirely.
+    !sheet[variant] && "overflow-hidden",
     // A link card announces itself: it lifts on hover, settles back on press, and
     // takes a visible focus ring for the keyboard.
     to && [
-      "group relative transition-all duration-300",
+      "group transition-all duration-300",
       "hover:-translate-y-0.5 hover:shadow-lift",
       "active:translate-y-0 active:shadow-soft active:duration-75",
       "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none",
@@ -222,16 +240,10 @@ export function Card({
           </div>
           {/* Only when something goes in it: an empty container still claims the
               header's `gap-4`, which was enough to truncate "Bureau" to "Bur…". */}
-          {(action || (to && variant !== "glass")) && (
+          {(action || caret) && (
             <div className="flex shrink-0 items-center gap-2">
               {action && <div data-slot="action">{action}</div>}
-              {/*
-              A link card carries the caret, same as PersonCard — except on `glass`.
-              Those are the bento tiles: narrow, and the caret ate enough of the row
-              to truncate "Bureau" to "B…". The whole tile lifts on hover, so the
-              affordance is the movement, not the chevron.
-            */}
-              {to && variant !== "glass" && (
+              {caret && (
                 <ChevronRight
                   aria-hidden="true"
                   className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
