@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { BentoGrid, BentoItem } from "@/blocks/bento";
 import { Card } from "@/components/card";
 import { useDrawerDrag } from "@/components/mobile-drawer-panel";
@@ -153,6 +153,296 @@ function RoomPage() {
   const [roomOn, setRoomOn] = useState(true);
   const drag = useDrawerDrag();
 
+  // Bento modules are collected first so the grid can always be complete: two per
+  // row (span 3), and the last one takes the full width (span 6) when the count is
+  // odd — no holes, whatever modules a room happens to have.
+  const modules: { key: string; node: ReactNode }[] = [];
+
+  if (detail.lights) {
+    modules.push({
+      key: "lights",
+      node: (
+        <Card
+          variant="solid"
+          icon={<Lightbulb className="h-4 w-4" />}
+          title="Luminosité"
+          action={
+            zones.length > 0 ? (
+              <span className="text-sm text-muted-foreground">
+                {(() => {
+                  const on = zones.filter((z) => z.on).length;
+                  if (on === 0) return "Tout éteint";
+                  if (on === zones.length) return "Tout allumé";
+                  return `${on} / ${zones.length} allumées`;
+                })()}
+              </span>
+            ) : undefined
+          }
+        >
+          {detail.lights.scenes.length > 0 && (
+            <SlidingTabs
+              value={scene}
+              onValueChange={setScene}
+              options={detail.lights.scenes.map((s) => ({
+                value: s,
+                label: s,
+                icon: sceneIcon(s),
+              }))}
+            />
+          )}
+
+          {scene !== "Off" && !detail.lights.hideBrightness && detail.lights.scenes.length > 0 && (
+            <div className="mt-6">
+              <div className="mb-2 flex justify-between text-xs uppercase tracking-eyebrow text-muted-foreground">
+                <span>Luminosité</span>
+                <span>{brightness}%</span>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={brightness}
+                onChange={(e) => setBrightness(Number(e.target.value))}
+                className="h-2 w-full appearance-none rounded-full bg-muted accent-primary"
+              />
+            </div>
+          )}
+
+          {zones.length > 0 && (
+            <div className={detail.lights.scenes.length > 0 ? "mt-6" : ""}>
+              {detail.lights.scenes.length > 0 && <Eyebrow className="mb-3">Zones</Eyebrow>}
+              <div className="flex flex-wrap gap-1.5">
+                {zones.map((z, i) => {
+                  const Icon = zoneIcon(z.name);
+                  return (
+                    <Toggle
+                      key={z.name}
+                      variant="outline"
+                      size="sm"
+                      pressed={z.on}
+                      onPressedChange={() =>
+                        setZones(zones.map((zz, idx) => (idx === i ? { ...zz, on: !zz.on } : zz)))
+                      }
+                      aria-label={`Zone ${z.name}`}
+                      className="gap-1.5 rounded-full text-xs data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
+                    >
+                      <Icon className={z.on ? "anim-breathe" : "opacity-50"} />
+                      {z.name}
+                    </Toggle>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </Card>
+      ),
+    });
+  }
+
+  if (detail.climate) {
+    modules.push({
+      key: "climate",
+      node: (
+        <Card
+          variant="solid"
+          icon={<Thermometer className="h-4 w-4" />}
+          title="Climatisation"
+          // A reading, not an action — and in a 2-column cell the action slot
+          // squeezed the title down to "Climati…".
+          subline={`${detail.climate.current}° actuellement`}
+        >
+          <ClimateControl climate={detail.climate} />
+        </Card>
+      ),
+    });
+  }
+
+  if (detail.media && room.key === "salon") {
+    modules.push({ key: "media", node: <MediaSection media={detail.media} /> });
+  }
+
+  if (room.key === "cuisine") {
+    modules.push({
+      key: "dishwasher",
+      node: (
+        <Card variant="solid" icon={<Droplet className="h-4 w-4" />} title="Lave-vaisselle">
+          <DishwasherPanel />
+        </Card>
+      ),
+    });
+  }
+
+  if (room.key === "buanderie") {
+    modules.push({
+      key: "vacuum",
+      node: (
+        <Card
+          variant="solid"
+          icon={<Sparkles className="h-4 w-4" />}
+          title="Aspirateur robot"
+          action={
+            <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+              <HomeIcon className="h-4 w-4" />
+              Base ici
+            </span>
+          }
+        >
+          <VacuumPanel />
+          {vacuum.state === "docked" && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button
+                onClick={() => {}}
+                className="rounded-full bg-foreground text-background hover:bg-foreground/90"
+              >
+                Lancer un cycle
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" onClick={() => {}} className="rounded-full">
+                Vider le bac
+              </Button>
+            </div>
+          )}
+        </Card>
+      ),
+    });
+  }
+
+  {
+    const roomCams = cameras.filter(
+      (c) =>
+        c.installed &&
+        ((room.key === "salon" && c.id === "salon") ||
+          (room.key === "buanderie" && c.id === "buanderie")),
+    );
+    if (roomCams.length > 0) {
+      const recentEvents = motionEvents
+        .filter((e) => roomCams.some((c) => c.id === e.cameraId))
+        .slice(0, 3);
+      modules.push({
+        key: "camera",
+        node: (
+          <Card
+            variant="solid"
+            icon={<Camera className="h-4 w-4" />}
+            title="Caméra"
+            action={
+              <a
+                href="https://unifi.ui.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+              >
+                UI Protect
+                <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+            }
+          >
+            <div className="space-y-3">
+              {roomCams.map((c) => (
+                <CameraFeed key={c.id} camera={c} size="lg" />
+              ))}
+              {recentEvents.length > 0 && (
+                <ul className="space-y-1.5">
+                  {recentEvents.map((e) => (
+                    <li
+                      key={e.id}
+                      className="flex items-center gap-2 rounded-lg bg-secondary/60 px-3 py-2 text-xs"
+                    >
+                      <Sparkles className="h-3 w-3 text-primary" />
+                      <span className="flex-1 truncate">{e.label}</span>
+                      <span className="tabular-nums text-muted-foreground">{e.time}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </Card>
+        ),
+      });
+    }
+  }
+
+  if (detail.devices) {
+    modules.push({
+      key: "devices",
+      node: (
+        <Card variant="solid" icon={<Printer className="h-4 w-4" />} title="Périphériques">
+          {detail.devices.ink && (
+            <div className="mb-6">
+              <Eyebrow className="mb-3">Imprimante · niveaux d'encre</Eyebrow>
+              <div className="grid grid-cols-2 gap-3 stagger sm:grid-cols-4">
+                {(
+                  [
+                    ["Cyan", detail.devices.ink.c, "oklch(0.78 0.13 200)"],
+                    ["Magenta", detail.devices.ink.m, "oklch(0.65 0.22 350)"],
+                    ["Jaune", detail.devices.ink.y, "oklch(0.86 0.16 95)"],
+                    ["Noir", detail.devices.ink.k, "oklch(0.30 0.02 230)"],
+                  ] as const
+                ).map(([name, val, color]) => (
+                  <Card key={name} variant="inset" padding="sm" as="div">
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Droplet className="h-3 w-3" />
+                      {name}
+                    </div>
+                    <p className="mt-1.5 text-base">{val}%</p>
+                    <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full transition-all duration-700"
+                        style={{ width: `${val}%`, background: color }}
+                      />
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+          {detail.devices.appliances && detail.devices.appliances.length > 0 && (
+            <div className="mb-6">
+              <Eyebrow className="mb-3">Appareils</Eyebrow>
+              <AppliancesGrid items={detail.devices.appliances} />
+            </div>
+          )}
+          <Eyebrow className="mb-3">Batteries</Eyebrow>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {detail.devices.batteries.map((b) => {
+              const { Icon, tone } = batteryFor(b.level);
+              return (
+                <Card key={b.name} variant="inset" padding="sm" as="div">
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <Icon className={"h-4 w-4 " + tone} />
+                      {b.name}
+                    </span>
+                    <span
+                      className={
+                        "text-xs font-semibold " + (b.level < 20 ? "text-destructive" : "")
+                      }
+                    >
+                      {b.level}%
+                    </span>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        </Card>
+      ),
+    });
+  }
+
+  if (!detail.lights && !detail.climate && !detail.media && !detail.devices) {
+    modules.push({
+      key: "empty",
+      node: (
+        <Card variant="solid" title="Aucun appareil">
+          <p className="text-muted-foreground">
+            Cette pièce n'a pas encore de capteurs ou d'appareils connectés.
+          </p>
+        </Card>
+      ),
+    });
+  }
+
   return (
     <div className="space-y-6">
       <div
@@ -197,276 +487,14 @@ function RoomPage() {
       </div>
 
       <BentoGrid rows="auto">
-        {detail.lights && (
-          <BentoItem span={4}>
-            <Card
-              variant="solid"
-              icon={<Lightbulb className="h-4 w-4" />}
-              title="Luminosité"
-              action={
-                zones.length > 0 ? (
-                  <span className="text-sm text-muted-foreground">
-                    {(() => {
-                      const on = zones.filter((z) => z.on).length;
-                      if (on === 0) return "Tout éteint";
-                      if (on === zones.length) return "Tout allumé";
-                      return `${on} / ${zones.length} allumées`;
-                    })()}
-                  </span>
-                ) : undefined
-              }
-            >
-              {detail.lights.scenes.length > 0 && (
-                <SlidingTabs
-                  value={scene}
-                  onValueChange={setScene}
-                  options={detail.lights.scenes.map((s) => ({
-                    value: s,
-                    label: s,
-                    icon: sceneIcon(s),
-                  }))}
-                />
-              )}
-
-              {scene !== "Off" &&
-                !detail.lights.hideBrightness &&
-                detail.lights.scenes.length > 0 && (
-                  <div className="mt-6">
-                    <div className="mb-2 flex justify-between text-xs uppercase tracking-eyebrow text-muted-foreground">
-                      <span>Luminosité</span>
-                      <span>{brightness}%</span>
-                    </div>
-                    <input
-                      type="range"
-                      min={0}
-                      max={100}
-                      value={brightness}
-                      onChange={(e) => setBrightness(Number(e.target.value))}
-                      className="h-2 w-full appearance-none rounded-full bg-muted accent-primary"
-                    />
-                  </div>
-                )}
-
-              {zones.length > 0 && (
-                <div className={detail.lights.scenes.length > 0 ? "mt-6" : ""}>
-                  {detail.lights.scenes.length > 0 && <Eyebrow className="mb-3">Zones</Eyebrow>}
-                  <div className="flex flex-wrap gap-1.5">
-                    {zones.map((z, i) => {
-                      const Icon = zoneIcon(z.name);
-                      return (
-                        <Toggle
-                          key={z.name}
-                          variant="outline"
-                          size="sm"
-                          pressed={z.on}
-                          onPressedChange={() =>
-                            setZones(
-                              zones.map((zz, idx) => (idx === i ? { ...zz, on: !zz.on } : zz)),
-                            )
-                          }
-                          aria-label={`Zone ${z.name}`}
-                          className="gap-1.5 rounded-full text-xs data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
-                        >
-                          <Icon className={z.on ? "anim-breathe" : "opacity-50"} />
-                          {z.name}
-                        </Toggle>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </Card>
+        {modules.map((m, i) => (
+          <BentoItem
+            key={m.key}
+            span={i === modules.length - 1 && modules.length % 2 === 1 ? 6 : 3}
+          >
+            {m.node}
           </BentoItem>
-        )}
-
-        {detail.climate && (
-          <BentoItem span={2}>
-            <Card
-              variant="solid"
-              icon={<Thermometer className="h-4 w-4" />}
-              title="Climatisation"
-              // A reading, not an action — and in a 2-column cell the action slot
-              // squeezed the title down to "Climati…".
-              subline={`${detail.climate.current}° actuellement`}
-            >
-              <ClimateControl climate={detail.climate} />
-            </Card>
-          </BentoItem>
-        )}
-
-        {detail.media && room.key === "salon" && (
-          <BentoItem span={6}>
-            <MediaSection media={detail.media} />
-          </BentoItem>
-        )}
-
-        {room.key === "cuisine" && (
-          <BentoItem span={3}>
-            <Card variant="solid" icon={<Droplet className="h-4 w-4" />} title="Lave-vaisselle">
-              <DishwasherPanel />
-            </Card>
-          </BentoItem>
-        )}
-
-        {room.key === "buanderie" && (
-          <BentoItem span={3}>
-            <Card
-              variant="solid"
-              icon={<Sparkles className="h-4 w-4" />}
-              title="Aspirateur robot"
-              action={
-                <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <HomeIcon className="h-4 w-4" />
-                  Base ici
-                </span>
-              }
-            >
-              <VacuumPanel />
-              {vacuum.state === "docked" && (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Button
-                    onClick={() => {}}
-                    className="rounded-full bg-foreground text-background hover:bg-foreground/90"
-                  >
-                    Lancer un cycle
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" onClick={() => {}} className="rounded-full">
-                    Vider le bac
-                  </Button>
-                </div>
-              )}
-            </Card>
-          </BentoItem>
-        )}
-
-        {(() => {
-          const roomCams = cameras.filter(
-            (c) =>
-              c.installed &&
-              ((room.key === "salon" && c.id === "salon") ||
-                (room.key === "buanderie" && c.id === "buanderie")),
-          );
-          if (roomCams.length === 0) return null;
-          const recentEvents = motionEvents
-            .filter((e) => roomCams.some((c) => c.id === e.cameraId))
-            .slice(0, 3);
-          return (
-            <BentoItem span={3}>
-              <Card
-                variant="solid"
-                icon={<Camera className="h-4 w-4" />}
-                title="Caméra"
-                action={
-                  <a
-                    href="https://unifi.ui.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    UI Protect
-                    <ExternalLink className="h-3.5 w-3.5" />
-                  </a>
-                }
-              >
-                <div className="space-y-3">
-                  {roomCams.map((c) => (
-                    <CameraFeed key={c.id} camera={c} size="lg" />
-                  ))}
-                  {recentEvents.length > 0 && (
-                    <ul className="space-y-1.5">
-                      {recentEvents.map((e) => (
-                        <li
-                          key={e.id}
-                          className="flex items-center gap-2 rounded-lg bg-secondary/60 px-3 py-2 text-xs"
-                        >
-                          <Sparkles className="h-3 w-3 text-primary" />
-                          <span className="flex-1 truncate">{e.label}</span>
-                          <span className="tabular-nums text-muted-foreground">{e.time}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </Card>
-            </BentoItem>
-          );
-        })()}
-
-        {detail.devices && (
-          <BentoItem span={3}>
-            <Card variant="solid" icon={<Printer className="h-4 w-4" />} title="Périphériques">
-              {detail.devices.ink && (
-                <div className="mb-6">
-                  <Eyebrow className="mb-3">Imprimante · niveaux d'encre</Eyebrow>
-                  <div className="grid grid-cols-2 gap-3 stagger sm:grid-cols-4">
-                    {(
-                      [
-                        ["Cyan", detail.devices.ink.c, "oklch(0.78 0.13 200)"],
-                        ["Magenta", detail.devices.ink.m, "oklch(0.65 0.22 350)"],
-                        ["Jaune", detail.devices.ink.y, "oklch(0.86 0.16 95)"],
-                        ["Noir", detail.devices.ink.k, "oklch(0.30 0.02 230)"],
-                      ] as const
-                    ).map(([name, val, color]) => (
-                      <Card key={name} variant="inset" padding="sm" as="div">
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Droplet className="h-3 w-3" />
-                          {name}
-                        </div>
-                        <p className="mt-1.5 text-base">{val}%</p>
-                        <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-muted">
-                          <div
-                            className="h-full rounded-full transition-all duration-700"
-                            style={{ width: `${val}%`, background: color }}
-                          />
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {detail.devices.appliances && detail.devices.appliances.length > 0 && (
-                <div className="mb-6">
-                  <Eyebrow className="mb-3">Appareils</Eyebrow>
-                  <AppliancesGrid items={detail.devices.appliances} />
-                </div>
-              )}
-              <Eyebrow className="mb-3">Batteries</Eyebrow>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {detail.devices.batteries.map((b) => {
-                  const { Icon, tone } = batteryFor(b.level);
-                  return (
-                    <Card key={b.name} variant="inset" padding="sm" as="div">
-                      <div className="flex items-center justify-between">
-                        <span className="flex items-center gap-2">
-                          <Icon className={"h-4 w-4 " + tone} />
-                          {b.name}
-                        </span>
-                        <span
-                          className={
-                            "text-xs font-semibold " + (b.level < 20 ? "text-destructive" : "")
-                          }
-                        >
-                          {b.level}%
-                        </span>
-                      </div>
-                    </Card>
-                  );
-                })}
-              </div>
-            </Card>
-          </BentoItem>
-        )}
-
-        {!detail.lights && !detail.climate && !detail.media && !detail.devices && (
-          <BentoItem span={6}>
-            <Card variant="solid" title="Aucun appareil">
-              <p className="text-muted-foreground">
-                Cette pièce n'a pas encore de capteurs ou d'appareils connectés.
-              </p>
-            </Card>
-          </BentoItem>
-        )}
+        ))}
       </BentoGrid>
     </div>
   );
