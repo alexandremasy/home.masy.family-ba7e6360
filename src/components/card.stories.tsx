@@ -36,8 +36,8 @@ import { Badge } from "@/components/badge";
  * chart, controls, and nothing at all. Parameterising it is what produced the
  * fifty flavors in the first place.
  *
- * Padding lives on the slots rather than on the box, so `divided` draws a true
- * full-bleed rule and `bleed` lets a table run edge-to-edge under a padded header.
+ * Padding lives on the slots rather than on the box, so the rule under the header
+ * runs full-bleed and `bleed` lets a table run edge-to-edge under a padded header.
  *
  * > `Tile`, `Panel` and `Section` still exist as thin deprecated shims over this
  * > component, so the ~56 existing call sites keep rendering. They hold no styling
@@ -57,7 +57,7 @@ const meta = {
     },
     radius: {
       control: "inline-radio",
-      options: ["lg", "xl", "2xl", "full"],
+      options: ["xl", "full"],
       table: { category: "1 · Global" },
     },
     padding: {
@@ -65,7 +65,6 @@ const meta = {
       options: ["sm", "md"],
       table: { category: "1 · Global" },
     },
-    divided: { control: "boolean", table: { category: "1 · Global" } },
     to: { control: "text", table: { category: "1 · Global" } },
     as: { control: false, table: { category: "1 · Global" } },
     className: { control: false, table: { category: "1 · Global" } },
@@ -73,7 +72,7 @@ const meta = {
     icon: { control: false, table: { category: "2 · Header" } },
     tone: {
       control: "select",
-      options: ["primary", "success", "warm", "mustard"],
+      options: ["primary", "success", "warm", "mustard", "destructive"],
       table: { category: "2 · Header" },
     },
     title: { control: "text", table: { category: "2 · Header" } },
@@ -123,7 +122,6 @@ export const Default: Story = {
     children: "Body — un slot pur.",
     footer: <p className="text-xs text-muted-foreground">Footer — collé en bas.</p>,
     variant: "soft",
-    divided: true,
   },
 };
 
@@ -145,17 +143,19 @@ function SurfaceMatrix({ variant }: { variant: CardVariant }) {
 
   const cases: { label: string; props: Partial<CardProps> }[] = [
     { label: "header · body · footer", props: { icon, title: "title", action, footer: foot } },
-    { label: "+ divided", props: { icon, title: "title", action, footer: foot, divided: true } },
     { label: "+ subline", props: { icon, title: "title", subline: "subline", action } },
     { label: "header · body", props: { icon, title: "title" } },
     { label: "no icon", props: { title: "title", action } },
     { label: "body only", props: {} },
     { label: "header only", props: { icon, title: "title", action, children: undefined } },
     { label: "body · footer", props: { footer: foot } },
+    { label: "pill", props: { radius: "full", padding: "sm", children: "pill" } },
   ];
 
+  // `items-start` so each cell takes its natural height — a card fills whatever the
+  // parent gives it, and a stretched grid row would make an empty card look tall.
   return (
-    <div className="grid gap-5 sm:grid-cols-2" style={{ width: 620 }}>
+    <div className="grid items-start gap-5 sm:grid-cols-2" style={{ width: 620 }}>
       {cases.map(({ label, props }) => (
         <div key={label} className="flex flex-col gap-1.5">
           <Eyebrow size="xs">{label}</Eyebrow>
@@ -262,7 +262,7 @@ export const RealCards: Story = {
       </Card>
 
       {/* Bernard — trimestre */}
-      <Card icon={<Zap className="h-4 w-4" />} title="Trimestre en cours" subline="2026.Q3" divided>
+      <Card icon={<Zap className="h-4 w-4" />} title="Trimestre en cours" subline="2026.Q3">
         <div className="grid grid-cols-3 divide-x divide-border/60 py-4">
           {[
             ["kWh", "412", "2/3 mois · 19 sessions", "text-primary"],
@@ -296,7 +296,6 @@ export const RealCards: Story = {
             <span>23 clients</span>
           </div>
         }
-        divided
       >
         <p className="grid place-items-center py-4">
           <span className="text-2xl tabular-nums">487</span>

@@ -21,15 +21,15 @@ import { cn } from "@/lib/utils";
    it. There is no `layout` prop — the dashboard's tonal "eyebrow + icon right"
    tiles migrate onto this one.
 
-   Padding lives on the slots rather than on the box: that is what lets `divided`
-   draw a true full-bleed rule with no negative-margin trick, and lets a body run
-   edge-to-edge (the relevé table) while its header stays padded.
+   Padding lives on the slots rather than on the box: that is what lets the rule
+   under the header run full-bleed with no negative-margin trick, and lets a body
+   run edge-to-edge (the relevé table) while its header stays padded.
    ──────────────────────────────────────────────────────────────────────────── */
 
 export type CardVariant = "solid" | "soft" | "glass" | "inset" | "inverted";
-export type CardTone = "primary" | "success" | "warm" | "mustard";
+export type CardTone = "primary" | "success" | "warm" | "mustard" | "destructive";
 export type CardPadding = "sm" | "md";
-export type CardRadius = "lg" | "xl" | "2xl" | "full";
+export type CardRadius = "xl" | "full";
 
 /**
  * The surfaces. A surface is a nature, not a colour — which is why Bernard's dark
@@ -48,11 +48,9 @@ const surface: Record<CardVariant, string> = {
   inverted: "bg-foreground text-background",
 };
 
-/** Corner radius, on the Tailwind scale so the value reads as what it renders. */
+/** Two corners, and no others: the box, and the bento pill. */
 const radiusClass: Record<CardRadius, string> = {
-  lg: "rounded-lg",
   xl: "rounded-xl",
-  "2xl": "rounded-2xl",
   full: "rounded-full",
 };
 
@@ -89,6 +87,7 @@ const toneCircle: Record<CardTone, string> = {
   success: "bg-success/15 text-success",
   warm: "bg-warm/15 text-warm",
   mustard: "bg-mustard/20 text-mustard",
+  destructive: "bg-destructive/10 text-destructive",
 };
 
 /**
@@ -131,8 +130,6 @@ export interface CardProps {
   tone?: CardTone;
   /** Inner spacing. `md` is what the 25 hand-built panels converged on. */
   padding?: CardPadding;
-  /** Draw a hairline under the header and above the footer. */
-  divided?: boolean;
   /** Drop the body's horizontal padding, for edge-to-edge content such as a table. */
   bleed?: boolean;
   /** Render the whole card as a router Link to this route. */
@@ -159,10 +156,9 @@ export function Card({
   action,
   footer,
   variant = "soft",
-  radius = "2xl",
+  radius = "xl",
   tone = "primary",
   padding = "md",
-  divided = false,
   bleed = false,
   to,
   as: As = "section",
@@ -196,7 +192,9 @@ export function Card({
             "flex items-start justify-between gap-4",
             p.x,
             p.y,
-            divided && "border-b border-border/60",
+            // The rule is anatomy, not an option: a header sitting above a body is
+            // always separated from it.
+            children != null && "border-b border-border/60",
           )}
         >
           <div className="flex min-w-0 items-center gap-2.5">
@@ -256,12 +254,7 @@ export function Card({
     <>
       <div
         data-slot="sheet"
-        className={cn(
-          "flex flex-1 flex-col overflow-hidden",
-          radiusClass[radius],
-          sheet[variant],
-          divided && footer && "border-b border-border/60",
-        )}
+        className={cn("flex flex-1 flex-col overflow-hidden", radiusClass[radius], sheet[variant])}
       >
         {inner}
       </div>
@@ -327,7 +320,6 @@ export function Panel({
     <Card
       {...rest}
       variant={variant === "flat" || variant === "compact" ? "solid" : variant}
-      radius={variant === "flat" || variant === "compact" ? "xl" : "2xl"}
       as="section"
     />
   );
