@@ -50,14 +50,19 @@ points at a rung, never at a hex, so re-pointing `--primary` moves the whole pro
 
 ### Which rung each semantic points at
 
-| Token                                  | Rung     |     | Token                  | Rung      |
-| -------------------------------------- | -------- | --- | ---------------------- | --------- |
-| `--background`                         | Light/00 |     | `--primary` · `--ring` | Teal/60   |
-| `--foreground`                         | Light/90 |     | `--warm`               | Orange/40 |
-| `--card` · `--popover`                 | White    |     | `--mustard`            | Yellow/50 |
-| `--secondary` · `--muted` · `--accent` | Light/10 |     | `--success`            | Green/50  |
-| `--muted-foreground`                   | Light/60 |     | `--destructive`        | Red/50    |
-| `--border` · `--input`                 | Light/20 |     |                        |           |
+| Token | Rung |
+| --- | --- |
+| `--background` | Light/00 |
+| `--card` · `--popover` · `--sidebar` | White |
+| `--secondary` · `--muted` · `--accent` | Light/10 |
+| `--border` · `--input` | Light/20 |
+| `--muted-foreground` | Light/60 |
+| `--foreground` · every `-foreground` | Light/90 |
+| `--primary` · `--ring` | Teal/60 |
+| `--warm` | Orange/40 |
+| `--mustard` | Yellow/50 |
+| `--success` | Green/50 |
+| `--destructive` | Red/50 |
 
 `--destructive` is **Red/50, not Orange/50**: `--warm` already owns the orange family, and an
 alert sharing a hue with an error is an alert you can't read.
