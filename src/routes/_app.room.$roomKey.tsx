@@ -11,6 +11,7 @@ import { DishwasherPanel } from "@/components/dishwasher-panel";
 import { VacuumPanel } from "@/components/vacuum-panel";
 import { rooms, roomDetails, cameras, motionEvents, vacuum, type RoomKey } from "@/lib/mock-data";
 import {
+  Camera,
   Lightbulb,
   Thermometer,
   Volume2,
@@ -197,6 +198,7 @@ function RoomPage() {
       {detail.lights && (
         <Card
           variant="solid"
+          icon={<Lightbulb className="h-4 w-4" />}
           title="Luminosité"
           action={
             zones.length > 0 ? (
@@ -272,6 +274,7 @@ function RoomPage() {
       {detail.climate && (
         <Card
           variant="solid"
+          icon={<Thermometer className="h-4 w-4" />}
           title="Climatisation"
           action={
             <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -287,7 +290,7 @@ function RoomPage() {
       {detail.media && room.key === "salon" && <MediaSection media={detail.media} />}
 
       {room.key === "cuisine" && (
-        <Card variant="solid" title="Lave-vaisselle">
+        <Card variant="solid" icon={<Droplet className="h-4 w-4" />} title="Lave-vaisselle">
           <DishwasherPanel />
         </Card>
       )}
@@ -295,6 +298,7 @@ function RoomPage() {
       {room.key === "buanderie" && (
         <Card
           variant="solid"
+          icon={<Sparkles className="h-4 w-4" />}
           title="Aspirateur robot"
           action={
             <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -335,6 +339,7 @@ function RoomPage() {
         return (
           <Card
             variant="solid"
+            icon={<Camera className="h-4 w-4" />}
             title="Caméra"
             action={
               <a
@@ -372,7 +377,7 @@ function RoomPage() {
       })()}
 
       {detail.devices && (
-        <Card variant="solid" title="Périphériques">
+        <Card variant="solid" icon={<Printer className="h-4 w-4" />} title="Périphériques">
           {detail.devices.ink && (
             <div className="mb-6">
               <Eyebrow className="mb-3">Imprimante · niveaux d'encre</Eyebrow>
@@ -456,7 +461,7 @@ function MediaSection({ media }: { media: NonNullable<(typeof roomDetails)["salo
   const active = sources.find((s) => s.key === source)!;
 
   return (
-    <Card variant="solid" title="Média">
+    <Card variant="solid" icon={<Speaker className="h-4 w-4" />} title="Média">
       {/* Musiq3 + volume — one button group, above the player. */}
       <div className="flex">
         <Toggle
