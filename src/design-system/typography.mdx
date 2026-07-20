@@ -4,31 +4,22 @@ import { Meta, Title, Subtitle, Typeset, Unstyled } from "@storybook/addon-docs/
 
 <Title>Typography</Title>
 
-<Subtitle>
-  One typeface, eleven sizes, two weights, one tracking for capitals. Everything else has already
-  been decided for you.
-</Subtitle>
+<Subtitle>One typeface, eleven sizes, two weights.</Subtitle>
 
-## The typeface
+## Typeface
 
-The **native OS stack** — San Francisco on Apple, Segoe UI on Windows, Roboto on Android. No
-webfont is loaded, so there is nothing to wait for and nothing to fall back to. There is exactly
-one family: `--font-sans`.
+The native OS stack — `--font-sans`. No webfont.
 
 <Unstyled>
   <div className="rounded-xl border border-border/60 bg-card p-5">
     <p className="text-2xl tracking-tight">Portez ce vieux whisky au juge blond</p>
-    <p className="mt-2 font-mono text-2xs text-muted-foreground">--font-sans</p>
   </div>
 </Unstyled>
 
-## The scale
+## Scale
 
-Eleven rungs, nothing else: `styles.css` wipes Tailwind's own scale (`--text-*: initial`) before
-declaring these, so `text-7xl` and `text-[13px]` are unwritable.
-
-The names are Tailwind's, the values are Figma's, and they disagree by one rung — `text-xl` is
-**24px** here, not Tailwind's 20. Read the value, not the name.
+Eleven rungs, and no others: `styles.css` wipes Tailwind's scale first, so `text-[13px]` is
+unwritable. The names are Tailwind's, the values are Figma's — `text-xl` is **24px**, not 20.
 
 <Typeset
   fontSizes={[10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56]}
@@ -36,51 +27,36 @@ The names are Tailwind's, the values are Figma's, and they disagree by one rung 
   fontWeight={400}
 />
 
-| rung        | px  | role                                         |
-| ----------- | --- | -------------------------------------------- |
-| `text-2xs`  | 10  | capitalised labels only                      |
-| `text-xs`   | 12  | the body floor — metadata, figures, captions |
-| `text-sm`   | 14  | body, the default                            |
-| `text-base` | 16  | body, roomy                                  |
-| `text-lg`   | 20  | the name of a thing                          |
-| `text-xl`   | 24  | section title                                |
-| `text-2xl`  | 28  |                                              |
-| `text-3xl`  | 32  | page title                                   |
-| `text-4xl`  | 40  | the big number                               |
-| `text-5xl`  | 48  |                                              |
-| `text-6xl`  | 56  | display ceiling                              |
-
-Headings carry `-0.01em` of tracking, applied on `h1`–`h3` by the stylesheet — you do not add it
-by hand.
+| rung        | px  | role                        |
+| ----------- | --- | --------------------------- |
+| `text-2xs`  | 10  | uppercase labels            |
+| `text-xs`   | 12  | metadata, figures, captions |
+| `text-sm`   | 14  | body, the default           |
+| `text-base` | 16  | body, roomy                 |
+| `text-lg`   | 20  | the name of a thing         |
+| `text-xl`   | 24  | section title               |
+| `text-2xl`  | 28  |                             |
+| `text-3xl`  | 32  | page title                  |
+| `text-4xl`  | 40  | the big number              |
+| `text-5xl`  | 48  |                             |
+| `text-6xl`  | 56  | display ceiling             |
 
 ## Weights
 
-Two, and no more. Regular carries running text; semibold carries every heading, value and label
-that needs to come forward.
-
 <Unstyled>
   <div className="space-y-1 py-2">
-    <p className="text-xl font-normal">Regular — running text, 400</p>
-    <p className="text-xl font-semibold tracking-tight">Semibold — headings and values, 600</p>
+    <p className="text-xl font-normal">Regular 400 — running text</p>
+    <p className="text-xl font-semibold tracking-tight">Semibold 600 — headings and values</p>
   </div>
 </Unstyled>
 
-## Tracking for capitals
+## Tracking
 
-`--tracking-eyebrow`, **0.18em**. Capital letters set at their natural spacing read as a block;
-this is the one letter-spacing value the system owns, and it applies wherever text is
-capitalised.
-
-Figma sets letter-spacing 0 on every token, so this value is the app's own. One value, where
-there used to be seven.
+`tracking-eyebrow` — 0.18em, for uppercase text. `h1`–`h3` get `-0.01em` from the stylesheet.
 
 <Unstyled>
   <div className="space-y-2 py-2">
-    <p className="text-2xs uppercase text-muted-foreground">
-      Sans tracking — les capitales se collent
-    </p>
-    <p className="text-2xs uppercase tracking-eyebrow text-foreground">
-      Avec tracking-eyebrow — elles respirent
-    </p>
+    <p className="text-2xs uppercase text-muted-foreground">Sans — les capitales se collent</p>
+    <p className="text-2xs uppercase tracking-eyebrow text-foreground">Avec — elles respirent</p>
   </div>
 </Unstyled>

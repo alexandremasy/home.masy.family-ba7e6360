@@ -1,0 +1,25 @@
+/*
+ * Storybook chrome — NOT product tokens.
+ *
+ * The demo areas need a ground that is neither the page nor the card, so a white
+ * surface still reads as a surface. These two greys belong to the tool; they are
+ * deliberately literal here rather than added to styles.css, where every value is
+ * a Figma rung the product ships.
+ */
+
+:root {
+  --sb-demo-bg: #e5e5e5;
+}
+
+html.dark {
+  --sb-demo-bg: #1e1e1e;
+}
+
+/* The story preview inside a Docs page. */
+.docs-story,
+/* …and a story viewed on its own. */
+.sb-show-main.sb-main-padded,
+.sb-show-main.sb-main-fullscreen,
+.sb-show-main.sb-main-centered {
+  background: var(--sb-demo-bg);
+}

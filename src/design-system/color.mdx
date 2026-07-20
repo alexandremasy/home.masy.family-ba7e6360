@@ -125,12 +125,3 @@ foreground token.
     </span>
   </div>
 </Unstyled>
-
-## Known debt — the dark theme
-
-The Figma library has a single neutral ramp, "Light", and no dark counterpart, so `.dark` is the
-only block in `styles.css` that is **authored rather than ported**. It stays navy-tinted rather
-than a mechanically inverted Light ramp — inverting was declined on 2026-07-16 because it costs
-the dark theme its temperature.
-
-Closing this means adding a Dark ramp in Figma; until then, the dark values point at no rung.

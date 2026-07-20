@@ -5,6 +5,8 @@ import { useEffect, useState, type ReactNode } from "react";
 // The living design system renders the real tokens: import the app's Tailwind v4 stylesheet
 // into the preview iframe so every story shows correct colors/type/radius/motion.
 import "../src/styles.css";
+// Storybook's own chrome — the demo grounds. Loaded after the app so it wins.
+import "./preview.css";
 
 /**
  * A decorator only wraps STORIES, so a standalone MDX page (every Foundations page)
@@ -79,10 +81,11 @@ const preview: Preview = {
     },
     // The first story of every Docs page renders in an interactive canvas with its
     // controls right under it, so the page opens on something you can drive rather
-    // than a static screenshot.
+    // than a static screenshot. The source sits behind "Show code": the rendered
+    // result is what a reader is here for, the snippet is what they ask for next.
     docs: {
       container: ThemedDocsContainer,
-      canvas: { sourceState: "shown" },
+      canvas: { sourceState: "hidden" },
       controls: { sort: "requiredFirst" },
     },
     controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
