@@ -1,0 +1,149 @@
+import { ColorItem, ColorPalette, IconItem, IconGallery } from "@storybook/addon-docs/blocks";
+import { type LucideIcon } from "lucide-react";
+import { Icon } from "@/components/icon";
+import { useComputed, useTokenValue } from "./_helpers";
+
+/* ────────────────────────────────────────────────────────────────────────────
+   Live specimens for the Foundations pages.
+
+   Storybook's own doc blocks do the rendering wherever it ships one — ColorPalette
+   for colour, Typeset for type, IconGallery for icons. This file only resolves the
+   values off `document.documentElement` and hands them over, so a page can never
+   disagree with styles.css and it re-reads when the theme toggles. Hardcoding hex
+   values into <ColorItem> would create exactly the drift the token layer prevents.
+
+   Radius, shadow and motion have no equivalent block — those specimens measure
+   themselves off the rendered node, same contract.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/** Prints a token's resolved value inline, in running text. */
+export function TokenValue({ token, fallback }: { token: string; fallback?: string }) {
+  const value = useTokenValue(token);
+  return <code>{value || fallback || `var(--${token})`}</code>;
+}
+
+function LiveColorItem({
+  title,
+  subtitle,
+  tokens,
+}: {
+  title: string;
+  subtitle?: string;
+  tokens: string[];
+}) {
+  const colors: Record<string, string> = {};
+  for (const t of tokens) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    colors[`--${t}`] = useTokenValue(t) || `var(--${t})`;
+  }
+  return <ColorItem title={title} subtitle={subtitle ?? ""} colors={colors} />;
+}
+
+/** The palette, grouped by role. Values read live, rendering by Storybook. */
+export function TokenPalette({
+  groups,
+}: {
+  groups: { title: string; note?: string; tokens: string[] }[];
+}) {
+  return (
+    <ColorPalette>
+      {groups.map((g) => (
+        <LiveColorItem key={g.title} title={g.title} subtitle={g.note} tokens={g.tokens} />
+      ))}
+    </ColorPalette>
+  );
+}
+
+/** The icon inventory, rendering by Storybook's IconGallery. */
+export function LucideGallery({ icons }: { icons: Record<string, LucideIcon> }) {
+  return (
+    <IconGallery>
+      {Object.entries(icons).map(([name, glyph]) => (
+        <IconItem key={name} name={name}>
+          <Icon as={glyph} size="lg" />
+        </IconItem>
+      ))}
+    </IconGallery>
+  );
+}
+
+/** A corner that reports the radius the browser actually applied. */
+export function RadiusSample({
+  name,
+  className,
+  formula,
+}: {
+  name: string;
+  className: string;
+  formula: string;
+}) {
+  const { ref, value } = useComputed<HTMLDivElement>("border-radius");
+  return (
+    <div className="flex flex-col items-start gap-2">
+      <div
+        ref={ref}
+        className={`h-20 w-full border border-primary/30 bg-primary/10 ${className}`}
+      />
+      <div>
+        <p className="font-mono text-xs text-foreground">{name}</p>
+        <p className="font-mono text-2xs text-muted-foreground">{value || "—"}</p>
+        <p className="mt-0.5 font-mono text-2xs text-muted-foreground/70">{formula}</p>
+      </div>
+    </div>
+  );
+}
+
+/** An elevation that reports its own resolved box-shadow. */
+export function ShadowSample({
+  name,
+  className,
+  role,
+}: {
+  name: string;
+  className: string;
+  role: string;
+}) {
+  const { ref, value } = useComputed<HTMLDivElement>("box-shadow");
+  return (
+    <div className="space-y-3">
+      <div
+        ref={ref}
+        className={`flex h-28 items-center justify-center rounded-2xl border border-border/40 bg-card ${className}`}
+      >
+        <span className="font-mono text-xs text-muted-foreground">{name}</span>
+      </div>
+      <div>
+        <p className="text-xs text-foreground">{role}</p>
+        <p className="mt-0.5 truncate font-mono text-2xs text-muted-foreground" title={value}>
+          {value || "—"}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/** One `.anim-*` utility, running. */
+export function MotionSample({
+  cls,
+  keyframe,
+  note,
+  swatch = "bg-primary",
+}: {
+  cls: string;
+  keyframe: string;
+  note?: string;
+  swatch?: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-3 rounded-xl border border-border/60 bg-card p-5">
+      <div className="flex h-16 items-center justify-center">
+        <div className={`h-9 w-9 rounded-lg text-primary ${swatch} ${cls}`} />
+      </div>
+      <div className="text-center">
+        <p className="font-mono text-xs text-foreground">.{cls}</p>
+        <p className="font-mono text-2xs text-muted-foreground">@keyframes {keyframe}</p>
+        {note && <p className="mt-0.5 text-2xs text-muted-foreground/70">{note}</p>}
+      </div>
+    </div>
+  );
+}

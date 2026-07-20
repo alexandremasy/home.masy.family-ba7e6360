@@ -1,0 +1,57 @@
+import { Meta, Title, Subtitle, Unstyled } from "@storybook/addon-docs/blocks";
+import { TokenValue } from "./live-tokens";
+
+<Meta title="Foundations/Spacing" />
+
+<Title>Spacing & layout</Title>
+
+<Subtitle>
+  Beyond Tailwind's spacing scale, two layout tokens carry the dashboard: the sticky-bar height and
+  the bento grid.
+</Subtitle>
+
+## `--nav-h` — the sticky bar
+
+Currently <TokenValue token="nav-h" fallback="56px" />. Anything that sticks in a full-bleed page
+must offset by this height, or it hides behind the bar. It mirrors the header in `_app.tsx` (h-14).
+
+<Unstyled>
+  <div className="overflow-hidden rounded-xl border border-border/60">
+    <div className="flex items-center bg-card px-4 shadow-soft" style={{ height: "var(--nav-h)" }}>
+      <span className="font-mono text-xs text-foreground">--nav-h</span>
+    </div>
+    <div className="bg-muted/40 p-4 text-xs text-muted-foreground">
+      Content starts below the bar.
+    </div>
+  </div>
+</Unstyled>
+
+## `.grid-bento` — the dashboard mosaic
+
+2 columns on mobile, 4 at ≥640px, 6 at ≥1024px, with fixed row heights on desktop and
+`grid-auto-flow: row dense`. Resize the preview to watch it reflow.
+
+Placement is never a card's business — `BentoItem` carries it. See **Layout → Bento Grid**.
+
+<Unstyled>
+  <div className="grid-bento py-2">
+    <div className="col-span-2 row-span-2 flex items-end rounded-2xl bg-primary/15 p-4 text-primary">
+      <span className="font-mono text-xs">2 × 2</span>
+    </div>
+    <div className="col-span-2 flex items-end rounded-2xl bg-mustard/20 p-4">
+      <span className="font-mono text-xs">2 × 1</span>
+    </div>
+    <div className="flex items-end rounded-2xl bg-warm/15 p-4 text-warm">
+      <span className="font-mono text-xs">1 × 1</span>
+    </div>
+    <div className="flex items-end rounded-2xl bg-secondary p-4">
+      <span className="font-mono text-xs">1 × 1</span>
+    </div>
+    <div className="col-span-2 flex items-end rounded-2xl bg-secondary p-4">
+      <span className="font-mono text-xs">2 × 1</span>
+    </div>
+    <div className="flex items-end rounded-2xl bg-success/15 p-4 text-success">
+      <span className="font-mono text-xs">1 × 1</span>
+    </div>
+  </div>
+</Unstyled>

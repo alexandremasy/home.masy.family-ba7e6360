@@ -1,0 +1,72 @@
+import { Meta, Title, Subtitle, Typeset, Unstyled } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Typography" />
+
+<Title>Typography</Title>
+
+<Subtitle>
+  Eleven rungs, nothing else. `styles.css` wipes Tailwind's own scale (`--text-*: initial`) first,
+  so `text-7xl` and `text-[13px]` are unwritable.
+</Subtitle>
+
+The names are Tailwind's, the values are Figma's, and they disagree by one rung: `text-xl` is
+**24px** here, not Tailwind's 20. Read the value, not the name.
+
+## The scale
+
+<Typeset
+  fontSizes={[10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56]}
+  sampleText="Reads at arm's length"
+  fontWeight={400}
+/>
+
+| rung        | px  | role                                         |
+| ----------- | --- | -------------------------------------------- |
+| `text-2xs`  | 10  | the eyebrow, uppercase only                  |
+| `text-xs`   | 12  | the body floor — metadata, figures, captions |
+| `text-sm`   | 14  | body, the default                            |
+| `text-base` | 16  | body, roomy                                  |
+| `text-lg`   | 20  | the name of a thing                          |
+| `text-xl`   | 24  | section title                                |
+| `text-2xl`  | 28  |                                              |
+| `text-3xl`  | 32  | page title                                   |
+| `text-4xl`  | 40  | the big number                               |
+| `text-5xl`  | 48  |                                              |
+| `text-6xl`  | 56  | display ceiling                              |
+
+## Weights
+
+<Typeset fontSizes={[24]} fontWeight={400} sampleText="Regular — running text" />
+<Typeset fontSizes={[24]} fontWeight={600} sampleText="Semibold — every heading in the app" />
+
+## Families
+
+One native stack for both roles — the OS decides the face, and no webfont is loaded.
+`--font-sans` carries body and UI; `--font-serif` carries headings and `.font-serif`. The display
+role reads through the token rather than a separate file.
+
+<Unstyled>
+  <div className="grid gap-3 py-2 sm:grid-cols-2">
+    <div className="rounded-xl border border-border/60 bg-card p-4">
+      <p className="font-mono text-2xs text-muted-foreground">--font-sans</p>
+      <p className="mt-2 font-sans text-lg">The quick brown fox jumps</p>
+    </div>
+    <div className="rounded-xl border border-border/60 bg-card p-4">
+      <p className="font-mono text-2xs text-muted-foreground">--font-serif</p>
+      <p className="mt-2 font-serif text-lg tracking-tight">The quick brown fox jumps</p>
+    </div>
+  </div>
+</Unstyled>
+
+## Eyebrow tracking
+
+The one letter-spacing this system owns: `--tracking-eyebrow`, **0.18em**. Figma sets
+letter-spacing 0 on every token, but the eyebrow is a dashboard pattern the reference doesn't
+cover — so the app owns its spacing. One value, where there used to be seven. It belongs to
+`components/eyebrow.tsx`; hand-spacing an uppercase label means you skipped the component.
+
+<Unstyled>
+  <p className="py-2 text-2xs font-medium uppercase tracking-eyebrow text-foreground">
+    Understand · align · direct
+  </p>
+</Unstyled>

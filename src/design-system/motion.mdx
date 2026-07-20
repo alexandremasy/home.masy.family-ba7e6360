@@ -1,0 +1,66 @@
+import { Meta, Title, Subtitle, Unstyled } from "@storybook/addon-docs/blocks";
+import { MotionSample } from "./live-tokens";
+
+<Meta title="Foundations/Motion" />
+
+<Title>Motion</Title>
+
+<Subtitle>
+  Around thirty keyframes drive the app's micro-motion. The reusable ambient utilities run live
+  below; entrance and overlay animations are one-shot and listed by name.
+</Subtitle>
+
+These are hand-authored classes in `styles.css`, not generated — what you see is exactly what the
+app runs.
+
+## Ambient loops
+
+<Unstyled>
+  <div className="grid grid-cols-2 gap-4 py-2 sm:grid-cols-3 lg:grid-cols-5">
+    <MotionSample cls="anim-breathe" keyframe="breathe" note="scale + fade, 2.4s" />
+    <MotionSample cls="anim-float" keyframe="float" note="gentle Y bob, 3.2s" />
+    <MotionSample cls="anim-drift" keyframe="drift" note="gentle X drift, 4s" />
+    <MotionSample cls="anim-sway" keyframe="sway" note="rotate ±3°, top origin" />
+    <MotionSample cls="anim-glow" keyframe="glow" note="primary drop-shadow, 2.8s" />
+  </div>
+</Unstyled>
+
+## Triggered — hover and one-shot
+
+<Unstyled>
+  <div className="grid grid-cols-2 gap-4 py-2 sm:grid-cols-3 lg:grid-cols-5">
+    <MotionSample cls="anim-wiggle" keyframe="wiggle" note="hover me" swatch="bg-mustard" />
+    <MotionSample cls="anim-slide-up" keyframe="slide-up" note="on mount" swatch="bg-success" />
+    <MotionSample cls="anim-pop-in" keyframe="pop-in" note="on mount" swatch="bg-warm" />
+    <MotionSample cls="anim-pulse-ring" keyframe="pulse-ring" note="::after, currentColor" />
+  </div>
+</Unstyled>
+
+## Weather — one motion per condition
+
+<Unstyled>
+  <div className="grid grid-cols-3 gap-4 py-2 sm:grid-cols-4 lg:grid-cols-7">
+    <MotionSample cls="anim-sun" keyframe="sun-spin" />
+    <MotionSample cls="anim-partly" keyframe="partly-bob" />
+    <MotionSample cls="anim-cloud" keyframe="cloud-drift" />
+    <MotionSample cls="anim-rain" keyframe="rain-bob" />
+    <MotionSample cls="anim-storm" keyframe="storm-flicker" />
+    <MotionSample cls="anim-snow" keyframe="snow-fall" />
+    <MotionSample cls="anim-fog" keyframe="fog-drift" />
+  </div>
+</Unstyled>
+
+## Every keyframe
+
+`breathe` · `pulse-ring` · `slide-up` · `wiggle` · `equalizer` · `float` · `drift` · `pop-in` ·
+`glow` · `sway` · `media-gradient` · `shake-x` · `mode-in` · `overlay-fade-in` ·
+`overlay-panel-in` · `overlay-fade-out` · `overlay-panel-out` · `overlay-drawer-in` ·
+`overlay-drawer-out` · `sun-spin` · `rain-bob` · `storm-flicker` · `snow-fall` · `fog-drift` ·
+`partly-bob` · `cloud-drift` · `lg-drift-a/b/c` · `repas-glow-morph`
+
+## prefers-reduced-motion
+
+`styles.css` only silences the decorative layers under
+`@media (prefers-reduced-motion: reduce)` — the cursor follower, the living gradient, and the
+repas glow. The `.anim-*` utilities above are **not** gated yet. That is a known gap, not a claim
+this page makes.

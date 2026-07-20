@@ -1,0 +1,27 @@
+import { Meta, Title, Subtitle, Unstyled } from "@storybook/addon-docs/blocks";
+import { ShadowSample } from "./live-tokens";
+
+<Meta title="Foundations/Shadows" />
+
+<Title>Shadows</Title>
+
+<Subtitle>
+  Depth, not colour. All three elevations share one cool hue (`oklch(0.2 0.02 200)`) and only deepen
+  — each card reads its own resolved `box-shadow`, so a change in `styles.css` shows here.
+</Subtitle>
+
+<Unstyled>
+  <div className="grid gap-8 py-2 sm:grid-cols-3">
+    <ShadowSample name="shadow-soft" className="shadow-soft" role="Resting cards and tiles" />
+    <ShadowSample name="shadow-lift" className="shadow-lift" role="Hover, raised surfaces" />
+    <ShadowSample
+      name="shadow-float"
+      className="shadow-float"
+      role="Genuinely floating — the mobile bottom bar"
+    />
+  </div>
+</Unstyled>
+
+`shadow-lift` is not a card surface: the audit found it on overlays, tooltips and sticky bars,
+which is why `Card` has no `raised` variant. A resting card is `soft`, and it lifts to `lift` only
+while hovered — and only when it is a link.

@@ -1,0 +1,28 @@
+import { Meta, Title, Subtitle, Unstyled } from "@storybook/addon-docs/blocks";
+import { RadiusSample, TokenValue } from "./live-tokens";
+
+<Meta title="Foundations/Radius" />
+
+<Title>Radius</Title>
+
+<Subtitle>
+  Tighter than shadcn's default scale — the product reads crisp, not bubbly. Every rung is derived
+  from the 8px base, and each swatch measures the radius the browser actually applied.
+</Subtitle>
+
+Base `--radius` = <TokenValue token="radius" fallback="0.5rem" /> (8px). The rungs climb off it,
+gently, so `2xl` and `3xl` stay restrained.
+
+<Unstyled>
+  <div className="grid gap-6 py-2 sm:grid-cols-3 lg:grid-cols-6">
+    <RadiusSample name="rounded-sm" className="rounded-sm" formula="--radius − 4px" />
+    <RadiusSample name="rounded-md" className="rounded-md" formula="--radius − 2px" />
+    <RadiusSample name="rounded-lg" className="rounded-lg" formula="--radius" />
+    <RadiusSample name="rounded-xl" className="rounded-xl" formula="--radius + 4px" />
+    <RadiusSample name="rounded-2xl" className="rounded-2xl" formula="--radius + 8px" />
+    <RadiusSample name="rounded-3xl" className="rounded-3xl" formula="--radius + 12px" />
+  </div>
+</Unstyled>
+
+The `Card` component exposes four of these as its `radius` prop — `lg`, `xl`, `2xl` and `full` —
+because a card's corner is a decision, not a surface. The bento pills are `inset` cards at `full`.

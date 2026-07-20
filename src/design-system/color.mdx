@@ -1,0 +1,71 @@
+import { Meta, Title, Subtitle, Unstyled } from "@storybook/addon-docs/blocks";
+import { TokenPalette } from "./live-tokens";
+
+<Meta title="Foundations/Color" />
+
+<Title>Color</Title>
+
+<Subtitle>
+  Meaning before hue. Every value below is read off the document root, so this page cannot disagree
+  with `styles.css` — toggle the theme and it re-reads.
+</Subtitle>
+
+The light theme is ported from Figma (the "Colors" page); the dark theme is authored, because
+the token library has no dark ramp yet.
+
+<TokenPalette
+  groups={[
+    {
+      title: "Semantics",
+      note: "primary = positive signal · warm = ALERT, nothing else · mustard = decorative and data series",
+      tokens: ["primary", "warm", "mustard", "success", "destructive"],
+    },
+    {
+      title: "Surfaces",
+      note: "the page, then everything raised above it",
+      tokens: ["background", "card", "popover", "secondary", "muted", "accent"],
+    },
+    {
+      title: "Text & lines",
+      note: "body, secondary, hairlines and the focus ring",
+      tokens: ["foreground", "muted-foreground", "border", "input", "ring"],
+    },
+    {
+      title: "Sidebar",
+      note: "its own ramp, so the rail reads distinct from the page",
+      tokens: [
+        "sidebar",
+        "sidebar-foreground",
+        "sidebar-primary",
+        "sidebar-accent",
+        "sidebar-border",
+        "sidebar-ring",
+      ],
+    },
+  ]}
+/>
+
+## The `-foreground` pairing rule
+
+A `-foreground` token only works on its own **solid** fill. Every accent foreground is Light/90
+(dark) in both themes, chosen for contrast — warm 6.4:1, mustard 9.0:1, teal 5.1:1.
+
+On a _tint_ such as `bg-warm/15` the fill is nearly the page, so reach for `text-warm`, not the
+foreground token.
+
+<Unstyled>
+  <div className="flex flex-wrap gap-2 py-2">
+    <span className="rounded-md bg-warm px-2.5 py-1 text-xs text-warm-foreground">
+      bg-warm + text-warm-foreground ✓
+    </span>
+    <span className="rounded-md bg-mustard px-2.5 py-1 text-xs text-mustard-foreground">
+      bg-mustard + text-mustard-foreground ✓
+    </span>
+    <span className="rounded-md bg-primary px-2.5 py-1 text-xs text-primary-foreground">
+      bg-primary + text-primary-foreground ✓
+    </span>
+    <span className="rounded-md bg-warm/15 px-2.5 py-1 text-xs text-warm">
+      bg-warm/15 + text-warm ✓
+    </span>
+  </div>
+</Unstyled>
