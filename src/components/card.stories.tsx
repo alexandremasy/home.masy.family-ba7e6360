@@ -38,10 +38,6 @@ import { Badge } from "@/components/badge";
  *
  * Padding lives on the slots rather than on the box, so the rule under the header
  * runs full-bleed and `bleed` lets a table run edge-to-edge under a padded header.
- *
- * > `Tile`, `Panel` and `Section` still exist as thin deprecated shims over this
- * > component, so the ~56 existing call sites keep rendering. They hold no styling
- * > of their own and disappear once the views are migrated.
  */
 const meta = {
   title: "Layout/Card",

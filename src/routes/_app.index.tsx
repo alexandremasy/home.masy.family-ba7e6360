@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { BentoItem } from "@/blocks/bento";
-import { Tile } from "@/components/card";
+import { Card } from "@/components/card";
 import { CountUp } from "@/components/count-up";
 import { MapPinBg } from "@/components/map-pin-bg";
 import { PMCBag } from "@/components/pmc-bag";
@@ -111,7 +111,7 @@ export function Dashboard() {
             as one column on mobile (capped so they stay small on wider screens). */}
         <div className="grid grid-cols-2 gap-3 sm:max-w-md">
           <BentoItem span={1}>
-            <Tile variant="pill">
+            <Card variant="inset" radius="full" padding="sm" as="div">
               <PMCBag className="pointer-events-none absolute -right-2 -top-1 h-[150%] w-auto opacity-90" />
               <div className="relative min-w-0">
                 <p className="truncate text-base font-semibold leading-tight">
@@ -119,7 +119,7 @@ export function Dashboard() {
                 </p>
                 <p className="text-2xs opacity-80">Auj. · avant {calendrier.poubelleToday.time}</p>
               </div>
-            </Tile>
+            </Card>
           </BentoItem>
 
           <BirthdayTile />
@@ -139,9 +139,10 @@ export function Dashboard() {
           const bureauCls = room.key === "bureau" ? "sm:col-span-2" : "";
           return [
             <BentoItem key={room.key} span={1}>
-              <Tile
+              <Card
                 to={`/room/${room.key}`}
                 variant="glass"
+                padding="sm"
                 className={"flex flex-col " + bureauCls}
               >
                 <div className="flex items-start justify-between">
@@ -185,7 +186,7 @@ export function Dashboard() {
                     </span>
                   )}
                 </div>
-              </Tile>
+              </Card>
             </BentoItem>,
           ];
         })}
@@ -199,7 +200,7 @@ export function Dashboard() {
         {/* Énergie */}
         {energie.monthlyDue ? (
           <BentoItem span={2}>
-            <Tile tone="warm">
+            <Card variant="soft" padding="sm" as="div">
               <div className="flex items-start justify-between">
                 <div>
                   <Eyebrow tone="current" className="opacity-70">
@@ -223,11 +224,11 @@ export function Dashboard() {
                   Saisir <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
-            </Tile>
+            </Card>
           </BentoItem>
         ) : (
           <BentoItem span={2}>
-            <Tile to="/energie" variant="glass" className="flex flex-col">
+            <Card to="/energie" variant="glass" padding="sm" className="flex flex-col">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex min-w-0 items-center gap-3">
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
@@ -289,13 +290,18 @@ export function Dashboard() {
                   status={energie.oil.status}
                 />
               </div>
-            </Tile>
+            </Card>
           </BentoItem>
         )}
 
         {/* PRIORITY 3 — Bernard (compact) */}
         <BentoItem span={2}>
-          <Tile to="/tesla" tone="dark" className="relative isolate col-span-1 sm:col-span-2">
+          <Card
+            to="/tesla"
+            variant="inverted"
+            padding="sm"
+            className="relative isolate col-span-1 sm:col-span-2"
+          >
             <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-80" />
             <span className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 rounded-b-[inherit] bg-gradient-to-t from-foreground via-foreground/70 to-transparent" />
 
@@ -392,7 +398,7 @@ export function Dashboard() {
                 </div>
               </div>
             </div>
-          </Tile>
+          </Card>
         </BentoItem>
 
         {/* PRIORITY 3 — Réseau: the speed as a dial, everything else quiet */}
@@ -418,7 +424,7 @@ function BirthdayTile() {
 
   return (
     <BentoItem span={1}>
-      <Tile to="/anniversaires" variant="pill">
+      <Card to="/anniversaires" variant="inset" radius="full" padding="sm">
         <Cake
           className={
             "pointer-events-none absolute -right-3 -top-2 h-16 w-16 " +
@@ -431,7 +437,7 @@ function BirthdayTile() {
           </p>
           <p className={"text-2xs " + (today ? "opacity-80" : "text-muted-foreground")}>{when}</p>
         </div>
-      </Tile>
+      </Card>
     </BentoItem>
   );
 }
@@ -469,7 +475,7 @@ function RepasTile() {
 
   return (
     <BentoItem span={2}>
-      <Tile to="/repas" className="flex flex-col">
+      <Card to="/repas" variant="soft" padding="sm" className="flex flex-col">
         <div className="flex items-start justify-between gap-2">
           <Eyebrow>Repas</Eyebrow>
           <UtensilsCrossed className="h-4.5 w-4.5 text-muted-foreground" />
@@ -506,7 +512,7 @@ function RepasTile() {
             Rien de planifié pour l'instant.
           </p>
         )}
-      </Tile>
+      </Card>
     </BentoItem>
   );
 }
@@ -597,7 +603,7 @@ function ReseauTile() {
 
   return (
     <BentoItem span={2}>
-      <Tile to="/securite/reseau" variant="glass" className="flex flex-col">
+      <Card to="/securite/reseau" variant="glass" padding="sm" className="flex flex-col">
         <div className="flex items-start justify-between gap-2">
           <div className="flex min-w-0 items-center gap-3">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
@@ -655,7 +661,7 @@ function ReseauTile() {
             </span>
           </Tip>
         </div>
-      </Tile>
+      </Card>
     </BentoItem>
   );
 }
@@ -688,7 +694,7 @@ function SalonTile({ room, variant }: { room: (typeof rooms)[number]; variant: S
 
   return (
     <BentoItem span={2}>
-      <Tile to={`/room/${room.key}`} variant="glass" className="flex flex-col">
+      <Card to={`/room/${room.key}`} variant="glass" padding="sm" className="flex flex-col">
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-3">
             <span
@@ -721,7 +727,7 @@ function SalonTile({ room, variant }: { room: (typeof rooms)[number]; variant: S
             {room.lightsOn ? "Allumé" : "Éteint"}
           </span>
         </div>
-      </Tile>
+      </Card>
     </BentoItem>
   );
 }

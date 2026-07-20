@@ -14,7 +14,7 @@ import {
 import { importPreviewMock, importHistory, eur2 } from "@/lib/budget-data";
 import { Button } from "@/components/button";
 import { Eyebrow } from "@/components/eyebrow";
-import { Panel } from "@/components/card";
+import { Card } from "@/components/card";
 
 export const Route = createFileRoute("/_app/budget/import")({
   component: ImportPage,
@@ -238,7 +238,7 @@ function ImportPage() {
       )}
 
       {/* History */}
-      <Panel>
+      <Card variant="solid">
         <header className="mb-4 flex items-center gap-2">
           <History className="h-4 w-4 text-muted-foreground" />
           <h2 className="text-lg tracking-tight">Historique des imports</h2>
@@ -270,7 +270,7 @@ function ImportPage() {
           Ré-importer un même mois est sûr : aucune ligne n'est dupliquée, vos éditions sont
           préservées.
         </p>
-      </Panel>
+      </Card>
     </div>
   );
 }
@@ -370,12 +370,12 @@ function DiffSection({
   children: React.ReactNode;
 }) {
   return (
-    <Panel>
+    <Card variant="solid">
       <header className="mb-3">
         <h2 className="text-lg tracking-tight">{title}</h2>
         <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>
       </header>
       {children}
-    </Panel>
+    </Card>
   );
 }

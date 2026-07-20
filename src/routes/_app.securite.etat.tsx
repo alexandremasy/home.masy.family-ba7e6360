@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Section } from "@/components/card";
+import { Card } from "@/components/card";
 import { Switch } from "@/components/switch";
 import { armModes, security, presence, perimeter, type ArmMode } from "@/lib/mock-data";
 import {
@@ -38,7 +38,8 @@ function EtatTab() {
     <div className="space-y-6">
       <ArmingHero verdict={verdict} openPoints={openPoints} />
 
-      <Section
+      <Card
+        variant="solid"
         title="Présence"
         action={
           <span className="text-sm text-muted-foreground">
@@ -78,7 +79,7 @@ function EtatTab() {
             <span className="font-semibold text-foreground">Absent</span> quand tout le monde part
           </p>
         )}
-      </Section>
+      </Card>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Section } from "@/components/card";
+import { Card } from "@/components/card";
 import { activity, securityHealth, type ActivityItem } from "@/lib/mock-data";
 import {
   ShieldCheck,
@@ -51,7 +51,8 @@ function activityIcon(kind: ActivityItem["kind"]) {
 function ActiviteTab() {
   return (
     <div className="space-y-6">
-      <Section
+      <Card
+        variant="solid"
         title="Activité"
         action={<span className="text-sm text-muted-foreground">Aujourd'hui</span>}
       >
@@ -85,9 +86,10 @@ function ActiviteTab() {
             );
           })}
         </ul>
-      </Section>
+      </Card>
 
-      <Section
+      <Card
+        variant="solid"
         title="Système"
         action={
           <span className="text-sm text-muted-foreground">
@@ -155,7 +157,7 @@ function ActiviteTab() {
               ))}
           </div>
         )}
-      </Section>
+      </Card>
     </div>
   );
 }

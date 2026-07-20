@@ -28,7 +28,7 @@ import {
 } from "@/lib/budget-data";
 import { Button } from "@/components/button";
 import { Eyebrow } from "@/components/eyebrow";
-import { Panel } from "@/components/card";
+import { Card } from "@/components/card";
 
 export const Route = createFileRoute("/_app/budget/annuel")({
   component: AnnuelPage,
@@ -115,7 +115,7 @@ function AnnuelPage() {
       </div>
 
       {/* Grouped bar — flow per month */}
-      <Panel className="anim-slide-up">
+      <Card variant="solid" className="anim-slide-up">
         <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-xl tracking-tight">Flux mensuels</h2>
@@ -159,10 +159,10 @@ function AnnuelPage() {
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </Panel>
+      </Card>
 
       {/* Rolling area */}
-      <Panel className="anim-slide-up">
+      <Card variant="solid" className="anim-slide-up">
         <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-xl tracking-tight">Évolution</h2>
@@ -235,10 +235,10 @@ function AnnuelPage() {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      </Panel>
+      </Card>
 
       {/* Pressure + annualisation */}
-      <Panel className="anim-slide-up">
+      <Card variant="solid" className="anim-slide-up">
         <header className="mb-4 flex items-end justify-between">
           <div>
             <h2 className="text-xl tracking-tight">Pression de l'année</h2>
@@ -325,10 +325,10 @@ function AnnuelPage() {
             </p>
           </div>
         </div>
-      </Panel>
+      </Card>
 
       {/* Category zoom */}
-      <Panel className="anim-slide-up">
+      <Card variant="solid" className="anim-slide-up">
         <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-xl tracking-tight">Zoom sur une catégorie</h2>
@@ -409,7 +409,7 @@ function AnnuelPage() {
             </div>
           ))}
         </div>
-      </Panel>
+      </Card>
 
       {/* Envelopes */}
       <section className="anim-slide-up">

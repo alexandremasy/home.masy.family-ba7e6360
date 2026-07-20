@@ -52,7 +52,7 @@ import {
 import { Button } from "@/components/button";
 import { BudgetBar } from "@/components/budget-bar";
 import { Eyebrow } from "@/components/eyebrow";
-import { Panel } from "@/components/card";
+import { Card } from "@/components/card";
 
 export const Route = createFileRoute("/_app/budget/vue")({
   component: VuePage,
@@ -989,7 +989,7 @@ function PasseView({ monthIdx }: { monthIdx: number }) {
         />
       </div>
 
-      <Panel>
+      <Card variant="solid">
         <header className="mb-4">
           <h3 className="text-lg tracking-tight">Prévu vs réel</h3>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -1037,7 +1037,7 @@ function PasseView({ monthIdx }: { monthIdx: number }) {
               );
             })}
         </ul>
-      </Panel>
+      </Card>
 
       {bills.length > 0 && <BillsBar bills={bills} label="Échéances réalisées ce mois" />}
     </div>
@@ -1068,7 +1068,7 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
         <SmallStat label="Encore prévu" value={encorePrevu} tone="primary" hint="projection" />
       </div>
 
-      <Panel>
+      <Card variant="solid">
         <header className="mb-4 flex items-end justify-between gap-3">
           <div>
             <h3 className="text-lg tracking-tight">Réel à date + projection</h3>
@@ -1113,7 +1113,7 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
               );
             })}
         </ul>
-      </Panel>
+      </Card>
 
       {bills.length > 0 && <BillsBar bills={bills} label="Échéances de ce mois" />}
     </div>
@@ -1239,7 +1239,7 @@ function FuturView({ monthIdx }: { monthIdx: number }) {
 
 function BillsBar({ bills, label }: { bills: { label: string; amount: number }[]; label: string }) {
   return (
-    <Panel>
+    <Card variant="solid">
       <Eyebrow size="xs">{label}</Eyebrow>
       <div className="mt-3 flex flex-wrap gap-2">
         {bills.map((b, i) => (
@@ -1252,7 +1252,7 @@ function BillsBar({ bills, label }: { bills: { label: string; amount: number }[]
           </span>
         ))}
       </div>
-    </Panel>
+    </Card>
   );
 }
 

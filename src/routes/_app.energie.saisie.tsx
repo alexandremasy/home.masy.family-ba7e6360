@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useId, useState } from "react";
 import { z } from "zod";
-import { Section } from "@/components/card";
+import { Card } from "@/components/card";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/button";
 import { Label } from "@/components/label";
@@ -102,7 +102,7 @@ function SaisiePage() {
         backLabel="Énergie"
       />
 
-      <Section title="Compteurs">
+      <Card variant="solid" title="Compteurs">
         <form onSubmit={submit} noValidate className="space-y-4">
           <Field
             label="Eau"
@@ -192,7 +192,7 @@ function SaisiePage() {
             )}
           </Button>
         </form>
-      </Section>
+      </Card>
     </div>
   );
 }

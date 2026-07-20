@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { Section } from "@/components/card";
+import { Card } from "@/components/card";
 import { useDrawerDrag } from "@/components/mobile-drawer-panel";
 import { Toggle } from "@/components/toggle";
 import { Button } from "@/components/button";
@@ -195,7 +195,8 @@ function RoomPage() {
       </div>
 
       {detail.lights && (
-        <Section
+        <Card
+          variant="solid"
           title="Luminosité"
           action={
             zones.length > 0 ? (
@@ -265,11 +266,12 @@ function RoomPage() {
               </div>
             </div>
           )}
-        </Section>
+        </Card>
       )}
 
       {detail.climate && (
-        <Section
+        <Card
+          variant="solid"
           title="Climatisation"
           action={
             <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -279,19 +281,20 @@ function RoomPage() {
           }
         >
           <ClimateControl climate={detail.climate} />
-        </Section>
+        </Card>
       )}
 
       {detail.media && room.key === "salon" && <MediaSection media={detail.media} />}
 
       {room.key === "cuisine" && (
-        <Section title="Lave-vaisselle">
+        <Card variant="solid" title="Lave-vaisselle">
           <DishwasherPanel />
-        </Section>
+        </Card>
       )}
 
       {room.key === "buanderie" && (
-        <Section
+        <Card
+          variant="solid"
           title="Aspirateur robot"
           action={
             <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -315,7 +318,7 @@ function RoomPage() {
               </Button>
             </div>
           )}
-        </Section>
+        </Card>
       )}
 
       {(() => {
@@ -330,7 +333,8 @@ function RoomPage() {
           .filter((e) => roomCams.some((c) => c.id === e.cameraId))
           .slice(0, 3);
         return (
-          <Section
+          <Card
+            variant="solid"
             title="Caméra"
             action={
               <a
@@ -363,12 +367,12 @@ function RoomPage() {
                 </ul>
               )}
             </div>
-          </Section>
+          </Card>
         );
       })()}
 
       {detail.devices && (
-        <Section title="Périphériques">
+        <Card variant="solid" title="Périphériques">
           {detail.devices.ink && (
             <div className="mb-6">
               <Eyebrow className="mb-3">Imprimante · niveaux d'encre</Eyebrow>
@@ -426,15 +430,15 @@ function RoomPage() {
               );
             })}
           </div>
-        </Section>
+        </Card>
       )}
 
       {!detail.lights && !detail.climate && !detail.media && !detail.devices && (
-        <Section title="Aucun appareil">
+        <Card variant="solid" title="Aucun appareil">
           <p className="text-muted-foreground">
             Cette pièce n'a pas encore de capteurs ou d'appareils connectés.
           </p>
-        </Section>
+        </Card>
       )}
     </div>
   );
@@ -451,7 +455,7 @@ function MediaSection({ media }: { media: NonNullable<(typeof roomDetails)["salo
   const active = sources.find((s) => s.key === source)!;
 
   return (
-    <Section title="Média">
+    <Card variant="solid" title="Média">
       {/* Musiq3 + volume — one button group, above the player. */}
       <div className="flex">
         <Toggle
@@ -546,7 +550,7 @@ function MediaSection({ media }: { media: NonNullable<(typeof roomDetails)["salo
           </div>
         )}
       </div>
-    </Section>
+    </Card>
   );
 }
 

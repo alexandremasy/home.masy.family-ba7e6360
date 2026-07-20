@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Section } from "@/components/card";
+import { Card } from "@/components/card";
 import { PageHeader } from "@/components/page-header";
 
 import { Switch } from "@/components/switch";
@@ -53,7 +53,8 @@ function ReseauPage() {
     <div className="space-y-6">
       <PageHeader title="Réseau" subtitle="Connectivité, homelab et services" />
 
-      <Section
+      <Card
+        variant="solid"
         title="Connectivité"
         action={
           <span className="inline-flex items-center gap-1.5 text-sm text-success">
@@ -109,9 +110,13 @@ function ReseauPage() {
             <ExternalLink className="h-3 w-3 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
         </div>
-      </Section>
+      </Card>
 
-      <Section title="DNS" action={<span className="text-xs text-muted-foreground">Pi-hole</span>}>
+      <Card
+        variant="solid"
+        title="DNS"
+        action={<span className="text-xs text-muted-foreground">Pi-hole</span>}
+      >
         <div className="grid gap-3 sm:grid-cols-3">
           <Stat
             icon={<Globe className="h-4 w-4 anim-drift" />}
@@ -144,9 +149,10 @@ function ReseauPage() {
           </span>
           <ExternalLink className="h-3 w-3 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </a>
-      </Section>
+      </Card>
 
-      <Section
+      <Card
+        variant="solid"
         title="Homelab"
         action={
           <span className="text-xs text-muted-foreground">
@@ -205,7 +211,7 @@ function ReseauPage() {
             </div>
           ))}
         </div>
-      </Section>
+      </Card>
     </div>
   );
 }

@@ -16,7 +16,7 @@ import {
 import { toast } from "sonner";
 import { PiggyBank, Pencil, Check, X } from "lucide-react";
 import { CountUp } from "@/components/count-up";
-import { Section } from "@/components/card";
+import { Card } from "@/components/card";
 import {
   envelopes,
   eur,
@@ -164,7 +164,8 @@ function ReserveOverlay() {
                 </div>
               </div>
 
-              <Section
+              <Card
+                variant="solid"
                 title="Évolution de la réserve"
                 action={
                   <span
@@ -260,9 +261,10 @@ function ReserveOverlay() {
                     </ComposedChart>
                   </ResponsiveContainer>
                 </div>
-              </Section>
+              </Card>
 
-              <Section
+              <Card
+                variant="solid"
                 title="Enveloppes"
                 action={
                   <span className="text-xs text-muted-foreground">
@@ -396,7 +398,7 @@ function ReserveOverlay() {
                     );
                   })}
                 </div>
-              </Section>
+              </Card>
             </div>
           </div>
         </div>

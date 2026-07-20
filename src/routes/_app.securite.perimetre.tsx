@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Section } from "@/components/card";
+import { Card } from "@/components/card";
 import { perimeter, locks, cameras } from "@/lib/mock-data";
 import {
   ShieldCheck,
@@ -30,7 +30,8 @@ function PerimetreTab() {
 
   return (
     <div className="space-y-6">
-      <Section
+      <Card
+        variant="solid"
         title="Périmètre"
         action={
           <span
@@ -82,9 +83,10 @@ function PerimetreTab() {
             ))}
           </div>
         </div>
-      </Section>
+      </Card>
 
-      <Section
+      <Card
+        variant="solid"
         title="Caméras"
         action={
           <span className="text-sm text-muted-foreground">{installedCams.length} en ligne</span>
@@ -143,7 +145,7 @@ function PerimetreTab() {
             </span>
           </div>
         </div>
-      </Section>
+      </Card>
     </div>
   );
 }

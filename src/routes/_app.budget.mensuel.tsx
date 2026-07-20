@@ -26,7 +26,7 @@ import {
 import { Button } from "@/components/button";
 import { BudgetBar } from "@/components/budget-bar";
 import { Eyebrow } from "@/components/eyebrow";
-import { Panel } from "@/components/card";
+import { Card } from "@/components/card";
 
 export const Route = createFileRoute("/_app/budget/mensuel")({
   component: MensuelPage,
@@ -162,7 +162,7 @@ function MensuelPage() {
       </div>
 
       {/* Prévu vs Réel par catégorie */}
-      <Panel className="anim-slide-up">
+      <Card variant="solid" className="anim-slide-up">
         <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-xl tracking-tight">Prévu vs réel</h2>
@@ -189,11 +189,11 @@ function MensuelPage() {
               />
             ))}
         </ul>
-      </Panel>
+      </Card>
 
       {/* Pression du mois */}
       {bills.length > 0 && (
-        <Panel className="anim-slide-up">
+        <Card variant="solid" className="anim-slide-up">
           <header className="mb-4">
             <h2 className="text-lg tracking-tight">Pression du mois</h2>
             <p className="mt-0.5 text-xs text-muted-foreground">
@@ -219,7 +219,7 @@ function MensuelPage() {
               </span>
             ))}
           </div>
-        </Panel>
+        </Card>
       )}
 
       <div className="text-center text-xs text-muted-foreground">
@@ -317,7 +317,7 @@ function IncomePanel() {
   const total = incomeSources.reduce((s, i) => s + i.value, 0);
   const max = Math.max(...incomeSources.map((i) => i.value));
   return (
-    <Panel as="div">
+    <Card variant="solid" as="div">
       <header className="mb-4 flex items-end justify-between gap-3">
         <div>
           <h2 className="text-xl tracking-tight">Entrées</h2>
@@ -344,7 +344,7 @@ function IncomePanel() {
           );
         })}
       </ul>
-    </Panel>
+    </Card>
   );
 }
 
@@ -389,7 +389,7 @@ function DonutPanel({
   const focused = slices.find((s) => s.key === focusKey);
 
   return (
-    <Panel as="div">
+    <Card variant="solid" as="div">
       <header className="mb-4 flex items-end justify-between gap-3">
         <div>
           <h2 className="text-xl tracking-tight">Dépenses</h2>
@@ -481,7 +481,7 @@ function DonutPanel({
           })}
         </ul>
       </div>
-    </Panel>
+    </Card>
   );
 }
 
