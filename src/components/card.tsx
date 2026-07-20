@@ -42,8 +42,8 @@ export type CardRadius = "lg" | "xl" | "2xl" | "full";
  */
 const surface: Record<CardVariant, string> = {
   solid: "border border-border/60 text-card-foreground",
-  soft: "border border-border/60 text-card-foreground shadow-soft",
-  glass: "border border-white text-card-foreground shadow-xs dark:border-white/10",
+  soft: "border border-border/60 text-card-foreground",
+  glass: "border border-white text-card-foreground dark:border-white/10",
   inset: "border border-border/60 bg-secondary/50",
   inverted: "bg-foreground text-background",
 };
@@ -56,23 +56,28 @@ const radiusClass: Record<CardRadius, string> = {
   full: "rounded-full",
 };
 
-/** The same radius, applied to the bottom of the sheet when a footer sits under it. */
-const sheetRadiusClass: Record<CardRadius, string> = {
-  lg: "rounded-b-lg",
-  xl: "rounded-b-xl",
-  "2xl": "rounded-b-2xl",
-  full: "rounded-b-[1.75rem]",
+/**
+ * Per-slot padding — one vertical rhythm, the same above and below every slot, so
+ * the card opens and closes on the same inset whichever slot happens to be last.
+ * Only the horizontal inset breathes with the viewport.
+ */
+const pad: Record<CardPadding, { x: string; y: string }> = {
+  sm: { x: "px-4", y: "py-3" },
+  md: { x: "px-5 sm:px-6", y: "py-4" },
 };
 
 /**
  * The filled sheet that carries header + body. The footer sits OUTSIDE it, inside
- * the card's border but off the fill — so the white area ends with the body.
- * Cards whose colour *is* the card (inset, inverted) have no separate sheet.
+ * the card's border but off the fill — so the fill ends with the body.
+ *
+ * The elevation belongs here too, not on the card: what lifts off the page is the
+ * filled area, and a shadow drawn around the footer would outline a shape that has
+ * no fill. Cards whose colour *is* the card (inset, inverted) have no sheet.
  */
 const sheet: Partial<Record<CardVariant, string>> = {
   solid: "bg-card",
-  soft: "bg-card",
-  glass: "bg-card/60 backdrop-blur-md",
+  soft: "bg-card shadow-soft",
+  glass: "bg-card/60 shadow-xs backdrop-blur-md",
 };
 
 /**
@@ -93,17 +98,6 @@ const toneCircle: Record<CardTone, string> = {
 const surfaceCircle: Partial<Record<CardVariant, string>> = {
   glass: "bg-white text-primary",
   inverted: "bg-background/15 text-background",
-};
-
-/** Per-slot padding, so a rule can span the full width without negative margins. */
-const pad: Record<CardPadding, { x: string; head: string; body: string; foot: string }> = {
-  sm: { x: "px-4", head: "pt-4 pb-3", body: "py-3", foot: "pt-3 pb-4" },
-  md: {
-    x: "px-5 sm:px-6",
-    head: "pt-5 pb-4 sm:pt-6",
-    body: "py-4",
-    foot: "pt-4 pb-5 sm:pb-6",
-  },
 };
 
 export interface CardProps {
@@ -179,7 +173,7 @@ export function Card({
   // cn (tailwind-merge) resolves conflicts, so a tone or a className override wins
   // WITHOUT `!important` — that is what killed the per-site override surgery.
   const cls = cn(
-    "flex h-full flex-col overflow-hidden",
+    "flex h-full flex-col",
     surface[variant],
     radiusClass[radius],
     // A link card announces itself: it lifts on hover, settles back on press, and
@@ -201,7 +195,7 @@ export function Card({
           className={cn(
             "flex items-start justify-between gap-4",
             p.x,
-            p.head,
+            p.y,
             divided && "border-b border-border/60",
           )}
         >
@@ -222,7 +216,7 @@ export function Card({
                 {title}
               </h2>
               {subline && (
-                <p data-slot="subline" className="mt-0.5 text-sm text-muted-foreground">
+                <p data-slot="subline" className="mt-0.5 text-xs text-muted-foreground">
                   {subline}
                 </p>
               )}
@@ -248,23 +242,24 @@ export function Card({
         top-heavy with a void underneath.
       */}
       {children != null && (
-        <div data-slot="body" className={cn("flex flex-1 flex-col", !bleed && p.x, p.body)}>
+        <div data-slot="body" className={cn("flex flex-1 flex-col", !bleed && p.x, p.y)}>
           {children}
         </div>
       )}
     </>
   );
 
-  // The sheet carries the fill; the footer sits under it, inside the border but
-  // off the fill — so the filled area ends with the body, rounded at the bottom.
+  // The sheet carries the fill, the elevation and the clip; the footer sits under
+  // it, inside the border but off the fill. The clip lives here rather than on the
+  // card so it cannot cut the sheet's own shadow off.
   const body = (
     <>
       <div
         data-slot="sheet"
         className={cn(
-          "flex flex-1 flex-col",
+          "flex flex-1 flex-col overflow-hidden",
+          radiusClass[radius],
           sheet[variant],
-          footer && sheetRadiusClass[radius],
           divided && footer && "border-b border-border/60",
         )}
       >
@@ -272,7 +267,7 @@ export function Card({
       </div>
 
       {footer && (
-        <div data-slot="footer" className={cn(p.x, p.foot)}>
+        <div data-slot="footer" className={cn(p.x, p.y)}>
           {footer}
         </div>
       )}
