@@ -97,18 +97,13 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
     );
   }
 
+  // The program and its schedule belong to the card header — the caller passes them
+  // as `subline`. Repeating them here gave the card two stacked titles.
   return (
-    <div className="space-y-5">
-      <div>
-        <p className="text-base font-semibold">{d.program}</p>
-        <p className="mt-0.5 text-sm text-muted-foreground">
-          Démarré {d.startedAt} · fin prévue {d.endsAt}
-        </p>
-      </div>
-
+    <div className="space-y-4">
       {(running || paused) && (
-        <Card variant="inset">
-          <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
+        <div>
+          <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
             <span>
               {d.progressPct}% · {d.phase}
             </span>
@@ -120,10 +115,12 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
               style={{ width: `${d.progressPct}%` }}
             />
           </div>
-        </Card>
+        </div>
       )}
 
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      {/* Two columns, not four: this panel now lives in half a bento row, and four
+          across truncated "Consommables" to "CONSOMMA…". */}
+      <div className="grid grid-cols-2 gap-2">
         <Card variant="inset" padding="sm">
           <Eyebrow size="xs" as="div" className="flex items-center gap-1.5">
             <Zap className="h-3.5 w-3.5" />

@@ -8,9 +8,18 @@ import { Button } from "@/components/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/toggle-group";
 import { SlidingTabs } from "@/components/sliding-tabs";
 import { CameraFeed } from "@/components/camera-feed";
+import { MediaSweep } from "@/components/effects";
 import { DishwasherPanel } from "@/components/dishwasher-panel";
 import { VacuumPanel } from "@/components/vacuum-panel";
-import { rooms, roomDetails, cameras, motionEvents, vacuum, type RoomKey } from "@/lib/mock-data";
+import {
+  rooms,
+  roomDetails,
+  cameras,
+  motionEvents,
+  vacuum,
+  dishwasher,
+  type RoomKey,
+} from "@/lib/mock-data";
 import {
   Camera,
   Lightbulb,
@@ -265,7 +274,16 @@ function RoomPage() {
     modules.push({
       key: "dishwasher",
       node: (
-        <Card variant="solid" icon={<Droplet className="h-4 w-4" />} title="Lave-vaisselle">
+        <Card
+          variant="solid"
+          icon={<Droplet className="h-4 w-4" />}
+          title="Lave-vaisselle"
+          subline={
+            dishwasher.state === "running" || dishwasher.state === "paused"
+              ? `${dishwasher.program} · fin prévue ${dishwasher.endsAt}`
+              : dishwasher.program
+          }
+        >
           <DishwasherPanel />
         </Card>
       ),
@@ -543,15 +561,9 @@ function MediaSection({ media }: { media: NonNullable<(typeof roomDetails)["salo
         </Button>
       </div>
 
-      <div
-        className="anim-media-gradient relative mt-3 overflow-hidden rounded-xl border border-border/60 p-5"
-        style={{
-          backgroundImage:
-            source === "off"
-              ? "linear-gradient(135deg, color-mix(in oklab, var(--card) 92%, transparent), var(--card))"
-              : `linear-gradient(120deg, color-mix(in oklab, ${active.tint} 32%, var(--card)), var(--card) 55%, color-mix(in oklab, ${active.tint} 16%, var(--card)))`,
-          backgroundSize: "220% 220%",
-        }}
+      <MediaSweep
+        tint={source === "off" ? null : active.tint}
+        className="relative mt-3 overflow-hidden rounded-xl border border-border/60 p-5"
       >
         {source === "musiq3" && (
           <div className="flex items-center gap-4">
@@ -605,7 +617,7 @@ function MediaSection({ media }: { media: NonNullable<(typeof roomDetails)["salo
             </div>
           </div>
         )}
-      </div>
+      </MediaSweep>
     </Card>
   );
 }
