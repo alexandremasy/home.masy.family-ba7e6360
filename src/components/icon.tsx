@@ -29,7 +29,6 @@ export function Icon({
   as: Glyph,
   size = "md",
   className,
-  label,
 }: {
   /** The lucide glyph itself — `import { Zap } from "lucide-react"`. */
   as: LucideIcon;
@@ -37,18 +36,6 @@ export function Icon({
   size?: IconSize;
   /** Colour and spacing. The size is owned by `size` — don't pass `h-*`/`w-*` here. */
   className?: string;
-  /**
-   * Describes the icon when it carries meaning on its own. Left off, the icon is
-   * hidden from screen readers — which is right whenever a nearby label says it.
-   */
-  label?: string;
 }) {
-  return (
-    <Glyph
-      className={cn(sizeClasses[size], className)}
-      aria-hidden={label ? undefined : true}
-      aria-label={label}
-      role={label ? "img" : undefined}
-    />
-  );
+  return <Glyph className={cn(sizeClasses[size], className)} aria-hidden="true" />;
 }
