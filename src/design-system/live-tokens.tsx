@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { ColorItem, ColorPalette, IconItem, IconGallery } from "@storybook/addon-docs/blocks";
 import { type LucideIcon } from "lucide-react";
 import { Icon } from "@/components/icon";
@@ -22,6 +23,35 @@ export function TokenValue({ token, fallback }: { token: string; fallback?: stri
   return <code>{value || fallback || `var(--${token})`}</code>;
 }
 
+/**
+ * Resolves a whole list of tokens in ONE effect. Reading them in a loop of
+ * `useTokenValue` calls would break the rules of hooks the moment a list changes
+ * length, and `ColorItem` chokes on an unresolved `var(--x)` — it parses the value
+ * to compute its contrast label, so it must receive a real colour or nothing.
+ */
+function useTokenValues(tokens: string[]): Record<string, string> {
+  const key = tokens.join(",");
+  const [values, setValues] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const read = () => {
+      const style = getComputedStyle(document.documentElement);
+      const next: Record<string, string> = {};
+      for (const t of key.split(",")) {
+        const v = style.getPropertyValue(`--${t}`).trim();
+        if (v) next[`--${t}`] = v;
+      }
+      setValues(next);
+    };
+    read();
+    const obs = new MutationObserver(read);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => obs.disconnect();
+  }, [key]);
+
+  return values;
+}
+
 function LiveColorItem({
   title,
   subtitle,
@@ -31,11 +61,10 @@ function LiveColorItem({
   subtitle?: string;
   tokens: string[];
 }) {
-  const colors: Record<string, string> = {};
-  for (const t of tokens) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    colors[`--${t}`] = useTokenValue(t) || `var(--${t})`;
-  }
+  const colors = useTokenValues(tokens);
+  // Nothing resolved yet (first paint): render no swatches rather than feed the
+  // block a value it cannot parse.
+  if (Object.keys(colors).length === 0) return null;
   return <ColorItem title={title} subtitle={subtitle ?? ""} colors={colors} />;
 }
 
