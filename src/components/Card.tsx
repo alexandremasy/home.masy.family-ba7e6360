@@ -124,6 +124,148 @@ export function Panel({
   );
 }
 
+/* ────────────────────────────────────────────────────────────────────────────
+   The anatomy — Card + CardHeader / CardBody / CardFooter.
+
+   An audit of 4 views (énergie, Bernard, dashboard, pièces) found the SAME card
+   skeleton written 10 times: 3 competing named components (Section, SectionTitle,
+   MetricCard) plus 7 inline copies. They agree on the structure and disagree on
+   nothing that matters.
+
+   ONE header, FOUR slots — icon, title, subline, action. The 4th is the one that
+   was always missing, so every view smuggled its badge / filter / tabs / toggle
+   in some other way.
+
+   ONE grammar (decided 2026-07-20, Alex): icon left in its tinted circle, title
+   beside it. No `layout` prop — the "eyebrow + icon right" variant of the tonal
+   dashboard tiles is a divergence, not a need, and those tiles migrate onto this.
+
+   Padding lives on the SLOTS, not on Card. That is what lets `divided` draw a
+   real full-bleed rule with no negative-margin trick, and lets a body go
+   edge-to-edge (the relevé table) while its header stays padded.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/** The card surface. Holds no padding — the slots do. */
+export function Card({
+  children,
+  variant = "soft",
+  className,
+  as: As = "section",
+}: {
+  children: ReactNode;
+  variant?: PanelVariant;
+  className?: string;
+  as?: "section" | "div" | "article";
+}) {
+  return (
+    <As className={cn("flex h-full flex-col overflow-hidden", panelSurface[variant], className)}>
+      {children}
+    </As>
+  );
+}
+
+/**
+ * The four slots. `icon` renders in the 36px tinted circle every view already
+ * hand-rolls; `subline` is a ReactNode because Bernard composes JSX in it;
+ * `action` takes anything — a badge, a Select, Tabs, or a real control (the room
+ * on/off toggle lives in the page header today only because this slot was absent).
+ */
+export function CardHeader({
+  title,
+  icon,
+  subline,
+  action,
+  divided = false,
+  className,
+}: {
+  title: ReactNode;
+  icon?: ReactNode;
+  subline?: ReactNode;
+  action?: ReactNode;
+  divided?: boolean;
+  className?: string;
+}) {
+  return (
+    <header
+      className={cn(
+        "flex items-start justify-between gap-4 px-5 pt-5 pb-4 sm:px-6 sm:pt-6",
+        divided && "border-b border-border/60",
+        className,
+      )}
+    >
+      <div className="flex min-w-0 items-center gap-2.5">
+        {icon && (
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+            {icon}
+          </span>
+        )}
+        <div className="min-w-0">
+          <h2 className="truncate font-serif text-base font-semibold tracking-tight text-foreground">
+            {title}
+          </h2>
+          {subline && <p className="mt-0.5 text-sm text-muted-foreground">{subline}</p>}
+        </div>
+      </div>
+      {action && <div className="shrink-0">{action}</div>}
+    </header>
+  );
+}
+
+/**
+ * The body is a pure slot — the audit found a big number, a gauge, a list, a
+ * recharts chart, controls, and nothing at all. There is no variant to add here;
+ * parameterising it is what produced the fifty flavors in the first place.
+ *
+ * `bleed` drops the horizontal padding for edge-to-edge content (tables).
+ */
+export function CardBody({
+  children,
+  bleed = false,
+  className,
+}: {
+  children: ReactNode;
+  bleed?: boolean;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex-1",
+        bleed ? "last:pb-5 sm:last:pb-6" : "px-5 last:pb-5 sm:px-6 sm:last:pb-6",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Pinned to the bottom by `mt-auto` — that is the whole point of it belonging to
+ * the component. In a grid, footers that each caller positions never line up.
+ */
+export function CardFooter({
+  children,
+  divided = false,
+  className,
+}: {
+  children: ReactNode;
+  divided?: boolean;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "mt-auto px-5 pt-4 pb-5 sm:px-6 sm:pb-6",
+        divided && "border-t border-border/60",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
 /** A Panel with a title row. */
 export function Section({
   title,
