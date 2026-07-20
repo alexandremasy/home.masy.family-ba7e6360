@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Link } from "@tanstack/react-router";
 import { useDrawerDrag } from "@/components/mobile-drawer-panel";
 
 /**
@@ -16,37 +15,27 @@ export function PageHeader({
   title,
   subtitle,
   icon,
-  back = "/",
-  backLabel = "Cockpit",
-  action,
+  trailing,
   variant = "overlay",
-  size = "lg",
 }: {
   title: string;
   subtitle?: string;
   /** Optional leading badge icon, left of the title (matches the room header). */
   icon?: ReactNode;
-  /** Back link target, or null to drop the "← Cockpit" affordance entirely. */
-  back?: string | null;
-  backLabel?: string;
-  action?: ReactNode;
+  /** Trailing slot, right of the title — an action, a badge, a status. */
+  trailing?: ReactNode;
   variant?: "overlay" | "page";
-  /** "lg" — the big page title; "sm" — the compact room-header title. */
-  size?: "lg" | "sm";
 }) {
   const bleed =
     variant === "page"
       ? // Sticks BELOW the TopNav. At top-0 it would stick behind it (z-20 vs z-30)
         // and the fade would cut in the wrong place — or vanish entirely on mobile,
         // where the nav is 109px tall.
-        "top-[var(--nav-h)] -mx-4 -mt-6 px-4 pt-6 sm:-mx-6 sm:-mt-10 sm:px-6 sm:pt-10"
+        // The negative margins cancel the shell's own padding; `pt-4` then sets the
+        // header's own — 16px, matching `pb-4`, so the title sits centred in its band.
+        "top-[var(--nav-h)] -mx-4 -mt-6 px-4 pt-4 sm:-mx-6 sm:-mt-10 sm:px-6"
       : // The overlay covers the TopNav, so there it really is the top.
-        "top-0 -mx-5 -mt-7 px-5 pt-7 md:-mx-8 md:-mt-10 md:px-8 md:pt-10";
-
-  const titleCls =
-    size === "sm"
-      ? "truncate text-xl font-semibold tracking-tight sm:text-2xl"
-      : "truncate text-3xl tracking-tight sm:text-4xl";
+        "top-0 -mx-5 -mt-7 px-5 pt-4 md:-mx-8 md:-mt-10 md:px-8";
 
   // Inside a bottom sheet the whole header is the drag-to-dismiss zone (the grabber
   // is just the affordance). Outside one — a full-bleed page — `handlers` is null,
@@ -75,19 +64,11 @@ export function PageHeader({
             </span>
           )}
           <div className="min-w-0">
-            {back && (
-              <Link
-                to={back}
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                ← {backLabel}
-              </Link>
-            )}
-            <h1 className={(back ? "mt-2 " : "") + titleCls}>{title}</h1>
+            <h1 className="truncate text-lg font-semibold tracking-tight sm:text-xl">{title}</h1>
             {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
           </div>
         </div>
-        {action && <div className="shrink-0">{action}</div>}
+        {trailing && <div className="shrink-0">{trailing}</div>}
       </div>
     </div>
   );

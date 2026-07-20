@@ -95,12 +95,7 @@ function SaisiePage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <PageHeader
-        title="Relevé mensuel"
-        subtitle="Saisis les 4 compteurs ci-dessous."
-        back="/energie"
-        backLabel="Énergie"
-      />
+      <PageHeader title="Relevé mensuel" subtitle="Saisis les 4 compteurs ci-dessous." />
 
       <Card variant="solid" title="Compteurs">
         <form onSubmit={submit} noValidate className="space-y-4">

@@ -356,8 +356,6 @@ function EnergiePage() {
         title="Énergie"
         subtitle="Vue d'ensemble de la consommation"
         icon={<Zap className="h-4 w-4" />}
-        back={null}
-        size="sm"
       />
 
       {energie.monthlyDue ? (

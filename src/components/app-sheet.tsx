@@ -73,7 +73,7 @@ export function AppSheet({
                   modals, or the route's own header for routes. */}
               <DialogPrimitive.Title className="sr-only">{title ?? "Détail"}</DialogPrimitive.Title>
               <div className="px-5 pb-8 pt-4 md:px-8 md:py-10">
-                {title && <PageHeader title={title} back={null} size="sm" action={headerAction} />}
+                {title && <PageHeader title={title} trailing={headerAction} />}
                 {children}
               </div>
             </MobileDrawerPanel>

@@ -182,13 +182,7 @@ function TeslaPage() {
     <div className="space-y-6">
       {/* Standard overlay header, like Énergie — sticky glass PageHeader; the
           charging state rides along as the header action. */}
-      <PageHeader
-        title="Bernard"
-        subtitle={tesla.model}
-        back={null}
-        size="sm"
-        action={chargeBadge}
-      />
+      <PageHeader title="Bernard" subtitle={tesla.model} trailing={chargeBadge} />
 
       {/* ============ 1. ÉTAT DE LA VOITURE ============ */}
       <section className="space-y-4">
