@@ -41,10 +41,10 @@ export type CardRadius = "lg" | "xl" | "2xl" | "full";
  * a footer can sit inside the border without it.
  */
 const surface: Record<CardVariant, string> = {
-  solid: "border border-border/60 text-card-foreground",
-  soft: "border border-border/60 text-card-foreground",
-  glass: "border border-white text-card-foreground dark:border-white/10",
-  inset: "border border-border/60 bg-secondary/50",
+  solid: "border-2 border-border/60 text-card-foreground",
+  soft: "border-2 border-border/60 text-card-foreground",
+  glass: "border-2 border-white text-card-foreground dark:border-white/10",
+  inset: "border-2 border-border/60 bg-secondary/50",
   inverted: "bg-foreground text-background",
 };
 

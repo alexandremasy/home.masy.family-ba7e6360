@@ -7,7 +7,7 @@ import {
   createRouter,
 } from "@tanstack/react-router";
 import { BarChart3, Lightbulb, Wifi, Zap } from "lucide-react";
-import { Card } from "@/components/card";
+import { Card, type CardProps, type CardVariant } from "@/components/card";
 import { Eyebrow } from "@/components/eyebrow";
 import { Badge } from "@/components/badge";
 
@@ -195,25 +195,67 @@ export const BodyOnly: Story = {
   args: { children: "Une carte sans header : juste une boîte.", variant: "solid" },
 };
 
-// ── Global ──────────────────────────────────────────────────────────────────
+// ── Global · one story per surface ───────────────────────────────────────────
 
 /**
- * The five surfaces. A surface is a nature, not a colour — which is why Bernard's
- * dark card is `inverted` here rather than a tone. `inset` belongs *inside* another
- * card.
+ * Every slot combination of one surface, side by side — so a surface can be checked
+ * in one glance instead of hunting through stories. Each cell says what it renders.
  */
-export const Variants: Story = {
-  args: { title: "Surface", icon: <Zap className="h-4 w-4" /> },
-  render: (args) => (
-    <div className="flex flex-col gap-3">
-      <Card {...args} variant="solid" subline="solid — la boîte de contenu" />
-      <Card {...args} variant="soft" subline="soft — la même, posée sur la page" />
-      <Card {...args} variant="glass" subline="glass — la tuile du dashboard" />
-      <Card {...args} variant="inset" subline="inset — une boîte dans une carte" />
-      <Card {...args} variant="inverted" subline="inverted — Bernard" />
+function SurfaceMatrix({ variant }: { variant: CardVariant }) {
+  const icon = <Zap className="h-4 w-4" />;
+  const action = (
+    <Badge variant="secondary" shape="pill">
+      action
+    </Badge>
+  );
+  const foot = <p className="text-xs opacity-70">footer</p>;
+  const body = <p className="text-sm opacity-70">body</p>;
+
+  const cases: { label: string; props: Partial<CardProps> }[] = [
+    { label: "header · body · footer", props: { icon, title: "title", action, footer: foot } },
+    { label: "+ divided", props: { icon, title: "title", action, footer: foot, divided: true } },
+    { label: "+ subline", props: { icon, title: "title", subline: "subline", action } },
+    { label: "header · body", props: { icon, title: "title" } },
+    { label: "no icon", props: { title: "title", action } },
+    { label: "body only", props: {} },
+    { label: "header only", props: { icon, title: "title", action, children: undefined } },
+    { label: "body · footer", props: { footer: foot } },
+  ];
+
+  return (
+    <div className="grid gap-5 sm:grid-cols-2" style={{ width: 620 }}>
+      {cases.map(({ label, props }) => (
+        <div key={label} className="flex flex-col gap-1.5">
+          <Eyebrow size="xs">{label}</Eyebrow>
+          <Card variant={variant} {...props}>
+            {"children" in props ? props.children : body}
+          </Card>
+        </div>
+      ))}
     </div>
-  ),
-};
+  );
+}
+
+const surfaceStory = (variant: CardVariant): Story => ({
+  parameters: { layout: "padded" },
+  decorators: [],
+  render: () => <SurfaceMatrix variant={variant} />,
+});
+
+/** The plain content box — a border, no elevation. */
+export const Solid: Story = surfaceStory("solid");
+
+/** The default: the same box, lifted off the page. The shadow sits on the fill only. */
+export const Soft: Story = surfaceStory("soft");
+
+/** The frosted dashboard tile. Needs something behind it to read as glass. */
+export const Glass: Story = surfaceStory("glass");
+
+/** A tinted box that belongs *inside* another card, never on the page. */
+export const Inset: Story = surfaceStory("inset");
+
+/** The dark feature card — Bernard on the dashboard. */
+export const Inverted: Story = surfaceStory("inverted");
 
 /**
  * The radius is its own dimension, not a surface: the bento pills are `inset` cards
