@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { ColorItem, ColorPalette, IconItem, IconGallery } from "@storybook/addon-docs/blocks";
+import * as Lucide from "lucide-react";
 import { type LucideIcon } from "lucide-react";
 import { Icon } from "@/components/icon";
+import { ICONS_IN_USE } from "./icons-in-use";
 import { useComputed, useTokenValue } from "./_helpers";
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -144,6 +146,23 @@ export function LucideGallery({ icons }: { icons: Record<string, LucideIcon> }) 
       ))}
     </IconGallery>
   );
+}
+
+/**
+ * The whole inventory, resolved by name off the generated list — so it cannot fall
+ * behind the code the way a hand-written gallery does.
+ *
+ * `import * as Lucide` pulls the full set into THIS page. That is fine: it is a docs
+ * module, never imported by the app, so the product bundle keeps its tree-shaking.
+ */
+export function IconInventory() {
+  const glyphs = Lucide as unknown as Record<string, LucideIcon>;
+  const icons: Record<string, LucideIcon> = {};
+  for (const name of ICONS_IN_USE) {
+    const glyph = glyphs[name];
+    if (glyph) icons[name] = glyph;
+  }
+  return <LucideGallery icons={icons} />;
 }
 
 /**

@@ -1,64 +1,5 @@
 import { Meta, Title, Subtitle, Canvas, Controls } from "@storybook/addon-docs/blocks";
-import {
-  AlertCircle,
-  AlertTriangle,
-  ArrowLeft,
-  ArrowRight,
-  Bell,
-  Cake,
-  CalendarDays,
-  Camera,
-  Car,
-  Check,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronUp,
-  Cloud,
-  CloudFog,
-  CloudLightning,
-  CloudRain,
-  CloudSnow,
-  CloudSun,
-  Cog,
-  Coins,
-  Copy,
-  Droplet,
-  ExternalLink,
-  Flame,
-  Fuel,
-  Inbox,
-  Info,
-  LayoutGrid,
-  Lightbulb,
-  ListChecks,
-  Loader2,
-  Lock,
-  LogOut,
-  Moon,
-  MoreHorizontal,
-  Package,
-  Pencil,
-  PiggyBank,
-  Plus,
-  Power,
-  RefreshCw,
-  Repeat,
-  Search,
-  ShieldAlert,
-  ShieldCheck,
-  Sparkles,
-  Sun,
-  Trash2,
-  User,
-  Utensils,
-  UtensilsCrossed,
-  Wifi,
-  WifiOff,
-  X,
-  Zap,
-} from "lucide-react";
-import { LucideGallery } from "./live-tokens";
+import { IconInventory } from "./live-tokens";
 // Relative, not the `@/` alias: the CSF indexer resolves this path itself and does
 // not go through Vite's aliases.
 import * as IconStories from "../components/icon.stories";
@@ -86,52 +27,7 @@ sizes**, one of them off the scale entirely.
 
 ## Inventory
 
-Every glyph in use, grouped by where it appears. Hover a tile for its import name — reach for one
-of these before importing a new one.
+Every glyph the product imports — **152**, read from the code, not from a list kept by hand.
+Hover a tile for its import name; reach for one of these before adding a new one.
 
-### Énergie & maison
-
-<LucideGallery icons={{ Zap, Droplet, Flame, Fuel, Lightbulb, Power, Cog }} />
-
-### Météo
-
-<LucideGallery
-  icons={{ Sun, Moon, Cloud, CloudSun, CloudRain, CloudSnow, CloudFog, CloudLightning }}
-/>
-
-### Mobilité & sécurité
-
-<LucideGallery icons={{ Car, Wifi, WifiOff, ShieldCheck, ShieldAlert, Camera, Lock }} />
-
-### Repas & courses
-
-<LucideGallery icons={{ Utensils, UtensilsCrossed, ListChecks, Package, Repeat }} />
-
-### Budget & personnes
-
-<LucideGallery icons={{ Coins, PiggyBank, CalendarDays, Cake, User }} />
-
-### Navigation
-
-<LucideGallery
-  icons={{
-    LayoutGrid,
-    ChevronRight,
-    ChevronLeft,
-    ChevronUp,
-    ChevronDown,
-    ArrowRight,
-    ArrowLeft,
-    MoreHorizontal,
-    ExternalLink,
-    LogOut,
-  }}
-/>
-
-### Actions
-
-<LucideGallery icons={{ Plus, Pencil, Trash2, Copy, Search, RefreshCw, X, Check }} />
-
-### États & retours
-
-<LucideGallery icons={{ Info, AlertCircle, AlertTriangle, Sparkles, Bell, Inbox, Loader2 }} />
+<IconInventory />
