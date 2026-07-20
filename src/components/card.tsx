@@ -61,7 +61,7 @@ const radiusClass: Record<CardRadius, string> = {
  */
 const pad: Record<CardPadding, { x: string; y: string }> = {
   sm: { x: "px-4", y: "py-3" },
-  md: { x: "px-5 sm:px-6", y: "py-4" },
+  md: { x: "px-4", y: "py-4" },
 };
 
 /**
@@ -240,7 +240,7 @@ export function Card({
         top-heavy with a void underneath.
       */}
       {children != null && (
-        <div data-slot="body" className={cn("flex flex-1 flex-col", !bleed && p.x, p.y)}>
+        <div data-slot="body" className={cn("flex flex-1 flex-col text-sm", !bleed && p.x, p.y)}>
           {children}
         </div>
       )}
