@@ -6,7 +6,7 @@ import {
   createRootRoute,
   createRouter,
 } from "@tanstack/react-router";
-import { BarChart3, Lightbulb, Wifi, Zap } from "lucide-react";
+import { Lightbulb, Wifi, Zap } from "lucide-react";
 import { Card, type CardProps, type CardVariant } from "@/components/card";
 import { Eyebrow } from "@/components/eyebrow";
 import { Badge } from "@/components/badge";
@@ -27,7 +27,7 @@ import { Badge } from "@/components/badge";
  *
  * The header takes **four slots**, and the fourth is the one that never existed —
  * which is why every view smuggled its badge, filter, tabs or toggle in some other
- * way. The **Anatomy** story below labels each one on a complete card.
+ * way.
  *
  * **One grammar**: icon left in its tinted circle, title beside it. There is no
  * `layout` prop — the dashboard's tonal tiles migrate onto this one.
@@ -127,75 +127,7 @@ export const Default: Story = {
   },
 };
 
-/**
- * Every region named after the prop that fills it. The outlines are the real DOM
- * nodes the component renders — each one carries a `data-slot`, so nothing here is
- * drawn for the diagram.
- */
-export const Anatomy: Story = {
-  parameters: { layout: "padded" },
-  decorators: [
-    (Story) => (
-      <div style={{ width: 540, padding: "2rem 6.5rem 1.5rem 1rem" }}>
-        <Story />
-      </div>
-    ),
-  ],
-  render: () => (
-    <div className="anatomy">
-      <style>{`
-        .anatomy [data-slot] {
-          position: relative;
-          outline: 1px dashed color-mix(in srgb, var(--primary) 50%, transparent);
-          outline-offset: 1px;
-        }
-        /* header · body · footer are tethered to a label in the right margin */
-        .anatomy [data-slot="header"]::after,
-        .anatomy [data-slot="body"]::after,
-        .anatomy [data-slot="footer"]::after {
-          content: attr(data-slot);
-          position: absolute; top: 50%; left: 100%; transform: translateY(-50%);
-          margin-left: .75rem; white-space: nowrap;
-          font-size: .625rem; text-transform: uppercase; letter-spacing: .18em;
-          font-weight: 600; color: var(--primary);
-        }
-        .anatomy [data-slot="header"]::before,
-        .anatomy [data-slot="body"]::before,
-        .anatomy [data-slot="footer"]::before {
-          content: ""; position: absolute; top: 50%; left: 100%; width: .625rem;
-          border-top: 1px dashed color-mix(in srgb, var(--primary) 50%, transparent);
-        }
-        /* icon sits inside the header row, so it gets its label above instead */
-        .anatomy [data-slot="icon"]::after {
-          content: "icon"; position: absolute; bottom: 100%; left: 0; margin-bottom: .2rem;
-          font-size: .625rem; text-transform: uppercase; letter-spacing: .18em;
-          font-weight: 600; color: color-mix(in srgb, var(--primary) 75%, transparent);
-        }
-      `}</style>
-      <Card
-        icon={<Zap className="h-4 w-4" />}
-        title="title"
-        subline="subline"
-        action={
-          <Badge variant="secondary" shape="pill">
-            action
-          </Badge>
-        }
-        footer={<p className="text-sm text-muted-foreground">footer</p>}
-        divided
-      >
-        <p className="py-6 text-sm text-muted-foreground">children</p>
-      </Card>
-    </div>
-  ),
-};
-
-/** Without `title` there is no header at all — the body owns the whole box. */
-export const BodyOnly: Story = {
-  args: { children: "Une carte sans header : juste une boîte.", variant: "solid" },
-};
-
-// ── Global · one story per surface ───────────────────────────────────────────
+// ── One story per surface ────────────────────────────────────────────────────
 
 /**
  * Every slot combination of one surface, side by side — so a surface can be checked
@@ -256,73 +188,6 @@ export const Inset: Story = surfaceStory("inset");
 
 /** The dark feature card — Bernard on the dashboard. */
 export const Inverted: Story = surfaceStory("inverted");
-
-/**
- * The radius is its own dimension, not a surface: the bento pills are `inset` cards
- * rounded `full`, not a variant of their own.
- */
-export const Radius: Story = {
-  args: { title: "Rayon", icon: <Zap className="h-4 w-4" /> },
-  render: (args) => (
-    <div className="flex flex-col gap-3">
-      <Card {...args} variant="solid" radius="lg" subline="lg" />
-      <Card {...args} variant="solid" radius="xl" subline="xl" />
-      <Card {...args} variant="solid" radius="2xl" subline="2xl — le défaut" />
-      <Card variant="inset" radius="full" padding="sm" title="full — la pilule du bento" />
-    </div>
-  ),
-};
-
-// ── Header ──────────────────────────────────────────────────────────────────
-
-/**
- * `tone` colours the **icon**, never the card. On `glass` and `inverted` the surface
- * dictates the circle and `tone` steps aside — so a coloured card never needs its
- * icon re-tinted by hand.
- */
-export const Tones: Story = {
-  args: { title: "Électricité", icon: <Zap className="h-4 w-4" />, variant: "solid" },
-  render: (args) => (
-    <div className="flex flex-col gap-3">
-      <Card {...args} tone="primary" subline="primary — le défaut (13 usages)" />
-      <Card {...args} tone="success" subline="success — tout va bien (10)" />
-      <Card {...args} tone="warm" subline="warm — le ton d'alerte (9)" />
-      <Card {...args} tone="mustard" subline="mustard — décoratif (2)" />
-    </div>
-  ),
-};
-
-/** `divided` draws the rule full-bleed — no negative margins at the call site. */
-export const Divided: Story = {
-  args: {
-    icon: <BarChart3 className="h-4 w-4" />,
-    title: "Historique mensuel",
-    subline: "Médiane 312 kWh/mois",
-    children: "Le corps, séparé du header par un filet pleine largeur.",
-    footer: <p className="text-xs text-muted-foreground">Projection sur les 3 mois clos.</p>,
-    divided: true,
-  },
-};
-
-/** `bleed` drops the body padding so a table can run edge-to-edge under a padded header. */
-export const Bleed: Story = {
-  args: {
-    title: "Historique des relevés",
-    subline: "24 entrées — modifiables",
-    divided: true,
-    bleed: true,
-    children: (
-      <ul className="divide-y divide-border/60 text-sm">
-        {["12 juillet", "12 juin", "11 mai"].map((d) => (
-          <li key={d} className="flex justify-between px-5 py-3 sm:px-6">
-            <span>{d}</span>
-            <span className="tabular-nums text-muted-foreground">248 kWh</span>
-          </li>
-        ))}
-      </ul>
-    ),
-  },
-};
 
 /**
  * With `to`, the whole card becomes a router Link: it takes the caret on the right,
