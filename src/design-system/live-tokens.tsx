@@ -67,6 +67,31 @@ export function LucideGallery({ icons }: { icons: Record<string, LucideIcon> }) 
   );
 }
 
+/**
+ * One step of the spacing scale, reporting the width the browser actually applied.
+ * `className` carries the literal Tailwind class — interpolating it would leave the
+ * JIT nothing to find.
+ */
+export function SpacingSample({
+  step,
+  className,
+  note,
+}: {
+  step: string;
+  className: string;
+  note?: string;
+}) {
+  const { ref, value } = useComputed<HTMLDivElement>("width");
+  return (
+    <div className="flex items-center gap-4 border-b border-border/40 py-2 last:border-0">
+      <code className="w-14 shrink-0 font-mono text-xs text-foreground">{step}</code>
+      <code className="w-14 shrink-0 font-mono text-2xs text-muted-foreground">{value || "—"}</code>
+      <div ref={ref} className={`h-4 shrink-0 rounded-sm bg-primary/70 ${className}`} />
+      {note && <span className="text-2xs text-muted-foreground">{note}</span>}
+    </div>
+  );
+}
+
 /** A corner that reports the radius the browser actually applied. */
 export function RadiusSample({
   name,

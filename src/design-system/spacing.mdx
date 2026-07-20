@@ -1,14 +1,51 @@
 import { Meta, Title, Subtitle, Unstyled } from "@storybook/addon-docs/blocks";
-import { TokenValue } from "./live-tokens";
+import { SpacingSample, TokenValue } from "./live-tokens";
 
 <Meta title="Foundations/Spacing" />
 
 <Title>Spacing & layout</Title>
 
 <Subtitle>
-  Beyond Tailwind's spacing scale, two layout tokens carry the dashboard: the sticky-bar height and
-  the bento grid.
+  A 4px base, and a short list of rhythms the product actually uses. Every width below is measured
+  off the rendered node, so the page reports what the browser applies rather than what we hoped.
 </Subtitle>
+
+## The scale
+
+Tailwind's default scale, base **4px** — `1` is 4px, so the number is the value divided by four.
+The product lives almost entirely in the 2 → 6 range; anything above 8 is layout, not spacing.
+
+<Unstyled>
+  <div className="py-2">
+    <SpacingSample step="0.5" className="w-0.5" note="hairline gaps, icon nudges" />
+    <SpacingSample step="1" className="w-1" note="" />
+    <SpacingSample step="1.5" className="w-1.5" note="gap inside a chip" />
+    <SpacingSample step="2" className="w-2" note="tight row gap" />
+    <SpacingSample step="2.5" className="w-2.5" note="icon ↔ label" />
+    <SpacingSample step="3" className="w-3" note="the default gap between siblings" />
+    <SpacingSample step="4" className="w-4" note="card body rhythm, grid gap" />
+    <SpacingSample step="5" className="w-5" note="card padding, mobile" />
+    <SpacingSample step="6" className="w-6" note="card padding, ≥sm · section gap" />
+    <SpacingSample step="8" className="w-8" note="between sections" />
+    <SpacingSample step="10" className="w-10" note="" />
+    <SpacingSample step="12" className="w-12" note="page rhythm" />
+  </div>
+</Unstyled>
+
+## The rhythms that are decided
+
+These are not free choices — they are the ones the components hold, so a page composes rather
+than re-invents.
+
+| Rhythm            | Value                                       | Where                                                   |
+| ----------------- | ------------------------------------------- | ------------------------------------------------------- |
+| Card padding `md` | `px-5` → `px-6` at `sm`                     | the default box, what 25 hand-built panels converged on |
+| Card padding `sm` | `px-4`                                      | dense boxes, bento pills                                |
+| Card body         | `py-4`                                      | between header and footer                               |
+| Icon ↔ label      | `gap-2.5`                                   | every card header, every row                            |
+| Sibling gap       | `gap-3`                                     | lists, chip rows                                        |
+| Grid gap          | `gap-3` → `gap-4` at `sm` → `gap-5` at `lg` | the bento, below                                        |
+| Section gap       | `space-y-8`                                 | between blocks of a page                                |
 
 ## `--nav-h` — the sticky bar
 
@@ -28,8 +65,9 @@ must offset by this height, or it hides behind the bar. It mirrors the header in
 
 ## `.grid-bento` — the dashboard mosaic
 
-2 columns on mobile, 4 at ≥640px, 6 at ≥1024px, with fixed row heights on desktop and
-`grid-auto-flow: row dense`. Resize the preview to watch it reflow.
+2 columns on mobile, 4 at ≥640px, 6 at ≥1024px, with fixed row heights on desktop
+(`11rem`, then `12rem`) and `grid-auto-flow: row dense` so a small tile backfills a hole. Resize
+the preview to watch it reflow.
 
 Placement is never a card's business — `BentoItem` carries it. See **Layout → Bento Grid**.
 

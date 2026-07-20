@@ -39,20 +39,24 @@ The names are Tailwind's, the values are Figma's, and they disagree by one rung:
 <Typeset fontSizes={[24]} fontWeight={400} sampleText="Regular — running text" />
 <Typeset fontSizes={[24]} fontWeight={600} sampleText="Semibold — every heading in the app" />
 
-## Families
+## One family
 
-One native stack for both roles — the OS decides the face, and no webfont is loaded.
-`--font-sans` carries body and UI; `--font-serif` carries headings and `.font-serif`. The display
-role reads through the token rather than a separate file.
+There is **one** typeface: the native OS stack. No webfont is loaded, so the face is San Francisco
+on Apple, Segoe UI on Windows, Roboto on Android.
+
+`--font-sans` and `--font-serif` currently resolve to the **same stack** — `.font-serif` is a
+_display role_, not a second family, and it buys nothing today beyond marking intent at ~145 call
+sites. Either it earns a real display face, or it should be replaced by the weight and tracking it
+actually stands for. Until that is decided, the two samples below are identical on purpose.
 
 <Unstyled>
   <div className="grid gap-3 py-2 sm:grid-cols-2">
     <div className="rounded-xl border border-border/60 bg-card p-4">
-      <p className="font-mono text-2xs text-muted-foreground">--font-sans</p>
+      <p className="font-mono text-2xs text-muted-foreground">--font-sans · body, UI</p>
       <p className="mt-2 font-sans text-lg">The quick brown fox jumps</p>
     </div>
     <div className="rounded-xl border border-border/60 bg-card p-4">
-      <p className="font-mono text-2xs text-muted-foreground">--font-serif</p>
+      <p className="font-mono text-2xs text-muted-foreground">--font-serif · display role</p>
       <p className="mt-2 font-serif text-lg tracking-tight">The quick brown fox jumps</p>
     </div>
   </div>
