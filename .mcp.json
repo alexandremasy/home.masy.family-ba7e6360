@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "storybook": {
+      "type": "http",
+      "url": "https://design.masy.family/mcp"
+    }
+  }
+}

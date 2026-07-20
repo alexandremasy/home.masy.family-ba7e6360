@@ -137,6 +137,41 @@ export const PanelPaddings: Story = {
   ),
 };
 
+/**
+ * The four content-box surfaces, clustered from a repo-wide audit of the
+ * hand-rolled ones. This is the taxonomy to arbitrate before migrating the
+ * ~63 inline sites onto the component — the counts are real usages.
+ */
+export const PanelVariants: Story = {
+  parameters: { layout: "centered" },
+  decorators: [
+    (Story) => (
+      <div style={{ width: 460 }}>
+        <Story />
+      </div>
+    ),
+  ],
+  render: () => (
+    <div className="space-y-3">
+      <Panel variant="flat" padding="sm">
+        <b>flat</b> · rounded-lg, no shadow — what Panel/Section render today (~31 sites)
+      </Panel>
+      <Panel variant="compact" padding="sm">
+        <b>compact</b> · rounded-xl — the most common hand-rolled card (~21)
+      </Panel>
+      <Panel variant="soft" padding="sm">
+        <b>soft</b> · rounded-2xl + shadow-soft — the budget / securite views (~13)
+      </Panel>
+      <Panel variant="soft" padding="sm">
+        <b>inset</b> · a tinted box <i>inside</i> a card, not a card itself (~21)
+        <Panel variant="inset" padding="sm" className="mt-3">
+          bg-secondary/50, rounded-xl
+        </Panel>
+      </Panel>
+    </div>
+  ),
+};
+
 // ── Section ─────────────────────────────────────────────────────────────────
 export const SectionWithAction: Story = {
   parameters: { layout: "centered" },

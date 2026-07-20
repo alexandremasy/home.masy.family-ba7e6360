@@ -82,6 +82,24 @@ const panelPadding = {
   lg: "p-6 sm:p-8",
 } as const;
 
+export type PanelVariant = "flat" | "compact" | "soft" | "inset";
+
+// The four real content-box surfaces, clustered from a repo-wide audit of the
+// hand-rolled ones (152 card-shaped surfaces, 50 signatures). Surface only —
+// padding stays an orthogonal prop, which is what made the flavors multiply.
+//   flat    what Panel/Section already render (~31 sites)
+//   compact rounded-xl, no shadow — the most common hand-rolled card (~21)
+//   soft    rounded-2xl + shadow-soft — the budget/securite views (~13)
+//   inset   a secondary-tinted box INSIDE a card, not a card itself (~21)
+// No `raised`: shadow-lift turned out to be for overlays/tooltips/sticky bars,
+// never a content box.
+const panelSurface: Record<PanelVariant, string> = {
+  flat: "rounded-lg border border-border/60 bg-card",
+  compact: "rounded-xl border border-border/60 bg-card",
+  soft: "rounded-2xl border border-border/60 bg-card shadow-soft",
+  inset: "rounded-xl border border-border/60 bg-secondary/50",
+};
+
 /**
  * The card-shaped box a page section sits in. It was hand-written 31 times with
  * SIX paddings for one role; this names the role and offers three.
@@ -91,20 +109,18 @@ const panelPadding = {
 export function Panel({
   children,
   padding = "md",
+  variant = "flat",
   className,
   as: As = "section",
 }: {
   children: ReactNode;
   padding?: keyof typeof panelPadding;
+  variant?: PanelVariant;
   className?: string;
   as?: "section" | "div" | "article";
 }) {
   return (
-    <As
-      className={cn("rounded-lg border border-border/60 bg-card", panelPadding[padding], className)}
-    >
-      {children}
-    </As>
+    <As className={cn(panelSurface[variant], panelPadding[padding], className)}>{children}</As>
   );
 }
 
@@ -113,15 +129,17 @@ export function Section({
   title,
   children,
   action,
+  variant = "flat",
   className,
 }: {
   title: string;
   children: ReactNode;
   action?: ReactNode;
+  variant?: PanelVariant;
   className?: string;
 }) {
   return (
-    <Panel padding="md" className={cn("anim-slide-up pt-4 sm:pt-5", className)}>
+    <Panel padding="md" variant={variant} className={cn("anim-slide-up pt-4 sm:pt-5", className)}>
       <header className="mb-4 flex items-end justify-between gap-4">
         <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">
           {title}
