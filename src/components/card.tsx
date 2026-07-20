@@ -220,16 +220,25 @@ export function Card({
               )}
             </div>
           </div>
-          <div className="flex shrink-0 items-center gap-2">
-            {action && <div data-slot="action">{action}</div>}
-            {/* A link card carries the caret, same as PersonCard. */}
-            {to && (
-              <ChevronRight
-                aria-hidden="true"
-                className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
-              />
-            )}
-          </div>
+          {/* Only when something goes in it: an empty container still claims the
+              header's `gap-4`, which was enough to truncate "Bureau" to "Bur…". */}
+          {(action || (to && variant !== "glass")) && (
+            <div className="flex shrink-0 items-center gap-2">
+              {action && <div data-slot="action">{action}</div>}
+              {/*
+              A link card carries the caret, same as PersonCard — except on `glass`.
+              Those are the bento tiles: narrow, and the caret ate enough of the row
+              to truncate "Bureau" to "B…". The whole tile lifts on hover, so the
+              affordance is the movement, not the chevron.
+            */}
+              {to && variant !== "glass" && (
+                <ChevronRight
+                  aria-hidden="true"
+                  className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
+                />
+              )}
+            </div>
+          )}
         </header>
       )}
 

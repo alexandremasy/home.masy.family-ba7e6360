@@ -21,6 +21,7 @@ import {
   Lightbulb,
 } from "lucide-react";
 import { Eyebrow } from "@/components/eyebrow";
+import { Card } from "@/components/card";
 
 export const Route = createFileRoute("/_app/tesla")({
   component: TeslaPage,
@@ -157,10 +158,6 @@ function TeslaPage() {
     );
   const maxMonth = Math.max(...visibleQuarters.flatMap((q) => q.months.map((m) => m.kWh)));
 
-  // Frosted bento surface, matching the dashboard tiles — sits on the sheet's
-  // translucent panel so the living gradient still reads softly behind it.
-  const frosted =
-    "rounded-2xl border border-white bg-card/60 p-4 shadow-xs backdrop-blur-md dark:border-white/10";
   const chargeBadge = (
     <span
       className={
@@ -274,13 +271,13 @@ function TeslaPage() {
       </section>
 
       {/* ============ 2. TRIMESTRE EN COURS ============ */}
-      <section className={frosted}>
-        <div className="-mx-4 border-b border-border/60 px-4 pb-3">
-          <SectionTitle icon={<Zap className="h-4 w-4" />} sub={qLabel(currentY, currentQ)}>
-            Trimestre en cours
-          </SectionTitle>
-        </div>
-        <div className="-mb-4 grid grid-cols-3 divide-x divide-border/60">
+      <Card
+        variant="glass"
+        icon={<Zap className="h-4 w-4" />}
+        title="Trimestre en cours"
+        subline={qLabel(currentY, currentQ)}
+      >
+        <div className="grid grid-cols-3 divide-x divide-border/60">
           <BigStat
             icon={<Zap className="h-4 w-4" />}
             label="kWh"
@@ -300,20 +297,18 @@ function TeslaPage() {
             trend={lastFullQ ? (qBetter ? "down" : "up") : undefined}
           />
         </div>
-      </section>
+      </Card>
 
       {/* ============ 3. HISTORIQUE — MENSUEL GROUPÉ PAR TRIMESTRE ============ */}
       {/* Modelled on the Énergie history chart: icon-circle + eyebrow header, one
           responsive monthly bar chart with a median baseline and hover tooltips,
           then a grouped quarter axis under a top border. */}
-      <section className={frosted}>
-        <header className="-mx-4 flex flex-wrap items-start justify-between gap-3 border-b border-border/60 px-4 pb-3">
-          <SectionTitle
-            icon={<BarChart3 className="h-4 w-4" />}
-            sub={`Groupé par trimestre — médiane ${medianMonth} kWh/mois`}
-          >
-            Historique mensuel
-          </SectionTitle>
+      <Card
+        variant="glass"
+        icon={<BarChart3 className="h-4 w-4" />}
+        title="Historique mensuel"
+        subline={`Groupé par trimestre — médiane ${medianMonth} kWh/mois`}
+        action={
           <span
             className={
               "inline-flex items-center gap-1 text-xs " + (qBetter ? "text-success" : "text-warm")
@@ -326,9 +321,9 @@ function TeslaPage() {
             )}
             {qBetter ? "sous" : "au-dessus de"} la médiane
           </span>
-        </header>
-
-        <div className="space-y-4 pt-4">
+        }
+      >
+        <div className="space-y-4">
           {/* Legend */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
@@ -457,7 +452,7 @@ function TeslaPage() {
             base de l'année précédente.
           </p>
         </div>
-      </section>
+      </Card>
     </div>
   );
 }

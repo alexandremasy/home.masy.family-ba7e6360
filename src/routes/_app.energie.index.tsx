@@ -24,6 +24,7 @@ import {
   SunMedium,
 } from "lucide-react";
 import { Button } from "@/components/button";
+import { Card } from "@/components/card";
 import { Eyebrow } from "@/components/eyebrow";
 import { ChartContainer, ChartTooltip } from "@/components/chart";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
@@ -293,44 +294,6 @@ function HistoTooltip({
   );
 }
 
-// ---------- card shell ----------
-
-function MetricCard({
-  label,
-  icon,
-  accent = "primary",
-  alert = false,
-  children,
-}: {
-  label: string;
-  icon: React.ReactNode;
-  accent?: "primary" | "warm";
-  alert?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      className={
-        "group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-card p-5 shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 " +
-        (alert ? "border-warm/40 hover:border-warm/60" : "border-border/60 hover:border-border")
-      }
-    >
-      <div className="flex items-center gap-2.5">
-        <span
-          className={
-            "grid h-9 w-9 shrink-0 place-items-center rounded-full " +
-            (accent === "warm" || alert ? "bg-warm/15 text-warm" : "bg-primary/10 text-primary")
-          }
-        >
-          {icon}
-        </span>
-        <h2 className="text-base font-semibold tracking-tight text-foreground">{label}</h2>
-      </div>
-      {children}
-    </div>
-  );
-}
-
 // ---------- page ----------
 
 function EnergiePage() {
@@ -412,22 +375,29 @@ function EnergiePage() {
           </Button>
         </div>
       ) : (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card px-5 py-3 text-sm shadow-soft">
-          <span className="inline-flex items-center gap-2 text-muted-foreground">
-            <CalendarDays className="h-4 w-4" />
-            Relevé du <strong className="text-foreground">{lastReadingFmt}</strong>
-            <span className="hidden sm:inline">
-              — consommation de{" "}
-              <strong className="text-foreground capitalize">{coveredMonthLabel}</strong>
+        <Card
+          padding="sm"
+          title={
+            <span className="inline-flex items-center gap-2 text-sm font-normal text-muted-foreground">
+              <CalendarDays className="h-4 w-4" />
+              Relevé du <strong className="font-semibold text-foreground">{lastReadingFmt}</strong>
+              <span className="hidden sm:inline">
+                — consommation de{" "}
+                <strong className="font-semibold text-foreground capitalize">
+                  {coveredMonthLabel}
+                </strong>
+              </span>
             </span>
-          </span>
-          <Button asChild variant="inverted" size="sm" className="group gap-1.5 rounded-full">
-            <Link to="/energie/saisie">
-              Nouveau relevé{" "}
-              <ArrowRight className="h-3.5 w-3.5 icon-hover-x transition-transform" />
-            </Link>
-          </Button>
-        </div>
+          }
+          action={
+            <Button asChild variant="inverted" size="sm" className="group gap-1.5 rounded-full">
+              <Link to="/energie/saisie">
+                Nouveau relevé{" "}
+                <ArrowRight className="h-3.5 w-3.5 icon-hover-x transition-transform" />
+              </Link>
+            </Button>
+          }
+        />
       )}
 
       <Tabs defaultValue="dashboard" className="space-y-6">
@@ -443,8 +413,12 @@ function EnergiePage() {
         <TabsContent value="dashboard" className="space-y-6 mt-0">
           <div className="grid gap-5 stagger lg:grid-cols-3">
             {/* ELECTRICITY */}
-            <MetricCard label="Électricité" icon={<Zap className="h-4 w-4 anim-glow" />}>
-              <div className="mt-4 flex items-baseline gap-1.5">
+            <Card
+              title="Électricité"
+              icon={<Zap className="h-4 w-4 anim-glow" />}
+              footer={<Sparkline data={elecSeries} />}
+            >
+              <div className="flex items-baseline gap-1.5">
                 <span className="text-2xl tracking-tight">{electricity.dailyKWh}</span>
                 <span className="text-base text-muted-foreground">kWh / jour</span>
               </div>
@@ -458,7 +432,7 @@ function EnergiePage() {
               </p>
 
               <div className="mt-3 grid grid-cols-2 gap-2">
-                <div className="rounded-xl bg-secondary/60 p-3">
+                <Card variant="inset" padding="sm">
                   <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Sun className="h-3.5 w-3.5 text-warm" /> Jour
                   </p>
@@ -466,8 +440,8 @@ function EnergiePage() {
                     {electricity.dayTotal}
                     <span className="ml-1 text-xs text-muted-foreground">kWh</span>
                   </p>
-                </div>
-                <div className="rounded-xl bg-secondary/60 p-3">
+                </Card>
+                <Card variant="inset" padding="sm">
                   <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Moon className="h-3.5 w-3.5 text-foreground/70" /> Nuit
                   </p>
@@ -475,17 +449,17 @@ function EnergiePage() {
                     {electricity.nightTotal}
                     <span className="ml-1 text-xs text-muted-foreground">kWh</span>
                   </p>
-                </div>
+                </Card>
               </div>
-
-              <div className="mt-auto pt-5">
-                <Sparkline data={elecSeries} />
-              </div>
-            </MetricCard>
+            </Card>
 
             {/* WATER */}
-            <MetricCard label="Eau" icon={<Droplet className="h-4 w-4 anim-float" />}>
-              <div className="mt-4 flex items-baseline gap-1.5">
+            <Card
+              title="Eau"
+              icon={<Droplet className="h-4 w-4 anim-float" />}
+              footer={<Sparkline data={waterSeries} />}
+            >
+              <div className="flex items-baseline gap-1.5">
                 <span className="text-2xl tracking-tight">{water.dailyM3}</span>
                 <span className="text-base text-muted-foreground">m³ / jour</span>
               </div>
@@ -496,27 +470,26 @@ function EnergiePage() {
                 ≈ {water.dailyL} L par jour
               </p>
 
-              <div className="mt-5 rounded-xl bg-secondary/60 p-3 text-sm text-muted-foreground">
-                Tendance stable sur les 30 derniers jours — aucune anomalie détectée.
-              </div>
-
-              <div className="mt-auto pt-5">
-                <Sparkline data={waterSeries} />
-              </div>
-            </MetricCard>
+              <Card variant="inset" padding="sm" className="mt-5">
+                <p className="text-muted-foreground">
+                  Tendance stable sur les 30 derniers jours — aucune anomalie détectée.
+                </p>
+              </Card>
+            </Card>
 
             {/* OIL */}
-            <MetricCard
-              label="Mazout"
+            <Card
+              title="Mazout"
               icon={
                 <Flame
                   className={"h-4 w-4 " + (oil.status === "alert" ? "anim-wiggle" : "anim-breathe")}
                 />
               }
-              accent={oil.status === "alert" ? "warm" : "primary"}
-              alert={oil.status === "alert"}
+              tone={oil.status === "alert" ? "warm" : "primary"}
+              className={oil.status === "alert" ? "border-warm/40" : undefined}
+              footer={<Sparkline data={oilSeries} />}
             >
-              <div className="mt-4 flex items-baseline gap-1.5">
+              <div className="flex items-baseline gap-1.5">
                 <span className="text-2xl tracking-tight">{oil.tankPct}</span>
                 <span className="text-base text-muted-foreground">% citerne</span>
               </div>
@@ -547,14 +520,14 @@ function EnergiePage() {
               )}
 
               <div className="mt-4 grid grid-cols-2 gap-2">
-                <div className="rounded-xl bg-secondary/60 p-3">
+                <Card variant="inset" padding="sm">
                   <p className="text-xs text-muted-foreground">30 derniers jours</p>
                   <p className="mt-1 text-lg tabular-nums">
                     {oil.last30dLiters}
                     <span className="ml-1 text-xs text-muted-foreground">L</span>
                   </p>
-                </div>
-                <div className="rounded-xl bg-secondary/60 p-3">
+                </Card>
+                <Card variant="inset" padding="sm">
                   <p className="text-xs text-muted-foreground">Autonomie</p>
                   <p
                     className={
@@ -564,32 +537,19 @@ function EnergiePage() {
                     ~{oil.autonomyDays}
                     <span className="ml-1 text-xs text-muted-foreground">j</span>
                   </p>
-                </div>
+                </Card>
               </div>
-
-              <div className="mt-auto pt-5">
-                <Sparkline data={oilSeries} />
-              </div>
-            </MetricCard>
+            </Card>
           </div>
 
           {/* HISTORY CHART */}
-          <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-6 anim-slide-up">
-            <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <div className="flex items-center gap-2.5">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-                    <DomainIcon className="h-4 w-4" />
-                  </span>
-                  <h2 className="text-base font-semibold tracking-tight text-foreground">
-                    Historique {cfg.label.toLowerCase()}
-                  </h2>
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  12 derniers mois — vue glissante
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center gap-3">
+          <Card
+            className="anim-slide-up"
+            icon={<DomainIcon className="h-4 w-4" />}
+            title={`Historique ${cfg.label.toLowerCase()}`}
+            subline="12 derniers mois — vue glissante"
+            action={
+              <div className="flex flex-wrap items-center justify-end gap-3">
                 {/* Domain switcher */}
                 <Tabs value={domain} onValueChange={(v) => setDomain(v as Domain)}>
                   <TabsList className="h-10 bg-secondary/70 p-1">
@@ -619,8 +579,8 @@ function EnergiePage() {
                   </span>
                 </span>
               </div>
-            </header>
-
+            }
+          >
             <ChartContainer config={{}} className="aspect-auto h-56 w-full">
               <BarChart
                 data={chartData}
@@ -675,7 +635,7 @@ function EnergiePage() {
               Les barres en pointillés sont des estimations basées sur la moyenne récente, en
               l'absence de relevé.
             </p>
-          </div>
+          </Card>
         </TabsContent>
 
         <TabsContent value="relevés" className="mt-0">
@@ -825,16 +785,11 @@ function ReleveList() {
     );
 
   return (
-    <div className="rounded-2xl border border-border/60 bg-card shadow-soft overflow-hidden">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-5 py-4">
-        <div>
-          <h2 className="text-base font-semibold tracking-tight text-foreground">
-            Historique des relevés
-          </h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {rows.length} entrées — modifiables
-          </p>
-        </div>
+    <Card
+      bleed
+      title="Historique des relevés"
+      subline={`${rows.length} entrées — modifiables`}
+      action={
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground">Type</span>
           <Select value={filter} onValueChange={(v) => setFilter(v as ReleveType)}>
@@ -851,8 +806,8 @@ function ReleveList() {
             </SelectContent>
           </Select>
         </div>
-      </div>
-
+      }
+    >
       {/* Desktop: table */}
       <div className="hidden sm:block">
         <Table>
@@ -981,6 +936,6 @@ function ReleveList() {
           );
         })}
       </div>
-    </div>
+    </Card>
   );
 }

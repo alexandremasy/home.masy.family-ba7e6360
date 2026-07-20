@@ -255,8 +255,6 @@ function AxisStatus({
   to?: { view: BudgetView };
 }) {
   const c = axisCls[axis.tone];
-  const base =
-    "block h-full w-full rounded-xl border border-border/50 bg-secondary/25 px-4 py-3.5 text-left";
   const inner = (
     <>
       <p className="flex items-center gap-1.5 text-2xs uppercase tracking-eyebrow text-muted-foreground">
@@ -291,16 +289,19 @@ function AxisStatus({
       <Link
         to="/budget/vue/reserve"
         search={to}
-        className={
-          "group/axis transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-lift " +
-          base
-        }
+        className="group/axis block h-full w-full text-left transition-all hover:-translate-y-0.5 hover:shadow-lift"
       >
-        {inner}
+        <Card variant="inset" as="div" className="hover:border-border">
+          {inner}
+        </Card>
       </Link>
     );
   }
-  return <div className={base}>{inner}</div>;
+  return (
+    <Card variant="inset" as="div" className="text-left">
+      {inner}
+    </Card>
+  );
 }
 
 // Same look as the default recharts tooltip, but shows each metric once: at the
@@ -359,27 +360,20 @@ function FlowTip({
   );
 }
 
-function VerdictHeader({
+/* Two independent statuses — each: the number (hero) + a status tag + a human line.
+   The Réserve box links to its own page (/budget/reserve), carrying the current view. */
+function VerdictAxes({
   verdict,
   view,
 }: {
   verdict: ReturnType<typeof annualVerdict>;
   view: BudgetView;
 }) {
-  const freshness = dataFreshness();
   return (
-    <div>
-      <h2 className="text-base tracking-tight sm:text-lg">Santé de l'année</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Sur base des imports jusqu'à {freshness.lastMonth} — la suite est projetée.
-      </p>
-      {/* Two independent statuses — each: the number (hero) + a status tag + a human line.
-          The Réserve box links to its own page (/budget/reserve), carrying the current view. */}
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        {verdict.axes.map((a) => (
-          <AxisStatus key={a.label} axis={a} to={a.label === "Réserve" ? { view } : undefined} />
-        ))}
-      </div>
+    <div className="grid gap-3 sm:grid-cols-2">
+      {verdict.axes.map((a) => (
+        <AxisStatus key={a.label} axis={a} to={a.label === "Réserve" ? { view } : undefined} />
+      ))}
     </div>
   );
 }
@@ -477,10 +471,15 @@ function FluxBlock({
   const monthlyBudget = categories.reduce((s, c) => s + c.budget, 0);
   const lastImportX = flows.find((f) => f.isLastImport)?.m;
   const todayX = flows.find((f) => f.isToday)?.m;
+  const freshness = dataFreshness();
   return (
-    <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft sm:p-7 anim-slide-up">
+    <Card
+      className="anim-slide-up"
+      title="Santé de l'année"
+      subline={`Sur base des imports jusqu'à ${freshness.lastMonth} — la suite est projetée.`}
+    >
       {/* Verdict integrated at the top — the curve below is its gauge */}
-      <VerdictHeader verdict={verdict} view={view} />
+      <VerdictAxes verdict={verdict} view={view} />
 
       {/* One glissant view: past réel (solid) + futur projeté (dashed), présent marqué */}
       <div className="mt-6">
@@ -747,7 +746,7 @@ function FluxBlock({
           </div>
         </div>
       )}
-    </section>
+    </Card>
   );
 }
 
@@ -802,10 +801,7 @@ function CategoryMiniCard({ cat }: { cat: (typeof categories)[number] }) {
   const TrendIcon = periodDelta >= 0 ? TrendingUp : TrendingDown;
 
   return (
-    <Link
-      to="/budget/mensuel"
-      className="group flex flex-col rounded-xl border border-border/50 bg-card p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift"
-    >
+    <Card to="/budget/mensuel">
       <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
           <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-secondary text-foreground/70">
@@ -895,7 +891,7 @@ function CategoryMiniCard({ cat }: { cat: (typeof categories)[number] }) {
         <TrendIcon className="h-3 w-3" /> Période {periodDelta >= 0 ? "+" : "−"}
         {Math.abs(periodDelta)}%
       </p>
-    </Link>
+    </Card>
   );
 }
 
@@ -989,13 +985,11 @@ function PasseView({ monthIdx }: { monthIdx: number }) {
         />
       </div>
 
-      <Card variant="solid">
-        <header className="mb-4">
-          <h3 className="text-lg tracking-tight">Prévu vs réel</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Variance par catégorie pour ce mois clos.
-          </p>
-        </header>
+      <Card
+        variant="solid"
+        title="Prévu vs réel"
+        subline="Variance par catégorie pour ce mois clos."
+      >
         <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
           {[...categories]
             .sort((a, b) => a.label.localeCompare(b.label, "fr"))
@@ -1068,18 +1062,16 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
         <SmallStat label="Encore prévu" value={encorePrevu} tone="primary" hint="projection" />
       </div>
 
-      <Card variant="solid">
-        <header className="mb-4 flex items-end justify-between gap-3">
-          <div>
-            <h3 className="text-lg tracking-tight">Réel à date + projection</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              La barre marque la frontière entre les deux.
-            </p>
-          </div>
+      <Card
+        variant="solid"
+        title="Réel à date + projection"
+        subline="La barre marque la frontière entre les deux."
+        action={
           <Eyebrow size="xs">
             Jour {day}/{total}
           </Eyebrow>
-        </header>
+        }
+      >
         <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
           {[...categories]
             .sort((a, b) => a.label.localeCompare(b.label, "fr"))
@@ -1157,22 +1149,19 @@ function FuturView({ monthIdx }: { monthIdx: number }) {
         />
       </div>
 
-      <section className="rounded-2xl border border-dashed border-border/60 bg-card/60 p-5 shadow-soft sm:p-7">
-        <header className="mb-4 flex items-end justify-between gap-3">
-          <div>
-            <h3 className="text-lg tracking-tight">Postes prévus</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Projection issue de la Planification — aucune réelle dépense.
-            </p>
-          </div>
+      <Card
+        className="border-dashed"
+        title="Postes prévus"
+        subline="Projection issue de la Planification — aucune réelle dépense."
+        action={
           <Link
             to="/budget/planification"
             className="text-xs text-primary underline-offset-4 hover:underline"
           >
             Modifier →
           </Link>
-        </header>
-
+        }
+      >
         {ofMonth.length === 0 ? (
           <p className="text-sm text-muted-foreground">Aucun poste planifié ce mois-ci.</p>
         ) : (
@@ -1232,7 +1221,7 @@ function FuturView({ monthIdx }: { monthIdx: number }) {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      </section>
+      </Card>
     </div>
   );
 }
@@ -1278,7 +1267,7 @@ function SmallStat({
           ? "text-success"
           : "text-foreground";
   return (
-    <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft">
+    <Card as="div">
       <Eyebrow size="xs">{label}</Eyebrow>
       <p className={"mt-2 text-xl tracking-tight tabular-nums " + cls}>
         {signed && value > 0 ? "+" : ""}
@@ -1286,6 +1275,6 @@ function SmallStat({
         <span className="ml-1 text-sm text-muted-foreground">€</span>
       </p>
       {hint && <p className="mt-0.5 text-xs text-muted-foreground">{hint}</p>}
-    </div>
+    </Card>
   );
 }

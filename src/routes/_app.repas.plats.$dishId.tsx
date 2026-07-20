@@ -11,6 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/alert-dialog";
+import { Card } from "@/components/card";
 import { DishForm } from "@/components/dish-form";
 import { useDishes } from "@/lib/dishes-store";
 import { initialPlan } from "@/lib/maison-data";
@@ -62,9 +63,10 @@ function DishDetail() {
         Plats
       </Link>
 
-      <div className="rounded-2xl border border-border/60 bg-card p-5">
-        <div className="mb-4 flex items-start justify-between gap-3">
-          <p className="font-semibold text-lg">{dish.name}</p>
+      <Card
+        variant="solid"
+        title={dish.name}
+        action={
           <Button
             variant="outline"
             onClick={() => setConfirming(true)}
@@ -73,8 +75,8 @@ function DishDetail() {
             <Trash2 className="h-3.5 w-3.5" />
             Supprimer
           </Button>
-        </div>
-
+        }
+      >
         <DishForm
           initial={dish}
           submitLabel="Enregistrer"
@@ -84,7 +86,7 @@ function DishDetail() {
             navigate({ to: "/repas/plats" });
           }}
         />
-      </div>
+      </Card>
 
       <AlertDialog open={confirming} onOpenChange={setConfirming}>
         <AlertDialogContent>

@@ -31,6 +31,7 @@ import { energie } from "@/lib/mock-data";
 import { Button } from "@/components/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/select";
 import { Eyebrow } from "@/components/eyebrow";
+import { Card } from "@/components/card";
 
 export const Route = createFileRoute("/_app/budget/planification")({
   component: PlanificationPage,
@@ -366,7 +367,7 @@ function Cascade({
   const margeTint = red ? "text-warm" : "text-success";
   const margeBox = red ? "border-warm/50 bg-warm/5" : "border-success/50 bg-success/5";
   return (
-    <section className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:p-6">
+    <Card>
       <Eyebrow size="xs" className="mb-3">
         Équilibre du plan · sur l'année
       </Eyebrow>
@@ -421,7 +422,7 @@ function Cascade({
         <Bucket label="Marge" value={c.marge} tint={margeTint} box={margeBox} signed />
         <ProvisionBox provision={c.provision} auBesoin={c.auBesoin} className="col-span-2" />
       </div>
-    </section>
+    </Card>
   );
 }
 
@@ -435,27 +436,29 @@ function ProvisionBox({
   className?: string;
 }) {
   return (
-    <div
-      className={
-        "flex min-w-0 items-center gap-2.5 rounded-xl border border-primary/30 bg-primary/5 px-3 py-3 sm:px-4 " +
-        className
-      }
+    <Card
+      variant="inset"
+      as="div"
+      padding="sm"
+      className={"min-w-0 border-primary/30 bg-primary/5 " + className}
     >
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/15 text-primary">
-        <Coins className="h-5 w-5" />
-      </span>
-      <div className="min-w-0">
-        <Eyebrow size="xs" className="truncate">
-          Provision /mois
-        </Eyebrow>
-        <p className="text-lg tabular-nums tracking-tight text-primary sm:text-xl">
-          {eur(provision)}
-        </p>
-        <p className="mt-1 text-2xs leading-snug text-muted-foreground">
-          L'au besoin ({eur(auBesoin)}/an) reste hors plan.
-        </p>
+      <div className="flex min-w-0 flex-1 items-center gap-2.5">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/15 text-primary">
+          <Coins className="h-5 w-5" />
+        </span>
+        <div className="min-w-0">
+          <Eyebrow size="xs" className="truncate">
+            Provision /mois
+          </Eyebrow>
+          <p className="text-lg tabular-nums tracking-tight text-primary sm:text-xl">
+            {eur(provision)}
+          </p>
+          <p className="mt-1 text-2xs leading-snug text-muted-foreground">
+            L'au besoin ({eur(auBesoin)}/an) reste hors plan.
+          </p>
+        </div>
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -474,11 +477,19 @@ function Bucket({
   signed?: boolean;
   onClick?: () => void;
 }) {
-  const base =
-    "min-w-0 flex-1 rounded-xl border px-3 py-3 text-left sm:px-4 " +
-    (box ?? "border-border/40 bg-card/40");
-  const inner = (
-    <>
+  const card = (
+    <Card
+      variant="inset"
+      as="div"
+      padding="sm"
+      className={
+        "min-w-0 flex-1 text-left " +
+        (box ?? "") +
+        (onClick
+          ? " transition-colors group-hover/bucket:border-foreground/30 group-hover/bucket:bg-secondary/40"
+          : "")
+      }
+    >
       <Eyebrow size="xs" className="truncate">
         {label}
       </Eyebrow>
@@ -487,19 +498,14 @@ function Bucket({
         <CountUp to={value} group />
         <span className="ml-0.5 text-xs text-muted-foreground">€/an</span>
       </p>
-    </>
+    </Card>
   );
   return onClick ? (
-    <button
-      onClick={onClick}
-      className={
-        base + " cursor-pointer transition-colors hover:border-foreground/30 hover:bg-secondary/40"
-      }
-    >
-      {inner}
+    <button onClick={onClick} className="group/bucket min-w-0 flex-1 cursor-pointer text-left">
+      {card}
     </button>
   ) : (
-    <div className={base}>{inner}</div>
+    card
   );
 }
 
@@ -922,7 +928,7 @@ function EditModal({
 
               {/* Occurrence editor — dated, per-hit amounts (pécule mai · 13e déc) */}
               {ponctuel && (
-                <div className="rounded-xl border border-border/50 bg-card/40 p-3">
+                <Card variant="inset" as="div" padding="sm">
                   <div className="mb-2 flex items-center justify-between">
                     <Eyebrow size="xs" as="span">
                       Échéances
@@ -995,7 +1001,7 @@ function EditModal({
                   >
                     <Plus className="h-3.5 w-3.5" /> Ajouter une échéance
                   </button>
-                </div>
+                </Card>
               )}
 
               {/* Prévu vs réel — 3 séries: le plan, l'année en cours, l'année passée. */}

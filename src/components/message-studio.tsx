@@ -4,6 +4,7 @@ import { Textarea } from "@/components/textarea";
 import { Label } from "@/components/label";
 import { generateMessage, type Person, type Sliders } from "@/lib/maison-data";
 import { Copy, RefreshCw, Sparkles, Check } from "lucide-react";
+import { Card } from "@/components/card";
 
 /**
  * The message studio — live-generated draft with style sliders and a free-text
@@ -40,7 +41,8 @@ export function MessageStudio({
 
   return (
     <div className="space-y-5">
-      <div className="relative rounded-lg bg-primary/5 p-5">
+      {/* The draft. An inset box, but tinted primary rather than neutral. */}
+      <Card variant="inset" className="relative bg-primary/5">
         <div className="absolute right-3 top-3 flex items-center gap-0.5 text-muted-foreground">
           <button
             type="button"
@@ -68,55 +70,57 @@ export function MessageStudio({
         <p className="whitespace-pre-wrap pr-16 text-lg leading-relaxed text-foreground">
           {message}
         </p>
-      </div>
+      </Card>
 
-      <div className="space-y-5 rounded-lg border border-border/60 p-4">
-        <SliderRow
-          label="Registre"
-          left="pudique"
-          right="complice"
-          value={sliders.registre}
-          onChange={(v) => set("registre", v)}
-        />
-        <SliderRow
-          label="Chaleur"
-          left="sobre"
-          right="tendre"
-          value={sliders.chaleur}
-          onChange={(v) => set("chaleur", v)}
-        />
-        <SliderRow
-          label="Humour"
-          left="sincère"
-          right="taquin"
-          value={sliders.humour}
-          onChange={(v) => set("humour", v)}
-        />
-        <SliderRow
-          label="Longueur"
-          left="bref"
-          right="développé"
-          value={sliders.longueur}
-          onChange={(v) => set("longueur", v)}
-        />
-
-        <div className="border-t border-border/60 pt-4">
-          <Label
-            htmlFor="refine-comment"
-            className="mb-1.5 flex items-center gap-1.5 text-xs font-normal text-muted-foreground"
-          >
-            <Sparkles className="h-3 w-3 text-primary" />
-            Affiner par commentaire (ex. « plus court », « clin d'oeil à la guitare »)
-          </Label>
-          <Textarea
-            id="refine-comment"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="Un commentaire libre pour affiner…"
-            className="min-h-[60px]"
+      <Card variant="solid">
+        <div className="flex-1 space-y-5">
+          <SliderRow
+            label="Registre"
+            left="pudique"
+            right="complice"
+            value={sliders.registre}
+            onChange={(v) => set("registre", v)}
           />
+          <SliderRow
+            label="Chaleur"
+            left="sobre"
+            right="tendre"
+            value={sliders.chaleur}
+            onChange={(v) => set("chaleur", v)}
+          />
+          <SliderRow
+            label="Humour"
+            left="sincère"
+            right="taquin"
+            value={sliders.humour}
+            onChange={(v) => set("humour", v)}
+          />
+          <SliderRow
+            label="Longueur"
+            left="bref"
+            right="développé"
+            value={sliders.longueur}
+            onChange={(v) => set("longueur", v)}
+          />
+
+          <div className="border-t border-border/60 pt-4">
+            <Label
+              htmlFor="refine-comment"
+              className="mb-1.5 flex items-center gap-1.5 text-xs font-normal text-muted-foreground"
+            >
+              <Sparkles className="h-3 w-3 text-primary" />
+              Affiner par commentaire (ex. « plus court », « clin d'oeil à la guitare »)
+            </Label>
+            <Textarea
+              id="refine-comment"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Un commentaire libre pour affiner…"
+              className="min-h-[60px]"
+            />
+          </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

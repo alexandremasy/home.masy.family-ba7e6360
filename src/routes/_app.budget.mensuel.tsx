@@ -162,20 +162,18 @@ function MensuelPage() {
       </div>
 
       {/* Prévu vs Réel par catégorie */}
-      <Card variant="solid" className="anim-slide-up">
-        <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="text-xl tracking-tight">Prévu vs réel</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Triées par dépense — touchez pour explorer
-            </p>
-          </div>
+      <Card
+        variant="solid"
+        className="anim-slide-up"
+        title="Prévu vs réel"
+        subline="Triées par dépense — touchez pour explorer"
+        action={
           <div className="flex flex-wrap items-center gap-2 text-xs">
             <Toggle on={showPlanned} onChange={setShowPlanned} label="Afficher le prévu" />
             <Toggle on={showOver} onChange={setShowOver} label="Surligner les dépassements" />
           </div>
-        </header>
-
+        }
+      >
         <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
           {[...filtered]
             .sort((a, b) => b.actual - a.actual)
@@ -193,13 +191,12 @@ function MensuelPage() {
 
       {/* Pression du mois */}
       {bills.length > 0 && (
-        <Card variant="solid" className="anim-slide-up">
-          <header className="mb-4">
-            <h2 className="text-lg tracking-tight">Pression du mois</h2>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              Grosses échéances non mensuelles qui atterrissent ce mois-ci
-            </p>
-          </header>
+        <Card
+          variant="solid"
+          className="anim-slide-up"
+          title="Pression du mois"
+          subline="Grosses échéances non mensuelles qui atterrissent ce mois-ci"
+        >
           <div className="flex flex-wrap gap-2">
             {bills.map((b) => (
               <span
@@ -259,7 +256,10 @@ function Kpi({
   // For dépenses, positive delta (réel > prévu) is bad → red
   const isBad = showDelta && (invertDelta ? delta! > 0 : delta! < 0);
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card p-5 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
+    <Card
+      as="div"
+      className="group relative transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift"
+    >
       <div className="flex items-center justify-between">
         <Eyebrow>{label}</Eyebrow>
         <span className={"grid h-8 w-8 place-items-center rounded-full " + toneCls}>
@@ -282,7 +282,7 @@ function Kpi({
           {eur(delta!)} vs prévu
         </p>
       )}
-    </div>
+    </Card>
   );
 }
 
@@ -317,14 +317,13 @@ function IncomePanel() {
   const total = incomeSources.reduce((s, i) => s + i.value, 0);
   const max = Math.max(...incomeSources.map((i) => i.value));
   return (
-    <Card variant="solid" as="div">
-      <header className="mb-4 flex items-end justify-between gap-3">
-        <div>
-          <h2 className="text-xl tracking-tight">Entrées</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Sources du mois</p>
-        </div>
-        <p className="text-lg tabular-nums">{eur(total)}</p>
-      </header>
+    <Card
+      variant="solid"
+      as="div"
+      title="Entrées"
+      subline="Sources du mois"
+      action={<p className="text-lg tabular-nums">{eur(total)}</p>}
+    >
       <ul className="space-y-3 stagger">
         {incomeSources.map((s) => {
           const pct = (s.value / max) * 100;
@@ -389,16 +388,13 @@ function DonutPanel({
   const focused = slices.find((s) => s.key === focusKey);
 
   return (
-    <Card variant="solid" as="div">
-      <header className="mb-4 flex items-end justify-between gap-3">
-        <div>
-          <h2 className="text-xl tracking-tight">Dépenses</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Top 5 + Autres — touchez une part pour filtrer
-          </p>
-        </div>
-        <p className="text-lg tabular-nums">{eur(total)}</p>
-      </header>
+    <Card
+      variant="solid"
+      as="div"
+      title="Dépenses"
+      subline="Top 5 + Autres — touchez une part pour filtrer"
+      action={<p className="text-lg tabular-nums">{eur(total)}</p>}
+    >
       <div className="grid gap-5 sm:grid-cols-[auto_1fr] sm:items-center">
         <div className="relative mx-auto" style={{ width: size, height: size }}>
           <svg viewBox={`0 0 ${size} ${size}`} className="-rotate-90">

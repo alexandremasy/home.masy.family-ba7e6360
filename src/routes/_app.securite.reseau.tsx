@@ -227,27 +227,29 @@ function WifiCard({
 }) {
   const [on, setOn] = useState(initialOn);
   return (
-    <div className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-4">
-      <div>
-        <p className="font-mono text-sm">{ssid}</p>
-        <p className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
-          <Users className="h-3 w-3" />
-          {clients} clients
-        </p>
+    <Card variant="solid" as="div">
+      <div className="flex flex-1 items-center justify-between">
+        <div>
+          <p className="font-mono text-sm">{ssid}</p>
+          <p className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
+            <Users className="h-3 w-3" />
+            {clients} clients
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className={"text-xs " + (on ? "text-success" : "text-muted-foreground")}>
+            {on ? "Actif" : "Hors ligne"}
+          </span>
+          <Switch checked={on} onCheckedChange={setOn} aria-label={`Toggle ${ssid}`} />
+        </div>
       </div>
-      <div className="flex items-center gap-3">
-        <span className={"text-xs " + (on ? "text-success" : "text-muted-foreground")}>
-          {on ? "Actif" : "Hors ligne"}
-        </span>
-        <Switch checked={on} onCheckedChange={setOn} aria-label={`Toggle ${ssid}`} />
-      </div>
-    </div>
+    </Card>
   );
 }
 
 function Meter({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-card p-4">
+    <Card variant="solid" as="div">
       <Eyebrow as="div" className="flex items-center gap-2">
         {icon}
         {label}
@@ -265,7 +267,7 @@ function Meter({ icon, label, value }: { icon: React.ReactNode; label: string; v
           style={{ width: `${value}%` }}
         />
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -283,7 +285,7 @@ function Stat({
   tone?: "default" | "warm";
 }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-card p-4">
+    <Card variant="solid" as="div">
       <Eyebrow as="div" className="flex items-center gap-2">
         {icon}
         {label}
@@ -296,6 +298,6 @@ function Stat({
         {value}
       </p>
       {sub && <p className="mt-1 text-xs text-muted-foreground">{sub}</p>}
-    </div>
+    </Card>
   );
 }

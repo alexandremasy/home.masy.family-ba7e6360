@@ -15,6 +15,7 @@ import { Checkbox } from "@/components/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/select";
 import { Eyebrow } from "@/components/eyebrow";
+import { Card } from "@/components/card";
 
 export const Route = createFileRoute("/_app/budget/transactions")({
   component: TransactionsPage,
@@ -113,7 +114,7 @@ function TransactionsPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft">
+      <Card as="div" padding="sm">
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
           <div className="relative min-w-0 flex-1 sm:min-w-[200px]">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
@@ -174,7 +175,7 @@ function TransactionsPage() {
             </Chip>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Bulk action bar */}
       {selected.size > 0 && (
@@ -216,7 +217,7 @@ function TransactionsPage() {
       )}
 
       {/* Table */}
-      <div className="overflow-hidden rounded-2xl border border-border/60 bg-card shadow-soft">
+      <Card bleed padding="sm">
         <Table>
           <TableHeader>
             <TableRow className="border-b border-border/60 text-left text-xs uppercase tracking-eyebrow text-muted-foreground hover:bg-transparent">
@@ -388,7 +389,7 @@ function TransactionsPage() {
             )}
           </TableBody>
         </Table>
-      </div>
+      </Card>
       <p className="text-center text-xs text-muted-foreground">
         {filtered.length} ligne{filtered.length > 1 ? "s" : ""} · Total {eur2(runningTotal)}
       </p>

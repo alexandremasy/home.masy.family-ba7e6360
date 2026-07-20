@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { Eyebrow } from "@/components/eyebrow";
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/empty";
+import { Card } from "@/components/card";
 import { DishCard } from "@/components/dish-card";
 import {
   Drawer,
@@ -290,7 +291,7 @@ function CoursesPage() {
                           </EmptyHeader>
                         </Empty>
                       ) : (
-                        <div className="flex h-full flex-col rounded-xl border border-border/60 bg-card p-3.5">
+                        <Card variant="solid">
                           <DishCard
                             dish={cell.meal.dish}
                             footer={
@@ -321,7 +322,7 @@ function CoursesPage() {
                               </div>
                             }
                           />
-                        </div>
+                        </Card>
                       )}
                     </div>
                   );

@@ -143,26 +143,17 @@ export function Dashboard() {
                 to={`/room/${room.key}`}
                 variant="glass"
                 padding="sm"
-                className={"flex flex-col " + bureauCls}
+                icon={<RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />}
+                title={room.name}
+                className={bureauCls}
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
-                      <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
-                    </span>
-                    <div>
-                      <p className="text-base font-semibold">{room.name}</p>
-                    </div>
-                  </div>
-                </div>
-
                 {typeof room.temperature === "number" ? (
-                  <p className="mt-3 text-2xl tracking-tight">
+                  <p className="text-2xl tracking-tight">
                     <CountUp to={room.temperature} decimals={1} />
                     <span className="text-base text-muted-foreground">°C</span>
                   </p>
                 ) : (
-                  <div className="mt-3 h-[2.75rem]" aria-hidden />
+                  <div className="h-[2.75rem]" aria-hidden />
                 )}
 
                 <div className="mt-auto pt-2 flex items-center gap-3 text-xs text-muted-foreground">
@@ -228,37 +219,35 @@ export function Dashboard() {
           </BentoItem>
         ) : (
           <BentoItem span={2}>
-            <Card to="/energie" variant="glass" padding="sm" className="flex flex-col">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex min-w-0 items-center gap-3">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
-                    <Zap className="h-4.5 w-4.5" />
+            <Card
+              to="/energie"
+              variant="glass"
+              padding="sm"
+              icon={<Zap className="h-4.5 w-4.5" />}
+              title="Énergie"
+              action={(() => {
+                const alerts: string[] = [];
+                if (energie.oil.status === "alert") alerts.push("Mazout faible");
+                if (energie.electricity.status === "alert") alerts.push("Élec. élevée");
+                if (energie.water.status === "alert") alerts.push("Eau élevée");
+                const anyAlert = alerts.length > 0;
+                return anyAlert ? (
+                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-warm/15 px-2 py-0.5 text-warm">
+                    <AlertTriangle className="h-3 w-3" />
+                    <span className="text-xs font-semibold">
+                      {alerts[0]}
+                      {alerts.length > 1 ? ` +${alerts.length - 1}` : ""}
+                    </span>
                   </span>
-                  <p className="text-base font-semibold">Énergie</p>
-                </div>
-                {(() => {
-                  const alerts: string[] = [];
-                  if (energie.oil.status === "alert") alerts.push("Mazout faible");
-                  if (energie.electricity.status === "alert") alerts.push("Élec. élevée");
-                  if (energie.water.status === "alert") alerts.push("Eau élevée");
-                  const anyAlert = alerts.length > 0;
-                  return anyAlert ? (
-                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-warm/15 px-2 py-0.5 text-warm">
-                      <AlertTriangle className="h-3 w-3" />
-                      <span className="text-xs font-semibold">
-                        {alerts[0]}
-                        {alerts.length > 1 ? ` +${alerts.length - 1}` : ""}
-                      </span>
-                    </span>
-                  ) : (
-                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
-                      <Sparkles className="h-3 w-3" />
-                      <span className="text-xs font-semibold">OK</span>
-                    </span>
-                  );
-                })()}
-              </div>
-              <div className="mt-4 flex flex-1 flex-col gap-2">
+                ) : (
+                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
+                    <Sparkles className="h-3 w-3" />
+                    <span className="text-xs font-semibold">OK</span>
+                  </span>
+                );
+              })()}
+            >
+              <div className="flex flex-1 flex-col gap-2">
                 <EnergieRow
                   icon={<Zap className="h-4 w-4 anim-glow" />}
                   label="Élec."
@@ -525,19 +514,17 @@ function IdleRoomsTile({ rooms: idle }: { rooms: Room[] }) {
   return (
     <div className="col-span-2 flex h-full flex-col gap-2">
       {idle.map((r) => (
-        <Link
-          key={r.key}
-          to={`/room/${r.key}`}
-          className="group flex flex-1 items-center gap-2.5 rounded-2xl border border-border/60 bg-card/50 px-3 py-3.5 backdrop-blur-md transition-colors hover:bg-card/70"
-        >
-          <RoomIcon icon={r.icon} className="h-4 w-4 shrink-0 text-muted-foreground icon-hover" />
-          <span className="min-w-0 flex-1 truncate text-sm">{r.name}</span>
-          {typeof r.temperature === "number" && (
-            <span className="shrink-0 text-sm tabular-nums text-muted-foreground">
-              {r.temperature}°
-            </span>
-          )}
-        </Link>
+        <Card key={r.key} to={`/room/${r.key}`} variant="glass" padding="sm" className="flex-1">
+          <div className="flex flex-1 items-center gap-2.5">
+            <RoomIcon icon={r.icon} className="h-4 w-4 shrink-0 text-muted-foreground icon-hover" />
+            <span className="min-w-0 flex-1 truncate text-sm">{r.name}</span>
+            {typeof r.temperature === "number" && (
+              <span className="shrink-0 text-sm tabular-nums text-muted-foreground">
+                {r.temperature}°
+              </span>
+            )}
+          </div>
+        </Card>
       ))}
     </div>
   );
@@ -603,25 +590,26 @@ function ReseauTile() {
 
   return (
     <BentoItem span={2}>
-      <Card to="/securite/reseau" variant="glass" padding="sm" className="flex flex-col">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex min-w-0 items-center gap-3">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
-              <Wifi className="h-4.5 w-4.5" />
-            </span>
-            <p className="text-base font-semibold">Réseau</p>
-          </div>
+      <Card
+        to="/securite/reseau"
+        variant="glass"
+        padding="sm"
+        icon={<Wifi className="h-4.5 w-4.5" />}
+        title="Réseau"
+        action={
           <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
             <Wifi className="h-3 w-3" />
             <span className="text-xs font-semibold">Stable</span>
           </span>
-        </div>
-
-        <div className="relative mt-1 flex flex-1 items-center justify-center">
+        }
+      >
+        <div className="relative flex flex-1 items-center justify-center">
+          {/* Narrower than it was: Card's header rule and padding take height the
+              old tile did not, and the bento row is a fixed 12rem. */}
           <TickGauge
             value={st.downMbps}
             max={MAX}
-            className="w-[78%] max-w-[220px] overflow-visible"
+            className="w-[68%] max-w-[180px] overflow-visible"
           />
           <div className="absolute inset-x-0 top-[44%] text-center">
             <p className="text-2xl leading-none tracking-tight tabular-nums">

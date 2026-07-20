@@ -10,6 +10,7 @@ import {
   CircleDashed,
 } from "lucide-react";
 import { Eyebrow } from "@/components/eyebrow";
+import { Card } from "@/components/card";
 
 function ProgressRing({ pct, children }: { pct: number; children: React.ReactNode }) {
   const r = 42;
@@ -106,7 +107,7 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
       </div>
 
       {(running || paused) && (
-        <div className="rounded-xl border border-border/60 bg-secondary/40 p-4">
+        <Card variant="inset">
           <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
             <span>
               {d.progressPct}% · {d.phase}
@@ -119,11 +120,11 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
               style={{ width: `${d.progressPct}%` }}
             />
           </div>
-        </div>
+        </Card>
       )}
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <div className="rounded-lg border border-border/60 bg-secondary/40 p-3">
+        <Card variant="inset" padding="sm">
           <Eyebrow size="xs" as="div" className="flex items-center gap-1.5">
             <Zap className="h-3.5 w-3.5" />
             Énergie
@@ -131,8 +132,8 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
           <p className="mt-1 text-base">
             {d.energyKWh} <span className="text-xs text-muted-foreground">kWh</span>
           </p>
-        </div>
-        <div className="rounded-lg border border-border/60 bg-secondary/40 p-3">
+        </Card>
+        <Card variant="inset" padding="sm">
           <Eyebrow size="xs" as="div" className="flex items-center gap-1.5">
             <Droplet className="h-3.5 w-3.5" />
             Eau
@@ -140,15 +141,17 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
           <p className="mt-1 text-base">
             {d.waterL} <span className="text-xs text-muted-foreground">L</span>
           </p>
-        </div>
-        <div className="rounded-lg border border-border/60 bg-secondary/40 p-3">
+        </Card>
+        <Card variant="inset" padding="sm">
           <Eyebrow size="xs">Cycles</Eyebrow>
           <p className="mt-1 text-base">
             {d.cyclesThisMonth} <span className="text-xs text-muted-foreground">ce mois</span>
           </p>
-        </div>
-        <div
-          className={`rounded-lg border p-3 ${d.rinseAidLow || d.saltLow ? "border-warm/40 bg-warm/10" : "border-border/60 bg-secondary/40"}`}
+        </Card>
+        <Card
+          variant="inset"
+          padding="sm"
+          className={d.rinseAidLow || d.saltLow ? "border-warm/40 bg-warm/10" : undefined}
         >
           <Eyebrow size="xs">Consommables</Eyebrow>
           <div className="mt-1 flex flex-wrap gap-1 text-xs">
@@ -160,7 +163,7 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
               Rinçage {d.rinseAidLow ? "faible" : "OK"}
             </span>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

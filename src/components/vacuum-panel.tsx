@@ -10,6 +10,7 @@ import {
   PauseCircle,
 } from "lucide-react";
 import { Eyebrow } from "@/components/eyebrow";
+import { Card } from "@/components/card";
 
 export function VacuumPanel({ compact = false }: { compact?: boolean }) {
   const v = vacuum;
@@ -85,7 +86,7 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
       )}
 
       {(cleaning || returning || paused) && (
-        <div className="rounded-xl border border-border/60 bg-secondary/40 p-4">
+        <Card variant="inset">
           <p className="mb-3 text-base font-semibold">{status.text}</p>
           <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
             <span>Progression · {areaPct}%</span>
@@ -99,28 +100,32 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
               style={{ width: `${areaPct}%` }}
             />
           </div>
-        </div>
+        </Card>
       )}
 
       <div className="grid grid-cols-2 gap-2">
-        <div
-          className={`rounded-lg border p-3 ${batLow ? "border-warm/40 bg-warm/10" : "border-border/60 bg-secondary/40"}`}
+        <Card
+          variant="inset"
+          padding="sm"
+          className={batLow ? "border-warm/40 bg-warm/10" : undefined}
         >
           <Eyebrow size="xs" as="div" className="flex items-center gap-1.5">
             <BatteryIcon className="h-3.5 w-3.5" />
             Batterie
           </Eyebrow>
           <p className={`mt-1 text-base ${batLow ? "text-warm" : ""}`}>{v.batteryPct}%</p>
-        </div>
-        <div
-          className={`rounded-lg border p-3 ${v.binFullPct > 80 ? "border-warm/40 bg-warm/10" : "border-border/60 bg-secondary/40"}`}
+        </Card>
+        <Card
+          variant="inset"
+          padding="sm"
+          className={v.binFullPct > 80 ? "border-warm/40 bg-warm/10" : undefined}
         >
           <Eyebrow size="xs" as="div" className="flex items-center gap-1.5">
             <Trash2 className="h-3.5 w-3.5" />
             Bac
           </Eyebrow>
           <p className="mt-1 text-base">{v.binFullPct}% plein</p>
-        </div>
+        </Card>
       </div>
     </div>
   );

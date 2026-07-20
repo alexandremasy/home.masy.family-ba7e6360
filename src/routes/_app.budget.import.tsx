@@ -65,23 +65,20 @@ function ImportPage() {
 
       {stage !== "idle" && (
         <>
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card px-4 py-3 shadow-soft">
-            <div className="flex items-center gap-3">
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/10 text-primary">
-                <FileSpreadsheet className="h-4 w-4" />
-              </span>
-              <div>
-                <p className="text-sm font-semibold">{filename}</p>
-                <p className="text-xs text-muted-foreground">Couvre : Juin 2025</p>
-              </div>
-            </div>
-            <button
-              onClick={reset}
-              className="rounded-full px-3 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              Changer de fichier
-            </button>
-          </div>
+          <Card
+            padding="sm"
+            icon={<FileSpreadsheet className="h-4 w-4" />}
+            title={filename}
+            subline="Couvre : Juin 2025"
+            action={
+              <button
+                onClick={reset}
+                className="rounded-full px-3 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground"
+              >
+                Changer de fichier
+              </button>
+            }
+          />
 
           {/* Summary banner */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -238,11 +235,7 @@ function ImportPage() {
       )}
 
       {/* History */}
-      <Card variant="solid">
-        <header className="mb-4 flex items-center gap-2">
-          <History className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-lg tracking-tight">Historique des imports</h2>
-        </header>
+      <Card variant="solid" icon={<History className="h-4 w-4" />} title="Historique des imports">
         <ul className="divide-y divide-border/40">
           {importHistory.map((h) => (
             <li
@@ -370,11 +363,7 @@ function DiffSection({
   children: React.ReactNode;
 }) {
   return (
-    <Card variant="solid">
-      <header className="mb-3">
-        <h2 className="text-lg tracking-tight">{title}</h2>
-        <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>
-      </header>
+    <Card variant="solid" title={title} subline={subtitle}>
       {children}
     </Card>
   );

@@ -115,15 +115,12 @@ function AnnuelPage() {
       </div>
 
       {/* Grouped bar — flow per month */}
-      <Card variant="solid" className="anim-slide-up">
-        <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="text-xl tracking-tight">Flux mensuels</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Entrées vs dépenses — les pics sont les mois lourds
-            </p>
-          </div>
-        </header>
+      <Card
+        variant="solid"
+        className="anim-slide-up"
+        title="Flux mensuels"
+        subline="Entrées vs dépenses — les pics sont les mois lourds"
+      >
         <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={grouped} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
@@ -162,15 +159,12 @@ function AnnuelPage() {
       </Card>
 
       {/* Rolling area */}
-      <Card variant="solid" className="anim-slide-up">
-        <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="text-xl tracking-tight">Évolution</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              12 mois glissants — moyenne {eur(avgSpend)}/mois
-            </p>
-          </div>
-        </header>
+      <Card
+        variant="solid"
+        className="anim-slide-up"
+        title="Évolution"
+        subline={`12 mois glissants — moyenne ${eur(avgSpend)}/mois`}
+      >
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={rolling12} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
@@ -238,19 +232,13 @@ function AnnuelPage() {
       </Card>
 
       {/* Pressure + annualisation */}
-      <Card variant="solid" className="anim-slide-up">
-        <header className="mb-4 flex items-end justify-between">
-          <div>
-            <h2 className="text-xl tracking-tight">Pression de l'année</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Cellules de chaleur + chips des grosses échéances
-            </p>
-          </div>
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/10 text-primary">
-            <Flame className="h-4 w-4 anim-breathe" />
-          </span>
-        </header>
-
+      <Card
+        variant="solid"
+        className="anim-slide-up"
+        icon={<Flame className="h-4 w-4 anim-breathe" />}
+        title="Pression de l'année"
+        subline="Cellules de chaleur + chips des grosses échéances"
+      >
         <div className="grid grid-cols-6 gap-2 sm:grid-cols-12">
           {MONTHS_FR.map((m, idx) => {
             const bills = calendarBills[idx] ?? [];
@@ -316,26 +304,24 @@ function AnnuelPage() {
               <span className="ml-1 text-sm text-muted-foreground">€/mois</span>
             </p>
           </div>
-          <div className="rounded-xl bg-secondary/60 p-4">
+          <Card variant="inset" as="div">
             <Eyebrow size="xs">Solde d'annualisation</Eyebrow>
             <p className="mt-1 text-xl tabular-nums">{eur(annualBalance)}</p>
             <p className="mt-2 text-xs text-muted-foreground">
               Lisse les grosses factures (mazout, assurance, taxes) pour qu'aucun mois ne soit
               écrasé.
             </p>
-          </div>
+          </Card>
         </div>
       </Card>
 
       {/* Category zoom */}
-      <Card variant="solid" className="anim-slide-up">
-        <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="text-xl tracking-tight">Zoom sur une catégorie</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Tendance 12 mois — moyenne {eur(zoomAvg)}/mois
-            </p>
-          </div>
+      <Card
+        variant="solid"
+        className="anim-slide-up"
+        title="Zoom sur une catégorie"
+        subline={`Tendance 12 mois — moyenne ${eur(zoomAvg)}/mois`}
+        action={
           <div className="flex flex-wrap gap-1">
             {categories.map((c) => (
               <button
@@ -352,7 +338,8 @@ function AnnuelPage() {
               </button>
             ))}
           </div>
-        </header>
+        }
+      >
         <div className="h-56 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={zoomData} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
@@ -431,9 +418,10 @@ function AnnuelPage() {
               env.tone === "mustard" ? "bg-mustard/20 text-mustard" : "bg-primary/10 text-primary";
             const stroke = env.tone === "mustard" ? "var(--mustard)" : "var(--primary)";
             return (
-              <div
+              <Card
                 key={env.key}
-                className="group rounded-2xl border border-border/60 bg-card p-5 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift"
+                as="div"
+                className="group transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift"
               >
                 <div className="flex items-center justify-between">
                   <Eyebrow>{env.label}</Eyebrow>
@@ -467,7 +455,7 @@ function AnnuelPage() {
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>
@@ -496,12 +484,12 @@ function BigStat({
           ? "text-success"
           : "text-foreground";
   return (
-    <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft">
+    <Card as="div">
       <Eyebrow>{label}</Eyebrow>
       <p className={"mt-2 text-3xl tracking-tight tabular-nums " + cls}>
         <CountUp to={value} />
         <span className="ml-1 text-base text-muted-foreground">{suffix}</span>
       </p>
-    </div>
+    </Card>
   );
 }

@@ -13,6 +13,7 @@ import { usePeople } from "@/lib/people-store";
 import { cap } from "@/lib/utils";
 import { Cake, Copy, Check, Pencil, Plus, MoreVertical } from "lucide-react";
 import { Button } from "@/components/button";
+import { Card } from "@/components/card";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -181,52 +182,56 @@ function SuggestionCard({
   };
 
   return (
-    <div className="flex flex-col gap-2 rounded-xl border border-border/50 bg-card/70 p-4 shadow-soft">
-      <div className="flex items-center justify-between">
-        <Eyebrow size="xs">{variant.label}</Eyebrow>
-        <div className="-mr-1 flex items-center gap-0.5 text-muted-foreground">
-          <button
-            type="button"
-            onClick={onEdit}
-            title="Éditer le style"
-            className="grid h-7 w-7 place-items-center rounded-md transition-colors hover:bg-secondary hover:text-foreground"
-          >
-            <Pencil className="h-3.5 w-3.5" />
-            <span className="sr-only">Éditer le style</span>
-          </button>
-          <button
-            type="button"
-            onClick={copy}
-            title="Copier"
-            className="grid h-7 w-7 place-items-center rounded-md transition-colors hover:bg-secondary hover:text-foreground"
-          >
-            {copied ? (
-              <Check className="h-3.5 w-3.5 text-primary" />
-            ) : (
-              <Copy className="h-3.5 w-3.5" />
-            )}
-            <span className="sr-only">{copied ? "Copié" : "Copier"}</span>
-          </button>
+    <Card variant="soft">
+      <div className="flex flex-1 flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <Eyebrow size="xs">{variant.label}</Eyebrow>
+          <div className="-mr-1 flex items-center gap-0.5 text-muted-foreground">
+            <button
+              type="button"
+              onClick={onEdit}
+              title="Éditer le style"
+              className="grid h-7 w-7 place-items-center rounded-md transition-colors hover:bg-secondary hover:text-foreground"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              <span className="sr-only">Éditer le style</span>
+            </button>
+            <button
+              type="button"
+              onClick={copy}
+              title="Copier"
+              className="grid h-7 w-7 place-items-center rounded-md transition-colors hover:bg-secondary hover:text-foreground"
+            >
+              {copied ? (
+                <Check className="h-3.5 w-3.5 text-primary" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" />
+              )}
+              <span className="sr-only">{copied ? "Copié" : "Copier"}</span>
+            </button>
+          </div>
         </div>
+        <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground">{message}</p>
       </div>
-      <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground">{message}</p>
-    </div>
+    </Card>
   );
 }
 
 /** No birthday today — the main slot has nothing to write. */
 function EmptyToday({ next }: { next?: Person }) {
   return (
-    <section className="rounded-lg border border-border/60 bg-card p-8 text-center shadow-soft">
-      <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-secondary text-muted-foreground">
-        <Cake className="h-6 w-6" />
+    <Card variant="soft">
+      <div className="text-center">
+        <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-secondary text-muted-foreground">
+          <Cake className="h-6 w-6" />
+        </div>
+        <p className="mt-3 text-base">Pas d'anniversaire aujourd'hui</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {next
+            ? `Le prochain, c'est ${next.name} dans ${daysUntil(nextBirthday(next))} j.`
+            : "Rien de prévu pour l'instant."}
+        </p>
       </div>
-      <p className="mt-3 text-base">Pas d'anniversaire aujourd'hui</p>
-      <p className="mt-1 text-xs text-muted-foreground">
-        {next
-          ? `Le prochain, c'est ${next.name} dans ${daysUntil(nextBirthday(next))} j.`
-          : "Rien de prévu pour l'instant."}
-      </p>
-    </section>
+    </Card>
   );
 }

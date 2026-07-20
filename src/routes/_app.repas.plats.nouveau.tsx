@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Card } from "@/components/card";
 import { DishForm, EMPTY_DRAFT } from "@/components/dish-form";
 import { useDishes } from "@/lib/dishes-store";
 import { ArrowLeft } from "lucide-react";
@@ -22,11 +23,11 @@ function NouveauPlat() {
         Plats
       </Link>
 
-      <div className="rounded-2xl border border-border/60 bg-card p-5">
-        <p className="mb-1 text-lg">Nouveau plat</p>
-        <p className="mb-4 text-sm text-muted-foreground">
-          Un plat est une base plus des composants — c'est ce qui alimente les suggestions.
-        </p>
+      <Card
+        variant="solid"
+        title="Nouveau plat"
+        subline="Un plat est une base plus des composants — c'est ce qui alimente les suggestions."
+      >
         <DishForm
           initial={EMPTY_DRAFT}
           submitLabel="Créer le plat"
@@ -36,7 +37,7 @@ function NouveauPlat() {
             navigate({ to: "/repas/plats/$dishId", params: { dishId: created.id } });
           }}
         />
-      </div>
+      </Card>
     </div>
   );
 }

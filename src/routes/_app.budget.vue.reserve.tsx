@@ -278,9 +278,11 @@ function ReserveOverlay() {
                     const editing = editKey === env.key;
                     const nextM = nextMonthFor(env.history);
                     return (
-                      <div
+                      <Card
                         key={env.key}
-                        className="group relative rounded-xl border border-border/50 bg-card/60 p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift"
+                        variant="inset"
+                        as="div"
+                        className="group relative transition-all hover:-translate-y-0.5 hover:shadow-lift"
                       >
                         <div className="flex items-start justify-between">
                           <Eyebrow size="xs">{env.label}</Eyebrow>
@@ -394,7 +396,7 @@ function ReserveOverlay() {
                             </AreaChart>
                           </ResponsiveContainer>
                         </div>
-                      </div>
+                      </Card>
                     );
                   })}
                 </div>
