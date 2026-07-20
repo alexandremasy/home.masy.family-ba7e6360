@@ -93,9 +93,7 @@ function TransactionsPage() {
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:flex sm:flex-wrap sm:justify-between sm:gap-4">
         <div className="min-w-0">
           <Eyebrow size="xs">Budget · Transactions</Eyebrow>
-          <h1 className="mt-1 truncate font-serif text-xl tracking-tight sm:text-4xl">
-            Le journal
-          </h1>
+          <h1 className="mt-1 truncate text-xl tracking-tight sm:text-4xl">Le journal</h1>
           <p className="mt-1 hidden text-sm text-muted-foreground sm:block">
             Recherchez, recatégorisez, éditez. Vos modifications restent protégées à l'import.
           </p>
@@ -104,7 +102,7 @@ function TransactionsPage() {
           <Eyebrow size="xs">Total filtré</Eyebrow>
           <p
             className={
-              "font-serif text-lg tabular-nums sm:text-xl " +
+              "text-lg tabular-nums sm:text-xl " +
               (runningTotal >= 0 ? "text-success" : "text-warm")
             }
           >

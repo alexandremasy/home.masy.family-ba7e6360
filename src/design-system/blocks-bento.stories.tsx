@@ -37,7 +37,7 @@ export const Dashboard: Story = {
     <BentoGrid className="p-4">
       <BentoItem span={2}>
         <Card variant="glass" icon={<CloudSun className="h-4 w-4" />} title="Météo">
-          <p className="font-serif text-3xl tracking-tight">18°</p>
+          <p className="text-3xl tracking-tight">18°</p>
         </Card>
       </BentoItem>
 

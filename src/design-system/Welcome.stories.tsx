@@ -86,7 +86,7 @@ function Welcome() {
   return (
     <div className="mx-auto max-w-3xl p-8 sm:p-12">
       <p className="text-2xs uppercase tracking-eyebrow text-muted-foreground">masy.family</p>
-      <h1 className="mt-2 font-serif text-4xl tracking-tight">Design System</h1>
+      <h1 className="mt-2 text-4xl tracking-tight">Design System</h1>
       <p className="mt-3 max-w-2xl text-muted-foreground">
         The UI and UX source of truth for the house systems. Design is decided here, and the cockpit
         consumes what this repo defines — components, templates, tokens and module specs. Built on
@@ -106,7 +106,7 @@ function Welcome() {
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
                   <Icon as={glyph} />
                 </span>
-                <p className="font-serif text-lg font-semibold">{title}</p>
+                <p className="text-lg font-semibold">{title}</p>
               </div>
               <Icon
                 as={ArrowRight}
@@ -118,7 +118,7 @@ function Welcome() {
         ))}
       </div>
 
-      <h2 className="mt-12 font-serif text-xl tracking-tight">How it holds together</h2>
+      <h2 className="mt-12 text-xl tracking-tight">How it holds together</h2>
       <dl className="mt-4 space-y-4">
         {RULES.map(({ rule, why }) => (
           <div key={rule} className="border-l-2 border-primary/40 pl-4">

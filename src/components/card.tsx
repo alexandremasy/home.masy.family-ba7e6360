@@ -218,10 +218,7 @@ export function Card({
               </span>
             )}
             <div className="min-w-0">
-              <h2
-                data-slot="title"
-                className="truncate font-serif text-base font-semibold tracking-tight"
-              >
+              <h2 data-slot="title" className="truncate text-base font-semibold tracking-tight">
                 {title}
               </h2>
               {subline && (

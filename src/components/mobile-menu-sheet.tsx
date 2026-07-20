@@ -91,9 +91,7 @@ export function MobileMenuSheet({
                 className="size-9 shrink-0 rounded-lg object-cover object-top ring-1 ring-border"
               />
               <div className="min-w-0">
-                <p className="truncate font-serif text-sm font-medium leading-tight">
-                  {current.label}
-                </p>
+                <p className="truncate text-sm font-medium leading-tight">{current.label}</p>
                 <p className="truncate text-2xs text-muted-foreground">Assistant maison</p>
               </div>
             </div>

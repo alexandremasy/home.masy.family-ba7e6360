@@ -10,7 +10,7 @@ const meta = {
   component: CountUp,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
-  args: { className: "font-serif text-4xl font-semibold tabular-nums" },
+  args: { className: "text-4xl font-semibold tabular-nums" },
 } satisfies Meta<typeof CountUp>;
 
 export default meta;

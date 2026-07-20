@@ -110,7 +110,7 @@ function VuePage() {
               <Eyebrow tone="current" size="xs" className="text-mustard">
                 Budget · {zoom === null ? "Vue d'ensemble" : "Mois"}
               </Eyebrow>
-              <h1 className="font-serif text-2xl tracking-tight sm:text-3xl">
+              <h1 className="text-2xl tracking-tight sm:text-3xl">
                 {zoom === null ? (
                   viewTitle(view)
                 ) : (
@@ -266,7 +266,7 @@ function AxisStatus({
         )}
       </p>
       <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-        <span className="font-serif text-lg leading-none tabular-nums text-foreground sm:text-xl">
+        <span className="text-lg leading-none tabular-nums text-foreground sm:text-xl">
           {axis.value}
         </span>
         {axis.pct && (
@@ -369,7 +369,7 @@ function VerdictHeader({
   const freshness = dataFreshness();
   return (
     <div>
-      <h2 className="font-serif text-base tracking-tight sm:text-lg">Santé de l'année</h2>
+      <h2 className="text-base tracking-tight sm:text-lg">Santé de l'année</h2>
       <p className="mt-1 text-sm text-muted-foreground">
         Sur base des imports jusqu'à {freshness.lastMonth} — la suite est projetée.
       </p>
@@ -406,9 +406,7 @@ function SecondaryReading({
   return (
     <div className="rounded-xl bg-secondary/40 p-3 lg:bg-transparent lg:p-0">
       <Eyebrow size="xs">{label}</Eyebrow>
-      <p className={"mt-1 font-serif text-lg leading-none tabular-nums sm:text-xl " + cls}>
-        {primary}
-      </p>
+      <p className={"mt-1 text-lg leading-none tabular-nums sm:text-xl " + cls}>{primary}</p>
       {secondary && (
         <p className="mt-1.5 text-xs tabular-nums text-muted-foreground">{secondary}</p>
       )}
@@ -440,9 +438,7 @@ function MicroStat({
       <Eyebrow size="xs" className="sm:text-2xs">
         {label}
       </Eyebrow>
-      <p className={"mt-1 font-serif text-lg leading-none tabular-nums sm:text-lg " + cls}>
-        {primary}
-      </p>
+      <p className={"mt-1 text-lg leading-none tabular-nums sm:text-lg " + cls}>{primary}</p>
       {secondary && <p className="mt-1 text-2xs tabular-nums text-muted-foreground">{secondary}</p>}
     </div>
   );
@@ -762,7 +758,7 @@ function CategoriesGrid() {
     <section className="anim-slide-up">
       <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="font-serif text-lg tracking-tight sm:text-xl">Catégories</h2>
+          <h2 className="text-lg tracking-tight sm:text-xl">Catégories</h2>
           <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
             Tendance sur 12 mois glissants (plein = réel, pointillé = anticipé) · le chip = écart au
             budget. Clic pour le détail.
@@ -995,7 +991,7 @@ function PasseView({ monthIdx }: { monthIdx: number }) {
 
       <Panel>
         <header className="mb-4">
-          <h3 className="font-serif text-lg tracking-tight">Prévu vs réel</h3>
+          <h3 className="text-lg tracking-tight">Prévu vs réel</h3>
           <p className="mt-1 text-sm text-muted-foreground">
             Variance par catégorie pour ce mois clos.
           </p>
@@ -1075,7 +1071,7 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
       <Panel>
         <header className="mb-4 flex items-end justify-between gap-3">
           <div>
-            <h3 className="font-serif text-lg tracking-tight">Réel à date + projection</h3>
+            <h3 className="text-lg tracking-tight">Réel à date + projection</h3>
             <p className="mt-1 text-sm text-muted-foreground">
               La barre marque la frontière entre les deux.
             </p>
@@ -1164,7 +1160,7 @@ function FuturView({ monthIdx }: { monthIdx: number }) {
       <section className="rounded-2xl border border-dashed border-border/60 bg-card/60 p-5 shadow-soft sm:p-7">
         <header className="mb-4 flex items-end justify-between gap-3">
           <div>
-            <h3 className="font-serif text-lg tracking-tight">Postes prévus</h3>
+            <h3 className="text-lg tracking-tight">Postes prévus</h3>
             <p className="mt-1 text-sm text-muted-foreground">
               Projection issue de la Planification — aucune réelle dépense.
             </p>
@@ -1284,7 +1280,7 @@ function SmallStat({
   return (
     <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft">
       <Eyebrow size="xs">{label}</Eyebrow>
-      <p className={"mt-2 font-serif text-xl tracking-tight tabular-nums " + cls}>
+      <p className={"mt-2 text-xl tracking-tight tabular-nums " + cls}>
         {signed && value > 0 ? "+" : ""}
         <CountUp to={value} />
         <span className="ml-1 text-sm text-muted-foreground">€</span>

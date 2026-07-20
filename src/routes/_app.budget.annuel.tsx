@@ -89,7 +89,7 @@ function AnnuelPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <Eyebrow size="xs">Budget · Annuel</Eyebrow>
-          <h1 className="mt-1 font-serif text-3xl tracking-tight sm:text-4xl">Année {year}</h1>
+          <h1 className="mt-1 text-3xl tracking-tight sm:text-4xl">Année {year}</h1>
         </div>
         <div className="flex items-center gap-2">
           <Button onClick={() => setYear((y) => y - 1)} variant="outline" size="iconRound">
@@ -118,7 +118,7 @@ function AnnuelPage() {
       <Panel className="anim-slide-up">
         <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="font-serif text-xl tracking-tight">Flux mensuels</h2>
+            <h2 className="text-xl tracking-tight">Flux mensuels</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               Entrées vs dépenses — les pics sont les mois lourds
             </p>
@@ -165,7 +165,7 @@ function AnnuelPage() {
       <Panel className="anim-slide-up">
         <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="font-serif text-xl tracking-tight">Évolution</h2>
+            <h2 className="text-xl tracking-tight">Évolution</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               12 mois glissants — moyenne {eur(avgSpend)}/mois
             </p>
@@ -241,7 +241,7 @@ function AnnuelPage() {
       <Panel className="anim-slide-up">
         <header className="mb-4 flex items-end justify-between">
           <div>
-            <h2 className="font-serif text-xl tracking-tight">Pression de l'année</h2>
+            <h2 className="text-xl tracking-tight">Pression de l'année</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               Cellules de chaleur + chips des grosses échéances
             </p>
@@ -311,14 +311,14 @@ function AnnuelPage() {
         <div className="mt-6 grid gap-4 border-t border-border/40 pt-5 sm:grid-cols-2">
           <div>
             <Eyebrow size="xs">Provision mensuelle</Eyebrow>
-            <p className="mt-1 font-serif text-3xl tracking-tight tabular-nums">
+            <p className="mt-1 text-3xl tracking-tight tabular-nums">
               <CountUp to={monthlyAnnualProvision} />
               <span className="ml-1 text-sm text-muted-foreground">€/mois</span>
             </p>
           </div>
           <div className="rounded-xl bg-secondary/60 p-4">
             <Eyebrow size="xs">Solde d'annualisation</Eyebrow>
-            <p className="mt-1 font-serif text-xl tabular-nums">{eur(annualBalance)}</p>
+            <p className="mt-1 text-xl tabular-nums">{eur(annualBalance)}</p>
             <p className="mt-2 text-xs text-muted-foreground">
               Lisse les grosses factures (mazout, assurance, taxes) pour qu'aucun mois ne soit
               écrasé.
@@ -331,7 +331,7 @@ function AnnuelPage() {
       <Panel className="anim-slide-up">
         <header className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="font-serif text-xl tracking-tight">Zoom sur une catégorie</h2>
+            <h2 className="text-xl tracking-tight">Zoom sur une catégorie</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               Tendance 12 mois — moyenne {eur(zoomAvg)}/mois
             </p>
@@ -414,7 +414,7 @@ function AnnuelPage() {
       {/* Envelopes */}
       <section className="anim-slide-up">
         <header className="mb-4 flex items-end justify-between">
-          <h2 className="font-serif text-xl tracking-tight">Enveloppes d'épargne</h2>
+          <h2 className="text-xl tracking-tight">Enveloppes d'épargne</h2>
           <p className="text-xs text-muted-foreground tabular-nums">
             {eur(envelopes.reduce((s, e) => s + e.contrib, 0))}/mois
           </p>
@@ -441,7 +441,7 @@ function AnnuelPage() {
                     <PiggyBank className="h-4 w-4" />
                   </span>
                 </div>
-                <p className="mt-3 font-serif text-xl tracking-tight tabular-nums">
+                <p className="mt-3 text-xl tracking-tight tabular-nums">
                   <CountUp to={env.balance} />
                   <span className="ml-1 text-sm text-muted-foreground">€</span>
                 </p>
@@ -498,7 +498,7 @@ function BigStat({
   return (
     <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft">
       <Eyebrow>{label}</Eyebrow>
-      <p className={"mt-2 font-serif text-3xl tracking-tight tabular-nums " + cls}>
+      <p className={"mt-2 text-3xl tracking-tight tabular-nums " + cls}>
         <CountUp to={value} />
         <span className="ml-1 text-base text-muted-foreground">{suffix}</span>
       </p>

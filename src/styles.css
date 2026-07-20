@@ -11,12 +11,6 @@
     ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", "Noto Color Emoji";
-  /* The display face reads through this token — headings and `.font-serif`. Kept as
-     the same native stack so the whole app stays on the OS font. */
-  --font-serif:
-    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol", "Noto Color Emoji";
 
   /* ---- Type scale ----
      THE scale, not a scale. Ported from the Figma token library
@@ -59,8 +53,10 @@
   --text-6xl: 3.5rem; /* 56 — the ceiling */
   --text-6xl--line-height: 1;
 
-  /* The eyebrow's letter-spacing. One value — there were seven. Owned by
-     components/Eyebrow.tsx; hand-spacing an uppercase label means you skipped it. */
+  /* The tracking for capitals. Capital letters set at their natural spacing read
+     as a block, so uppercase text gets this — one value, where there were seven.
+     Named after the eyebrow because that is where it started; it applies to any
+     capitalised label. */
   --tracking-eyebrow: 0.18em;
 
   /* Tighter than shadcn's default scale — the product reads crisp, not bubbly.
@@ -356,9 +352,8 @@
   }
   h1,
   h2,
-  h3,
-  .font-serif {
-    font-family: var(--font-serif);
+  h3 {
+    font-family: var(--font-sans);
     letter-spacing: -0.01em;
   }
 }

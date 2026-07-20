@@ -39,7 +39,7 @@ export function AppSidebar() {
                 className="size-8 shrink-0 rounded-lg object-cover object-top ring-1 ring-sidebar-border"
               />
               <div className="grid flex-1 text-left leading-tight">
-                <span className="truncate font-serif text-base font-medium">{current.label}</span>
+                <span className="truncate text-base font-medium">{current.label}</span>
                 <span className="truncate text-xs text-muted-foreground">Assistant maison</span>
               </div>
             </SidebarMenuButton>

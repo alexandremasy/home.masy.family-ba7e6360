@@ -143,7 +143,7 @@ function ReserveOverlay() {
                     <span className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/12 text-primary">
                       <PiggyBank className="h-5 w-5 anim-float" />
                     </span>
-                    <h1 className="font-serif text-3xl tracking-tight sm:text-4xl">Réserve</h1>
+                    <h1 className="text-3xl tracking-tight sm:text-4xl">Réserve</h1>
                     <div className="ml-auto text-right">
                       <p className="flex items-baseline justify-end gap-2 text-2xs uppercase tracking-eyebrow text-muted-foreground">
                         Total{" "}
@@ -151,7 +151,7 @@ function ReserveOverlay() {
                           + {eur(contribTotal)}/mois
                         </span>
                       </p>
-                      <p className="mt-0.5 font-serif text-xl tabular-nums text-foreground">
+                      <p className="mt-0.5 text-xl tabular-nums text-foreground">
                         {/* key on total → re-count when an envelope edit changes it (CountUp only animates once per mount) */}
                         <CountUp key={total} to={total} />
                         <span className="ml-1 text-sm text-muted-foreground">€</span>
@@ -308,7 +308,7 @@ function ReserveOverlay() {
                                   if (e.key === "Escape") setEditKey(null);
                                 }}
                                 inputMode="decimal"
-                                className="w-full rounded-md border border-border bg-background px-2 py-1 font-serif text-lg tabular-nums focus:border-primary focus:outline-none"
+                                className="w-full rounded-md border border-border bg-background px-2 py-1 text-lg tabular-nums focus:border-primary focus:outline-none"
                               />
                             </label>
                             <label className="block">
@@ -343,7 +343,7 @@ function ReserveOverlay() {
                           </div>
                         ) : (
                           <>
-                            <p className="mt-2 font-serif text-lg tabular-nums">
+                            <p className="mt-2 text-lg tabular-nums">
                               <CountUp to={env.balance} />
                               <span className="ml-1 text-xs text-muted-foreground">€</span>
                             </p>

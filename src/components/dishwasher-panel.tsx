@@ -68,7 +68,7 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
         <ProgressRing pct={running || paused ? d.progressPct : finished ? 100 : 0}>
           {running || paused ? (
             <>
-              <p className="font-serif text-lg leading-none">{d.remainingMin}</p>
+              <p className="text-lg leading-none">{d.remainingMin}</p>
               <p className="text-2xs uppercase tracking-wider text-muted-foreground">min</p>
             </>
           ) : (
@@ -77,7 +77,7 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
         </ProgressRing>
         <div className="min-w-0 flex-1">
           <Eyebrow size="xs">Lave-vaisselle</Eyebrow>
-          <p className="mt-0.5 truncate font-serif text-lg leading-tight">{d.program}</p>
+          <p className="mt-0.5 truncate text-lg leading-tight">{d.program}</p>
           <p className="mt-0.5 text-xs text-muted-foreground truncate">
             {running || paused
               ? `${d.phase} · fin ${d.endsAt}`
@@ -99,7 +99,7 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
   return (
     <div className="space-y-5">
       <div>
-        <p className="font-serif text-base font-semibold">{d.program}</p>
+        <p className="text-base font-semibold">{d.program}</p>
         <p className="mt-0.5 text-sm text-muted-foreground">
           Démarré {d.startedAt} · fin prévue {d.endsAt}
         </p>
@@ -128,7 +128,7 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
             <Zap className="h-3.5 w-3.5" />
             Énergie
           </Eyebrow>
-          <p className="mt-1 font-serif text-base">
+          <p className="mt-1 text-base">
             {d.energyKWh} <span className="text-xs text-muted-foreground">kWh</span>
           </p>
         </div>
@@ -137,13 +137,13 @@ export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
             <Droplet className="h-3.5 w-3.5" />
             Eau
           </Eyebrow>
-          <p className="mt-1 font-serif text-base">
+          <p className="mt-1 text-base">
             {d.waterL} <span className="text-xs text-muted-foreground">L</span>
           </p>
         </div>
         <div className="rounded-lg border border-border/60 bg-secondary/40 p-3">
           <Eyebrow size="xs">Cycles</Eyebrow>
-          <p className="mt-1 font-serif text-base">
+          <p className="mt-1 text-base">
             {d.cyclesThisMonth} <span className="text-xs text-muted-foreground">ce mois</span>
           </p>
         </div>

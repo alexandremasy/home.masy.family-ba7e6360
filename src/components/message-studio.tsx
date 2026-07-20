@@ -65,7 +65,7 @@ export function MessageStudio({
             <span className="sr-only">{copied ? "Copié" : "Copier"}</span>
           </button>
         </div>
-        <p className="whitespace-pre-wrap pr-16 font-serif text-lg leading-relaxed text-foreground">
+        <p className="whitespace-pre-wrap pr-16 text-lg leading-relaxed text-foreground">
           {message}
         </p>
       </div>

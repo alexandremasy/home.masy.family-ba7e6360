@@ -53,14 +53,14 @@ function EtatTab() {
               className="flex items-center gap-3 rounded-xl border border-border/60 bg-card p-3"
             >
               <span
-                className={`grid h-10 w-10 shrink-0 place-items-center rounded-full font-serif text-lg ${
+                className={`grid h-10 w-10 shrink-0 place-items-center rounded-full text-lg ${
                   m.home ? "bg-success/15 text-success" : "bg-secondary text-muted-foreground"
                 }`}
               >
                 {m.initial}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="font-serif text-lg leading-tight">{m.name}</p>
+                <p className="text-lg leading-tight">{m.name}</p>
                 <p className="truncate text-xs text-muted-foreground">
                   {m.home ? "À la maison" : m.place} · {m.since}
                 </p>
@@ -134,7 +134,7 @@ function ArmingHero({
               Mode {current.label}
               {armed && ` · depuis ${security.armedSince}`}
             </Eyebrow>
-            <p className="mt-1 font-serif text-3xl leading-tight tracking-tight">{headline}</p>
+            <p className="mt-1 text-3xl leading-tight tracking-tight">{headline}</p>
             <p className="mt-0.5 text-sm text-muted-foreground">{current.hint}</p>
           </div>
         </div>

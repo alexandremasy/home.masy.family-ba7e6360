@@ -5,18 +5,19 @@ import { Meta, Title, Subtitle, Typeset, Unstyled } from "@storybook/addon-docs/
 <Title>Typography</Title>
 
 <Subtitle>
-  One typeface, eleven sizes, two weights. Everything else is a decision that has already been made
-  for you.
+  One typeface, eleven sizes, two weights, one tracking for capitals. Everything else has already
+  been decided for you.
 </Subtitle>
 
 ## The typeface
 
 The **native OS stack** — San Francisco on Apple, Segoe UI on Windows, Roboto on Android. No
-webfont is loaded, so there is nothing to wait for and nothing to fall back to.
+webfont is loaded, so there is nothing to wait for and nothing to fall back to. There is exactly
+one family: `--font-sans`.
 
 <Unstyled>
   <div className="rounded-xl border border-border/60 bg-card p-5">
-    <p className="font-sans text-2xl tracking-tight">Portez ce vieux whisky au juge blond</p>
+    <p className="text-2xl tracking-tight">Portez ce vieux whisky au juge blond</p>
     <p className="mt-2 font-mono text-2xs text-muted-foreground">--font-sans</p>
   </div>
 </Unstyled>
@@ -37,7 +38,7 @@ The names are Tailwind's, the values are Figma's, and they disagree by one rung 
 
 | rung        | px  | role                                         |
 | ----------- | --- | -------------------------------------------- |
-| `text-2xs`  | 10  | the eyebrow, uppercase only                  |
+| `text-2xs`  | 10  | capitalised labels only                      |
 | `text-xs`   | 12  | the body floor — metadata, figures, captions |
 | `text-sm`   | 14  | body, the default                            |
 | `text-base` | 16  | body, roomy                                  |
@@ -48,6 +49,9 @@ The names are Tailwind's, the values are Figma's, and they disagree by one rung 
 | `text-4xl`  | 40  | the big number                               |
 | `text-5xl`  | 48  |                                              |
 | `text-6xl`  | 56  | display ceiling                              |
+
+Headings carry `-0.01em` of tracking, applied on `h1`–`h3` by the stylesheet — you do not add it
+by hand.
 
 ## Weights
 
@@ -61,24 +65,22 @@ that needs to come forward.
   </div>
 </Unstyled>
 
-## Eyebrow tracking
+## Tracking for capitals
 
-The one letter-spacing this system owns: `--tracking-eyebrow`, **0.18em**. Figma sets
-letter-spacing 0 on every token, but the eyebrow is a dashboard pattern the reference doesn't
-cover, so the app owns its spacing. One value, where there used to be seven.
+`--tracking-eyebrow`, **0.18em**. Capital letters set at their natural spacing read as a block;
+this is the one letter-spacing value the system owns, and it applies wherever text is
+capitalised.
 
-It belongs to `components/eyebrow.tsx` — hand-spacing an uppercase label means you skipped the
-component.
+Figma sets letter-spacing 0 on every token, so this value is the app's own. One value, where
+there used to be seven.
 
 <Unstyled>
-  <p className="py-2 text-2xs font-medium uppercase tracking-eyebrow text-foreground">
-    Understand · align · direct
-  </p>
+  <div className="space-y-2 py-2">
+    <p className="text-2xs uppercase text-muted-foreground">
+      Sans tracking — les capitales se collent
+    </p>
+    <p className="text-2xs uppercase tracking-eyebrow text-foreground">
+      Avec tracking-eyebrow — elles respirent
+    </p>
+  </div>
 </Unstyled>
-
-## Known debt — `.font-serif`
-
-`--font-serif` resolves to the **same stack** as `--font-sans`. It is a display _role_ marking
-intent at ~145 call sites, and it currently renders no differently. Two ways out, both open:
-give it a real display face, or replace it with the weight and tracking it actually stands for.
-Until then, do not read `.font-serif` as "a second typeface" — there is only one.

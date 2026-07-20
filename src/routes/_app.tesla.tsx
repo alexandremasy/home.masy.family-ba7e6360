@@ -435,8 +435,7 @@ function TeslaPage() {
                     </span>
                     <span
                       className={
-                        "font-serif text-base leading-none " +
-                        (isCurrent ? "text-primary" : "text-foreground")
+                        "text-base leading-none " + (isCurrent ? "text-primary" : "text-foreground")
                       }
                     >
                       {q.kWh}
@@ -482,9 +481,7 @@ function SectionTitle({
         {icon}
       </span>
       <div className="min-w-0">
-        <h2 className="font-serif text-base font-semibold leading-tight tracking-tight">
-          {children}
-        </h2>
+        <h2 className="text-base font-semibold leading-tight tracking-tight">{children}</h2>
         {sub && <div className="mt-0.5 text-xs text-muted-foreground">{sub}</div>}
       </div>
     </div>
@@ -510,11 +507,7 @@ function FloatStat({
         {icon}
         {label}
       </Eyebrow>
-      <p
-        className={
-          "font-serif text-base font-medium " + (accent ? "text-primary" : "text-foreground")
-        }
-      >
+      <p className={"text-base font-medium " + (accent ? "text-primary" : "text-foreground")}>
         {value}
       </p>
     </div>
@@ -685,7 +678,7 @@ function BigStat({
       </Eyebrow>
       <p
         className={
-          "mt-1.5 font-serif text-lg font-semibold " +
+          "mt-1.5 text-lg font-semibold " +
           (accent
             ? "text-primary"
             : trend === "down"

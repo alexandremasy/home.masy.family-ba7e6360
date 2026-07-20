@@ -78,7 +78,7 @@ function AppLayout() {
               <Outlet />
             </div>
             <footer className="mx-auto max-w-7xl px-4 pb-10 pt-6 text-center sm:px-6">
-              <p className="font-serif text-sm italic text-muted-foreground">{line}</p>
+              <p className="text-sm italic text-muted-foreground">{line}</p>
             </footer>
           </>
         ) : (
@@ -99,7 +99,7 @@ function AppLayout() {
             </div>
 
             <footer className="mx-auto max-w-6xl px-4 pb-10 pt-6 text-center sm:px-6">
-              <p className="font-serif text-sm italic text-muted-foreground">{line}</p>
+              <p className="text-sm italic text-muted-foreground">{line}</p>
             </footer>
 
             {/* The one sheet shell, shared with in-page modals (AppSheet). Below md a

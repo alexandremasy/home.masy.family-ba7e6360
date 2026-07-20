@@ -246,7 +246,7 @@ function Meter({ icon, label, value }: { icon: React.ReactNode; label: string; v
         {icon}
         {label}
       </Eyebrow>
-      <p className="mt-2 font-serif text-xl">
+      <p className="mt-2 text-xl">
         {value}
         <span className="text-sm text-muted-foreground">%</span>
       </p>
@@ -284,8 +284,7 @@ function Stat({
       </Eyebrow>
       <p
         className={
-          "mt-2 font-serif text-xl tabular-nums " +
-          (tone === "warm" ? "text-warm" : "text-foreground")
+          "mt-2 text-xl tabular-nums " + (tone === "warm" ? "text-warm" : "text-foreground")
         }
       >
         {value}

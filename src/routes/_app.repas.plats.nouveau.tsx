@@ -23,7 +23,7 @@ function NouveauPlat() {
       </Link>
 
       <div className="rounded-2xl border border-border/60 bg-card p-5">
-        <p className="mb-1 font-serif text-lg">Nouveau plat</p>
+        <p className="mb-1 text-lg">Nouveau plat</p>
         <p className="mb-4 text-sm text-muted-foreground">
           Un plat est une base plus des composants — c'est ce qui alimente les suggestions.
         </p>

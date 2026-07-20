@@ -122,7 +122,7 @@ export const Route = createFileRoute("/_app/room/$roomKey")({
   },
   notFoundComponent: () => (
     <div className="py-16 text-center">
-      <h1 className="font-serif text-3xl">Pièce introuvable</h1>
+      <h1 className="text-3xl">Pièce introuvable</h1>
       <Link to="/" className="mt-4 inline-block text-primary underline">
         Retour
       </Link>
@@ -171,7 +171,7 @@ function RoomPage() {
             <RoomIcon icon={room.icon} className="h-5 w-5 anim-float" />
           </span>
           <div className="min-w-0 flex-1">
-            <h1 className="truncate font-serif text-xl font-semibold tracking-tight sm:text-2xl">
+            <h1 className="truncate text-xl font-semibold tracking-tight sm:text-2xl">
               {room.name}
             </h1>
             {typeof room.temperature === "number" && (
@@ -386,7 +386,7 @@ function RoomPage() {
                       <Droplet className="h-3 w-3" />
                       {name}
                     </div>
-                    <p className="mt-1.5 font-serif text-base">{val}%</p>
+                    <p className="mt-1.5 text-base">{val}%</p>
                     <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-muted">
                       <div
                         className="h-full rounded-full transition-all duration-700"
@@ -508,7 +508,7 @@ function MediaSection({ media }: { media: NonNullable<(typeof roomDetails)["salo
             </div>
             <div className="min-w-0 flex-1">
               <Eyebrow size="xs">Musiq3</Eyebrow>
-              <p className="mt-0.5 truncate font-serif text-lg">{media.nowPlaying ?? "—"}</p>
+              <p className="mt-0.5 truncate text-lg">{media.nowPlaying ?? "—"}</p>
               {media.artist && (
                 <p className="truncate text-sm text-muted-foreground">{media.artist}</p>
               )}
@@ -540,7 +540,7 @@ function MediaSection({ media }: { media: NonNullable<(typeof roomDetails)["salo
             </div>
             <div className="min-w-0 flex-1">
               <Eyebrow size="xs">Aucun média</Eyebrow>
-              <p className="mt-0.5 font-serif text-lg">Tout est silencieux</p>
+              <p className="mt-0.5 text-lg">Tout est silencieux</p>
               <p className="text-sm text-muted-foreground">Choisis une source pour démarrer.</p>
             </div>
           </div>

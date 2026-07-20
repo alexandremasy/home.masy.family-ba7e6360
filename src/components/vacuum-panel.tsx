@@ -56,7 +56,7 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
         </span>
         <div className="min-w-0 flex-1">
           <Eyebrow size="xs">Aspirateur</Eyebrow>
-          <p className="mt-0.5 truncate font-serif text-lg leading-tight">{v.name}</p>
+          <p className="mt-0.5 truncate text-lg leading-tight">{v.name}</p>
           <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
             <span className={`inline-flex items-center gap-1 ${batLow ? "text-warm" : ""}`}>
               <BatteryIcon className="h-3 w-3" />
@@ -81,12 +81,12 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
   return (
     <div className="space-y-5">
       {!(cleaning || returning || paused) && (
-        <p className="font-serif text-base font-semibold">{status.text}</p>
+        <p className="text-base font-semibold">{status.text}</p>
       )}
 
       {(cleaning || returning || paused) && (
         <div className="rounded-xl border border-border/60 bg-secondary/40 p-4">
-          <p className="mb-3 font-serif text-base font-semibold">{status.text}</p>
+          <p className="mb-3 text-base font-semibold">{status.text}</p>
           <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
             <span>Progression · {areaPct}%</span>
             <span className="tabular-nums">
@@ -110,9 +110,7 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
             <BatteryIcon className="h-3.5 w-3.5" />
             Batterie
           </Eyebrow>
-          <p className={`mt-1 font-serif text-base ${batLow ? "text-warm" : ""}`}>
-            {v.batteryPct}%
-          </p>
+          <p className={`mt-1 text-base ${batLow ? "text-warm" : ""}`}>{v.batteryPct}%</p>
         </div>
         <div
           className={`rounded-lg border p-3 ${v.binFullPct > 80 ? "border-warm/40 bg-warm/10" : "border-border/60 bg-secondary/40"}`}
@@ -121,7 +119,7 @@ export function VacuumPanel({ compact = false }: { compact?: boolean }) {
             <Trash2 className="h-3.5 w-3.5" />
             Bac
           </Eyebrow>
-          <p className="mt-1 font-serif text-base">{v.binFullPct}% plein</p>
+          <p className="mt-1 text-base">{v.binFullPct}% plein</p>
         </div>
       </div>
     </div>

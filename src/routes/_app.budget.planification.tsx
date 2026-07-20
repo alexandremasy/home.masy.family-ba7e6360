@@ -141,9 +141,7 @@ function PlanificationPage() {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
           <Eyebrow size="xs">Budget · Planification</Eyebrow>
-          <h1 className="mt-1 font-serif text-xl tracking-tight sm:text-4xl">
-            L'atelier des budgets
-          </h1>
+          <h1 className="mt-1 text-xl tracking-tight sm:text-4xl">L'atelier des budgets</h1>
         </div>
         <div className="flex items-center gap-3">
           {archive && (
@@ -175,7 +173,7 @@ function PlanificationPage() {
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <span className="w-12 text-center font-serif text-lg tabular-nums">{year}</span>
+            <span className="w-12 text-center text-lg tabular-nums">{year}</span>
             <Button
               onClick={() => setYear((y) => Math.min(PLAN_MAX_YEAR, y + 1))}
               disabled={year >= PLAN_MAX_YEAR}
@@ -207,7 +205,7 @@ function PlanificationPage() {
                         <span className="grid h-8 w-8 place-items-center rounded-full bg-secondary text-foreground/70">
                           <Icon className="h-4 w-4" />
                         </span>
-                        <h2 className="font-serif text-lg tracking-tight">{cat}</h2>
+                        <h2 className="text-lg tracking-tight">{cat}</h2>
                       </div>
                     )}
                     <div className="space-y-3">
@@ -310,7 +308,7 @@ function PlanificationPage() {
                       <span className="grid h-8 w-8 place-items-center rounded-full bg-secondary text-foreground/70">
                         <Icon className="h-4 w-4" />
                       </span>
-                      <h2 className="font-serif text-lg tracking-tight">{cat}</h2>
+                      <h2 className="text-lg tracking-tight">{cat}</h2>
                     </div>
                   )}
                   {groups.map(({ group, items }) => (
@@ -450,7 +448,7 @@ function ProvisionBox({
         <Eyebrow size="xs" className="truncate">
           Provision /mois
         </Eyebrow>
-        <p className="font-serif text-lg tabular-nums tracking-tight text-primary sm:text-xl">
+        <p className="text-lg tabular-nums tracking-tight text-primary sm:text-xl">
           {eur(provision)}
         </p>
         <p className="mt-1 text-2xs leading-snug text-muted-foreground">
@@ -484,7 +482,7 @@ function Bucket({
       <Eyebrow size="xs" className="truncate">
         {label}
       </Eyebrow>
-      <p className={"mt-1.5 font-serif text-lg tabular-nums tracking-tight sm:text-xl " + tint}>
+      <p className={"mt-1.5 text-lg tabular-nums tracking-tight sm:text-xl " + tint}>
         {signed && value >= 0 ? "+" : ""}
         <CountUp to={value} group />
         <span className="ml-0.5 text-xs text-muted-foreground">€/an</span>
@@ -824,7 +822,7 @@ function EditModal({
         {poste && (
           <>
             <DialogHeader>
-              <DialogTitle className="font-serif text-lg">{poste.label}</DialogTitle>
+              <DialogTitle className="text-lg">{poste.label}</DialogTitle>
               <p className="text-xs text-muted-foreground">
                 {poste.cat} › {poste.group}
               </p>

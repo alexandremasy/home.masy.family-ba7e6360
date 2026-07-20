@@ -33,9 +33,16 @@ export function TokenValue({ token, fallback }: { token: string; fallback?: stri
  * `var(--x)`: it parses the value to compute its contrast label, so it must get a
  * real colour or nothing.
  */
-function useTokenValuesAt(tokens: string[]) {
+/** A semantic token, and the ramp rung it points at when there is one. */
+export type TokenRef = string | { name: string; rung: string };
+
+const refName = (t: TokenRef) => (typeof t === "string" ? t : t.name);
+/** The swatch label carries the rung, so the mapping lives with the colour itself. */
+const refLabel = (t: TokenRef) => (typeof t === "string" ? `--${t}` : `--${t.name} · ${t.rung}`);
+
+function useTokenValuesAt(tokens: TokenRef[]) {
   const ref = useRef<HTMLSpanElement>(null);
-  const key = tokens.join(",");
+  const key = tokens.map((t) => `${refName(t)}|${refLabel(t)}`).join(",");
   const [values, setValues] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -44,9 +51,10 @@ function useTokenValuesAt(tokens: string[]) {
     const read = () => {
       const style = getComputedStyle(el);
       const next: Record<string, string> = {};
-      for (const t of key.split(",")) {
-        const v = style.getPropertyValue(`--${t}`).trim();
-        if (v) next[`--${t}`] = v;
+      for (const pair of key.split(",")) {
+        const [name, label] = pair.split("|");
+        const v = style.getPropertyValue(`--${name}`).trim();
+        if (v) next[label] = v;
       }
       setValues(next);
     };
@@ -66,7 +74,7 @@ function LiveColorItem({
 }: {
   title: string;
   subtitle?: string;
-  tokens: string[];
+  tokens: TokenRef[];
 }) {
   const { ref, values } = useTokenValuesAt(tokens);
   return (
@@ -79,33 +87,11 @@ function LiveColorItem({
   );
 }
 
-/**
- * The same palette resolved in the dark theme. The `.dark` class is here only to
- * SCOPE the custom properties — each item reads them off its own node inside this
- * wrapper. It deliberately paints no dark background: the block draws its labels in
- * the docs theme's own ink, which would vanish on one.
- */
-export function DarkPalette({
-  groups,
-}: {
-  groups: { title: string; note?: string; tokens: string[] }[];
-}) {
-  return (
-    <div className="dark">
-      <ColorPalette>
-        {groups.map((g) => (
-          <LiveColorItem key={g.title} title={g.title} subtitle={g.note} tokens={g.tokens} />
-        ))}
-      </ColorPalette>
-    </div>
-  );
-}
-
 /** The palette, grouped by role. Values read live, rendering by Storybook. */
 export function TokenPalette({
   groups,
 }: {
-  groups: { title: string; note?: string; tokens: string[] }[];
+  groups: { title: string; note?: string; tokens: TokenRef[] }[];
 }) {
   return (
     <ColorPalette>

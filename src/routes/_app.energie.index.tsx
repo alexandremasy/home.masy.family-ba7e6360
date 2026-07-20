@@ -324,9 +324,7 @@ function MetricCard({
         >
           {icon}
         </span>
-        <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">
-          {label}
-        </h2>
+        <h2 className="text-base font-semibold tracking-tight text-foreground">{label}</h2>
       </div>
       {children}
     </div>
@@ -405,7 +403,7 @@ function EnergiePage() {
             <Eyebrow tone="current" className="opacity-70">
               À faire
             </Eyebrow>
-            <p className="mt-1 font-serif text-xl">Relevé mensuel à saisir</p>
+            <p className="mt-1 text-xl">Relevé mensuel à saisir</p>
           </div>
           <Button asChild variant="inverted" className="group gap-2 rounded-full">
             <Link to="/energie/saisie">
@@ -447,7 +445,7 @@ function EnergiePage() {
             {/* ELECTRICITY */}
             <MetricCard label="Électricité" icon={<Zap className="h-4 w-4 anim-glow" />}>
               <div className="mt-4 flex items-baseline gap-1.5">
-                <span className="font-serif text-2xl tracking-tight">{electricity.dailyKWh}</span>
+                <span className="text-2xl tracking-tight">{electricity.dailyKWh}</span>
                 <span className="text-base text-muted-foreground">kWh / jour</span>
               </div>
               <div className="mt-2">
@@ -455,10 +453,8 @@ function EnergiePage() {
               </div>
 
               <p className="mt-2 text-sm text-muted-foreground">
-                <span className="font-serif tabular-nums text-foreground">
-                  {electricity.monthKWh} kWh
-                </span>{" "}
-                en {coveredMonthLabel}
+                <span className="tabular-nums text-foreground">{electricity.monthKWh} kWh</span> en{" "}
+                {coveredMonthLabel}
               </p>
 
               <div className="mt-3 grid grid-cols-2 gap-2">
@@ -466,7 +462,7 @@ function EnergiePage() {
                   <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Sun className="h-3.5 w-3.5 text-warm" /> Jour
                   </p>
-                  <p className="mt-1 font-serif text-lg tabular-nums">
+                  <p className="mt-1 text-lg tabular-nums">
                     {electricity.dayTotal}
                     <span className="ml-1 text-xs text-muted-foreground">kWh</span>
                   </p>
@@ -475,7 +471,7 @@ function EnergiePage() {
                   <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Moon className="h-3.5 w-3.5 text-foreground/70" /> Nuit
                   </p>
-                  <p className="mt-1 font-serif text-lg tabular-nums">
+                  <p className="mt-1 text-lg tabular-nums">
                     {electricity.nightTotal}
                     <span className="ml-1 text-xs text-muted-foreground">kWh</span>
                   </p>
@@ -490,7 +486,7 @@ function EnergiePage() {
             {/* WATER */}
             <MetricCard label="Eau" icon={<Droplet className="h-4 w-4 anim-float" />}>
               <div className="mt-4 flex items-baseline gap-1.5">
-                <span className="font-serif text-2xl tracking-tight">{water.dailyM3}</span>
+                <span className="text-2xl tracking-tight">{water.dailyM3}</span>
                 <span className="text-base text-muted-foreground">m³ / jour</span>
               </div>
               <div className="mt-2">
@@ -521,7 +517,7 @@ function EnergiePage() {
               alert={oil.status === "alert"}
             >
               <div className="mt-4 flex items-baseline gap-1.5">
-                <span className="font-serif text-2xl tracking-tight">{oil.tankPct}</span>
+                <span className="text-2xl tracking-tight">{oil.tankPct}</span>
                 <span className="text-base text-muted-foreground">% citerne</span>
               </div>
               <p className="mt-0.5 text-sm text-muted-foreground tabular-nums">
@@ -553,7 +549,7 @@ function EnergiePage() {
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <div className="rounded-xl bg-secondary/60 p-3">
                   <p className="text-xs text-muted-foreground">30 derniers jours</p>
-                  <p className="mt-1 font-serif text-lg tabular-nums">
+                  <p className="mt-1 text-lg tabular-nums">
                     {oil.last30dLiters}
                     <span className="ml-1 text-xs text-muted-foreground">L</span>
                   </p>
@@ -562,8 +558,7 @@ function EnergiePage() {
                   <p className="text-xs text-muted-foreground">Autonomie</p>
                   <p
                     className={
-                      "mt-1 font-serif text-lg tabular-nums " +
-                      (oil.status === "alert" ? "text-warm" : "")
+                      "mt-1 text-lg tabular-nums " + (oil.status === "alert" ? "text-warm" : "")
                     }
                   >
                     ~{oil.autonomyDays}
@@ -586,7 +581,7 @@ function EnergiePage() {
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
                     <DomainIcon className="h-4 w-4" />
                   </span>
-                  <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">
+                  <h2 className="text-base font-semibold tracking-tight text-foreground">
                     Historique {cfg.label.toLowerCase()}
                   </h2>
                 </div>
@@ -833,7 +828,7 @@ function ReleveList() {
     <div className="rounded-2xl border border-border/60 bg-card shadow-soft overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-5 py-4">
         <div>
-          <h2 className="font-serif text-base font-semibold tracking-tight text-foreground">
+          <h2 className="text-base font-semibold tracking-tight text-foreground">
             Historique des relevés
           </h2>
           <p className="text-xs text-muted-foreground mt-0.5">
@@ -972,7 +967,7 @@ function ReleveList() {
                         className="mt-1 h-8 w-full tabular-nums"
                       />
                     ) : (
-                      <p className="mt-0.5 font-serif text-base tabular-nums">
+                      <p className="mt-0.5 text-base tabular-nums">
                         {row[c]}
                         <span className="ml-1 text-xs text-muted-foreground">
                           {typeMeta[c].unit}

@@ -327,7 +327,7 @@ function RepasPage() {
             {picker && (
               <>
                 <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2 font-serif text-lg">
+                  <DialogTitle className="flex items-center gap-2 text-lg">
                     <SlotTitle date={selectedDate!} slot={selected!.slot} />
                   </DialogTitle>
                 </DialogHeader>
@@ -342,7 +342,7 @@ function RepasPage() {
             {picker && (
               <>
                 <DrawerHeader className="p-0 text-left">
-                  <DrawerTitle className="flex items-center gap-2 font-serif text-lg">
+                  <DrawerTitle className="flex items-center gap-2 text-lg">
                     <SlotTitle date={selectedDate!} slot={selected!.slot} />
                   </DrawerTitle>
                 </DrawerHeader>

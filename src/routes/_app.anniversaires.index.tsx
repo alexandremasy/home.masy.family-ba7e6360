@@ -116,7 +116,7 @@ function TodayHero({ person, onEditProfile }: { person: Person; onEditProfile: (
             <Eyebrow tone="current" size="xs" className="text-primary">
               Aujourd'hui 🎉
             </Eyebrow>
-            <h1 className="font-serif text-2xl tracking-tight sm:text-3xl">
+            <h1 className="text-2xl tracking-tight sm:text-3xl">
               {hasBirthYear(person.dob)
                 ? `${person.name} a ${upcomingAge(person)} ans aujourd'hui.`
                 : `C'est l'anniversaire de ${person.name} aujourd'hui.`}
@@ -209,9 +209,7 @@ function SuggestionCard({
           </button>
         </div>
       </div>
-      <p className="whitespace-pre-wrap font-serif text-base leading-relaxed text-foreground">
-        {message}
-      </p>
+      <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground">{message}</p>
     </div>
   );
 }
@@ -223,7 +221,7 @@ function EmptyToday({ next }: { next?: Person }) {
       <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-secondary text-muted-foreground">
         <Cake className="h-6 w-6" />
       </div>
-      <p className="mt-3 font-serif text-base">Pas d'anniversaire aujourd'hui</p>
+      <p className="mt-3 text-base">Pas d'anniversaire aujourd'hui</p>
       <p className="mt-1 text-xs text-muted-foreground">
         {next
           ? `Le prochain, c'est ${next.name} dans ${daysUntil(nextBirthday(next))} j.`

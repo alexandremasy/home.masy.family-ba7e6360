@@ -73,7 +73,7 @@ function ActiviteTab() {
                   <Icon className="h-4 w-4" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="font-serif text-base leading-tight">{e.label}</p>
+                  <p className="text-base leading-tight">{e.label}</p>
                   <p className="text-xs text-muted-foreground">
                     {e.where} · {e.ago}
                   </p>
@@ -183,7 +183,7 @@ function HealthStat({
         {icon}
         {label}
       </div>
-      <p className="mt-2 font-serif text-xl">
+      <p className="mt-2 text-xl">
         {value}
         {sub && <span className="ml-1 text-sm text-muted-foreground">{sub}</span>}
       </p>

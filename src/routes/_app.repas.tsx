@@ -58,7 +58,7 @@ function RepasLayout() {
                 <span className="sr-only">Retour au cockpit</span>
               </Link>
             </Button>
-            <h1 className="font-serif text-2xl font-semibold tracking-tight sm:text-3xl">Repas</h1>
+            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Repas</h1>
           </div>
 
           {/* Page navigation — each tab is its own route (deep-linkable). */}

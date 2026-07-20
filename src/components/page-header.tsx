@@ -45,8 +45,8 @@ export function PageHeader({
 
   const titleCls =
     size === "sm"
-      ? "truncate font-serif text-xl font-semibold tracking-tight sm:text-2xl"
-      : "truncate font-serif text-3xl tracking-tight sm:text-4xl";
+      ? "truncate text-xl font-semibold tracking-tight sm:text-2xl"
+      : "truncate text-3xl tracking-tight sm:text-4xl";
 
   // Inside a bottom sheet the whole header is the drag-to-dismiss zone (the grabber
   // is just the affordance). Outside one — a full-bleed page — `handlers` is null,

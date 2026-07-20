@@ -76,9 +76,7 @@ function MensuelPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <Eyebrow size="xs">Budget · Mensuel</Eyebrow>
-          <h1 className="mt-1 font-serif text-3xl tracking-tight sm:text-4xl capitalize">
-            {monthLabel}
-          </h1>
+          <h1 className="mt-1 text-3xl tracking-tight sm:text-4xl capitalize">{monthLabel}</h1>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -167,7 +165,7 @@ function MensuelPage() {
       <Panel className="anim-slide-up">
         <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="font-serif text-xl tracking-tight">Prévu vs réel</h2>
+            <h2 className="text-xl tracking-tight">Prévu vs réel</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               Triées par dépense — touchez pour explorer
             </p>
@@ -197,7 +195,7 @@ function MensuelPage() {
       {bills.length > 0 && (
         <Panel className="anim-slide-up">
           <header className="mb-4">
-            <h2 className="font-serif text-lg tracking-tight">Pression du mois</h2>
+            <h2 className="text-lg tracking-tight">Pression du mois</h2>
             <p className="mt-0.5 text-xs text-muted-foreground">
               Grosses échéances non mensuelles qui atterrissent ce mois-ci
             </p>
@@ -268,7 +266,7 @@ function Kpi({
           <Icon className="h-4 w-4" />
         </span>
       </div>
-      <p className="mt-3 font-serif text-3xl tracking-tight tabular-nums">
+      <p className="mt-3 text-3xl tracking-tight tabular-nums">
         <CountUp to={value} />
         <span className="ml-1 text-base text-muted-foreground">€</span>
       </p>
@@ -322,10 +320,10 @@ function IncomePanel() {
     <Panel as="div">
       <header className="mb-4 flex items-end justify-between gap-3">
         <div>
-          <h2 className="font-serif text-xl tracking-tight">Entrées</h2>
+          <h2 className="text-xl tracking-tight">Entrées</h2>
           <p className="mt-1 text-sm text-muted-foreground">Sources du mois</p>
         </div>
-        <p className="font-serif text-lg tabular-nums">{eur(total)}</p>
+        <p className="text-lg tabular-nums">{eur(total)}</p>
       </header>
       <ul className="space-y-3 stagger">
         {incomeSources.map((s) => {
@@ -394,12 +392,12 @@ function DonutPanel({
     <Panel as="div">
       <header className="mb-4 flex items-end justify-between gap-3">
         <div>
-          <h2 className="font-serif text-xl tracking-tight">Dépenses</h2>
+          <h2 className="text-xl tracking-tight">Dépenses</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Top 5 + Autres — touchez une part pour filtrer
           </p>
         </div>
-        <p className="font-serif text-lg tabular-nums">{eur(total)}</p>
+        <p className="text-lg tabular-nums">{eur(total)}</p>
       </header>
       <div className="grid gap-5 sm:grid-cols-[auto_1fr] sm:items-center">
         <div className="relative mx-auto" style={{ width: size, height: size }}>
@@ -444,7 +442,7 @@ function DonutPanel({
             {focused ? (
               <div className="anim-pop-in">
                 <Eyebrow size="xs">{focused.label}</Eyebrow>
-                <p className="font-serif text-xl tabular-nums">{eur(focused.value)}</p>
+                <p className="text-xl tabular-nums">{eur(focused.value)}</p>
                 <p className="text-xs text-muted-foreground tabular-nums">
                   {Math.round((focused.value / total) * 100)}%
                 </p>
@@ -452,7 +450,7 @@ function DonutPanel({
             ) : (
               <div>
                 <Eyebrow size="xs">Total</Eyebrow>
-                <p className="font-serif text-xl tabular-nums">{eur(total)}</p>
+                <p className="text-xl tabular-nums">{eur(total)}</p>
               </div>
             )}
           </div>

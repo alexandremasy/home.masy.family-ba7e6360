@@ -333,7 +333,7 @@ export const RealCards: Story = {
         }
       >
         <p className="flex items-baseline gap-1.5">
-          <span className="font-serif text-2xl tracking-tight tabular-nums">8,4</span>
+          <span className="text-2xl tracking-tight tabular-nums">8,4</span>
           <span className="text-base text-muted-foreground">kWh / jour</span>
         </p>
         <div className="mt-3 grid grid-cols-2 gap-2">
@@ -345,7 +345,7 @@ export const RealCards: Story = {
               <Eyebrow size="xs" as="div">
                 {label}
               </Eyebrow>
-              <p className="mt-1 font-serif text-lg tabular-nums">
+              <p className="mt-1 text-lg tabular-nums">
                 {value}
                 <span className="ml-1 text-xs text-muted-foreground">kWh</span>
               </p>
@@ -392,7 +392,7 @@ export const RealCards: Story = {
         divided
       >
         <p className="grid place-items-center py-4">
-          <span className="font-serif text-2xl tabular-nums">487</span>
+          <span className="text-2xl tabular-nums">487</span>
           <span className="text-base text-muted-foreground">Mbps ↓</span>
         </p>
       </Card>
@@ -430,5 +430,5 @@ export const RealCards: Story = {
 };
 
 function cnStat(colour: string) {
-  return "mt-1 font-serif text-lg tabular-nums " + colour;
+  return "mt-1 text-lg tabular-nums " + colour;
 }

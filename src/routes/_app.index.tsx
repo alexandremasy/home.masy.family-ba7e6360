@@ -101,7 +101,7 @@ export function Dashboard() {
           rooms grid sits right below. */}
       <header className="stagger space-y-8">
         <div className="flex flex-col items-start px-4">
-          <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             {greeting}.
           </h1>
           <RepasLine />
@@ -114,7 +114,7 @@ export function Dashboard() {
             <Tile variant="pill">
               <PMCBag className="pointer-events-none absolute -right-2 -top-1 h-[150%] w-auto opacity-90" />
               <div className="relative min-w-0">
-                <p className="truncate font-serif text-base font-semibold leading-tight">
+                <p className="truncate text-base font-semibold leading-tight">
                   {calendrier.poubelleToday.type}
                 </p>
                 <p className="text-2xs opacity-80">Auj. · avant {calendrier.poubelleToday.time}</p>
@@ -150,13 +150,13 @@ export function Dashboard() {
                       <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
                     </span>
                     <div>
-                      <p className="font-serif text-base font-semibold">{room.name}</p>
+                      <p className="text-base font-semibold">{room.name}</p>
                     </div>
                   </div>
                 </div>
 
                 {typeof room.temperature === "number" ? (
-                  <p className="mt-3 font-serif text-2xl tracking-tight">
+                  <p className="mt-3 text-2xl tracking-tight">
                     <CountUp to={room.temperature} decimals={1} />
                     <span className="text-base text-muted-foreground">°C</span>
                   </p>
@@ -205,7 +205,7 @@ export function Dashboard() {
                   <Eyebrow tone="current" className="opacity-70">
                     Énergie · à faire
                   </Eyebrow>
-                  <p className="mt-1 font-serif text-lg">Relevé mensuel à saisir</p>
+                  <p className="mt-1 text-lg">Relevé mensuel à saisir</p>
                   <p className="mt-1 text-sm opacity-80">
                     3 compteurs en attente — eau, électricité, mazout.
                   </p>
@@ -233,7 +233,7 @@ export function Dashboard() {
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
                     <Zap className="h-4.5 w-4.5" />
                   </span>
-                  <p className="font-serif text-base font-semibold">Énergie</p>
+                  <p className="text-base font-semibold">Énergie</p>
                 </div>
                 {(() => {
                   const alerts: string[] = [];
@@ -316,7 +316,7 @@ export function Dashboard() {
               </div>
               <div className="mt-3 flex items-baseline justify-between gap-1">
                 <span className="flex items-baseline gap-1">
-                  <span className="font-serif text-2xl tracking-tight">
+                  <span className="text-2xl tracking-tight">
                     <CountUp to={tesla.charge} />
                   </span>
                   <span className="text-base opacity-60">%</span>
@@ -345,9 +345,7 @@ export function Dashboard() {
                   <Eyebrow tone="current" className="opacity-60">
                     Bernard
                   </Eyebrow>
-                  <p className="mt-1 font-serif text-lg">
-                    {tesla.inGarage ? "Au garage" : "En déplacement"}
-                  </p>
+                  <p className="mt-1 text-lg">{tesla.inGarage ? "Au garage" : "En déplacement"}</p>
                   <p className="mt-0.5 inline-flex items-center gap-1 text-xs opacity-60">
                     <MapPin className="h-3 w-3" />
                     {tesla.location}
@@ -358,7 +356,7 @@ export function Dashboard() {
               <div className="mt-4 flex items-end gap-6">
                 <div>
                   <div className="flex items-baseline gap-1">
-                    <span className="font-serif text-2xl tracking-tight">
+                    <span className="text-2xl tracking-tight">
                       <CountUp to={tesla.charge} />
                     </span>
                     <span className="text-lg opacity-60">%</span>
@@ -428,7 +426,7 @@ function BirthdayTile() {
           }
         />
         <div className="relative min-w-0">
-          <p className="break-words font-serif text-base font-semibold leading-tight">
+          <p className="break-words text-base font-semibold leading-tight">
             {first.p.name} a {upcomingAge(first.p)} ans
           </p>
           <p className={"text-2xs " + (today ? "opacity-80" : "text-muted-foreground")}>{when}</p>
@@ -479,7 +477,7 @@ function RepasTile() {
 
         {first ? (
           <>
-            <p className="mt-3 font-serif text-lg leading-snug">
+            <p className="mt-3 text-lg leading-snug">
               {label(first.o)}
               {first.midi && (
                 <>
@@ -504,7 +502,7 @@ function RepasTile() {
             )}
           </>
         ) : (
-          <p className="mt-3 font-serif text-lg leading-snug text-muted-foreground">
+          <p className="mt-3 text-lg leading-snug text-muted-foreground">
             Rien de planifié pour l'instant.
           </p>
         )}
@@ -527,9 +525,9 @@ function IdleRoomsTile({ rooms: idle }: { rooms: Room[] }) {
           className="group flex flex-1 items-center gap-2.5 rounded-2xl border border-border/60 bg-card/50 px-3 py-3.5 backdrop-blur-md transition-colors hover:bg-card/70"
         >
           <RoomIcon icon={r.icon} className="h-4 w-4 shrink-0 text-muted-foreground icon-hover" />
-          <span className="min-w-0 flex-1 truncate font-serif text-sm">{r.name}</span>
+          <span className="min-w-0 flex-1 truncate text-sm">{r.name}</span>
           {typeof r.temperature === "number" && (
-            <span className="shrink-0 font-serif text-sm tabular-nums text-muted-foreground">
+            <span className="shrink-0 text-sm tabular-nums text-muted-foreground">
               {r.temperature}°
             </span>
           )}
@@ -605,7 +603,7 @@ function ReseauTile() {
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
               <Wifi className="h-4.5 w-4.5" />
             </span>
-            <p className="font-serif text-base font-semibold">Réseau</p>
+            <p className="text-base font-semibold">Réseau</p>
           </div>
           <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
             <Wifi className="h-3 w-3" />
@@ -620,7 +618,7 @@ function ReseauTile() {
             className="w-[78%] max-w-[220px] overflow-visible"
           />
           <div className="absolute inset-x-0 top-[44%] text-center">
-            <p className="font-serif text-2xl leading-none tracking-tight tabular-nums">
+            <p className="text-2xl leading-none tracking-tight tabular-nums">
               <CountUp to={st.downMbps} />
             </p>
             <Eyebrow size="xs" className="mt-1">
@@ -676,7 +674,7 @@ function SalonTile({ room, variant }: { room: (typeof rooms)[number]; variant: S
     },
     netflix: {
       tint: "bg-[oklch(0.32_0.18_25)] text-white",
-      icon: <span className="font-serif text-sm font-semibold leading-none">N</span>,
+      icon: <span className="text-sm font-semibold leading-none">N</span>,
       sub: "Dark · S2E4",
       playing: true,
     },
@@ -703,7 +701,7 @@ function SalonTile({ room, variant }: { room: (typeof rooms)[number]; variant: S
               {media.icon}
             </span>
             <div className="min-w-0">
-              <p className="font-serif text-base font-semibold leading-tight">{room.name}</p>
+              <p className="text-base font-semibold leading-tight">{room.name}</p>
               <p className="mt-0.5 truncate text-xs text-muted-foreground">{media.sub}</p>
             </div>
           </div>
@@ -781,7 +779,7 @@ function NetBlock({
           className={"h-2 w-2 rounded-full " + (ok ? "bg-success/70" : "bg-muted-foreground/40")}
         />
       </div>
-      <span className="mt-2 flex items-baseline gap-1 font-serif text-lg leading-none sm:text-lg tabular-nums">
+      <span className="mt-2 flex items-baseline gap-1 text-lg leading-none sm:text-lg tabular-nums">
         {value}
       </span>
       <p className="mt-1.5 truncate text-xs text-muted-foreground">{sub}</p>
@@ -878,7 +876,7 @@ function ElecBlock() {
     >
       <Tip label="Consommation électrique moyenne du jour, en kilowattheures.">
         <span className="mt-2 flex items-baseline gap-1">
-          <span className="font-serif text-lg leading-none sm:text-lg">{e.dailyKWh}</span>
+          <span className="text-lg leading-none sm:text-lg">{e.dailyKWh}</span>
           <span className="text-xs text-muted-foreground">kWh/j</span>
         </span>
       </Tip>
@@ -906,7 +904,7 @@ function WaterBlock() {
     >
       <Tip label="Consommation d'eau moyenne du jour, en mètres cubes.">
         <span className="mt-2 flex items-baseline gap-1">
-          <span className="font-serif text-lg leading-none sm:text-lg">{w.dailyM3}</span>
+          <span className="text-lg leading-none sm:text-lg">{w.dailyM3}</span>
           <span className="text-xs text-muted-foreground">m³/j</span>
         </span>
       </Tip>
@@ -940,7 +938,7 @@ function OilBlock() {
     >
       <Tip label={`Niveau actuel de la cuve à mazout (${o.tankLiters} L restants).`}>
         <span className="mt-2 flex items-baseline gap-1">
-          <span className="font-serif text-lg leading-none sm:text-lg">
+          <span className="text-lg leading-none sm:text-lg">
             {o.tankPct}
             <span className="text-xs text-muted-foreground">%</span>
           </span>
@@ -989,7 +987,7 @@ function WeatherTile() {
             <WeatherIcon cond={m.cond} className="h-6 w-6 text-foreground/80" />
           </div>
           <div className="mt-2 flex items-baseline gap-1">
-            <span className="font-serif text-3xl tracking-tight text-foreground">{m.tempC}</span>
+            <span className="text-3xl tracking-tight text-foreground">{m.tempC}</span>
             <span className="text-sm text-muted-foreground">°</span>
           </div>
           <p className="mt-0.5 text-xs text-muted-foreground">
@@ -1054,9 +1052,7 @@ function MealRow({ icon, name }: { icon: React.ReactNode; name: string }) {
   return (
     <div className="flex items-center gap-1.5">
       <span className="shrink-0">{icon}</span>
-      <span className="min-w-0 truncate font-serif text-sm leading-tight text-muted-foreground">
-        {name}
-      </span>
+      <span className="min-w-0 truncate text-sm leading-tight text-muted-foreground">{name}</span>
     </div>
   );
 }
@@ -1066,7 +1062,7 @@ function WeatherDialog() {
   return (
     <DialogContent className="sm:max-w-lg duration-300 data-[state=open]:slide-in-from-top-4 data-[state=closed]:slide-out-to-top-2 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95">
       <DialogHeader>
-        <DialogTitle className="font-serif text-xl">Météo · {m.location}</DialogTitle>
+        <DialogTitle className="text-xl">Météo · {m.location}</DialogTitle>
       </DialogHeader>
 
       {/* Today */}
@@ -1074,13 +1070,13 @@ function WeatherDialog() {
         <div className="flex items-start justify-between">
           <div>
             <Eyebrow>Aujourd'hui</Eyebrow>
-            <p className="mt-1 font-serif text-lg">{m.label}</p>
+            <p className="mt-1 text-lg">{m.label}</p>
           </div>
           <WeatherIcon cond={m.cond} className="h-10 w-10 text-foreground/80" />
         </div>
         <div className="mt-3 flex items-end gap-5">
           <div className="flex items-baseline gap-1">
-            <span className="font-serif text-5xl tracking-tight">{m.tempC}</span>
+            <span className="text-5xl tracking-tight">{m.tempC}</span>
             <span className="text-lg text-muted-foreground">°C</span>
           </div>
           <p className="pb-1 text-xs text-muted-foreground">
@@ -1124,7 +1120,7 @@ function WeatherDialog() {
                 {d.day}
               </Eyebrow>
               <WeatherIcon cond={d.cond} className="my-1.5 h-5 w-5" />
-              <span className="font-serif text-sm leading-tight">{d.maxC}°</span>
+              <span className="text-sm leading-tight">{d.maxC}°</span>
               <span className="text-2xs tabular-nums text-muted-foreground">{d.minC}°</span>
               <span className="mt-1 inline-flex items-center gap-0.5 text-2xs text-muted-foreground">
                 <Droplet className="h-2.5 w-2.5" />
@@ -1169,7 +1165,7 @@ function EnergieRow({
       <Eyebrow size="xs" as="span" className="min-w-0 flex-1">
         {label}
       </Eyebrow>
-      <span className="font-serif text-sm leading-none tabular-nums">{value}</span>
+      <span className="text-sm leading-none tabular-nums">{value}</span>
       {sub && <span className="text-xs tabular-nums text-muted-foreground">{sub}</span>}
       {trend && <TrendBadge trend={trend} pct={trendPct} hidePct />}
       <StatusDot status={status} />

@@ -20,7 +20,7 @@ export function PersonCard({ person, onEdit }: { person: Person; onEdit?: () => 
   const body = (
     <>
       <div className="min-w-0">
-        <p className="truncate font-serif text-sm font-semibold leading-tight">{person.name}</p>
+        <p className="truncate text-sm font-semibold leading-tight">{person.name}</p>
         <p className="truncate text-xs text-muted-foreground">{meta}</p>
       </div>
       <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />

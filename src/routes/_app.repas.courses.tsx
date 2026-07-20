@@ -230,7 +230,7 @@ function CoursesPage() {
       {/* ── Meals and their components — no framed panel, just the list ── */}
       <div className="anim-slide-up">
         <header className="mb-5">
-          <h2 className="font-serif text-xl tracking-tight text-foreground">Prochains repas</h2>
+          <h2 className="text-xl tracking-tight text-foreground">Prochains repas</h2>
         </header>
         {/* Basket summary — sits inline in the content, then sticks to the top as you
             scroll the days list (a floating card, not fixed chrome). Tap opens the
@@ -248,7 +248,7 @@ function CoursesPage() {
           <DrawerContent className="max-h-[85dvh]">
             <DrawerHeader className="text-left">
               <div className="flex items-baseline justify-between gap-3">
-                <DrawerTitle className="font-serif text-lg">Liste de courses</DrawerTitle>
+                <DrawerTitle className="text-lg">Liste de courses</DrawerTitle>
                 <span className="shrink-0 text-xs text-muted-foreground">
                   {totalItems} article{totalItems > 1 ? "s" : ""}
                 </span>

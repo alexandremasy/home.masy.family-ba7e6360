@@ -1,5 +1,5 @@
 import { Meta, Title, Subtitle, Unstyled } from "@storybook/addon-docs/blocks";
-import { TokenPalette, DarkPalette, RampPalette } from "./live-tokens";
+import { TokenPalette, RampPalette } from "./live-tokens";
 
 <Meta title="Foundations/Color" />
 
@@ -7,101 +7,74 @@ import { TokenPalette, DarkPalette, RampPalette } from "./live-tokens";
 
 <Subtitle>
   Two layers: nine primitive ramps ported from Figma, and the semantics this app decides on top of
-  them. Every value below is read off the document root, so the page cannot disagree with
-  `styles.css` — toggle the theme and it re-reads.
+  them. Every value is measured live, so the page cannot disagree with `styles.css`.
 </Subtitle>
+
+**Flip the theme in the toolbar** to read the same page in dark — the semantics re-point and every
+value below re-reads. There is no second table to keep in sync.
 
 ## Semantics — what you actually use
 
-Meaning before hue. **These are the only colour tokens a component may reach for.** Each one
-points at a rung, never at a hex, so re-pointing `--primary` moves the whole product at once.
+Meaning before hue. **These are the only colour tokens a component may reach for.** Each swatch
+carries the rung it points at, never a hex of its own — so re-pointing `--primary` moves the whole
+product at once.
 
 <TokenPalette
   groups={[
     {
       title: "Signal",
-      note: "primary = positive · warm = ALERT, nothing else · mustard = decorative and data series",
-      tokens: ["primary", "warm", "mustard", "success", "destructive"],
+      note: "positive, alert, decorative, success, error",
+      tokens: [
+        { name: "primary", rung: "Teal/60" },
+        { name: "warm", rung: "Orange/40" },
+        { name: "mustard", rung: "Yellow/50" },
+        { name: "success", rung: "Green/50" },
+        { name: "destructive", rung: "Red/50" },
+      ],
     },
     {
       title: "Surfaces",
       note: "the page, then everything raised above it",
-      tokens: ["background", "card", "popover", "secondary", "muted", "accent"],
+      tokens: [
+        { name: "background", rung: "Light/00" },
+        { name: "card", rung: "White" },
+        { name: "popover", rung: "White" },
+        { name: "secondary", rung: "Light/10" },
+        { name: "muted", rung: "Light/10" },
+        { name: "accent", rung: "Light/10" },
+      ],
     },
     {
       title: "Text & lines",
       note: "body, secondary, hairlines and the focus ring",
-      tokens: ["foreground", "muted-foreground", "border", "input", "ring"],
+      tokens: [
+        { name: "foreground", rung: "Light/90" },
+        { name: "muted-foreground", rung: "Light/60" },
+        { name: "border", rung: "Light/20" },
+        { name: "input", rung: "Light/20" },
+        { name: "ring", rung: "Teal/60" },
+      ],
     },
     {
       title: "Sidebar",
       note: "its own ramp, so the rail reads distinct from the page",
       tokens: [
-        "sidebar",
-        "sidebar-foreground",
-        "sidebar-primary",
-        "sidebar-accent",
-        "sidebar-border",
-        "sidebar-ring",
+        { name: "sidebar", rung: "White" },
+        { name: "sidebar-foreground", rung: "Light/90" },
+        { name: "sidebar-primary", rung: "Teal/60" },
+        { name: "sidebar-accent", rung: "Light/10" },
+        { name: "sidebar-border", rung: "Light/20" },
+        { name: "sidebar-ring", rung: "Teal/60" },
       ],
     },
   ]}
 />
 
-### Which rung each semantic points at
-
-| Token                                  | Rung      |
-| -------------------------------------- | --------- |
-| `--background`                         | Light/00  |
-| `--card` · `--popover` · `--sidebar`   | White     |
-| `--secondary` · `--muted` · `--accent` | Light/10  |
-| `--border` · `--input`                 | Light/20  |
-| `--muted-foreground`                   | Light/60  |
-| `--foreground` · every `-foreground`   | Light/90  |
-| `--primary` · `--ring`                 | Teal/60   |
-| `--warm`                               | Orange/40 |
-| `--mustard`                            | Yellow/50 |
-| `--success`                            | Green/50  |
-| `--destructive`                        | Red/50    |
+Every `-foreground` token is Light/90, chosen for contrast on its own fill.
 
 Two hues carry two different jobs, and the distance between them is what makes both readable:
 **`--warm` (Orange/40) means "act on this"** — a reading to enter, a level running low.
 **`--destructive` (Red/50) means "something failed or will be lost"** — an error, a deletion.
-
-## The same semantics, dark
-
-The dark theme re-points every semantic. Surfaces and text swap; the signal hues stay
-recognisable, lifted in lightness so they hold on a dark ground.
-
-<DarkPalette
-  groups={[
-    {
-      title: "Signal",
-      note: "same meanings, lifted to stay legible on a dark ground",
-      tokens: ["primary", "warm", "mustard", "success", "destructive"],
-    },
-    {
-      title: "Surfaces",
-      note: "navy-tinted rather than neutral grey — the theme keeps its temperature",
-      tokens: ["background", "card", "popover", "secondary", "muted", "accent"],
-    },
-    {
-      title: "Text & lines",
-      tokens: ["foreground", "muted-foreground", "border", "input", "ring"],
-    },
-    {
-      title: "Sidebar",
-      tokens: [
-        "sidebar",
-        "sidebar-foreground",
-        "sidebar-primary",
-        "sidebar-accent",
-        "sidebar-border",
-        "sidebar-ring",
-      ],
-    },
-  ]}
-/>
 
 ## Primitives — the nine ramps
 
