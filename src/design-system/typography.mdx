@@ -5,14 +5,29 @@ import { Meta, Title, Subtitle, Typeset, Unstyled } from "@storybook/addon-docs/
 <Title>Typography</Title>
 
 <Subtitle>
-  Eleven rungs, nothing else. `styles.css` wipes Tailwind's own scale (`--text-*: initial`) first,
-  so `text-7xl` and `text-[13px]` are unwritable.
+  One typeface, eleven sizes, two weights. Everything else is a decision that has already been made
+  for you.
 </Subtitle>
 
-The names are Tailwind's, the values are Figma's, and they disagree by one rung: `text-xl` is
-**24px** here, not Tailwind's 20. Read the value, not the name.
+## The typeface
+
+The **native OS stack** — San Francisco on Apple, Segoe UI on Windows, Roboto on Android. No
+webfont is loaded, so there is nothing to wait for and nothing to fall back to.
+
+<Unstyled>
+  <div className="rounded-xl border border-border/60 bg-card p-5">
+    <p className="font-sans text-2xl tracking-tight">Portez ce vieux whisky au juge blond</p>
+    <p className="mt-2 font-mono text-2xs text-muted-foreground">--font-sans</p>
+  </div>
+</Unstyled>
 
 ## The scale
+
+Eleven rungs, nothing else: `styles.css` wipes Tailwind's own scale (`--text-*: initial`) before
+declaring these, so `text-7xl` and `text-[13px]` are unwritable.
+
+The names are Tailwind's, the values are Figma's, and they disagree by one rung — `text-xl` is
+**24px** here, not Tailwind's 20. Read the value, not the name.
 
 <Typeset
   fontSizes={[10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56]}
@@ -36,29 +51,13 @@ The names are Tailwind's, the values are Figma's, and they disagree by one rung:
 
 ## Weights
 
-<Typeset fontSizes={[24]} fontWeight={400} sampleText="Regular — running text" />
-<Typeset fontSizes={[24]} fontWeight={600} sampleText="Semibold — every heading in the app" />
-
-## One family
-
-There is **one** typeface: the native OS stack. No webfont is loaded, so the face is San Francisco
-on Apple, Segoe UI on Windows, Roboto on Android.
-
-`--font-sans` and `--font-serif` currently resolve to the **same stack** — `.font-serif` is a
-_display role_, not a second family, and it buys nothing today beyond marking intent at ~145 call
-sites. Either it earns a real display face, or it should be replaced by the weight and tracking it
-actually stands for. Until that is decided, the two samples below are identical on purpose.
+Two, and no more. Regular carries running text; semibold carries every heading, value and label
+that needs to come forward.
 
 <Unstyled>
-  <div className="grid gap-3 py-2 sm:grid-cols-2">
-    <div className="rounded-xl border border-border/60 bg-card p-4">
-      <p className="font-mono text-2xs text-muted-foreground">--font-sans · body, UI</p>
-      <p className="mt-2 font-sans text-lg">The quick brown fox jumps</p>
-    </div>
-    <div className="rounded-xl border border-border/60 bg-card p-4">
-      <p className="font-mono text-2xs text-muted-foreground">--font-serif · display role</p>
-      <p className="mt-2 font-serif text-lg tracking-tight">The quick brown fox jumps</p>
-    </div>
+  <div className="space-y-1 py-2">
+    <p className="text-xl font-normal">Regular — running text, 400</p>
+    <p className="text-xl font-semibold tracking-tight">Semibold — headings and values, 600</p>
   </div>
 </Unstyled>
 
@@ -66,11 +65,20 @@ actually stands for. Until that is decided, the two samples below are identical 
 
 The one letter-spacing this system owns: `--tracking-eyebrow`, **0.18em**. Figma sets
 letter-spacing 0 on every token, but the eyebrow is a dashboard pattern the reference doesn't
-cover — so the app owns its spacing. One value, where there used to be seven. It belongs to
-`components/eyebrow.tsx`; hand-spacing an uppercase label means you skipped the component.
+cover, so the app owns its spacing. One value, where there used to be seven.
+
+It belongs to `components/eyebrow.tsx` — hand-spacing an uppercase label means you skipped the
+component.
 
 <Unstyled>
   <p className="py-2 text-2xs font-medium uppercase tracking-eyebrow text-foreground">
     Understand · align · direct
   </p>
 </Unstyled>
+
+## Known debt — `.font-serif`
+
+`--font-serif` resolves to the **same stack** as `--font-sans`. It is a display _role_ marking
+intent at ~145 call sites, and it currently renders no differently. Two ways out, both open:
+give it a real display face, or replace it with the weight and tracking it actually stands for.
+Until then, do not read `.font-serif` as "a second typeface" — there is only one.
