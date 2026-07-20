@@ -1,9 +1,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outlet, Link, createRootRouteWithContext, useRouter } from "@tanstack/react-router";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Toaster } from "@/components/ui/sonner";
-import { Button } from "@/components/ui/button";
-import { CursorFollower } from "@/components/CursorFollower";
+import { TooltipProvider } from "@/components/tooltip";
+import { Toaster } from "@/components/sonner";
+import { Button } from "@/components/button";
+import { CursorFollower } from "@/components/cursor-follower";
 import "@fontsource/barlow/400.css";
 import "@fontsource/barlow/500.css";
 import "@fontsource/barlow/600.css";

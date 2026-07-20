@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Section } from "@/components/Card";
+import { Section } from "@/components/card";
 import { activity, securityHealth, type ActivityItem } from "@/lib/mock-data";
 import {
   ShieldCheck,

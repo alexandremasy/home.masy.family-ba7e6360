@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/DishFilters";
-import { DishCard } from "@/components/DishCard";
+import { Input } from "@/components/input";
+import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/dish-filters";
+import { DishCard } from "@/components/dish-card";
 import { useDishes } from "@/lib/dishes-store";
 import { type Base, type Dish } from "@/lib/maison-data";
 import { Search, Plus } from "lucide-react";

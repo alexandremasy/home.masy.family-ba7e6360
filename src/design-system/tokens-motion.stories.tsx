@@ -6,7 +6,7 @@ import { Group, TokenPage } from "./_helpers";
  * hand-authored classes (not generated), so what you see is exactly what the app runs.
  */
 const meta = {
-  title: "Tokens/Motion",
+  title: "Foundations/Motion",
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
 } satisfies Meta;

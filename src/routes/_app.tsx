@@ -1,12 +1,12 @@
 import { createFileRoute, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
-import { AppSidebar } from "@/components/AppSidebar";
-import { BottomBar } from "@/components/BottomBar";
-import { AppSheet } from "@/components/AppSheet";
+import { AppSidebar } from "@/components/app-sidebar";
+import { BottomBar } from "@/components/bottom-bar";
+import { AppSheet } from "@/components/app-sheet";
 import { useSheetClose } from "@/lib/use-sheet-close";
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/sidebar";
 import { footerLines } from "@/lib/mock-data";
 import { Dashboard } from "./_app.index";
-import { LivingGradient } from "@/components/LivingGradient";
+import { LivingGradient } from "@/components/living-gradient";
 import { useDocumentTitle } from "@/lib/page-title";
 
 export const Route = createFileRoute("/_app")({

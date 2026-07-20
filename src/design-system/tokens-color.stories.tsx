@@ -7,7 +7,7 @@ import { Group, Swatch, TokenPage } from "./_helpers";
  * page); the dark theme is authored (the library has no dark ramp yet).
  */
 const meta = {
-  title: "Tokens/Color",
+  title: "Foundations/Color",
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
 } satisfies Meta;

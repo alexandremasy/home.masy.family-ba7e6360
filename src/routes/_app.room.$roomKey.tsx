@@ -1,14 +1,14 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { Section } from "@/components/Card";
-import { useDrawerDrag } from "@/components/MobileDrawerPanel";
-import { Toggle } from "@/components/ui/toggle";
-import { Button } from "@/components/ui/button";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { SlidingTabs } from "@/components/SlidingTabs";
-import { CameraFeed } from "@/components/CameraFeed";
-import { DishwasherPanel } from "@/components/DishwasherPanel";
-import { VacuumPanel } from "@/components/VacuumPanel";
+import { Section } from "@/components/card";
+import { useDrawerDrag } from "@/components/mobile-drawer-panel";
+import { Toggle } from "@/components/toggle";
+import { Button } from "@/components/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/toggle-group";
+import { SlidingTabs } from "@/components/sliding-tabs";
+import { CameraFeed } from "@/components/camera-feed";
+import { DishwasherPanel } from "@/components/dishwasher-panel";
+import { VacuumPanel } from "@/components/vacuum-panel";
 import { rooms, roomDetails, cameras, motionEvents, vacuum, type RoomKey } from "@/lib/mock-data";
 import {
   Lightbulb,
@@ -110,8 +110,8 @@ function zoneIcon(name: string): LucideIcon {
   if (n.includes("table")) return UtensilsCrossed;
   return Lightbulb;
 }
-import { RoomIcon } from "@/components/RoomIcon";
-import { Eyebrow } from "@/components/Eyebrow";
+import { RoomIcon } from "@/components/room-icon";
+import { Eyebrow } from "@/components/eyebrow";
 
 export const Route = createFileRoute("/_app/room/$roomKey")({
   component: RoomPage,

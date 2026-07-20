@@ -7,7 +7,7 @@ import { Group, TokenPage, TypeRow } from "./_helpers";
  * Every metric is measured off its own rendered node, so the page can't drift.
  */
 const meta = {
-  title: "Tokens/Typography",
+  title: "Foundations/Typography",
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
 } satisfies Meta;

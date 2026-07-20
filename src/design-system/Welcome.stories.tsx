@@ -64,7 +64,7 @@ function Welcome() {
 }
 
 const meta = {
-  title: "Welcome",
+  title: "Overview",
   component: Welcome,
   parameters: { layout: "fullscreen" },
 } satisfies Meta<typeof Welcome>;

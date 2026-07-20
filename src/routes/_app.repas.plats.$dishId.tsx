@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,8 +10,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { DishForm } from "@/components/DishForm";
+} from "@/components/alert-dialog";
+import { DishForm } from "@/components/dish-form";
 import { useDishes } from "@/lib/dishes-store";
 import { initialPlan } from "@/lib/maison-data";
 import { ArrowLeft, Trash2 } from "lucide-react";

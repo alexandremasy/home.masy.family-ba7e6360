@@ -1,10 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useId, useState } from "react";
 import { z } from "zod";
-import { Section } from "@/components/Card";
-import { PageHeader } from "@/components/PageHeader";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { Section } from "@/components/card";
+import { PageHeader } from "@/components/page-header";
+import { Button } from "@/components/button";
+import { Label } from "@/components/label";
 import { Check, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 

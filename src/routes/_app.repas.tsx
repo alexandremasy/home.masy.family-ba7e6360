@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, useLocation, useNavigate, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/tabs";
+import { Button } from "@/components/button";
 import { DishesProvider } from "@/lib/dishes-store";
 
 export const Route = createFileRoute("/_app/repas")({

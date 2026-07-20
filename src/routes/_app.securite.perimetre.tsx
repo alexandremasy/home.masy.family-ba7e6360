@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Section } from "@/components/Card";
+import { Section } from "@/components/card";
 import { perimeter, locks, cameras } from "@/lib/mock-data";
 import {
   ShieldCheck,
@@ -16,7 +16,7 @@ import {
   Eye,
   ChevronRight,
 } from "lucide-react";
-import { Eyebrow } from "@/components/Eyebrow";
+import { Eyebrow } from "@/components/eyebrow";
 
 // Tab 2 — Périmètre: the physical shell (openings, locks) and the eyes on it (cameras).
 export const Route = createFileRoute("/_app/securite/perimetre")({

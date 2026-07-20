@@ -25,7 +25,7 @@ import {
   CheckCircle2,
   CalendarClock,
 } from "lucide-react";
-import { CountUp } from "@/components/CountUp";
+import { CountUp } from "@/components/count-up";
 import {
   categories,
   postesSeed,
@@ -49,10 +49,10 @@ import {
   type UpcomingBill,
   type BudgetView,
 } from "@/lib/budget-data";
-import { Button } from "@/components/ui/button";
-import { BudgetBar } from "@/components/BudgetBar";
-import { Eyebrow } from "@/components/Eyebrow";
-import { Panel } from "@/components/Card";
+import { Button } from "@/components/button";
+import { BudgetBar } from "@/components/budget-bar";
+import { Eyebrow } from "@/components/eyebrow";
+import { Panel } from "@/components/card";
 
 export const Route = createFileRoute("/_app/budget/vue")({
   component: VuePage,

@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Fuel, ChevronLeft, ChevronRight, Coins, Lock, PencilRuler, Plus, X } from "lucide-react";
-import { CountUp } from "@/components/CountUp";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CountUp } from "@/components/count-up";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/dialog";
 import {
   MONTHS_FR,
   eur,
@@ -28,15 +28,9 @@ import {
   type Recurrence4,
 } from "@/lib/budget-data";
 import { energie } from "@/lib/mock-data";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Eyebrow } from "@/components/Eyebrow";
+import { Button } from "@/components/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/select";
+import { Eyebrow } from "@/components/eyebrow";
 
 export const Route = createFileRoute("/_app/budget/planification")({
   component: PlanificationPage,

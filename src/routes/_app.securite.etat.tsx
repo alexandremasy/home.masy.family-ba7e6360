@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Section } from "@/components/Card";
-import { Switch } from "@/components/ui/switch";
+import { Section } from "@/components/card";
+import { Switch } from "@/components/switch";
 import { armModes, security, presence, perimeter, type ArmMode } from "@/lib/mock-data";
 import {
   ShieldCheck,
@@ -15,8 +15,8 @@ import {
   Warehouse,
   MapPin,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Eyebrow } from "@/components/Eyebrow";
+import { Button } from "@/components/button";
+import { Eyebrow } from "@/components/eyebrow";
 
 // Tab 1 — État: arming + presence. They belong together: the arming follows the presence.
 export const Route = createFileRoute("/_app/securite/etat")({

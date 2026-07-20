@@ -12,9 +12,9 @@ import {
   History,
 } from "lucide-react";
 import { importPreviewMock, importHistory, eur2 } from "@/lib/budget-data";
-import { Button } from "@/components/ui/button";
-import { Eyebrow } from "@/components/Eyebrow";
-import { Panel } from "@/components/Card";
+import { Button } from "@/components/button";
+import { Eyebrow } from "@/components/eyebrow";
+import { Panel } from "@/components/card";
 
 export const Route = createFileRoute("/_app/budget/import")({
   component: ImportPage,

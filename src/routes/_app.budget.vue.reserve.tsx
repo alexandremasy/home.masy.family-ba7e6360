@@ -15,8 +15,8 @@ import {
 } from "recharts";
 import { toast } from "sonner";
 import { PiggyBank, Pencil, Check, X } from "lucide-react";
-import { CountUp } from "@/components/CountUp";
-import { Section } from "@/components/Card";
+import { CountUp } from "@/components/count-up";
+import { Section } from "@/components/card";
 import {
   envelopes,
   eur,
@@ -25,8 +25,8 @@ import {
   MONTHS_FR,
   type BudgetView,
 } from "@/lib/budget-data";
-import { Eyebrow } from "@/components/Eyebrow";
-import { OverlayCloseLink } from "@/components/OverlayCloseLink";
+import { Eyebrow } from "@/components/eyebrow";
+import { OverlayCloseLink } from "@/components/overlay-close-link";
 
 // A MODAL with its own route (nested under /budget/vue), rendered with the SAME overlay system as
 // the Maison room pages: blurred backdrop + max-w-5xl panel + a fixed centered close pill, plus the

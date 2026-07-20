@@ -6,7 +6,7 @@ import { Group, TokenPage, useTokenValue } from "./_helpers";
  * `--nav-h`, and the `.grid-bento` mosaic the dashboard is built on. Values read live.
  */
 const meta = {
-  title: "Tokens/Spacing",
+  title: "Foundations/Spacing",
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
 } satisfies Meta;

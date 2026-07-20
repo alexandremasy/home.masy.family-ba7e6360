@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader } from "@/components/PageHeader";
+import { PageHeader } from "@/components/page-header";
 import { tesla } from "@/lib/mock-data";
 import {
   BarChart3,
@@ -20,7 +20,7 @@ import {
   Volume2,
   Lightbulb,
 } from "lucide-react";
-import { Eyebrow } from "@/components/Eyebrow";
+import { Eyebrow } from "@/components/eyebrow";
 
 export const Route = createFileRoute("/_app/tesla")({
   component: TeslaPage,

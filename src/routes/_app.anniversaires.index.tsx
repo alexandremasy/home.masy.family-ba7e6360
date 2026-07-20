@@ -12,19 +12,19 @@ import {
 import { usePeople } from "@/lib/people-store";
 import { cap } from "@/lib/utils";
 import { Cake, Copy, Check, Pencil, Plus, MoreVertical } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { Eyebrow } from "@/components/Eyebrow";
-import { ResponsiveModal } from "@/components/ResponsiveModal";
-import { MessageStudio } from "@/components/MessageStudio";
-import { PersonCard } from "@/components/PersonCard";
-import { Separator } from "@/components/ui/separator";
-import { PersonDialog, type PersonTarget } from "@/components/PersonDialog";
+} from "@/components/dropdown-menu";
+import { Eyebrow } from "@/components/eyebrow";
+import { ResponsiveModal } from "@/components/responsive-modal";
+import { MessageStudio } from "@/components/message-studio";
+import { PersonCard } from "@/components/person-card";
+import { Separator } from "@/components/separator";
+import { PersonDialog, type PersonTarget } from "@/components/person-dialog";
 
 export const Route = createFileRoute("/_app/anniversaires/")({
   component: AnniversairesPage,

@@ -7,7 +7,7 @@ import { TokenPage, useComputed, useTokenValue } from "./_helpers";
  * page reflects whatever the browser actually applies.
  */
 const meta = {
-  title: "Tokens/Radius",
+  title: "Foundations/Radius",
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
 } satisfies Meta;

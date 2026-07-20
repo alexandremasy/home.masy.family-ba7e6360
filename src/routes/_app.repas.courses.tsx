@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/button";
+import { Input } from "@/components/input";
 import {
   upcomingMeals,
   initialPlan,
@@ -23,16 +23,16 @@ import {
   Moon,
   ChevronUp,
 } from "lucide-react";
-import { Eyebrow } from "@/components/Eyebrow";
-import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
-import { DishCard } from "@/components/DishCard";
+import { Eyebrow } from "@/components/eyebrow";
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/empty";
+import { DishCard } from "@/components/dish-card";
 import {
   Drawer,
   DrawerTrigger,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
-} from "@/components/ui/drawer";
+} from "@/components/drawer";
 
 export const Route = createFileRoute("/_app/repas/courses")({
   component: CoursesPage,

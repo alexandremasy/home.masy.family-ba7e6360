@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Section } from "@/components/Card";
-import { PageHeader } from "@/components/PageHeader";
+import { Section } from "@/components/card";
+import { PageHeader } from "@/components/page-header";
 
-import { Switch } from "@/components/ui/switch";
+import { Switch } from "@/components/switch";
 import { reseau } from "@/lib/mock-data";
 import {
   Wifi,
@@ -25,7 +25,7 @@ import {
   KeyRound,
   Boxes,
 } from "lucide-react";
-import { Eyebrow } from "@/components/Eyebrow";
+import { Eyebrow } from "@/components/eyebrow";
 
 const serviceIcons: Record<string, typeof Container> = {
   Portainer: Container,

@@ -14,7 +14,7 @@ import {
   YAxis,
 } from "recharts";
 import { Flame, PiggyBank, ChevronLeft, ChevronRight } from "lucide-react";
-import { CountUp } from "@/components/CountUp";
+import { CountUp } from "@/components/count-up";
 import {
   categories,
   rolling12,
@@ -26,9 +26,9 @@ import {
   eur,
   type CatKey,
 } from "@/lib/budget-data";
-import { Button } from "@/components/ui/button";
-import { Eyebrow } from "@/components/Eyebrow";
-import { Panel } from "@/components/Card";
+import { Button } from "@/components/button";
+import { Eyebrow } from "@/components/eyebrow";
+import { Panel } from "@/components/card";
 
 export const Route = createFileRoute("/_app/budget/annuel")({
   component: AnnuelPage,

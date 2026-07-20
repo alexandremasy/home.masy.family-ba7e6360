@@ -7,11 +7,30 @@ import "../src/styles.css";
 const preview: Preview = {
   parameters: {
     layout: "centered",
-    // Welcome first, then the design system top-down; everything else after.
+    // Read top-down: what the system is, then what it is made of, then what it
+    // assembles into, and the module specs last.
     options: {
       storySort: {
-        order: ["Welcome", "Tokens", "UI", "Components", "Blocks", "Specs", "*"],
+        order: [
+          "Overview",
+          "Foundations",
+          "Iconography",
+          "Layout",
+          "Forms",
+          "Overlays",
+          "Navigation",
+          "Information",
+          "Specs",
+          "*",
+        ],
       },
+    },
+    // The first story of every Docs page renders in an interactive canvas with its
+    // controls right under it, so the page opens on something you can drive rather
+    // than a static screenshot.
+    docs: {
+      canvas: { sourceState: "shown" },
+      controls: { sort: "requiredFirst" },
     },
     controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
     a11y: { test: "todo" },

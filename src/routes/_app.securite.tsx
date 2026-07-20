@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { PageHeader } from "@/components/PageHeader";
+import { PageHeader } from "@/components/page-header";
 import { perimeter } from "@/lib/mock-data";
 import { ShieldCheck, ShieldAlert } from "lucide-react";
 

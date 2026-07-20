@@ -6,7 +6,7 @@ import { TokenPage, useComputed } from "./_helpers";
  * not colour. Each card measures its own resolved `box-shadow` off the rendered node.
  */
 const meta = {
-  title: "Tokens/Shadows",
+  title: "Foundations/Shadows",
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
 } satisfies Meta;

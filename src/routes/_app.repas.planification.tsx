@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { WeatherIcon } from "@/components/WeatherIcon";
-import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { WeatherIcon } from "@/components/weather-icon";
+import { Input } from "@/components/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/dialog";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/drawer";
 import { useIsDesktop } from "@/lib/use-media";
 import {
   DishFilters,
@@ -11,8 +11,8 @@ import {
   countFilters,
   EMPTY_FILTER,
   type DishFilter,
-} from "@/components/DishFilters";
-import { DishCard, StatusPill } from "@/components/DishCard";
+} from "@/components/dish-filters";
+import { DishCard, StatusPill } from "@/components/dish-card";
 import { cap } from "@/lib/utils";
 import {
   dishById,
@@ -46,9 +46,9 @@ import {
   ChevronDown,
   SlidersHorizontal,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Eyebrow } from "@/components/Eyebrow";
+import { Button } from "@/components/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/tooltip";
+import { Eyebrow } from "@/components/eyebrow";
 
 export const Route = createFileRoute("/_app/repas/planification")({
   component: RepasPage,

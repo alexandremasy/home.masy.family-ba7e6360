@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Eyebrow } from "@/components/Eyebrow";
+import { Eyebrow } from "@/components/eyebrow";
 
 /**
  * Shared primitives for the Tokens/* story pages.

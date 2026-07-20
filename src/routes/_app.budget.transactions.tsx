@@ -10,24 +10,11 @@ import {
   type CatKey,
   type Recurrence,
 } from "@/lib/budget-data";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Eyebrow } from "@/components/Eyebrow";
+import { Button } from "@/components/button";
+import { Checkbox } from "@/components/checkbox";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/select";
+import { Eyebrow } from "@/components/eyebrow";
 
 export const Route = createFileRoute("/_app/budget/transactions")({
   component: TransactionsPage,

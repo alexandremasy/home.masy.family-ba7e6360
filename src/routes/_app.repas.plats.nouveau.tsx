@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { DishForm, EMPTY_DRAFT } from "@/components/DishForm";
+import { DishForm, EMPTY_DRAFT } from "@/components/dish-form";
 import { useDishes } from "@/lib/dishes-store";
 import { ArrowLeft } from "lucide-react";
 

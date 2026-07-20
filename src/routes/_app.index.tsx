@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Tile } from "@/components/Card";
-import { CountUp } from "@/components/CountUp";
-import { MapPinBg } from "@/components/MapPinBg";
-import { PMCBag } from "@/components/PMCBag";
-import { RoomIcon } from "@/components/RoomIcon";
-import { WeatherIcon } from "@/components/WeatherIcon";
+import { BentoItem } from "@/blocks/bento";
+import { Tile } from "@/components/card";
+import { CountUp } from "@/components/count-up";
+import { MapPinBg } from "@/components/map-pin-bg";
+import { PMCBag } from "@/components/pmc-bag";
+import { RoomIcon } from "@/components/room-icon";
+import { WeatherIcon } from "@/components/weather-icon";
 
 import {
   rooms,
@@ -61,10 +62,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
-import { Eyebrow } from "@/components/Eyebrow";
+} from "@/components/dialog";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/tooltip";
+import { Button } from "@/components/button";
+import { Eyebrow } from "@/components/eyebrow";
 
 export const Route = createFileRoute("/_app/")({
   // Dashboard is rendered by the parent _app layout (so it stays visible
@@ -109,15 +110,17 @@ export function Dashboard() {
         {/* Poubelle + anniversaire — a third the height of a bento tile; same width
             as one column on mobile (capped so they stay small on wider screens). */}
         <div className="grid grid-cols-2 gap-3 sm:max-w-md">
-          <Tile span={1} variant="pill">
-            <PMCBag className="pointer-events-none absolute -right-2 -top-1 h-[150%] w-auto opacity-90" />
-            <div className="relative min-w-0">
-              <p className="truncate font-serif text-base font-semibold leading-tight">
-                {calendrier.poubelleToday.type}
-              </p>
-              <p className="text-2xs opacity-80">Auj. · avant {calendrier.poubelleToday.time}</p>
-            </div>
-          </Tile>
+          <BentoItem span={1}>
+            <Tile variant="pill">
+              <PMCBag className="pointer-events-none absolute -right-2 -top-1 h-[150%] w-auto opacity-90" />
+              <div className="relative min-w-0">
+                <p className="truncate font-serif text-base font-semibold leading-tight">
+                  {calendrier.poubelleToday.type}
+                </p>
+                <p className="text-2xs opacity-80">Auj. · avant {calendrier.poubelleToday.time}</p>
+              </div>
+            </Tile>
+          </BentoItem>
 
           <BirthdayTile />
         </div>
@@ -135,53 +138,55 @@ export function Dashboard() {
           }
           const bureauCls = room.key === "bureau" ? "sm:col-span-2" : "";
           return [
-            <Tile
-              key={room.key}
-              span={1}
-              to={`/room/${room.key}`}
-              variant="glass"
-              className={"flex flex-col " + bureauCls}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
-                    <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
-                  </span>
-                  <div>
-                    <p className="font-serif text-base font-semibold">{room.name}</p>
+            <BentoItem key={room.key} span={1}>
+              <Tile
+                to={`/room/${room.key}`}
+                variant="glass"
+                className={"flex flex-col " + bureauCls}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
+                      <RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />
+                    </span>
+                    <div>
+                      <p className="font-serif text-base font-semibold">{room.name}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {typeof room.temperature === "number" ? (
-                <p className="mt-3 font-serif text-2xl tracking-tight">
-                  <CountUp to={room.temperature} decimals={1} />
-                  <span className="text-base text-muted-foreground">°C</span>
-                </p>
-              ) : (
-                <div className="mt-3 h-[2.75rem]" aria-hidden />
-              )}
-
-              <div className="mt-auto pt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                <span
-                  className={
-                    "inline-flex items-center gap-1.5 transition-colors " +
-                    (room.lightsOn ? "text-mustard" : "")
-                  }
-                >
-                  <Lightbulb
-                    className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-mustard" : "")}
-                  />
-                  {room.lightsOn ? "Allumé" : "Éteint"}
-                </span>
-                {room.climate && (
-                  <span className="inline-flex items-center gap-1.5">
-                    <Wind className={"h-3.5 w-3.5 " + (room.climate.on ? "text-primary" : "")} />
-                    {room.climate.on ? `${room.climate.setpoint}°` : "Auto"}
-                  </span>
+                {typeof room.temperature === "number" ? (
+                  <p className="mt-3 font-serif text-2xl tracking-tight">
+                    <CountUp to={room.temperature} decimals={1} />
+                    <span className="text-base text-muted-foreground">°C</span>
+                  </p>
+                ) : (
+                  <div className="mt-3 h-[2.75rem]" aria-hidden />
                 )}
-              </div>
-            </Tile>,
+
+                <div className="mt-auto pt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                  <span
+                    className={
+                      "inline-flex items-center gap-1.5 transition-colors " +
+                      (room.lightsOn ? "text-mustard" : "")
+                    }
+                  >
+                    <Lightbulb
+                      className={
+                        "h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-mustard" : "")
+                      }
+                    />
+                    {room.lightsOn ? "Allumé" : "Éteint"}
+                  </span>
+                  {room.climate && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <Wind className={"h-3.5 w-3.5 " + (room.climate.on ? "text-primary" : "")} />
+                      {room.climate.on ? `${room.climate.setpoint}°` : "Auto"}
+                    </span>
+                  )}
+                </div>
+              </Tile>
+            </BentoItem>,
           ];
         })}
 
@@ -193,201 +198,204 @@ export function Dashboard() {
 
         {/* Énergie */}
         {energie.monthlyDue ? (
-          <Tile span={2} tone="warm">
-            <div className="flex items-start justify-between">
-              <div>
-                <Eyebrow tone="current" className="opacity-70">
-                  Énergie · à faire
-                </Eyebrow>
-                <p className="mt-1 font-serif text-lg">Relevé mensuel à saisir</p>
-                <p className="mt-1 text-sm opacity-80">
-                  3 compteurs en attente — eau, électricité, mazout.
-                </p>
-              </div>
-              <span className="relative grid h-9 w-9 place-items-center rounded-full bg-foreground/10">
-                <Sparkles className="h-4 w-4 anim-breathe" />
-              </span>
-            </div>
-            <Button
-              asChild
-              variant="inverted"
-              className="mt-5 gap-1.5 rounded-full transition-transform hover:translate-x-0.5"
-            >
-              <Link to="/energie/saisie">
-                Saisir <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </Tile>
-        ) : (
-          <Tile span={2} to="/energie" variant="glass" className="flex flex-col">
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex min-w-0 items-center gap-3">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
-                  <Zap className="h-4.5 w-4.5" />
+          <BentoItem span={2}>
+            <Tile tone="warm">
+              <div className="flex items-start justify-between">
+                <div>
+                  <Eyebrow tone="current" className="opacity-70">
+                    Énergie · à faire
+                  </Eyebrow>
+                  <p className="mt-1 font-serif text-lg">Relevé mensuel à saisir</p>
+                  <p className="mt-1 text-sm opacity-80">
+                    3 compteurs en attente — eau, électricité, mazout.
+                  </p>
+                </div>
+                <span className="relative grid h-9 w-9 place-items-center rounded-full bg-foreground/10">
+                  <Sparkles className="h-4 w-4 anim-breathe" />
                 </span>
-                <p className="font-serif text-base font-semibold">Énergie</p>
               </div>
-              {(() => {
-                const alerts: string[] = [];
-                if (energie.oil.status === "alert") alerts.push("Mazout faible");
-                if (energie.electricity.status === "alert") alerts.push("Élec. élevée");
-                if (energie.water.status === "alert") alerts.push("Eau élevée");
-                const anyAlert = alerts.length > 0;
-                return anyAlert ? (
-                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-warm/15 px-2 py-0.5 text-warm">
-                    <AlertTriangle className="h-3 w-3" />
-                    <span className="text-xs font-semibold">
-                      {alerts[0]}
-                      {alerts.length > 1 ? ` +${alerts.length - 1}` : ""}
+              <Button
+                asChild
+                variant="inverted"
+                className="mt-5 gap-1.5 rounded-full transition-transform hover:translate-x-0.5"
+              >
+                <Link to="/energie/saisie">
+                  Saisir <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </Tile>
+          </BentoItem>
+        ) : (
+          <BentoItem span={2}>
+            <Tile to="/energie" variant="glass" className="flex flex-col">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
+                    <Zap className="h-4.5 w-4.5" />
+                  </span>
+                  <p className="font-serif text-base font-semibold">Énergie</p>
+                </div>
+                {(() => {
+                  const alerts: string[] = [];
+                  if (energie.oil.status === "alert") alerts.push("Mazout faible");
+                  if (energie.electricity.status === "alert") alerts.push("Élec. élevée");
+                  if (energie.water.status === "alert") alerts.push("Eau élevée");
+                  const anyAlert = alerts.length > 0;
+                  return anyAlert ? (
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-warm/15 px-2 py-0.5 text-warm">
+                      <AlertTriangle className="h-3 w-3" />
+                      <span className="text-xs font-semibold">
+                        {alerts[0]}
+                        {alerts.length > 1 ? ` +${alerts.length - 1}` : ""}
+                      </span>
                     </span>
-                  </span>
-                ) : (
-                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
-                    <Sparkles className="h-3 w-3" />
-                    <span className="text-xs font-semibold">OK</span>
-                  </span>
-                );
-              })()}
-            </div>
-            <div className="mt-4 flex flex-1 flex-col gap-2">
-              <EnergieRow
-                icon={<Zap className="h-4 w-4 anim-glow" />}
-                label="Élec."
-                value={`${energie.electricity.dailyKWh} kWh/j`}
-                trend={energie.electricity.trend}
-                trendPct={energie.electricity.trendPct}
-                status={energie.electricity.status}
-              />
-              <EnergieRow
-                icon={<Droplet className="h-4 w-4 anim-float" />}
-                label="Eau"
-                value={`${energie.water.dailyM3} m³/j`}
-                trend={energie.water.trend}
-                trendPct={energie.water.trendPct}
-                status={energie.water.status}
-              />
-              <EnergieRow
-                icon={
-                  <Flame
-                    className={
-                      "h-4 w-4 " +
-                      (energie.oil.tankPct < 25 ? "anim-wiggle text-warm" : "anim-breathe")
-                    }
-                  />
-                }
-                label="Mazout"
-                value={`${energie.oil.tankPct}%`}
-                sub={`~${energie.oil.autonomyDays} j`}
-                status={energie.oil.status}
-              />
-            </div>
-          </Tile>
+                  ) : (
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
+                      <Sparkles className="h-3 w-3" />
+                      <span className="text-xs font-semibold">OK</span>
+                    </span>
+                  );
+                })()}
+              </div>
+              <div className="mt-4 flex flex-1 flex-col gap-2">
+                <EnergieRow
+                  icon={<Zap className="h-4 w-4 anim-glow" />}
+                  label="Élec."
+                  value={`${energie.electricity.dailyKWh} kWh/j`}
+                  trend={energie.electricity.trend}
+                  trendPct={energie.electricity.trendPct}
+                  status={energie.electricity.status}
+                />
+                <EnergieRow
+                  icon={<Droplet className="h-4 w-4 anim-float" />}
+                  label="Eau"
+                  value={`${energie.water.dailyM3} m³/j`}
+                  trend={energie.water.trend}
+                  trendPct={energie.water.trendPct}
+                  status={energie.water.status}
+                />
+                <EnergieRow
+                  icon={
+                    <Flame
+                      className={
+                        "h-4 w-4 " +
+                        (energie.oil.tankPct < 25 ? "anim-wiggle text-warm" : "anim-breathe")
+                      }
+                    />
+                  }
+                  label="Mazout"
+                  value={`${energie.oil.tankPct}%`}
+                  sub={`~${energie.oil.autonomyDays} j`}
+                  status={energie.oil.status}
+                />
+              </div>
+            </Tile>
+          </BentoItem>
         )}
 
         {/* PRIORITY 3 — Bernard (compact) */}
-        <Tile
-          span={2}
-          to="/tesla"
-          tone="dark"
-          className="relative isolate col-span-1 sm:col-span-2"
-        >
-          <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-80" />
-          <span className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 rounded-b-[inherit] bg-gradient-to-t from-foreground via-foreground/70 to-transparent" />
+        <BentoItem span={2}>
+          <Tile to="/tesla" tone="dark" className="relative isolate col-span-1 sm:col-span-2">
+            <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-80" />
+            <span className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 rounded-b-[inherit] bg-gradient-to-t from-foreground via-foreground/70 to-transparent" />
 
-          {/* Mobile compact layout */}
-          <div className="sm:hidden">
-            <div className="flex items-center justify-between gap-2">
-              <Eyebrow tone="current" className="opacity-60">
-                Bernard
-              </Eyebrow>
-              <span
-                className={
-                  "inline-flex items-center text-xs " +
-                  (tesla.pluggedIn ? "text-primary" : "opacity-60")
-                }
-              >
-                <Plug className={"h-3.5 w-3.5 " + (tesla.pluggedIn ? "anim-breathe" : "")} />
-              </span>
-            </div>
-            <div className="mt-3 flex items-baseline justify-between gap-1">
-              <span className="flex items-baseline gap-1">
-                <span className="font-serif text-2xl tracking-tight">
-                  <CountUp to={tesla.charge} />
-                </span>
-                <span className="text-base opacity-60">%</span>
-              </span>
-              <span className="text-xs opacity-60">{tesla.rangeKm} km</span>
-            </div>
-            <div className="relative mt-2 h-1 w-full overflow-hidden rounded-full bg-background/15">
-              <div
-                className="h-full rounded-full bg-primary transition-all"
-                style={{ width: `${tesla.charge}%` }}
-              />
-            </div>
-            <p className="mt-3 inline-flex items-start gap-1 text-xs opacity-70">
-              <MapPin className="mt-0.5 h-3 w-3 shrink-0" />
-              {tesla.location}
-            </p>
-          </div>
-
-          {/* sm+ original layout */}
-          <div className="hidden h-full sm:flex sm:flex-col sm:justify-between">
-            <div className="flex items-start gap-3">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-background/10 text-background">
-                <Car className="h-4.5 w-4.5 icon-hover anim-drift" />
-              </span>
-              <div className="min-w-0 flex-1">
+            {/* Mobile compact layout */}
+            <div className="sm:hidden">
+              <div className="flex items-center justify-between gap-2">
                 <Eyebrow tone="current" className="opacity-60">
                   Bernard
                 </Eyebrow>
-                <p className="mt-1 font-serif text-lg">
-                  {tesla.inGarage ? "Au garage" : "En déplacement"}
-                </p>
-                <p className="mt-0.5 inline-flex items-center gap-1 text-xs opacity-60">
-                  <MapPin className="h-3 w-3" />
-                  {tesla.location}
-                </p>
+                <span
+                  className={
+                    "inline-flex items-center text-xs " +
+                    (tesla.pluggedIn ? "text-primary" : "opacity-60")
+                  }
+                >
+                  <Plug className={"h-3.5 w-3.5 " + (tesla.pluggedIn ? "anim-breathe" : "")} />
+                </span>
               </div>
-            </div>
-
-            <div className="mt-4 flex items-end gap-6">
-              <div>
-                <div className="flex items-baseline gap-1">
+              <div className="mt-3 flex items-baseline justify-between gap-1">
+                <span className="flex items-baseline gap-1">
                   <span className="font-serif text-2xl tracking-tight">
                     <CountUp to={tesla.charge} />
                   </span>
-                  <span className="text-lg opacity-60">%</span>
-                </div>
-                <p className="text-xs opacity-60">
-                  {tesla.rangeKm} km · limite {tesla.chargeLimit}%
-                </p>
+                  <span className="text-base opacity-60">%</span>
+                </span>
+                <span className="text-xs opacity-60">{tesla.rangeKm} km</span>
               </div>
-              <div className="flex-1 pb-1">
-                <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-background/15">
-                  <div
-                    className="h-full rounded-full bg-primary transition-all"
-                    style={{ width: `${tesla.charge}%` }}
-                  />
-                  <div
-                    className="absolute top-0 h-full w-px bg-background/40"
-                    style={{ left: `${tesla.chargeLimit}%` }}
-                  />
+              <div className="relative mt-2 h-1 w-full overflow-hidden rounded-full bg-background/15">
+                <div
+                  className="h-full rounded-full bg-primary transition-all"
+                  style={{ width: `${tesla.charge}%` }}
+                />
+              </div>
+              <p className="mt-3 inline-flex items-start gap-1 text-xs opacity-70">
+                <MapPin className="mt-0.5 h-3 w-3 shrink-0" />
+                {tesla.location}
+              </p>
+            </div>
+
+            {/* sm+ original layout */}
+            <div className="hidden h-full sm:flex sm:flex-col sm:justify-between">
+              <div className="flex items-start gap-3">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-background/10 text-background">
+                  <Car className="h-4.5 w-4.5 icon-hover anim-drift" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <Eyebrow tone="current" className="opacity-60">
+                    Bernard
+                  </Eyebrow>
+                  <p className="mt-1 font-serif text-lg">
+                    {tesla.inGarage ? "Au garage" : "En déplacement"}
+                  </p>
+                  <p className="mt-0.5 inline-flex items-center gap-1 text-xs opacity-60">
+                    <MapPin className="h-3 w-3" />
+                    {tesla.location}
+                  </p>
                 </div>
-                <div className="mt-3 flex items-center gap-3 text-xs opacity-70">
-                  <span className="inline-flex items-center gap-1">
-                    <Plug
-                      className={"h-3 w-3 " + (tesla.pluggedIn ? "text-primary anim-breathe" : "")}
+              </div>
+
+              <div className="mt-4 flex items-end gap-6">
+                <div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="font-serif text-2xl tracking-tight">
+                      <CountUp to={tesla.charge} />
+                    </span>
+                    <span className="text-lg opacity-60">%</span>
+                  </div>
+                  <p className="text-xs opacity-60">
+                    {tesla.rangeKm} km · limite {tesla.chargeLimit}%
+                  </p>
+                </div>
+                <div className="flex-1 pb-1">
+                  <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-background/15">
+                    <div
+                      className="h-full rounded-full bg-primary transition-all"
+                      style={{ width: `${tesla.charge}%` }}
                     />
-                    {tesla.pluggedIn ? "Branchée" : "Débranchée"}
-                  </span>
-                  <span>
-                    · {tesla.interior}° int / {tesla.exterior}° ext
-                  </span>
+                    <div
+                      className="absolute top-0 h-full w-px bg-background/40"
+                      style={{ left: `${tesla.chargeLimit}%` }}
+                    />
+                  </div>
+                  <div className="mt-3 flex items-center gap-3 text-xs opacity-70">
+                    <span className="inline-flex items-center gap-1">
+                      <Plug
+                        className={
+                          "h-3 w-3 " + (tesla.pluggedIn ? "text-primary anim-breathe" : "")
+                        }
+                      />
+                      {tesla.pluggedIn ? "Branchée" : "Débranchée"}
+                    </span>
+                    <span>
+                      · {tesla.interior}° int / {tesla.exterior}° ext
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </Tile>
+          </Tile>
+        </BentoItem>
 
         {/* PRIORITY 3 — Réseau: the speed as a dial, everything else quiet */}
         <ReseauTile />
@@ -411,20 +419,22 @@ function BirthdayTile() {
   const when = today ? "Auj." : first.days === 1 ? "Demain" : `Dans ${first.days} j`;
 
   return (
-    <Tile span={1} to="/anniversaires" variant="pill">
-      <Cake
-        className={
-          "pointer-events-none absolute -right-3 -top-2 h-16 w-16 " +
-          (today ? "opacity-15" : "opacity-[0.06]")
-        }
-      />
-      <div className="relative min-w-0">
-        <p className="break-words font-serif text-base font-semibold leading-tight">
-          {first.p.name} a {upcomingAge(first.p)} ans
-        </p>
-        <p className={"text-2xs " + (today ? "opacity-80" : "text-muted-foreground")}>{when}</p>
-      </div>
-    </Tile>
+    <BentoItem span={1}>
+      <Tile to="/anniversaires" variant="pill">
+        <Cake
+          className={
+            "pointer-events-none absolute -right-3 -top-2 h-16 w-16 " +
+            (today ? "opacity-15" : "opacity-[0.06]")
+          }
+        />
+        <div className="relative min-w-0">
+          <p className="break-words font-serif text-base font-semibold leading-tight">
+            {first.p.name} a {upcomingAge(first.p)} ans
+          </p>
+          <p className={"text-2xs " + (today ? "opacity-80" : "text-muted-foreground")}>{when}</p>
+        </div>
+      </Tile>
+    </BentoItem>
   );
 }
 
@@ -460,44 +470,46 @@ function RepasTile() {
   const next = planned[1];
 
   return (
-    <Tile span={2} to="/repas" className="flex flex-col">
-      <div className="flex items-start justify-between gap-2">
-        <Eyebrow>Repas</Eyebrow>
-        <UtensilsCrossed className="h-4.5 w-4.5 text-muted-foreground" />
-      </div>
+    <BentoItem span={2}>
+      <Tile to="/repas" className="flex flex-col">
+        <div className="flex items-start justify-between gap-2">
+          <Eyebrow>Repas</Eyebrow>
+          <UtensilsCrossed className="h-4.5 w-4.5 text-muted-foreground" />
+        </div>
 
-      {first ? (
-        <>
-          <p className="mt-3 font-serif text-lg leading-snug">
-            {label(first.o)}
-            {first.midi && (
-              <>
-                , <span className="text-foreground">{first.midi}</span>
-                <span className="text-muted-foreground"> à midi</span>
-              </>
-            )}
-            {first.soir && (
-              <>
-                {first.midi ? " et " : ", "}
-                <span className="text-foreground">{first.soir}</span>
-                <span className="text-muted-foreground"> le soir</span>
-              </>
-            )}
-            <span className="text-muted-foreground">.</span>
-          </p>
-
-          {next && (
-            <p className="mt-auto pt-3 text-xs text-muted-foreground">
-              Puis {label(next.o).toLowerCase()} · {next.midi ?? next.soir}
+        {first ? (
+          <>
+            <p className="mt-3 font-serif text-lg leading-snug">
+              {label(first.o)}
+              {first.midi && (
+                <>
+                  , <span className="text-foreground">{first.midi}</span>
+                  <span className="text-muted-foreground"> à midi</span>
+                </>
+              )}
+              {first.soir && (
+                <>
+                  {first.midi ? " et " : ", "}
+                  <span className="text-foreground">{first.soir}</span>
+                  <span className="text-muted-foreground"> le soir</span>
+                </>
+              )}
+              <span className="text-muted-foreground">.</span>
             </p>
-          )}
-        </>
-      ) : (
-        <p className="mt-3 font-serif text-lg leading-snug text-muted-foreground">
-          Rien de planifié pour l'instant.
-        </p>
-      )}
-    </Tile>
+
+            {next && (
+              <p className="mt-auto pt-3 text-xs text-muted-foreground">
+                Puis {label(next.o).toLowerCase()} · {next.midi ?? next.soir}
+              </p>
+            )}
+          </>
+        ) : (
+          <p className="mt-3 font-serif text-lg leading-snug text-muted-foreground">
+            Rien de planifié pour l'instant.
+          </p>
+        )}
+      </Tile>
+    </BentoItem>
   );
 }
 
@@ -586,63 +598,67 @@ function ReseauTile() {
   const MAX = 500; // the line's ceiling — the dial reads the share of it
 
   return (
-    <Tile span={2} to="/securite/reseau" variant="glass" className="flex flex-col">
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex min-w-0 items-center gap-3">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
-            <Wifi className="h-4.5 w-4.5" />
+    <BentoItem span={2}>
+      <Tile to="/securite/reseau" variant="glass" className="flex flex-col">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-primary">
+              <Wifi className="h-4.5 w-4.5" />
+            </span>
+            <p className="font-serif text-base font-semibold">Réseau</p>
+          </div>
+          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
+            <Wifi className="h-3 w-3" />
+            <span className="text-xs font-semibold">Stable</span>
           </span>
-          <p className="font-serif text-base font-semibold">Réseau</p>
         </div>
-        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
-          <Wifi className="h-3 w-3" />
-          <span className="text-xs font-semibold">Stable</span>
-        </span>
-      </div>
 
-      <div className="relative mt-1 flex flex-1 items-center justify-center">
-        <TickGauge
-          value={st.downMbps}
-          max={MAX}
-          className="w-[78%] max-w-[220px] overflow-visible"
-        />
-        <div className="absolute inset-x-0 top-[44%] text-center">
-          <p className="font-serif text-2xl leading-none tracking-tight tabular-nums">
-            <CountUp to={st.downMbps} />
-          </p>
-          <Eyebrow size="xs" className="mt-1">
-            Mbps ↓
-          </Eyebrow>
+        <div className="relative mt-1 flex flex-1 items-center justify-center">
+          <TickGauge
+            value={st.downMbps}
+            max={MAX}
+            className="w-[78%] max-w-[220px] overflow-visible"
+          />
+          <div className="absolute inset-x-0 top-[44%] text-center">
+            <p className="font-serif text-2xl leading-none tracking-tight tabular-nums">
+              <CountUp to={st.downMbps} />
+            </p>
+            <Eyebrow size="xs" className="mt-1">
+              Mbps ↓
+            </Eyebrow>
+          </div>
         </div>
-      </div>
 
-      <div className="mt-auto flex items-center justify-center gap-4 pt-1 text-xs text-foreground/75">
-        <Tip label={`Débit montant au dernier test (${st.when}).`}>
-          <span className="inline-flex items-center gap-1 tabular-nums">
-            <ArrowUp className="h-3.5 w-3.5 text-muted-foreground" />
-            {st.upMbps}
-          </span>
-        </Tip>
-        <Tip label="Latence (ping) mesurée vers Internet.">
-          <span className="inline-flex items-center gap-1 tabular-nums">
-            <Activity className="h-3.5 w-3.5 text-muted-foreground" />
-            {st.pingMs} ms
-          </span>
-        </Tip>
-        <Tip label={`Appareils connectés au WiFi (${reseau.wifi1.ssid} + ${reseau.wifi2.ssid}).`}>
-          <span className="inline-flex items-center gap-1 tabular-nums">
-            <Wifi className="h-3.5 w-3.5 text-muted-foreground" />
-            {clients}
-          </span>
-        </Tip>
-        <Tip label={`Charge CPU du homelab · en ligne depuis ${reseau.homelab.uptimeDays} jours.`}>
-          <span className="inline-flex items-center gap-1 tabular-nums">
-            <Server className="h-3.5 w-3.5 text-muted-foreground" />
-            {reseau.homelab.cpu}%
-          </span>
-        </Tip>
-      </div>
-    </Tile>
+        <div className="mt-auto flex items-center justify-center gap-4 pt-1 text-xs text-foreground/75">
+          <Tip label={`Débit montant au dernier test (${st.when}).`}>
+            <span className="inline-flex items-center gap-1 tabular-nums">
+              <ArrowUp className="h-3.5 w-3.5 text-muted-foreground" />
+              {st.upMbps}
+            </span>
+          </Tip>
+          <Tip label="Latence (ping) mesurée vers Internet.">
+            <span className="inline-flex items-center gap-1 tabular-nums">
+              <Activity className="h-3.5 w-3.5 text-muted-foreground" />
+              {st.pingMs} ms
+            </span>
+          </Tip>
+          <Tip label={`Appareils connectés au WiFi (${reseau.wifi1.ssid} + ${reseau.wifi2.ssid}).`}>
+            <span className="inline-flex items-center gap-1 tabular-nums">
+              <Wifi className="h-3.5 w-3.5 text-muted-foreground" />
+              {clients}
+            </span>
+          </Tip>
+          <Tip
+            label={`Charge CPU du homelab · en ligne depuis ${reseau.homelab.uptimeDays} jours.`}
+          >
+            <span className="inline-flex items-center gap-1 tabular-nums">
+              <Server className="h-3.5 w-3.5 text-muted-foreground" />
+              {reseau.homelab.cpu}%
+            </span>
+          </Tip>
+        </div>
+      </Tile>
+    </BentoItem>
   );
 }
 
@@ -673,40 +689,42 @@ function SalonTile({ room, variant }: { room: (typeof rooms)[number]; variant: S
   }[variant];
 
   return (
-    <Tile span={2} to={`/room/${room.key}`} variant="glass" className="flex flex-col">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex min-w-0 items-center gap-3">
+    <BentoItem span={2}>
+      <Tile to={`/room/${room.key}`} variant="glass" className="flex flex-col">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex min-w-0 items-center gap-3">
+            <span
+              className={
+                "grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " +
+                media.tint
+              }
+              aria-hidden
+            >
+              {media.icon}
+            </span>
+            <div className="min-w-0">
+              <p className="font-serif text-base font-semibold leading-tight">{room.name}</p>
+              <p className="mt-0.5 truncate text-xs text-muted-foreground">{media.sub}</p>
+            </div>
+          </div>
+          {media.playing && <EqBars />}
+        </div>
+
+        <div className="mt-auto pt-2 flex items-center gap-3 text-xs text-muted-foreground">
           <span
             className={
-              "grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors " +
-              media.tint
+              "inline-flex items-center gap-1.5 transition-colors " +
+              (room.lightsOn ? "text-mustard" : "")
             }
-            aria-hidden
           >
-            {media.icon}
+            <Lightbulb
+              className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-mustard" : "")}
+            />
+            {room.lightsOn ? "Allumé" : "Éteint"}
           </span>
-          <div className="min-w-0">
-            <p className="font-serif text-base font-semibold leading-tight">{room.name}</p>
-            <p className="mt-0.5 truncate text-xs text-muted-foreground">{media.sub}</p>
-          </div>
         </div>
-        {media.playing && <EqBars />}
-      </div>
-
-      <div className="mt-auto pt-2 flex items-center gap-3 text-xs text-muted-foreground">
-        <span
-          className={
-            "inline-flex items-center gap-1.5 transition-colors " +
-            (room.lightsOn ? "text-mustard" : "")
-          }
-        >
-          <Lightbulb
-            className={"h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-mustard" : "")}
-          />
-          {room.lightsOn ? "Allumé" : "Éteint"}
-        </span>
-      </div>
-    </Tile>
+      </Tile>
+    </BentoItem>
   );
 }
 

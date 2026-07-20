@@ -1,16 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { PageHeader } from "@/components/PageHeader";
+import { PageHeader } from "@/components/page-header";
 import { energie } from "@/lib/mock-data";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/tabs";
+import { Input } from "@/components/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/select";
 import {
   ArrowRight,
   Droplet,
@@ -29,17 +23,10 @@ import {
   X,
   SunMedium,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Eyebrow } from "@/components/Eyebrow";
-import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Button } from "@/components/button";
+import { Eyebrow } from "@/components/eyebrow";
+import { ChartContainer, ChartTooltip } from "@/components/chart";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { AreaChart, Area, BarChart, Bar, Cell, XAxis, YAxis, ReferenceLine } from "recharts";
 
 export const Route = createFileRoute("/_app/energie/")({
