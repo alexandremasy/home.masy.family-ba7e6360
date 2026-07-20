@@ -123,63 +123,171 @@
      must offset by this, or it hides behind that bar. */
   --nav-h: 56px;
 
-  /* ---- Light theme — every value is a step of the Figma ramps ----
-     Source of truth: alexandremasy — tokens, page "Colors" (node 0-1). The hex
-     IS the token; the comment names the rung. Nothing here is invented, so if a
-     colour looks wrong the argument is with Figma, not with this file.
+  /* ═══ PRIMITIVES — the nine Figma ramps, ported verbatim ═══════════════════
+     Source of truth: alexandremasy — tokens, page "Colors"
+     (figma.com/design/CZN7PhcXM5pna3826ZcejS, node 0-1), pulled 2026-07-20.
 
-     The ramps are primitive (Light/Red/Orange/Yellow/Green/Blue/Teal/Purple/Pink,
-     00→90). The semantics below — which rung plays "alert", which plays "hover" —
-     are this app's, and they are the part worth arguing about. */
-  --background: #fbfcfc; /* Light/00 */
-  --foreground: #131415; /* Light/90 */
+     These are NOT usage tokens. They are deliberately absent from `@theme`, so
+     `bg-teal-60` does not exist and no component can reach past the semantics
+     below. Reading a ramp directly is how a design system rots: the meaning is
+     what travels, not the hue. Add a semantic instead.
 
-  --card: #ffffff; /* White */
-  --card-foreground: #131415; /* Light/90 */
-  --popover: #ffffff; /* White */
-  --popover-foreground: #131415; /* Light/90 */
+     Each ramp runs 00 (lightest) → 90 (darkest); 40-60 is the usable band on a
+     light ground. If a colour looks wrong, the argument is with Figma. */
+  --white: #ffffff;
+
+  --light-00: #fbfcfc;
+  --light-10: #ecedee;
+  --light-20: #cfd3d5;
+  --light-30: #b2b8bc;
+  --light-40: #939da2;
+  --light-50: #6e7a81;
+  --light-60: #4e575d;
+  --light-70: #373e42;
+  --light-80: #292e32;
+  --light-90: #131415;
+
+  --red-00: #fefbfb;
+  --red-10: #f9e7ea;
+  --red-20: #f5d5d9;
+  --red-30: #edacb6;
+  --red-40: #d9566a;
+  --red-50: #c22038;
+  --red-60: #aa1b30;
+  --red-70: #8f1728;
+  --red-80: #751220;
+  --red-90: #5c0d17;
+
+  --orange-00: #fefbfb;
+  --orange-10: #fbede9;
+  --orange-20: #f7ded7;
+  --orange-30: #efbfb1;
+  --orange-40: #e07e62;
+  --orange-50: #cc4e2b;
+  --orange-60: #b04324;
+  --orange-70: #95371e;
+  --orange-80: #7b2b18;
+  --orange-90: #612012;
+
+  --yellow-00: #fefefa;
+  --yellow-10: #fcf8e7;
+  --yellow-20: #faf3d8;
+  --yellow-30: #f5e7b0;
+  --yellow-40: #ebce5e;
+  --yellow-50: #dab12c;
+  --yellow-60: #bd9526;
+  --yellow-70: #a07b1f;
+  --yellow-80: #815f18;
+  --yellow-90: #654612;
+
+  --green-00: #fafdfc;
+  --green-10: #e6f4ef;
+  --green-20: #d4ece5;
+  --green-30: #a8d9ca;
+  --green-40: #56b598;
+  --green-50: #1c9371;
+  --green-60: #187c60;
+  --green-70: #14664f;
+  --green-80: #10503e;
+  --green-90: #0d3a2e;
+
+  --blue-00: #fbfdfe;
+  --blue-10: #e7f4fa;
+  --blue-20: #d3ebf6;
+  --blue-30: #acdaef;
+  --blue-40: #52b2de;
+  --blue-50: #1790c5;
+  --blue-60: #147aa8;
+  --blue-70: #11658c;
+  --blue-80: #0e506e;
+  --blue-90: #0b3b54;
+
+  --teal-00: #fbfefe;
+  --teal-10: #e7f8f9;
+  --teal-20: #d5f2f4;
+  --teal-30: #ace5ea;
+  --teal-40: #56cad4;
+  --teal-50: #1dafbb;
+  --teal-60: #1995a0;
+  --teal-70: #157a84;
+  --teal-80: #116069;
+  --teal-90: #0d464d;
+
+  --purple-00: #fdfcfe;
+  --purple-10: #efecf6;
+  --purple-20: #e2dcee;
+  --purple-30: #c4bade;
+  --purple-40: #8a75bd;
+  --purple-50: #5f479e;
+  --purple-60: #513c86;
+  --purple-70: #44316e;
+  --purple-80: #372756;
+  --purple-90: #2c1c41;
+
+  --pink-00: #fefbfd;
+  --pink-10: #f9eaf5;
+  --pink-20: #f5d8ec;
+  --pink-30: #ebb6db;
+  --pink-40: #d76bb9;
+  --pink-50: #c33e98;
+  --pink-60: #a63484;
+  --pink-70: #8e2c6b;
+  --pink-80: #732254;
+  --pink-90: #5a193e;
+
+  /* ═══ SEMANTICS — light theme ══════════════════════════════════════════════
+     Figma ships no semantics: which rung plays "alert" and which plays "hover"
+     is this app's decision, and it is the part worth arguing about. Every value
+     below points at a rung above — never at a hex. */
+  --background: var(--light-00);
+  --foreground: var(--light-90);
+
+  --card: var(--white);
+  --card-foreground: var(--light-90);
+  --popover: var(--white);
+  --popover-foreground: var(--light-90);
 
   /* The positive signal: today's ring, links, active, StatusPill. */
-  --primary: #1995a0; /* Teal/60 */
-  --primary-foreground: #131415; /* Light/90 — 5.14:1. White would be 3.49:1, under AA. */
+  --primary: var(--teal-60);
+  --primary-foreground: var(--light-90); /* 5.14:1. White would be 3.49:1, under AA. */
 
-  --secondary: #ecedee; /* Light/10 */
-  --secondary-foreground: #131415; /* Light/90 */
+  --secondary: var(--light-10);
+  --secondary-foreground: var(--light-90);
 
-  --muted: #ecedee; /* Light/10 */
-  --muted-foreground: #4e575d; /* Light/60 */
+  --muted: var(--light-10);
+  --muted-foreground: var(--light-60);
 
-  /* shadcn's meaning: the neutral hover/focus surface every ui/* primitive
-     reaches for (bg-accent, focus:bg-accent, data-[highlighted]). Keep it
-     neutral — the decorative mustard lives in --mustard below. */
-  --accent: #ecedee; /* Light/10 */
-  --accent-foreground: #131415; /* Light/90 */
+  /* shadcn's meaning: the neutral hover/focus surface every primitive reaches
+     for (bg-accent, focus:bg-accent, data-[highlighted]). Keep it neutral — the
+     decorative mustard lives in --mustard below. */
+  --accent: var(--light-10);
+  --accent-foreground: var(--light-90);
 
-  --mustard: #dab12c; /* Yellow/50 — decorative: PMC tile, lights on */
-  --mustard-foreground: #131415; /* Light/90 — 9.05:1 */
+  --mustard: var(--yellow-50); /* decorative: PMC tile, lights on */
+  --mustard-foreground: var(--light-90); /* 9.05:1 */
 
-  --warm: #e07e62; /* Orange/40 — THE ALERT TONE, nothing else */
-  --warm-foreground: #131415; /* Light/90 — 6.44:1 */
+  --warm: var(--orange-40); /* THE ALERT TONE, nothing else */
+  --warm-foreground: var(--light-90); /* 6.44:1 */
 
-  --success: #1c9371; /* Green/50 */
+  --success: var(--green-50);
   /* Red, not Orange/50: --warm already owns the orange family, and an alert that
      shares a hue with an error is an alert you can't read. */
-  --destructive: #c22038; /* Red/50 */
-  --destructive-foreground: #fbfcfc; /* Light/00 — 5.74:1 */
+  --destructive: var(--red-50);
+  --destructive-foreground: var(--light-00); /* 5.74:1 */
 
-  --border: #cfd3d5; /* Light/20 */
-  --input: #cfd3d5; /* Light/20 */
-  --ring: #1995a0; /* Teal/60 */
+  --border: var(--light-20);
+  --input: var(--light-20);
+  --ring: var(--teal-60);
 
   /* Sidebar — white rail on the soft-grey page, active/hover on Light/10. */
-  --sidebar: #ffffff; /* White */
-  --sidebar-foreground: #131415; /* Light/90 */
-  --sidebar-primary: #1995a0; /* Teal/60 */
-  --sidebar-primary-foreground: #131415; /* Light/90 */
-  --sidebar-accent: #ecedee; /* Light/10 */
-  --sidebar-accent-foreground: #131415; /* Light/90 */
-  --sidebar-border: #cfd3d5; /* Light/20 */
-  --sidebar-ring: #1995a0; /* Teal/60 */
+  --sidebar: var(--white);
+  --sidebar-foreground: var(--light-90);
+  --sidebar-primary: var(--teal-60);
+  --sidebar-primary-foreground: var(--light-90);
+  --sidebar-accent: var(--light-10);
+  --sidebar-accent-foreground: var(--light-90);
+  --sidebar-border: var(--light-20);
+  --sidebar-ring: var(--teal-60);
 }
 
 /* ---- Dark theme — NOT from Figma. The only invented colour left ----

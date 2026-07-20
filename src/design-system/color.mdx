@@ -1,23 +1,26 @@
 import { Meta, Title, Subtitle, Unstyled } from "@storybook/addon-docs/blocks";
-import { TokenPalette } from "./live-tokens";
+import { TokenPalette, RampPalette } from "./live-tokens";
 
 <Meta title="Foundations/Color" />
 
 <Title>Color</Title>
 
 <Subtitle>
-  Meaning before hue. Every value below is read off the document root, so this page cannot disagree
-  with `styles.css` — toggle the theme and it re-reads.
+  Two layers: nine primitive ramps ported from Figma, and the semantics this app decides on top of
+  them. Every value below is read off the document root, so the page cannot disagree with
+  `styles.css` — toggle the theme and it re-reads.
 </Subtitle>
 
-The light theme is ported from Figma (the "Colors" page); the dark theme is authored, because
-the token library has no dark ramp yet.
+## Semantics — what you actually use
+
+Meaning before hue. **These are the only colour tokens a component may reach for.** Each one
+points at a rung, never at a hex, so re-pointing `--primary` moves the whole product at once.
 
 <TokenPalette
   groups={[
     {
-      title: "Semantics",
-      note: "primary = positive signal · warm = ALERT, nothing else · mustard = decorative and data series",
+      title: "Signal",
+      note: "primary = positive · warm = ALERT, nothing else · mustard = decorative and data series",
       tokens: ["primary", "warm", "mustard", "success", "destructive"],
     },
     {
@@ -45,6 +48,45 @@ the token library has no dark ramp yet.
   ]}
 />
 
+### Which rung each semantic points at
+
+| Token                                  | Rung     |     | Token                  | Rung      |
+| -------------------------------------- | -------- | --- | ---------------------- | --------- |
+| `--background`                         | Light/00 |     | `--primary` · `--ring` | Teal/60   |
+| `--foreground`                         | Light/90 |     | `--warm`               | Orange/40 |
+| `--card` · `--popover`                 | White    |     | `--mustard`            | Yellow/50 |
+| `--secondary` · `--muted` · `--accent` | Light/10 |     | `--success`            | Green/50  |
+| `--muted-foreground`                   | Light/60 |     | `--destructive`        | Red/50    |
+| `--border` · `--input`                 | Light/20 |     |                        |           |
+
+`--destructive` is **Red/50, not Orange/50**: `--warm` already owns the orange family, and an
+alert sharing a hue with an error is an alert you can't read.
+
+## Primitives — the nine ramps
+
+Ported verbatim from the Figma library (_alexandremasy — tokens_, page "Colors"). Each ramp runs
+**00** (lightest) to **90** (darkest); 40–60 is the usable band on a light ground.
+
+<div className="rounded-xl border border-warm/40 bg-warm/5 p-4 text-sm">
+  These are deliberately **absent from `@theme`** — `bg-teal-60` does not exist, and no component
+  can reach past the semantics above. Reading a ramp directly is how a design system rots: the
+  meaning is what travels, not the hue. If nothing fits, add a semantic.
+</div>
+
+<RampPalette
+  ramps={[
+    { name: "Light", note: "neutrals — surfaces, text, hairlines" },
+    { name: "Teal", note: "the product's signal colour" },
+    { name: "Orange", note: "alert" },
+    { name: "Yellow", note: "decorative, data series" },
+    { name: "Green", note: "success" },
+    { name: "Red", note: "error, destructive" },
+    { name: "Blue", note: "unassigned" },
+    { name: "Purple", note: "unassigned" },
+    { name: "Pink", note: "unassigned" },
+  ]}
+/>
+
 ## The `-foreground` pairing rule
 
 A `-foreground` token only works on its own **solid** fill. Every accent foreground is Light/90
@@ -69,3 +111,12 @@ foreground token.
     </span>
   </div>
 </Unstyled>
+
+## Known debt — the dark theme
+
+The Figma library has a single neutral ramp, "Light", and no dark counterpart, so `.dark` is the
+only block in `styles.css` that is **authored rather than ported**. It stays navy-tinted rather
+than a mechanically inverted Light ramp — inverting was declined on 2026-07-16 because it costs
+the dark theme its temperature.
+
+Closing this means adding a Dark ramp in Figma; until then, the dark values point at no rung.

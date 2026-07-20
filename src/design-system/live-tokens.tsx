@@ -54,6 +54,27 @@ export function TokenPalette({
   );
 }
 
+const RUNGS = ["00", "10", "20", "30", "40", "50", "60", "70", "80", "90"] as const;
+
+/**
+ * The primitive ramps, 00 → 90. One row per hue, so the rungs line up vertically
+ * and the usable band (40–60 on a light ground) reads across the whole set.
+ */
+export function RampPalette({ ramps }: { ramps: { name: string; note?: string }[] }) {
+  return (
+    <ColorPalette>
+      {ramps.map((r) => (
+        <LiveColorItem
+          key={r.name}
+          title={r.name}
+          subtitle={r.note}
+          tokens={RUNGS.map((n) => `${r.name.toLowerCase()}-${n}`)}
+        />
+      ))}
+    </ColorPalette>
+  );
+}
+
 /** The icon inventory, rendering by Storybook's IconGallery. */
 export function LucideGallery({ icons }: { icons: Record<string, LucideIcon> }) {
   return (
