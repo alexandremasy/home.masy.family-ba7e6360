@@ -244,8 +244,14 @@ export function Card({
         </header>
       )}
 
+      {/*
+        A card fills whatever the parent gives it, so the body absorbs the slack —
+        and it is a flex COLUMN, which is what lets content inside push itself to
+        the bottom with `mt-auto`. Dropping that is what left the dashboard tiles
+        top-heavy with a void underneath.
+      */}
       {children != null && (
-        <div data-slot="body" className={cn("flex-1", !bleed && p.x, p.body)}>
+        <div data-slot="body" className={cn("flex flex-1 flex-col", !bleed && p.x, p.body)}>
           {children}
         </div>
       )}
@@ -299,17 +305,21 @@ export function Card({
 export function Tile({
   variant = "solid",
   tone,
+  padding = "sm",
   ...rest
 }: Omit<CardProps, "variant" | "tone" | "radius"> & {
   variant?: "solid" | "glass" | "pill";
   tone?: "default" | "primary" | "warm" | "mustard" | "dark";
 }) {
+  // Dashboard tiles were `p-4`, not the `md` default: they sit in fixed-height
+  // grid rows, and the wider padding squeezes their meta rows into columns.
   if (variant === "pill") {
     return <Card {...rest} variant="inset" radius="full" padding="sm" as="div" />;
   }
   return (
     <Card
       {...rest}
+      padding={padding}
       variant={tone === "dark" ? "inverted" : variant === "solid" ? "soft" : variant}
       as="div"
     />
