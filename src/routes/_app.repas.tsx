@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, useLocation, useNavigate, Link } from "@tansta
 import { ArrowLeft } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/tabs";
 import { Button } from "@/components/button";
+import { AmbientGlow } from "@/components/effects";
 import { DishesProvider } from "@/lib/dishes-store";
 
 export const Route = createFileRoute("/_app/repas")({
@@ -42,12 +43,8 @@ function RepasLayout() {
             to repas), so it aligns top-to-bottom. This glow just sits over it. */}
         {/* A single teal blob emanating from the very top, drifting and morphing
             across the top band while shifting hue, then fading down into the muted
-            grey (see .repas-glow in styles.css). absolute, not fixed — the
-            .mode-enter ancestor keeps a transform, which would trap a fixed layer. */}
-        <div
-          aria-hidden
-          className="repas-glow pointer-events-none absolute inset-x-0 -top-6 -z-10 h-96 sm:-top-10"
-        />
+            grey. Defaults straight out of the effect layer — see AmbientGlow. */}
+        <AmbientGlow className="absolute inset-x-0 -top-6 -z-10 h-96 sm:-top-10" />
 
         <div className="space-y-6 px-6 sm:px-12">
           {/* Page header — a back affordance to the dashboard, then the serif title. */}

@@ -540,21 +540,6 @@
     animation: equalizer 0.9s ease-in-out infinite;
   }
 
-  /* Slow drift of a tinted media backdrop — the pane feels alive without motion
-     on the content. Pairs with an inline gradient + background-size on the element. */
-  @keyframes media-gradient {
-    0%,
-    100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-  .anim-media-gradient {
-    animation: media-gradient 9s ease-in-out infinite;
-  }
-
   /* ---- Stripe-like slide-up overlay ----
      Backdrop fades, panel glides up + scales in. */
   @keyframes overlay-fade-in {
@@ -856,45 +841,72 @@
     animation: shake-x 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   }
 
-  /* ---- Living gradient — a slow purple→blue mesh that drifts across the whole
-     viewport, Stripe-style, and shifts hue as the page scrolls (--lg-scroll,
-     0→1, written by LivingGradient). Fixed and mounted inside the isolated
-     SidebarInset: it paints above the page background but behind the content.
-     Decorative and off-palette by request. ---- */
-  .living-gradient {
-    position: fixed;
+  /* ══════════════════════════════════════════════════════════════════════════
+     EFFECTS — ambient background layers
+
+     Three composable, decorative layers. Each is one class whose look is driven
+     entirely by CSS variables, so a consumer tunes colour / intensity / speed
+     instead of forking the rule. React wrappers live in `components/effects/`
+     and every effect is documented live under Foundations/Effects in Storybook.
+
+     All three are `aria-hidden`, `pointer-events: none` territory: they never
+     carry meaning, and they all stop animating under prefers-reduced-motion.
+     ══════════════════════════════════════════════════════════════════════════ */
+
+  /* ---- Ambient mesh — blurred blobs drifting behind the page, Stripe-style.
+     `--fx-mesh-scroll` (0→1, written by AmbientMesh when `scrollHue` is on)
+     turns scroll progress into a hue shift. Off-palette by design: the mesh is
+     atmosphere, not a token consumer. ---- */
+  .fx-mesh {
+    --fx-mesh-a: #8b5cf6;
+    --fx-mesh-b: #6366f1;
+    --fx-mesh-c: #3b82f6;
+    --fx-mesh-size: 32rem;
+    --fx-mesh-blur: 72px;
+    --fx-mesh-opacity: 0.55;
+    --fx-mesh-speed: 16s;
+    --fx-mesh-hue-range: 75deg;
+
+    position: absolute;
     inset: 0;
     z-index: -1;
     overflow: hidden;
     pointer-events: none;
-    filter: hue-rotate(calc(var(--lg-scroll, 0) * 75deg));
+    filter: hue-rotate(calc(var(--fx-mesh-scroll, 0) * var(--fx-mesh-hue-range)));
     transition: filter 120ms linear;
   }
-  .living-gradient__blob {
+  /* Viewport-wide variant. Only valid outside a transformed ancestor — a
+     transform traps a fixed layer (see .mode-enter). */
+  .fx-mesh--fixed {
+    position: fixed;
+  }
+  .fx-mesh__blob {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 32rem;
-    height: 32rem;
+    width: var(--fx-mesh-size);
+    height: var(--fx-mesh-size);
     border-radius: 9999px;
-    filter: blur(72px);
-    opacity: 0.55;
+    filter: blur(var(--fx-mesh-blur));
+    opacity: var(--fx-mesh-opacity);
     will-change: transform;
   }
-  .living-gradient__blob--purple {
-    background: radial-gradient(circle at center, #8b5cf6, transparent 68%);
-    animation: lg-drift-a 14s ease-in-out infinite;
+  /* Wide diagonal sweeps with strong scale swings so the mesh visibly breathes.
+     The three durations are offset around --fx-mesh-speed so the blobs never
+     sync up into one pulsing shape. */
+  .fx-mesh__blob:nth-child(1) {
+    background: radial-gradient(circle at center, var(--fx-mesh-a), transparent 68%);
+    animation: fx-mesh-drift-a calc(var(--fx-mesh-speed) * 0.875) ease-in-out infinite;
   }
-  .living-gradient__blob--violet {
-    background: radial-gradient(circle at center, #6366f1, transparent 68%);
-    animation: lg-drift-b 18s ease-in-out infinite;
+  .fx-mesh__blob:nth-child(2) {
+    background: radial-gradient(circle at center, var(--fx-mesh-b), transparent 68%);
+    animation: fx-mesh-drift-b calc(var(--fx-mesh-speed) * 1.125) ease-in-out infinite;
   }
-  .living-gradient__blob--blue {
-    background: radial-gradient(circle at center, #3b82f6, transparent 68%);
-    animation: lg-drift-c 16s ease-in-out infinite;
+  .fx-mesh__blob:nth-child(3) {
+    background: radial-gradient(circle at center, var(--fx-mesh-c), transparent 68%);
+    animation: fx-mesh-drift-c var(--fx-mesh-speed) ease-in-out infinite;
   }
-  /* Wide diagonal sweeps with strong scale swings so the mesh visibly breathes. */
-  @keyframes lg-drift-a {
+  @keyframes fx-mesh-drift-a {
     0%,
     100% {
       transform: translate(-78%, -92%) scale(0.95);
@@ -903,7 +915,7 @@
       transform: translate(-26%, -40%) scale(1.45);
     }
   }
-  @keyframes lg-drift-b {
+  @keyframes fx-mesh-drift-b {
     0%,
     100% {
       transform: translate(-28%, -22%) scale(1.4);
@@ -912,7 +924,7 @@
       transform: translate(-72%, -70%) scale(0.9);
     }
   }
-  @keyframes lg-drift-c {
+  @keyframes fx-mesh-drift-c {
     0%,
     100% {
       transform: translate(-20%, -58%) scale(1.05);
@@ -921,50 +933,80 @@
       transform: translate(-66%, -12%) scale(1.5);
     }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .living-gradient__blob {
-      animation: none;
-    }
-  }
 
-  /* Repas page glow: a teal corner wash, strong top-left and a lighter touch
-     reaching the top-right, breathing slowly under the title + tabs. */
-  .repas-glow {
-    /* Anchored AT THE TOP (at X 0%): the core sits on the top edge and fades
-       DOWNWARD, so the top band stays filled and there's no hard seam — the ellipse
-       reaches transparent (72%) well before the element's bottom. */
+  /* ---- Ambient glow — one tinted blob anchored to the TOP edge of its box
+     (at Y 0%): the core sits on the edge and fades DOWNWARD, so the top band
+     stays filled and there is no hard seam. It drifts sideways, morphs, and
+     shifts hue, resting desaturated at each cycle's ends and blooming at the
+     middle. Token-aware: --fx-glow-color defaults to --primary. ---- */
+  .fx-glow {
+    --fx-glow-color: var(--primary);
+    /* Unitless: the percentage of colour mixed into transparent at the core. */
+    --fx-glow-strength: 26;
+    --fx-glow-x: 45%;
+    --fx-glow-spread: 130%;
+    --fx-glow-speed: 14s;
+    --fx-glow-shift: -18deg;
+
     background: radial-gradient(
-      ellipse 130% 115% at 45% 0%,
-      color-mix(in oklab, var(--primary) 26%, transparent) 0%,
+      ellipse var(--fx-glow-spread) calc(var(--fx-glow-spread) * 0.885) at var(--fx-glow-x) 0%,
+      color-mix(in oklab, var(--fx-glow-color) calc(var(--fx-glow-strength) * 1%), transparent) 0%,
       transparent 82%
     );
-    animation: repas-glow-morph 14s ease-in-out infinite;
+    animation: fx-glow-morph var(--fx-glow-speed) ease-in-out infinite;
   }
-  /* One coherent blob that keeps the top filled while it drifts left→right and
-     morphs (the ellipse itself is interpolated) and shifts hue, then fades far down
-     into the page's muted grey. Rests on a muted grey (low saturation) at each
-     cycle's ends, blooming teal in the middle. */
-  @keyframes repas-glow-morph {
+  @keyframes fx-glow-morph {
     0%,
     100% {
       background: radial-gradient(
-        ellipse 120% 108% at 35% 0%,
-        color-mix(in oklab, var(--primary) 22%, transparent) 0%,
+        ellipse calc(var(--fx-glow-spread) * 0.92) calc(var(--fx-glow-spread) * 0.83) at
+          calc(var(--fx-glow-x) - 10%) 0%,
+        color-mix(in oklab, var(--fx-glow-color) calc(var(--fx-glow-strength) * 0.85%), transparent)
+          0%,
         transparent 84%
       );
       filter: saturate(0.35) hue-rotate(0deg);
     }
     50% {
       background: radial-gradient(
-        ellipse 155% 125% at 58% 0%,
-        color-mix(in oklab, var(--primary) 30%, transparent) 0%,
+        ellipse calc(var(--fx-glow-spread) * 1.19) calc(var(--fx-glow-spread) * 0.96) at
+          calc(var(--fx-glow-x) + 13%) 0%,
+        color-mix(in oklab, var(--fx-glow-color) calc(var(--fx-glow-strength) * 1.15%), transparent)
+          0%,
         transparent 82%
       );
-      filter: saturate(1.15) hue-rotate(-18deg);
+      filter: saturate(1.15) hue-rotate(var(--fx-glow-shift));
     }
   }
+
+  /* ---- Media sweep — a slow drift of an oversized background gradient, so a
+     tinted pane feels alive without moving its content. Needs a background-image
+     on the same element; MediaSweep composes one from a tint. ---- */
+  .fx-sweep {
+    --fx-sweep-speed: 9s;
+    --fx-sweep-size: 220% 220%;
+
+    background-size: var(--fx-sweep-size);
+    animation: fx-sweep-drift var(--fx-sweep-speed) ease-in-out infinite;
+  }
+  @keyframes fx-sweep-drift {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  /* One gate for the whole effect layer: motion is the decoration, the colour
+     stays. The glow keeps a resting desaturation so it matches its 0% frame. */
   @media (prefers-reduced-motion: reduce) {
-    .repas-glow {
+    .fx-mesh__blob,
+    .fx-sweep {
+      animation: none;
+    }
+    .fx-glow {
       animation: none;
       filter: saturate(0.5);
     }

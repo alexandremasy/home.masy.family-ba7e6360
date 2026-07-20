@@ -6,7 +6,7 @@ import { useSheetClose } from "@/lib/use-sheet-close";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/sidebar";
 import { footerLines } from "@/lib/mock-data";
 import { Dashboard } from "./_app.index";
-import { LivingGradient } from "@/components/living-gradient";
+import { AmbientMesh } from "@/components/effects";
 import { useDocumentTitle } from "@/lib/page-title";
 
 export const Route = createFileRoute("/_app")({
@@ -53,7 +53,7 @@ function AppLayout() {
             the dashboard world: the home screen and the overlay modals above it. The
             full-bleed module pages (repas, anniversaires, budget…) own their own calm
             surface, so it doesn't mount there. */}
-        {!isFullBleed && <LivingGradient />}
+        {!isFullBleed && <AmbientMesh fixed scrollHue />}
         {/* Repas paints the whole viewport a muted grey behind its content, so the
             page reads as one aligned surface top-to-bottom (its local glow sits over
             it). Fixed at the SidebarInset level — outside the transformed .mode-enter

@@ -53,14 +53,18 @@ app runs.
 ## Every keyframe
 
 `breathe` · `pulse-ring` · `slide-up` · `wiggle` · `equalizer` · `float` · `drift` · `pop-in` ·
-`glow` · `sway` · `media-gradient` · `shake-x` · `mode-in` · `overlay-fade-in` ·
+`glow` · `sway` · `shake-x` · `mode-in` · `overlay-fade-in` ·
 `overlay-panel-in` · `overlay-fade-out` · `overlay-panel-out` · `overlay-drawer-in` ·
 `overlay-drawer-out` · `sun-spin` · `rain-bob` · `storm-flicker` · `snow-fall` · `fog-drift` ·
-`partly-bob` · `cloud-drift` · `lg-drift-a/b/c` · `repas-glow-morph`
+`partly-bob` · `cloud-drift`
+
+The ambient background keyframes (`fx-mesh-drift-a/b/c`, `fx-glow-morph`, `fx-sweep-drift`) are not
+listed here — they belong to the effect layer, documented under
+[Effects](?path=/docs/foundations-effects-overview--docs).
 
 ## prefers-reduced-motion
 
 `styles.css` only silences the decorative layers under
-`@media (prefers-reduced-motion: reduce)` — the cursor follower, the living gradient, and the
-repas glow. The `.anim-*` utilities above are **not** gated yet. That is a known gap, not a claim
-this page makes.
+`@media (prefers-reduced-motion: reduce)` — the cursor follower and the three ambient
+[Effects](?path=/docs/foundations-effects-overview--docs). The `.anim-*` utilities above are
+**not** gated yet. That is a known gap, not a claim this page makes.

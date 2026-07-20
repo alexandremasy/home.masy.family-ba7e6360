@@ -1,0 +1,78 @@
+import { Meta, Title, Subtitle, Unstyled } from "@storybook/addon-docs/blocks";
+// Relative, like every other Foundations page: the `@/` alias is not applied to
+// MDX under Storybook's Vite pass, only to the .tsx stories.
+import { AmbientMesh, AmbientGlow, MediaSweep } from "../components/effects";
+
+<Meta title="Foundations/Effects/Overview" />
+
+<Title>Effects</Title>
+
+<Subtitle>
+  The ambient background layer — decorative surfaces that make a page feel alive without moving its
+  content. Three effects, each a CSS class driven by variables and a React wrapper that types them.
+</Subtitle>
+
+An effect is never meaningful: it is `aria-hidden`, it carries no state, and removing it costs
+nothing but atmosphere. That is the line between this page and [Motion](?path=/docs/foundations-motion--docs),
+which covers the `.anim-*` utilities that move actual content.
+
+<Unstyled>
+  <div className="grid gap-4 py-4 sm:grid-cols-3">
+    <div className="relative isolate h-44 overflow-hidden rounded-xl border border-border/60 bg-background">
+      <AmbientMesh />
+      <span className="absolute bottom-3 left-3 text-xs text-muted-foreground">Ambient Mesh</span>
+    </div>
+    <div className="relative isolate h-44 overflow-hidden rounded-xl border border-border/60 bg-muted">
+      <AmbientGlow className="absolute inset-x-0 top-0 -z-10 h-40" />
+      <span className="absolute bottom-3 left-3 text-xs text-muted-foreground">Ambient Glow</span>
+    </div>
+    <MediaSweep
+      tint="#14b8a6"
+      className="relative h-44 overflow-hidden rounded-xl border border-border/60"
+    >
+      <span className="absolute bottom-3 left-3 text-xs text-muted-foreground">Media Sweep</span>
+    </MediaSweep>
+  </div>
+</Unstyled>
+
+## Which one
+
+| Effect                                                             | What it is                                      | Where it runs                         |
+| ------------------------------------------------------------------ | ----------------------------------------------- | ------------------------------------- |
+| [Ambient Mesh](?path=/docs/foundations-effects-ambient-mesh--docs) | Blurred blobs drifting behind a whole view      | `_app.tsx`, every non full-bleed page |
+| [Ambient Glow](?path=/docs/foundations-effects-ambient-glow--docs) | A tinted wash anchored to the top edge of a box | Repas, behind the title band          |
+| [Media Sweep](?path=/docs/foundations-effects-media-sweep--docs)   | A gradient drifting under a pane's content      | Room pages, the now-playing card      |
+
+## The contract
+
+Each effect is one class in `styles.css` (`.fx-mesh`, `.fx-glow`, `.fx-sweep`) whose look is
+entirely expressed as custom properties. The React wrapper in `src/components/effects/` writes
+those properties from props and does nothing else — a prop you leave out keeps the CSS default,
+it never blanks it.
+
+So there are two ways to consume an effect, and both are first class:
+
+```tsx
+// From React, typed:
+<AmbientGlow color="#7c3aed" strength={32} className="absolute inset-x-0 top-0 h-96" />
+```
+
+```css
+/* Or straight from CSS, when the effect belongs to a rule you already own: */
+.my-surface {
+  --fx-glow-color: var(--warm);
+  --fx-glow-speed: 22s;
+}
+```
+
+Adding a fourth effect means adding a class **and** a wrapper here — an ambient gradient inlined
+into a route is the drift this page exists to prevent.
+
+## prefers-reduced-motion
+
+One gate covers the whole layer: under `@media (prefers-reduced-motion: reduce)` all three stop
+animating and keep their colour. The glow also settles at `saturate(0.5)` so it matches its resting
+frame rather than jumping to full bloom.
+
+The `.anim-*` utilities on the Motion page are **not** gated yet. That gap is theirs, not this
+layer's.
