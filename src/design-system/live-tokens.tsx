@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ColorItem, ColorPalette, IconItem, IconGallery } from "@storybook/addon-docs/blocks";
 import { type LucideIcon } from "lucide-react";
 import { Icon } from "@/components/icon";
@@ -24,18 +24,25 @@ export function TokenValue({ token, fallback }: { token: string; fallback?: stri
 }
 
 /**
- * Resolves a whole list of tokens in ONE effect. Reading them in a loop of
- * `useTokenValue` calls would break the rules of hooks the moment a list changes
- * length, and `ColorItem` chokes on an unresolved `var(--x)` — it parses the value
- * to compute its contrast label, so it must receive a real colour or nothing.
+ * Resolves a whole list of tokens in ONE effect, reading them off a probe node
+ * rather than the document root — so an item placed inside a `.dark` container
+ * reports the dark values without touching the page theme.
+ *
+ * Reading them in a loop of `useTokenValue` calls would break the rules of hooks
+ * the moment a list changes length, and `ColorItem` chokes on an unresolved
+ * `var(--x)`: it parses the value to compute its contrast label, so it must get a
+ * real colour or nothing.
  */
-function useTokenValues(tokens: string[]): Record<string, string> {
+function useTokenValuesAt(tokens: string[]) {
+  const ref = useRef<HTMLSpanElement>(null);
   const key = tokens.join(",");
   const [values, setValues] = useState<Record<string, string>>({});
 
   useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
     const read = () => {
-      const style = getComputedStyle(document.documentElement);
+      const style = getComputedStyle(el);
       const next: Record<string, string> = {};
       for (const t of key.split(",")) {
         const v = style.getPropertyValue(`--${t}`).trim();
@@ -49,7 +56,7 @@ function useTokenValues(tokens: string[]): Record<string, string> {
     return () => obs.disconnect();
   }, [key]);
 
-  return values;
+  return { ref, values };
 }
 
 function LiveColorItem({
@@ -61,11 +68,37 @@ function LiveColorItem({
   subtitle?: string;
   tokens: string[];
 }) {
-  const colors = useTokenValues(tokens);
-  // Nothing resolved yet (first paint): render no swatches rather than feed the
-  // block a value it cannot parse.
-  if (Object.keys(colors).length === 0) return null;
-  return <ColorItem title={title} subtitle={subtitle ?? ""} colors={colors} />;
+  const { ref, values } = useTokenValuesAt(tokens);
+  return (
+    <>
+      <span ref={ref} aria-hidden="true" />
+      {Object.keys(values).length > 0 && (
+        <ColorItem title={title} subtitle={subtitle ?? ""} colors={values} />
+      )}
+    </>
+  );
+}
+
+/**
+ * The same palette resolved in the dark theme. The `.dark` class is here only to
+ * SCOPE the custom properties — each item reads them off its own node inside this
+ * wrapper. It deliberately paints no dark background: the block draws its labels in
+ * the docs theme's own ink, which would vanish on one.
+ */
+export function DarkPalette({
+  groups,
+}: {
+  groups: { title: string; note?: string; tokens: string[] }[];
+}) {
+  return (
+    <div className="dark">
+      <ColorPalette>
+        {groups.map((g) => (
+          <LiveColorItem key={g.title} title={g.title} subtitle={g.note} tokens={g.tokens} />
+        ))}
+      </ColorPalette>
+    </div>
+  );
 }
 
 /** The palette, grouped by role. Values read live, rendering by Storybook. */

@@ -1,10 +1,21 @@
 import type { StorybookConfig } from "@storybook/react-vite";
+import remarkGfm from "remark-gfm";
 
 const config: StorybookConfig = {
   framework: { name: "@storybook/react-vite", options: {} },
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(ts|tsx)"],
   addons: [
-    "@storybook/addon-docs",
+    {
+      // MDX ships without GFM, so a markdown table renders as a row of raw pipes.
+      // Every Foundations page uses one. The option belongs to addon-docs — setting
+      // it under a top-level `docs` key is silently ignored.
+      name: "@storybook/addon-docs",
+      options: {
+        mdxPluginOptions: {
+          mdxCompileOptions: { remarkPlugins: [remarkGfm] },
+        },
+      },
+    },
     "@storybook/addon-links",
     "@storybook/addon-a11y",
     "@storybook/addon-themes",

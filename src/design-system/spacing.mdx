@@ -1,95 +1,49 @@
 import { Meta, Title, Subtitle, Unstyled } from "@storybook/addon-docs/blocks";
-import { SpacingSample, TokenValue } from "./live-tokens";
+import { SpacingSample } from "./live-tokens";
 
 <Meta title="Foundations/Spacing" />
 
-<Title>Spacing & layout</Title>
+<Title>Spacing</Title>
 
 <Subtitle>
-  A 4px base, and a short list of rhythms the product actually uses. Every width below is measured
+  A 4px base, and the handful of rhythms the product actually uses. Every width below is measured
   off the rendered node, so the page reports what the browser applies rather than what we hoped.
 </Subtitle>
 
 ## The scale
 
 Tailwind's default scale, base **4px** — `1` is 4px, so the number is the value divided by four.
-The product lives almost entirely in the 2 → 6 range; anything above 8 is layout, not spacing.
+The product lives almost entirely in the 2 → 6 range; 8 and above belongs to page rhythm.
 
 <Unstyled>
   <div className="py-2">
     <SpacingSample step="0.5" className="w-0.5" note="hairline gaps, icon nudges" />
-    <SpacingSample step="1" className="w-1" note="" />
+    <SpacingSample step="1" className="w-1" />
     <SpacingSample step="1.5" className="w-1.5" note="gap inside a chip" />
     <SpacingSample step="2" className="w-2" note="tight row gap" />
     <SpacingSample step="2.5" className="w-2.5" note="icon ↔ label" />
     <SpacingSample step="3" className="w-3" note="the default gap between siblings" />
-    <SpacingSample step="4" className="w-4" note="card body rhythm, grid gap" />
+    <SpacingSample step="4" className="w-4" note="card body rhythm" />
     <SpacingSample step="5" className="w-5" note="card padding, mobile" />
-    <SpacingSample step="6" className="w-6" note="card padding, ≥sm · section gap" />
+    <SpacingSample step="6" className="w-6" note="card padding, ≥sm" />
     <SpacingSample step="8" className="w-8" note="between sections" />
-    <SpacingSample step="10" className="w-10" note="" />
+    <SpacingSample step="10" className="w-10" />
     <SpacingSample step="12" className="w-12" note="page rhythm" />
   </div>
 </Unstyled>
 
 ## The rhythms that are decided
 
-These are not free choices — they are the ones the components hold, so a page composes rather
-than re-invents.
+These are held by the components, so a page composes them rather than re-inventing them.
 
-| Rhythm            | Value                                       | Where                                                   |
-| ----------------- | ------------------------------------------- | ------------------------------------------------------- |
-| Card padding `md` | `px-5` → `px-6` at `sm`                     | the default box, what 25 hand-built panels converged on |
-| Card padding `sm` | `px-4`                                      | dense boxes, bento pills                                |
-| Card body         | `py-4`                                      | between header and footer                               |
-| Icon ↔ label      | `gap-2.5`                                   | every card header, every row                            |
-| Sibling gap       | `gap-3`                                     | lists, chip rows                                        |
-| Grid gap          | `gap-3` → `gap-4` at `sm` → `gap-5` at `lg` | the bento, below                                        |
-| Section gap       | `space-y-8`                                 | between blocks of a page                                |
+| Rhythm            | Value                   | Where                                                   |
+| ----------------- | ----------------------- | ------------------------------------------------------- |
+| Card padding `md` | `px-5` → `px-6` at `sm` | the default box, what 25 hand-built panels converged on |
+| Card padding `sm` | `px-4`                  | dense boxes, dashboard tiles, bento pills               |
+| Card body         | `py-4`                  | between header and footer                               |
+| Icon ↔ label      | `gap-2.5`               | every card header, every row                            |
+| Sibling gap       | `gap-3`                 | lists, chip rows                                        |
+| Section gap       | `space-y-8`             | between blocks of a page                                |
 
-## `--nav-h` — the sticky bar
-
-Currently <TokenValue token="nav-h" fallback="56px" />. Anything that sticks in a full-bleed page
-must offset by this height, or it hides behind the bar. It mirrors the header in `_app.tsx` (h-14).
-
-<Unstyled>
-  <div className="overflow-hidden rounded-xl border border-border/60">
-    <div className="flex items-center bg-card px-4 shadow-soft" style={{ height: "var(--nav-h)" }}>
-      <span className="font-mono text-xs text-foreground">--nav-h</span>
-    </div>
-    <div className="bg-muted/40 p-4 text-xs text-muted-foreground">
-      Content starts below the bar.
-    </div>
-  </div>
-</Unstyled>
-
-## `.grid-bento` — the dashboard mosaic
-
-2 columns on mobile, 4 at ≥640px, 6 at ≥1024px, with fixed row heights on desktop
-(`11rem`, then `12rem`) and `grid-auto-flow: row dense` so a small tile backfills a hole. Resize
-the preview to watch it reflow.
-
-Placement is never a card's business — `BentoItem` carries it. See **Layout → Bento Grid**.
-
-<Unstyled>
-  <div className="grid-bento py-2">
-    <div className="col-span-2 row-span-2 flex items-end rounded-2xl bg-primary/15 p-4 text-primary">
-      <span className="font-mono text-xs">2 × 2</span>
-    </div>
-    <div className="col-span-2 flex items-end rounded-2xl bg-mustard/20 p-4">
-      <span className="font-mono text-xs">2 × 1</span>
-    </div>
-    <div className="flex items-end rounded-2xl bg-warm/15 p-4 text-warm">
-      <span className="font-mono text-xs">1 × 1</span>
-    </div>
-    <div className="flex items-end rounded-2xl bg-secondary p-4">
-      <span className="font-mono text-xs">1 × 1</span>
-    </div>
-    <div className="col-span-2 flex items-end rounded-2xl bg-secondary p-4">
-      <span className="font-mono text-xs">2 × 1</span>
-    </div>
-    <div className="flex items-end rounded-2xl bg-success/15 p-4 text-success">
-      <span className="font-mono text-xs">1 × 1</span>
-    </div>
-  </div>
-</Unstyled>
+Grid columns, spans and the bento mosaic are **layout**, not spacing — they live in
+**Layout → Bento Grid**.

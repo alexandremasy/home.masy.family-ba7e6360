@@ -1,5 +1,5 @@
 import { Meta, Title, Subtitle, Unstyled } from "@storybook/addon-docs/blocks";
-import { TokenPalette, RampPalette } from "./live-tokens";
+import { TokenPalette, DarkPalette, RampPalette } from "./live-tokens";
 
 <Meta title="Foundations/Color" />
 
@@ -64,8 +64,44 @@ points at a rung, never at a hex, so re-pointing `--primary` moves the whole pro
 | `--success`                            | Green/50  |
 | `--destructive`                        | Red/50    |
 
-`--destructive` is **Red/50, not Orange/50**: `--warm` already owns the orange family, and an
-alert sharing a hue with an error is an alert you can't read.
+Two hues carry two different jobs, and the distance between them is what makes both readable:
+**`--warm` (Orange/40) means "act on this"** — a reading to enter, a level running low.
+**`--destructive` (Red/50) means "something failed or will be lost"** — an error, a deletion.
+
+## The same semantics, dark
+
+The dark theme re-points every semantic. Surfaces and text swap; the signal hues stay
+recognisable, lifted in lightness so they hold on a dark ground.
+
+<DarkPalette
+  groups={[
+    {
+      title: "Signal",
+      note: "same meanings, lifted to stay legible on a dark ground",
+      tokens: ["primary", "warm", "mustard", "success", "destructive"],
+    },
+    {
+      title: "Surfaces",
+      note: "navy-tinted rather than neutral grey — the theme keeps its temperature",
+      tokens: ["background", "card", "popover", "secondary", "muted", "accent"],
+    },
+    {
+      title: "Text & lines",
+      tokens: ["foreground", "muted-foreground", "border", "input", "ring"],
+    },
+    {
+      title: "Sidebar",
+      tokens: [
+        "sidebar",
+        "sidebar-foreground",
+        "sidebar-primary",
+        "sidebar-accent",
+        "sidebar-border",
+        "sidebar-ring",
+      ],
+    },
+  ]}
+/>
 
 ## Primitives — the nine ramps
 
