@@ -22,11 +22,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Sofa: Story = { args: { icon: "sofa" } };
-export const Briefcase: Story = { args: { icon: "briefcase" } };
-export const Utensils: Story = { args: { icon: "utensils" } };
-export const Bed: Story = { args: { icon: "bed" } };
-
+/** Every room icon at once — one per room type, and that is the whole set. */
 export const AllIcons: Story = {
   render: () => (
     <div className="flex flex-wrap gap-6">

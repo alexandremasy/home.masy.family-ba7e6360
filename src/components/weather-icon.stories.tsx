@@ -15,14 +15,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Sun: Story = { args: { cond: "sun" } };
-export const Cloud: Story = { args: { cond: "cloud" } };
-export const Partly: Story = { args: { cond: "partly" } };
-export const Rain: Story = { args: { cond: "rain" } };
-export const Storm: Story = { args: { cond: "storm" } };
-export const Snow: Story = { args: { cond: "snow" } };
-export const Fog: Story = { args: { cond: "fog" } };
-
+/** Every condition at once, each with its own motion. That is the whole set. */
 export const AllConditions: Story = {
   render: () => (
     <div className="flex flex-wrap gap-6">

@@ -1,4 +1,4 @@
-import { Meta, Title, Subtitle } from "@storybook/addon-docs/blocks";
+import { Meta, Title, Subtitle, Canvas, Controls } from "@storybook/addon-docs/blocks";
 import {
   AlertCircle,
   AlertTriangle,
@@ -59,42 +59,59 @@ import {
   Zap,
 } from "lucide-react";
 import { LucideGallery } from "./live-tokens";
+// Relative, not the `@/` alias: the CSF indexer resolves this path itself and does
+// not go through Vite's aliases.
+import * as IconStories from "../components/icon.stories";
 
-<Meta title="Iconography/Inventory" />
+<Meta of={IconStories} />
 
-<Title>Inventory</Title>
+<Title>Icon</Title>
 
 <Subtitle>
-  Every lucide glyph the product uses, grouped by where it appears. Hover a tile for its import
-  name. Reach for one of these before importing a new one.
+  Every icon is a [lucide](https://lucide.dev) glyph. This component owns one thing: the size.
 </Subtitle>
 
-All of them go through the [Icon](?path=/docs/iconography-icon--docs) component, which owns the
-size — never `<Zap className="h-4 w-4" />`.
+The glyph is passed as a component — `<Icon as={Zap} />` — so lucide stays tree-shakeable.
 
-## Énergie & maison
+<Canvas of={IconStories.Default} />
+
+<Controls of={IconStories.Default} />
+
+## Sizes
+
+Five steps, and no others. Before this, icons were sized by hand across **275 usages and seven
+sizes**, one of them off the scale entirely.
+
+<Canvas of={IconStories.Sizes} />
+
+## Inventory
+
+Every glyph in use, grouped by where it appears. Hover a tile for its import name — reach for one
+of these before importing a new one.
+
+### Énergie & maison
 
 <LucideGallery icons={{ Zap, Droplet, Flame, Fuel, Lightbulb, Power, Cog }} />
 
-## Météo
+### Météo
 
 <LucideGallery
   icons={{ Sun, Moon, Cloud, CloudSun, CloudRain, CloudSnow, CloudFog, CloudLightning }}
 />
 
-## Mobilité & sécurité
+### Mobilité & sécurité
 
 <LucideGallery icons={{ Car, Wifi, WifiOff, ShieldCheck, ShieldAlert, Camera, Lock }} />
 
-## Repas & courses
+### Repas & courses
 
 <LucideGallery icons={{ Utensils, UtensilsCrossed, ListChecks, Package, Repeat }} />
 
-## Budget & personnes
+### Budget & personnes
 
 <LucideGallery icons={{ Coins, PiggyBank, CalendarDays, Cake, User }} />
 
-## Navigation
+### Navigation
 
 <LucideGallery
   icons={{
@@ -111,10 +128,10 @@ size — never `<Zap className="h-4 w-4" />`.
   }}
 />
 
-## Actions
+### Actions
 
 <LucideGallery icons={{ Plus, Pencil, Trash2, Copy, Search, RefreshCw, X, Check }} />
 
-## États & retours
+### États & retours
 
 <LucideGallery icons={{ Info, AlertCircle, AlertTriangle, Sparkles, Bell, Inbox, Loader2 }} />
