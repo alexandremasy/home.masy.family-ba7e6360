@@ -1,0 +1,120 @@
+import { Meta, Title, Subtitle } from "@storybook/addon-docs/blocks";
+import {
+  AlertCircle,
+  AlertTriangle,
+  ArrowLeft,
+  ArrowRight,
+  Bell,
+  Cake,
+  CalendarDays,
+  Camera,
+  Car,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  Cloud,
+  CloudFog,
+  CloudLightning,
+  CloudRain,
+  CloudSnow,
+  CloudSun,
+  Cog,
+  Coins,
+  Copy,
+  Droplet,
+  ExternalLink,
+  Flame,
+  Fuel,
+  Inbox,
+  Info,
+  LayoutGrid,
+  Lightbulb,
+  ListChecks,
+  Loader2,
+  Lock,
+  LogOut,
+  Moon,
+  MoreHorizontal,
+  Package,
+  Pencil,
+  PiggyBank,
+  Plus,
+  Power,
+  RefreshCw,
+  Repeat,
+  Search,
+  ShieldAlert,
+  ShieldCheck,
+  Sparkles,
+  Sun,
+  Trash2,
+  User,
+  Utensils,
+  UtensilsCrossed,
+  Wifi,
+  WifiOff,
+  X,
+  Zap,
+} from "lucide-react";
+import { LucideGallery } from "./live-tokens";
+
+<Meta title="Iconography/Inventory" />
+
+<Title>Inventory</Title>
+
+<Subtitle>
+  Every lucide glyph the product uses, grouped by where it appears. Hover a tile for its import
+  name. Reach for one of these before importing a new one.
+</Subtitle>
+
+All of them go through the [Icon](?path=/docs/iconography-icon--docs) component, which owns the
+size — never `<Zap className="h-4 w-4" />`.
+
+## Énergie & maison
+
+<LucideGallery icons={{ Zap, Droplet, Flame, Fuel, Lightbulb, Power, Cog }} />
+
+## Météo
+
+<LucideGallery
+  icons={{ Sun, Moon, Cloud, CloudSun, CloudRain, CloudSnow, CloudFog, CloudLightning }}
+/>
+
+## Mobilité & sécurité
+
+<LucideGallery icons={{ Car, Wifi, WifiOff, ShieldCheck, ShieldAlert, Camera, Lock }} />
+
+## Repas & courses
+
+<LucideGallery icons={{ Utensils, UtensilsCrossed, ListChecks, Package, Repeat }} />
+
+## Budget & personnes
+
+<LucideGallery icons={{ Coins, PiggyBank, CalendarDays, Cake, User }} />
+
+## Navigation
+
+<LucideGallery
+  icons={{
+    LayoutGrid,
+    ChevronRight,
+    ChevronLeft,
+    ChevronUp,
+    ChevronDown,
+    ArrowRight,
+    ArrowLeft,
+    MoreHorizontal,
+    ExternalLink,
+    LogOut,
+  }}
+/>
+
+## Actions
+
+<LucideGallery icons={{ Plus, Pencil, Trash2, Copy, Search, RefreshCw, X, Check }} />
+
+## États & retours
+
+<LucideGallery icons={{ Info, AlertCircle, AlertTriangle, Sparkles, Bell, Inbox, Loader2 }} />

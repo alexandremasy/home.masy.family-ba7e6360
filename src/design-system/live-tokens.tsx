@@ -50,11 +50,14 @@ function useTokenValuesAt(tokens: TokenRef[]) {
     if (!el) return;
     const read = () => {
       const style = getComputedStyle(el);
+      // The rungs describe the light theme only — the dark values are authored and
+      // point at no rung, so claiming one there would be a lie.
+      const dark = document.documentElement.classList.contains("dark");
       const next: Record<string, string> = {};
       for (const pair of key.split(",")) {
         const [name, label] = pair.split("|");
         const v = style.getPropertyValue(`--${name}`).trim();
-        if (v) next[label] = v;
+        if (v) next[dark ? `--${name}` : label] = v;
       }
       setValues(next);
     };
@@ -123,7 +126,14 @@ export function RampPalette({ ramps }: { ramps: { name: string; note?: string }[
   );
 }
 
-/** The icon inventory, rendering by Storybook's IconGallery. */
+/**
+ * The icon inventory, rendering by Storybook's IconGallery.
+ *
+ * Doc blocks are styled with emotion against Storybook's own theme, which only
+ * exists inside a docs page. Render one from a story — the canvas — and it throws
+ * on `theme.fonts`; supplying the provider by hand pulls in a second React and
+ * throws on `useContext` instead. So this belongs to an MDX page, nowhere else.
+ */
 export function LucideGallery({ icons }: { icons: Record<string, LucideIcon> }) {
   return (
     <IconGallery>
