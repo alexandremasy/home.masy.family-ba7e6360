@@ -385,7 +385,7 @@ function RoomPage() {
                     ["Noir", detail.devices.ink.k, "oklch(0.30 0.02 230)"],
                   ] as const
                 ).map(([name, val, color]) => (
-                  <div key={name} className="rounded-xl border border-border/60 bg-card p-3">
+                  <Card key={name} variant="inset" padding="sm" as="div">
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Droplet className="h-3 w-3" />
                       {name}
@@ -397,7 +397,7 @@ function RoomPage() {
                         style={{ width: `${val}%`, background: color }}
                       />
                     </div>
-                  </div>
+                  </Card>
                 ))}
               </div>
             </div>
@@ -413,20 +413,21 @@ function RoomPage() {
             {detail.devices.batteries.map((b) => {
               const { Icon, tone } = batteryFor(b.level);
               return (
-                <div
-                  key={b.name}
-                  className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 text-sm"
-                >
-                  <span className="flex items-center gap-2">
-                    <Icon className={"h-4 w-4 " + tone} />
-                    {b.name}
-                  </span>
-                  <span
-                    className={"text-xs font-semibold " + (b.level < 20 ? "text-destructive" : "")}
-                  >
-                    {b.level}%
-                  </span>
-                </div>
+                <Card key={b.name} variant="inset" padding="sm" as="div">
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <Icon className={"h-4 w-4 " + tone} />
+                      {b.name}
+                    </span>
+                    <span
+                      className={
+                        "text-xs font-semibold " + (b.level < 20 ? "text-destructive" : "")
+                      }
+                    >
+                      {b.level}%
+                    </span>
+                  </div>
+                </Card>
               );
             })}
           </div>
