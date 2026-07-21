@@ -17,7 +17,7 @@ overlay runs on Radix Dialog, the mobile picker on vaul Drawer.
 2. It exists but fights the palette? **Edit `ui/*`** — shadcn is copy-paste, we own that code.
 3. Genuinely this app's own vocabulary? Build it **once** in `components/`, share it: `Eyebrow`,
    `Panel`/`Section`/`Tile`, `DishCard`+`StatusPill`, `BudgetBar`, `OverlayCloseLink`, `DishForm`,
-   `DishFilters`, `PageHeader`, `WeatherIcon`, `CommandButton`.
+   `DishFilters`, `PageHeader`, `WeatherIcon`.
 4. There is no fourth path.
 
 **Type**: the scale is **ported from Figma** — *alexandremasy — tokens*, node `503-473`, the source

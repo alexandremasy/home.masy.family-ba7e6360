@@ -180,8 +180,14 @@ Phase 4 is free.
 2. It exists but fights the palette? **Edit `ui/*`.** We own it. Do not build a sibling.
 3. It is genuinely this app's vocabulary? Build it **once** in `components/`, share it:
    `Eyebrow`, `Panel`/`Section`/`Tile`, `DishCard`+`StatusPill`, `BudgetBar`, `OverlayCloseLink`,
-   `DishForm`, `DishFilters`, `PageHeader`, `WeatherIcon`, `CommandButton`.
+   `DishForm`, `DishFilters`, `PageHeader`, `WeatherIcon`.
 4. Never a fourth path.
+5. **Form validity is `aria-invalid`, never a prop.** `Input`, `Textarea`, `SelectTrigger` and
+   `Checkbox` style `aria-invalid:` themselves — destructive border, destructive focus ring, kept
+   through hover because an invalid value stays invalid until it is fixed. `Switch` and `Slider`
+   are excluded: neither can hold a value outside its own range.
+6. **A failed command is not a control state.** `Button` carries `loading` (its own round-trip),
+   never an error flag — failure surfaces in the toast or in the object the command targeted.
 
 ## The palette — ported from Figma (2026-07-16)
 
@@ -279,10 +285,8 @@ Emphasis is `font-semibold`; anything else is `font-normal`.
 
 ## What we deliberately did NOT do
 
-- **`CommandButton` on `Button`** — tried, reverted. Its 13 call sites use `grid`/`flex-col` boxes at
-  h-7/h-11/h-16 against Button's `inline-flex justify-center h-9`, and Button's `[&_svg]:size-4`
-  outranks an icon's own `h-3.5` on specificity: every icon on the room page would have silently
-  jumped to 16px. Only worth it if those 13 boxes get redesigned first.
+- **`CommandButton`** — deleted. A command trigger is a standard `Button` with an icon, not its own
+  component. The pending/error round-trip behaviour belongs to the data layer, not to a button.
 - **`ui/navigation-menu`** — a Radix mega-menu with a viewport layer. TopNav is pills plus one
   `DropdownMenu`, which is already the right tool. Deleted.
 - **`ui/sheet` for the overlay** — sheet is a side panel. The overlay scrolls its whole container
