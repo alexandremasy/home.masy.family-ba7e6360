@@ -22,6 +22,25 @@ export const Disabled: Story = {
   args: { disabled: true },
 };
 
+/** Same invalid state as `Input`, driven by `aria-invalid` — no separate prop. */
+export const Invalid: Story = {
+  render: (args) => (
+    <div className="grid w-72 gap-2">
+      <Label htmlFor="note-invalid">Note de recette</Label>
+      <Textarea
+        id="note-invalid"
+        {...args}
+        aria-invalid
+        aria-describedby="note-invalid-error"
+        defaultValue=""
+      />
+      <p id="note-invalid-error" className="text-xs text-destructive">
+        La note ne peut pas être vide.
+      </p>
+    </div>
+  ),
+};
+
 export const WithLabel: Story = {
   render: (args) => (
     <div className="grid w-72 gap-2">

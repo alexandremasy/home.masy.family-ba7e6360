@@ -40,3 +40,24 @@ export const Default: Story = {
     </Select>
   ),
 };
+
+/** Same invalid state as `Input`, driven by `aria-invalid` on the trigger. */
+export const Invalid: Story = {
+  render: () => (
+    <div className="grid gap-2">
+      <Select>
+        <SelectTrigger className="w-56" aria-invalid aria-describedby="month-error">
+          <SelectValue placeholder="Mois" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="01">Janvier</SelectItem>
+          <SelectItem value="02">Février</SelectItem>
+          <SelectItem value="03">Mars</SelectItem>
+        </SelectContent>
+      </Select>
+      <p id="month-error" className="text-xs text-destructive">
+        Le mois est requis.
+      </p>
+    </div>
+  ),
+};
