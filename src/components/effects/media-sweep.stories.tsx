@@ -10,7 +10,7 @@ import { Eyebrow } from "@/components/eyebrow";
  * It composes the gradient itself: pass a colour, not a `linear-gradient`.
  */
 const meta = {
-  title: "Foundations/Effects/Media Sweep",
+  title: "Effects/Media Sweep",
   component: MediaSweep,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

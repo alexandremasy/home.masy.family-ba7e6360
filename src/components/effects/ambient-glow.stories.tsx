@@ -9,7 +9,7 @@ import { AmbientGlow } from "./ambient-glow";
  * only paints, the caller places (`absolute inset-x-0 -top-6 -z-10 h-96`).
  */
 const meta = {
-  title: "Foundations/Effects/Ambient Glow",
+  title: "Effects/Ambient Glow",
   component: AmbientGlow,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

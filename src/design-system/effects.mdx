@@ -1,20 +1,23 @@
 import { Meta, Title, Subtitle, Unstyled } from "@storybook/addon-docs/blocks";
-// Relative, like every other Foundations page: the `@/` alias is not applied to
-// MDX under Storybook's Vite pass, only to the .tsx stories.
+// Relative, like every other docs page: the `@/` alias is not applied to MDX
+// under Storybook's Vite pass, only to the .tsx stories.
 import { AmbientMesh, AmbientGlow, MediaSweep } from "../components/effects";
 
-<Meta title="Foundations/Effects/Overview" />
+<Meta title="Effects/Overview" />
 
 <Title>Effects</Title>
 
 <Subtitle>
-  The ambient background layer — decorative surfaces that make a page feel alive without moving its
-  content. Three effects, each a CSS class driven by variables and a React wrapper that types them.
+  Everything in the app that moves on its own. Three ambient background effects, documented below,
+  and the keyframe utilities that animate content, on the Motion page next door.
 </Subtitle>
 
-An effect is never meaningful: it is `aria-hidden`, it carries no state, and removing it costs
-nothing but atmosphere. That is the line between this page and [Motion](?path=/docs/foundations-motion--docs),
-which covers the `.anim-*` utilities that move actual content.
+The section splits along one line: an **effect** is never meaningful — it is `aria-hidden`, it
+carries no state, and removing it costs nothing but atmosphere. A
+[Motion](?path=/docs/effects-motion--docs) utility moves something a reader is looking at, so it
+answers to the content. Ambient first, since it is the layer a page starts from.
+
+Each effect is a CSS class driven entirely by variables, plus a React wrapper that types them.
 
 <Unstyled>
   <div className="grid gap-4 py-4 sm:grid-cols-3">
@@ -37,11 +40,12 @@ which covers the `.anim-*` utilities that move actual content.
 
 ## Which one
 
-| Effect                                                             | What it is                                      | Where it runs                         |
-| ------------------------------------------------------------------ | ----------------------------------------------- | ------------------------------------- |
-| [Ambient Mesh](?path=/docs/foundations-effects-ambient-mesh--docs) | Blurred blobs drifting behind a whole view      | `_app.tsx`, every non full-bleed page |
-| [Ambient Glow](?path=/docs/foundations-effects-ambient-glow--docs) | A tinted wash anchored to the top edge of a box | Repas, behind the title band          |
-| [Media Sweep](?path=/docs/foundations-effects-media-sweep--docs)   | A gradient drifting under a pane's content      | Room pages, the now-playing card      |
+| Effect                                                 | What it is                                      | Where it runs                         |
+| ------------------------------------------------------ | ----------------------------------------------- | ------------------------------------- |
+| [Ambient Mesh](?path=/docs/effects-ambient-mesh--docs) | Blurred blobs drifting behind a whole view      | `_app.tsx`, every non full-bleed page |
+| [Ambient Glow](?path=/docs/effects-ambient-glow--docs) | A tinted wash anchored to the top edge of a box | Repas, behind the title band          |
+| [Media Sweep](?path=/docs/effects-media-sweep--docs)   | A gradient drifting under a pane's content      | Room pages, the now-playing card      |
+| [Motion](?path=/docs/effects-motion--docs)             | The `.anim-*` keyframe utilities, for content   | Icons, cards, weather, overlays       |
 
 ## The contract
 

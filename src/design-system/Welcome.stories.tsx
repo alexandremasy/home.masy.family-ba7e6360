@@ -9,6 +9,7 @@ import {
   Shapes,
   SquareMousePointer,
   Sparkles,
+  Waves,
 } from "lucide-react";
 import { Icon } from "@/components/icon";
 
@@ -24,9 +25,15 @@ const SECTIONS: {
 }[] = [
   {
     title: "Foundations",
-    body: "Colour, typography, spacing, radius, shadows, motion — read live off styles.css, so a page here can never disagree with the code.",
+    body: "Colour, typography, spacing, radius, shadows — read live off styles.css, so a page here can never disagree with the code.",
     to: "Foundations/Color",
     glyph: Palette,
+  },
+  {
+    title: "Effects",
+    body: "Everything that moves: the ambient backgrounds behind a page, and the keyframe utilities that animate its content.",
+    to: "Effects/Overview",
+    glyph: Waves,
   },
   {
     title: "Iconography",

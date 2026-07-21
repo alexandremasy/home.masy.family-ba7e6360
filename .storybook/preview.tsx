@@ -68,6 +68,10 @@ const preview: Preview = {
         order: [
           "Overview",
           "Foundations",
+          // Overview first, then the ambient layer, then the motion utilities —
+          // atmosphere before the animations that move actual content.
+          "Effects",
+          ["Overview", "Ambient Mesh", "Ambient Glow", "Media Sweep", "Motion"],
           "Iconography",
           "Layout",
           "Forms",

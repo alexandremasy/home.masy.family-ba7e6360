@@ -11,7 +11,7 @@ import { AmbientMesh } from "./ambient-mesh";
  * default in `styles.css` takes over.
  */
 const meta = {
-  title: "Foundations/Effects/Ambient Mesh",
+  title: "Effects/Ambient Mesh",
   component: AmbientMesh,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

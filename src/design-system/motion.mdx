@@ -1,19 +1,20 @@
 import { Meta, Title, Subtitle, Unstyled } from "@storybook/addon-docs/blocks";
 import { MotionSample } from "./live-tokens";
 
-<Meta title="Foundations/Motion" />
+<Meta title="Effects/Motion" />
 
 <Title>Motion</Title>
 
 <Subtitle>
-  Around thirty keyframes drive the app's micro-motion. The reusable ambient utilities run live
-  below; entrance and overlay animations are one-shot and listed by name.
+  Around thirty keyframes drive the app's micro-motion. The looping utilities run live below;
+  entrance and overlay animations are one-shot and listed by name.
 </Subtitle>
 
 These are hand-authored classes in `styles.css`, not generated — what you see is exactly what the
-app runs.
+app runs. They animate content, which is what separates them from the ambient
+[Effects](?path=/docs/effects-overview--docs) in the rest of this section.
 
-## Ambient loops
+## Looping utilities
 
 <Unstyled>
   <div className="grid grid-cols-2 gap-4 py-2 sm:grid-cols-3 lg:grid-cols-5">
@@ -59,12 +60,11 @@ app runs.
 `partly-bob` · `cloud-drift`
 
 The ambient background keyframes (`fx-mesh-drift-a/b/c`, `fx-glow-morph`, `fx-sweep-drift`) are not
-listed here — they belong to the effect layer, documented under
-[Effects](?path=/docs/foundations-effects-overview--docs).
+listed here — they belong to the effect layer, one page over.
 
 ## prefers-reduced-motion
 
 `styles.css` only silences the decorative layers under
 `@media (prefers-reduced-motion: reduce)` — the cursor follower and the three ambient
-[Effects](?path=/docs/foundations-effects-overview--docs). The `.anim-*` utilities above are
+[Effects](?path=/docs/effects-overview--docs). The `.anim-*` utilities above are
 **not** gated yet. That is a known gap, not a claim this page makes.
