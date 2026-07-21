@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "publish": "bash scripts/publish.sh"
+    "publish": "bash scripts/publish.sh",
+    "docs:audit": "bun scripts/docs-audit.mjs"
   },
   "dependencies": {
     "@fontsource/barlow": "^5.2.8",

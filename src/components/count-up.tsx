@@ -1,13 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 
 interface Props {
+  /** The value counted up to, once the element scrolls into view. */
   to: number;
+  /** Length of the ease, in ms. */
   duration?: number;
+  /** Decimal places kept while counting and at rest. */
   decimals?: number;
+  /** Applied to the `<span>` that holds the number. */
   className?: string;
+  /** Rendered before the number — a currency sign, for instance. */
   prefix?: string;
+  /** Rendered after the number — a unit such as `kWh` or `%`. */
   suffix?: string;
-  group?: boolean; // thousands grouping (fr-BE) — opt-in, off by default (years etc.)
+  /** Thousands grouping (fr-BE). Off by default, so a year stays `2026`. */
+  group?: boolean;
 }
 
 /** Subtle animated counter that eases towards `to` once visible. */

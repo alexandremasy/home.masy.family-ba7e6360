@@ -117,8 +117,11 @@ function SceneArt({ scene, night }: { scene: CameraScene; night: boolean }) {
 }
 
 interface CameraFeedProps {
+  /** The camera to picture — its scene, state and night mode drive the whole render. */
   camera: Camera;
+  /** Thumbnail size. `sm` drops the overlay text, which no longer fits. */
   size?: "sm" | "md" | "lg";
+  /** The overlay furniture: name, state pill, night badge. Off for a bare thumbnail. */
   showChrome?: boolean;
 }
 

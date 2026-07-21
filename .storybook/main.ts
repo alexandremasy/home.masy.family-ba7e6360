@@ -21,6 +21,26 @@ const config: StorybookConfig = {
     "@storybook/addon-themes",
     "@storybook/addon-mcp",
   ],
+  // The default parser (react-docgen, the JS one) cannot resolve composed TS types, so a
+  // component typed as `ComponentPropsWithoutRef<typeof Primitive.Root> & VariantProps<...>`
+  // documents almost nothing — every Radix-based control here is typed that way.
+  // react-docgen-typescript follows the intersections; it is slower, and worth it.
+  typescript: {
+    reactDocgen: "react-docgen-typescript",
+    reactDocgenTypescriptOptions: {
+      shouldExtractLiteralValuesFromEnum: true,
+      shouldRemoveUndefinedFromOptional: true,
+      // Keep our props AND the Radix ones (`value`, `type`, `disabled` — the real API),
+      // drop the 250 native HTML attributes React declares. `className` is the exception:
+      // every component here is styled through it, so it belongs to the documented API.
+      propFilter: (prop) => {
+        if (prop.name === "className") return true;
+        const from = prop.parent?.fileName;
+        if (!from) return true;
+        return !from.includes("@types/react");
+      },
+    },
+  },
   // @storybook/react-vite already merges the project vite.config.ts (Tailwind v4, @/ alias,
   // tsconfigPaths come for free). We only re-assert the proxied handling here, because
   // Storybook overrides Vite's `server`. Served at the root of design.dev.masy.family
