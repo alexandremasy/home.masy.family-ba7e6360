@@ -3,13 +3,7 @@ import { usePeople } from "@/lib/people-store";
 import { PersonForm, EMPTY_PERSON, type PersonDraft } from "@/components/person-form";
 import { ResponsiveModal } from "@/components/responsive-modal";
 import { Button } from "@/components/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogActions,
-  AlertDialogCancel,
-  AlertDialogContent,
-} from "@/components/alert-dialog";
+import { Alert, AlertConfirm, AlertActions, AlertCancel, AlertContent } from "@/components/alert";
 import type { Person } from "@/lib/maison-data";
 import { Trash2 } from "lucide-react";
 
@@ -17,7 +11,7 @@ export type PersonTarget = Person | "new" | null;
 
 /**
  * Add / edit a person, through the shared ResponsiveModal (bottom sheet on mobile,
- * centred dialog on desktop). Deleting still goes through an AlertDialog.
+ * centred dialog on desktop). Deleting still goes through an Alert.
  */
 export function PersonDialog({
   target,
@@ -72,14 +66,14 @@ export function PersonDialog({
   );
 
   const confirm = editing && (
-    <AlertDialog open={confirming} onOpenChange={setConfirming}>
-      <AlertDialogContent
+    <Alert open={confirming} onOpenChange={setConfirming}>
+      <AlertContent
         tone="destructive"
         title={`Retirer ${editing.name} ?`}
         footer={
-          <AlertDialogActions>
-            <AlertDialogCancel>Annuler</AlertDialogCancel>
-            <AlertDialogAction
+          <AlertActions>
+            <AlertCancel>Annuler</AlertCancel>
+            <AlertConfirm
               onClick={() => {
                 remove(editing.id);
                 onOpenChange(false);
@@ -87,13 +81,13 @@ export function PersonDialog({
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Retirer
-            </AlertDialogAction>
-          </AlertDialogActions>
+            </AlertConfirm>
+          </AlertActions>
         }
       >
         La personne sort du calendrier des anniversaires et des suggestions.
-      </AlertDialogContent>
-    </AlertDialog>
+      </AlertContent>
+    </Alert>
   );
 
   return (

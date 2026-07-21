@@ -1,44 +1,44 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Trash2 } from "lucide-react";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogActions,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogTrigger,
-} from "./alert-dialog";
+  Alert,
+  AlertConfirm,
+  AlertActions,
+  AlertCancel,
+  AlertContent,
+  AlertTrigger,
+} from "./alert";
 import { Button } from "./button";
 
 const meta = {
-  title: "Overlays/Alert Dialog",
-  component: AlertDialog,
+  title: "Overlays/Alert",
+  component: Alert,
   parameters: { layout: "centered" },
   tags: ["autodocs"],
-} satisfies Meta<typeof AlertDialog>;
+} satisfies Meta<typeof Alert>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
+    <Alert>
+      <AlertTrigger asChild>
         <Button variant="destructive">Supprimer le repas</Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent
+      </AlertTrigger>
+      <AlertContent
         icon={<Trash2 className="h-4 w-4" />}
         tone="destructive"
         title="Confirmer la suppression"
         footer={
-          <AlertDialogActions>
-            <AlertDialogCancel>Annuler</AlertDialogCancel>
-            <AlertDialogAction>Supprimer</AlertDialogAction>
-          </AlertDialogActions>
+          <AlertActions>
+            <AlertCancel>Annuler</AlertCancel>
+            <AlertConfirm>Supprimer</AlertConfirm>
+          </AlertActions>
         }
       >
         Cette action est irréversible. Le repas sera retiré du planning.
-      </AlertDialogContent>
-    </AlertDialog>
+      </AlertContent>
+    </Alert>
   ),
 };

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * shadcn's Alert, re-tokenised to this app's palette and named for what it is: a
- * banner sitting in the flow of a page, not a modal (that is `AlertDialog`).
+ * banner sitting in the flow of a page, not a modal (that is `Alert`).
  *
  * shadcn ships `default` + `destructive`; here the meaningful pair is `default`
  * (a neutral note) and `warn` (the terracotta alert tone — see

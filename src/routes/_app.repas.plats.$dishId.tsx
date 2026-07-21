@@ -1,13 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogActions,
-  AlertDialogCancel,
-  AlertDialogContent,
-} from "@/components/alert-dialog";
+import { Alert, AlertConfirm, AlertActions, AlertCancel, AlertContent } from "@/components/alert";
 import { Card } from "@/components/card";
 import { DishForm } from "@/components/dish-form";
 import { useDishes } from "@/lib/dishes-store";
@@ -85,14 +79,14 @@ function DishDetail() {
         />
       </Card>
 
-      <AlertDialog open={confirming} onOpenChange={setConfirming}>
-        <AlertDialogContent
+      <Alert open={confirming} onOpenChange={setConfirming}>
+        <AlertContent
           tone="destructive"
           title={`Supprimer ${dish.name} ?`}
           footer={
-            <AlertDialogActions>
-              <AlertDialogCancel>Annuler</AlertDialogCancel>
-              <AlertDialogAction
+            <AlertActions>
+              <AlertCancel>Annuler</AlertCancel>
+              <AlertConfirm
                 onClick={() => {
                   remove(dish.id);
                   navigate({ to: "/repas/plats" });
@@ -100,15 +94,15 @@ function DishDetail() {
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
                 Supprimer
-              </AlertDialogAction>
-            </AlertDialogActions>
+              </AlertConfirm>
+            </AlertActions>
           }
         >
           Le plat sort du catalogue et des suggestions.
           {plannedCount > 0 &&
             ` Il occupe ${plannedCount} créneau${plannedCount > 1 ? "x" : ""} du plan courant, qui se videront.`}
-        </AlertDialogContent>
-      </AlertDialog>
+        </AlertContent>
+      </Alert>
     </div>
   );
 }
