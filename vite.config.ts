@@ -19,7 +19,7 @@ export default defineConfig(({ command }) => ({
     // When served behind Traefik (dev container sets VITE_PROXIED), accept the public
     // host and route HMR over wss:443. Baked into source now that Lovable no longer
     // regenerates this file (retires scripts/ensure-proxied.mjs).
-    allowedHosts: process.env.VITE_PROXIED ? ["mockup.masy.family"] : undefined,
+    allowedHosts: process.env.VITE_PROXIED ? ["mockup.dev.masy.family"] : undefined,
     hmr: process.env.VITE_PROXIED ? { protocol: "wss", clientPort: 443 } : undefined,
     warmup: { clientFiles: ["./src/routes/**/*.tsx"] },
   },

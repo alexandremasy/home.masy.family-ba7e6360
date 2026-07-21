@@ -2,7 +2,7 @@
   "mcpServers": {
     "storybook": {
       "type": "http",
-      "url": "https://design.masy.family/mcp"
+      "url": "https://design.dev.masy.family/mcp"
     }
   }
 }
