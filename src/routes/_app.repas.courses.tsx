@@ -27,13 +27,7 @@ import { Eyebrow } from "@/components/eyebrow";
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/empty";
 import { Card } from "@/components/card";
 import { DishCard } from "@/components/dish-card";
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/drawer";
+import { Drawer, DrawerTrigger, DrawerContent } from "@/components/drawer";
 
 export const Route = createFileRoute("/_app/repas/courses")({
   component: CoursesPage,
@@ -246,16 +240,16 @@ function CoursesPage() {
               <ChevronUp className="h-4 w-4 text-muted-foreground" />
             </button>
           </DrawerTrigger>
-          <DrawerContent className="max-h-[85dvh]">
-            <DrawerHeader className="text-left">
-              <div className="flex items-baseline justify-between gap-3">
-                <DrawerTitle className="text-lg">Liste de courses</DrawerTitle>
-                <span className="shrink-0 text-xs text-muted-foreground">
-                  {totalItems} article{totalItems > 1 ? "s" : ""}
-                </span>
-              </div>
-            </DrawerHeader>
-            <div className="overflow-y-auto px-4 pb-8">{listBody}</div>
+          <DrawerContent
+            className="max-h-[85dvh]"
+            title="Liste de courses"
+            action={
+              <span className="text-xs text-muted-foreground">
+                {totalItems} article{totalItems > 1 ? "s" : ""}
+              </span>
+            }
+          >
+            {listBody}
           </DrawerContent>
         </Drawer>
 

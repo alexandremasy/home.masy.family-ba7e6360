@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { WeatherIcon } from "@/components/weather-icon";
 import { Input } from "@/components/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/dialog";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/drawer";
+import { Dialog, DialogContent } from "@/components/dialog";
+import { Drawer, DrawerContent } from "@/components/drawer";
 import { useIsDesktop } from "@/lib/use-media";
 import {
   DishFilters,
@@ -116,7 +116,7 @@ function SlotIcon({ slot, className = "" }: { slot: Slot; className?: string }) 
   );
 }
 
-/** Title content only — the shell supplies DialogTitle or DrawerTitle around it. */
+/** Title content only — the shell (Dialog or Drawer) takes it as its `title` slot. */
 function SlotTitle({ date, slot }: { date: Date; slot: Slot }) {
   const w = dayWeather(date);
   return (
@@ -324,33 +324,25 @@ function RepasPage() {
           that natively, from the bottom, with drag-to-dismiss. */}
       {isDesktop ? (
         <Dialog open={!!selected} onOpenChange={closeSlot}>
-          <DialogContent className="flex max-h-[calc(100dvh-7rem)] max-w-2xl flex-col gap-7 bg-background">
-            {picker && (
-              <>
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2 text-lg">
-                    <SlotTitle date={selectedDate!} slot={selected!.slot} />
-                  </DialogTitle>
-                </DialogHeader>
-                {picker}
-              </>
-            )}
-          </DialogContent>
+          {picker && (
+            <DialogContent
+              className="max-h-[calc(100dvh-7rem)] max-w-2xl"
+              title={<SlotTitle date={selectedDate!} slot={selected!.slot} />}
+            >
+              {picker}
+            </DialogContent>
+          )}
         </Dialog>
       ) : (
         <Drawer open={!!selected} onOpenChange={closeSlot}>
-          <DrawerContent className="flex max-h-[92dvh] flex-col gap-4 bg-background px-4 pb-4">
-            {picker && (
-              <>
-                <DrawerHeader className="p-0 text-left">
-                  <DrawerTitle className="flex items-center gap-2 text-lg">
-                    <SlotTitle date={selectedDate!} slot={selected!.slot} />
-                  </DrawerTitle>
-                </DrawerHeader>
-                {picker}
-              </>
-            )}
-          </DrawerContent>
+          {picker && (
+            <DrawerContent
+              className="max-h-[92dvh]"
+              title={<SlotTitle date={selectedDate!} slot={selected!.slot} />}
+            >
+              {picker}
+            </DrawerContent>
+          )}
         </Drawer>
       )}
     </div>
@@ -619,8 +611,8 @@ function SlotPicker({
   const current = plan.find((e) => e.date === iso(date) && e.slot === slot);
   const currentDish = current ? dishById(current.dishId) : undefined;
 
-  // The title lives in the shell, not here: DialogTitle and DrawerTitle come
-  // from different contexts (Radix vs vaul), so the body must stay neutral.
+  // The title lives in the shell's `title` slot, not here: the two shells wire it
+  // to different primitives (Radix vs vaul), so the body must stay neutral.
   return (
     <>
       <div className="space-y-2.5">

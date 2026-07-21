@@ -1,13 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
+  AlertDialogActions,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
   AlertDialogTrigger,
 } from "./alert-dialog";
 import { Button } from "./button";
@@ -28,17 +26,18 @@ export const Default: Story = {
       <AlertDialogTrigger asChild>
         <Button variant="destructive">Supprimer le repas</Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
-          <AlertDialogDescription>
-            Cette action est irreversible. Le repas sera retire du planning.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Annuler</AlertDialogCancel>
-          <AlertDialogAction>Supprimer</AlertDialogAction>
-        </AlertDialogFooter>
+      <AlertDialogContent
+        icon={<Trash2 className="h-4 w-4" />}
+        tone="destructive"
+        title="Confirmer la suppression"
+        footer={
+          <AlertDialogActions>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction>Supprimer</AlertDialogAction>
+          </AlertDialogActions>
+        }
+      >
+        Cette action est irréversible. Le repas sera retiré du planning.
       </AlertDialogContent>
     </AlertDialog>
   ),

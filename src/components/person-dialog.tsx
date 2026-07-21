@@ -6,12 +6,9 @@ import { Button } from "@/components/button";
 import {
   AlertDialog,
   AlertDialogAction,
+  AlertDialogActions,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
 } from "@/components/alert-dialog";
 import type { Person } from "@/lib/maison-data";
 import { Trash2 } from "lucide-react";
@@ -76,25 +73,25 @@ export function PersonDialog({
 
   const confirm = editing && (
     <AlertDialog open={confirming} onOpenChange={setConfirming}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Retirer {editing.name} ?</AlertDialogTitle>
-          <AlertDialogDescription>
-            La personne sort du calendrier des anniversaires et des suggestions.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Annuler</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() => {
-              remove(editing.id);
-              onOpenChange(false);
-            }}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-          >
-            Retirer
-          </AlertDialogAction>
-        </AlertDialogFooter>
+      <AlertDialogContent
+        tone="destructive"
+        title={`Retirer ${editing.name} ?`}
+        footer={
+          <AlertDialogActions>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                remove(editing.id);
+                onOpenChange(false);
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Retirer
+            </AlertDialogAction>
+          </AlertDialogActions>
+        }
+      >
+        La personne sort du calendrier des anniversaires et des suggestions.
       </AlertDialogContent>
     </AlertDialog>
   );

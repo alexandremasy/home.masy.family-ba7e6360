@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
 import { Separator } from "@/components/separator";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/sheet";
+import { Sheet, SheetPanel } from "@/components/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/tooltip";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
@@ -168,7 +168,7 @@ function Sidebar({
   if (isMobile) {
     return (
       <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
-        <SheetContent
+        <SheetPanel
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
@@ -179,13 +179,11 @@ function Sidebar({
             } as React.CSSProperties
           }
           side={side}
+          srTitle="Sidebar"
+          srDescription="Displays the mobile sidebar."
         >
-          <SheetHeader className="sr-only">
-            <SheetTitle>Sidebar</SheetTitle>
-            <SheetDescription>Displays the mobile sidebar.</SheetDescription>
-          </SheetHeader>
           <div className="flex h-full w-full flex-col">{children}</div>
-        </SheetContent>
+        </SheetPanel>
       </Sheet>
     );
   }

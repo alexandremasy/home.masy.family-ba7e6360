@@ -56,13 +56,7 @@ import {
   Cake,
   UtensilsCrossed,
 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/tooltip";
 import { Button } from "@/components/button";
 import { Eyebrow } from "@/components/eyebrow";
@@ -1050,13 +1044,12 @@ function MealRow({ icon, name }: { icon: React.ReactNode; name: string }) {
 function WeatherDialog() {
   const m = meteo.today;
   return (
-    <DialogContent className="sm:max-w-lg duration-300 data-[state=open]:slide-in-from-top-4 data-[state=closed]:slide-out-to-top-2 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95">
-      <DialogHeader>
-        <DialogTitle className="text-xl">Météo · {m.location}</DialogTitle>
-      </DialogHeader>
-
+    <DialogContent
+      title={`Météo · ${m.location}`}
+      className="sm:max-w-lg duration-300 data-[state=open]:slide-in-from-top-4 data-[state=closed]:slide-out-to-top-2 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95"
+    >
       {/* Today */}
-      <div className="px-1">
+      <div>
         <div className="flex items-start justify-between">
           <div>
             <Eyebrow>Aujourd'hui</Eyebrow>

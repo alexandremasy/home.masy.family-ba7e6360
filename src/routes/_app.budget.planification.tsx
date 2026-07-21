@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Fuel, ChevronLeft, ChevronRight, Coins, Lock, PencilRuler, Plus, X } from "lucide-react";
 import { CountUp } from "@/components/count-up";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/dialog";
+import { Dialog, DialogContent } from "@/components/dialog";
 import {
   MONTHS_FR,
   eur,
@@ -824,207 +824,200 @@ function EditModal({
         if (!o) onClose();
       }}
     >
-      <DialogContent className="sm:max-w-3xl max-h-[calc(100dvh-6rem)] overflow-y-auto">
-        {poste && (
-          <>
-            <DialogHeader>
-              <DialogTitle className="text-lg">{poste.label}</DialogTitle>
-              <p className="text-xs text-muted-foreground">
-                {poste.cat} › {poste.group}
-              </p>
-            </DialogHeader>
-
-            <div className="min-w-0 space-y-4 pt-2">
-              {/* Fields — Ponctuel drops the single amount for a dated occurrence list */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className={ponctuel ? "col-span-2 block" : "block"}>
+      {poste && (
+        <DialogContent
+          className="sm:max-w-3xl max-h-[calc(100dvh-6rem)]"
+          title={poste.label}
+          subline={`${poste.cat} › ${poste.group}`}
+        >
+          <div className="min-w-0 space-y-4">
+            {/* Fields — Ponctuel drops the single amount for a dated occurrence list */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className={ponctuel ? "col-span-2 block" : "block"}>
+                <Eyebrow size="xs" as="span" className="mb-1 block">
+                  Fréquence
+                </Eyebrow>
+                <Select
+                  value={poste.recurrence}
+                  onValueChange={(v) => {
+                    const rec = v as PlanRecurrence;
+                    if (rec === "Ponctuel") {
+                      const seed = poste.occurrences ?? [
+                        { m: poste.months[0] ?? 0, amount: poste.amount || 0 },
+                      ];
+                      onPatch(poste.id, {
+                        recurrence: rec,
+                        occurrences: seed,
+                        months: seed.map((o) => o.m),
+                      });
+                    } else {
+                      const amount =
+                        ponctuel && poste.occurrences?.length
+                          ? poste.occurrences[0].amount
+                          : poste.amount;
+                      onPatch(poste.id, {
+                        recurrence: rec,
+                        months: defaultMonthsFor(rec, poste.months[0] ?? 0),
+                        occurrences: undefined,
+                        amount,
+                      });
+                    }
+                  }}
+                >
+                  <SelectTrigger aria-label="Fréquence" className="w-full bg-card">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {RECS.map((r) => (
+                      <SelectItem key={r} value={r}>
+                        {r}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              {!ponctuel && (
+                <label className="block">
                   <Eyebrow size="xs" as="span" className="mb-1 block">
-                    Fréquence
+                    Montant prévu
+                  </Eyebrow>
+                  <div className="flex items-center rounded-lg border border-border/60 bg-card px-2.5 py-2 focus-within:border-foreground/40">
+                    <input
+                      type="number"
+                      value={poste.amount}
+                      onChange={(e) =>
+                        onPatch(poste.id, { amount: Math.max(0, Number(e.target.value) || 0) })
+                      }
+                      className="w-full bg-transparent text-sm tabular-nums outline-none"
+                    />
+                    <span className="text-sm text-muted-foreground">€</span>
+                  </div>
+                </label>
+              )}
+              {nonMensuel && (
+                <div className="block">
+                  <Eyebrow size="xs" as="span" className="mb-1 block">
+                    Mois d'échéance
                   </Eyebrow>
                   <Select
-                    value={poste.recurrence}
-                    onValueChange={(v) => {
-                      const rec = v as PlanRecurrence;
-                      if (rec === "Ponctuel") {
-                        const seed = poste.occurrences ?? [
-                          { m: poste.months[0] ?? 0, amount: poste.amount || 0 },
-                        ];
-                        onPatch(poste.id, {
-                          recurrence: rec,
-                          occurrences: seed,
-                          months: seed.map((o) => o.m),
-                        });
-                      } else {
-                        const amount =
-                          ponctuel && poste.occurrences?.length
-                            ? poste.occurrences[0].amount
-                            : poste.amount;
-                        onPatch(poste.id, {
-                          recurrence: rec,
-                          months: defaultMonthsFor(rec, poste.months[0] ?? 0),
-                          occurrences: undefined,
-                          amount,
-                        });
-                      }
-                    }}
+                    value={String(poste.months[0] ?? 0)}
+                    onValueChange={(v) =>
+                      onPatch(poste.id, {
+                        months: defaultMonthsFor(poste.recurrence as Recurrence4, Number(v)),
+                      })
+                    }
                   >
-                    <SelectTrigger aria-label="Fréquence" className="w-full bg-card">
+                    <SelectTrigger aria-label="Mois d'échéance" className="w-full bg-card">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {RECS.map((r) => (
-                        <SelectItem key={r} value={r}>
-                          {r}
+                      {MONTHS_FR.map((m, i) => (
+                        <SelectItem key={i} value={String(i)}>
+                          {m}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-                {!ponctuel && (
-                  <label className="block">
-                    <Eyebrow size="xs" as="span" className="mb-1 block">
-                      Montant prévu
-                    </Eyebrow>
-                    <div className="flex items-center rounded-lg border border-border/60 bg-card px-2.5 py-2 focus-within:border-foreground/40">
-                      <input
-                        type="number"
-                        value={poste.amount}
-                        onChange={(e) =>
-                          onPatch(poste.id, { amount: Math.max(0, Number(e.target.value) || 0) })
-                        }
-                        className="w-full bg-transparent text-sm tabular-nums outline-none"
-                      />
-                      <span className="text-sm text-muted-foreground">€</span>
-                    </div>
-                  </label>
-                )}
-                {nonMensuel && (
-                  <div className="block">
-                    <Eyebrow size="xs" as="span" className="mb-1 block">
-                      Mois d'échéance
-                    </Eyebrow>
-                    <Select
-                      value={String(poste.months[0] ?? 0)}
-                      onValueChange={(v) =>
-                        onPatch(poste.id, {
-                          months: defaultMonthsFor(poste.recurrence as Recurrence4, Number(v)),
-                        })
-                      }
-                    >
-                      <SelectTrigger aria-label="Mois d'échéance" className="w-full bg-card">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {MONTHS_FR.map((m, i) => (
-                          <SelectItem key={i} value={String(i)}>
-                            {m}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-              </div>
+              )}
+            </div>
 
-              {/* Occurrence editor — dated, per-hit amounts (pécule mai · 13e déc) */}
-              {ponctuel && (
-                <Card variant="inset" as="div" padding="sm">
-                  <div className="mb-2 flex items-center justify-between">
-                    <Eyebrow size="xs" as="span">
-                      Échéances
-                    </Eyebrow>
-                    <span className="text-xs tabular-nums text-muted-foreground">
-                      total {eur(planPosteYear(poste))}/an
-                    </span>
-                  </div>
-                  <div className="space-y-2">
-                    {(poste.occurrences ?? []).map((o, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <Select
-                          value={String(o.m)}
-                          onValueChange={(v) =>
+            {/* Occurrence editor — dated, per-hit amounts (pécule mai · 13e déc) */}
+            {ponctuel && (
+              <Card variant="inset" as="div" padding="sm">
+                <div className="mb-2 flex items-center justify-between">
+                  <Eyebrow size="xs" as="span">
+                    Échéances
+                  </Eyebrow>
+                  <span className="text-xs tabular-nums text-muted-foreground">
+                    total {eur(planPosteYear(poste))}/an
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  {(poste.occurrences ?? []).map((o, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <Select
+                        value={String(o.m)}
+                        onValueChange={(v) =>
+                          setOccs(
+                            (poste.occurrences ?? []).map((x, j) =>
+                              j === i ? { ...x, m: Number(v) } : x,
+                            ),
+                          )
+                        }
+                      >
+                        <SelectTrigger
+                          aria-label="Mois de l'échéance"
+                          className="w-32 shrink-0 bg-card"
+                        >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {MONTHS_FR.map((m, k) => (
+                            <SelectItem key={k} value={String(k)}>
+                              {m}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <div className="flex min-w-0 flex-1 items-center rounded-lg border border-border/60 bg-card px-2.5 py-2 focus-within:border-foreground/40">
+                        <input
+                          type="number"
+                          value={o.amount}
+                          onChange={(e) =>
                             setOccs(
                               (poste.occurrences ?? []).map((x, j) =>
-                                j === i ? { ...x, m: Number(v) } : x,
+                                j === i
+                                  ? { ...x, amount: Math.max(0, Number(e.target.value) || 0) }
+                                  : x,
                               ),
                             )
                           }
-                        >
-                          <SelectTrigger
-                            aria-label="Mois de l'échéance"
-                            className="w-32 shrink-0 bg-card"
-                          >
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {MONTHS_FR.map((m, k) => (
-                              <SelectItem key={k} value={String(k)}>
-                                {m}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <div className="flex min-w-0 flex-1 items-center rounded-lg border border-border/60 bg-card px-2.5 py-2 focus-within:border-foreground/40">
-                          <input
-                            type="number"
-                            value={o.amount}
-                            onChange={(e) =>
-                              setOccs(
-                                (poste.occurrences ?? []).map((x, j) =>
-                                  j === i
-                                    ? { ...x, amount: Math.max(0, Number(e.target.value) || 0) }
-                                    : x,
-                                ),
-                              )
-                            }
-                            className="w-full bg-transparent text-sm tabular-nums outline-none"
-                          />
-                          <span className="text-sm text-muted-foreground">€</span>
-                        </div>
-                        <button
-                          type="button"
-                          aria-label="Retirer l'échéance"
-                          onClick={() =>
-                            setOccs((poste.occurrences ?? []).filter((_, j) => j !== i))
-                          }
-                          className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
+                          className="w-full bg-transparent text-sm tabular-nums outline-none"
+                        />
+                        <span className="text-sm text-muted-foreground">€</span>
                       </div>
-                    ))}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setOccs([...(poste.occurrences ?? []), { m: 0, amount: 0 }])}
-                    className="mt-2 flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs text-primary hover:bg-primary/10"
-                  >
-                    <Plus className="h-3.5 w-3.5" /> Ajouter une échéance
-                  </button>
-                </Card>
-              )}
+                      <button
+                        type="button"
+                        aria-label="Retirer l'échéance"
+                        onClick={() => setOccs((poste.occurrences ?? []).filter((_, j) => j !== i))}
+                        className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOccs([...(poste.occurrences ?? []), { m: 0, amount: 0 }])}
+                  className="mt-2 flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs text-primary hover:bg-primary/10"
+                >
+                  <Plus className="h-3.5 w-3.5" /> Ajouter une échéance
+                </button>
+              </Card>
+            )}
 
-              {/* Prévu vs réel — 3 séries: le plan, l'année en cours, l'année passée. */}
-              {reel ? (
-                <PrevuReelCompare poste={poste} year={year} />
-              ) : (
-                <p className="rounded-xl border border-dashed border-border/50 bg-card/40 px-3 py-4 text-center text-xs italic text-muted-foreground/60">
-                  Aucun réel importé — cette année n'a pas encore commencé.
-                </p>
-              )}
+            {/* Prévu vs réel — 3 séries: le plan, l'année en cours, l'année passée. */}
+            {reel ? (
+              <PrevuReelCompare poste={poste} year={year} />
+            ) : (
+              <p className="rounded-xl border border-dashed border-border/50 bg-card/40 px-3 py-4 text-center text-xs italic text-muted-foreground/60">
+                Aucun réel importé — cette année n'a pas encore commencé.
+              </p>
+            )}
 
-              {poste.sensor === "mazout" && (
-                <p className="flex items-start gap-1.5 rounded-lg bg-warm/5 px-3 py-2 text-xs text-warm">
-                  <Fuel className="mt-0.5 h-3 w-3 shrink-0" />
-                  Cuve à {energie.oil.tankPct}% — un plein approche (~
-                  {energie.oil.tankCapacity - energie.oil.tankLiters} L). Ajuste l'échéance en
-                  conséquence.
-                </p>
-              )}
-            </div>
-          </>
-        )}
-      </DialogContent>
+            {poste.sensor === "mazout" && (
+              <p className="flex items-start gap-1.5 rounded-lg bg-warm/5 px-3 py-2 text-xs text-warm">
+                <Fuel className="mt-0.5 h-3 w-3 shrink-0" />
+                Cuve à {energie.oil.tankPct}% — un plein approche (~
+                {energie.oil.tankCapacity - energie.oil.tankLiters} L). Ajuste l'échéance en
+                conséquence.
+              </p>
+            )}
+          </div>
+        </DialogContent>
+      )}
     </Dialog>
   );
 }

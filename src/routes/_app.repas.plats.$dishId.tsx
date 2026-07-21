@@ -4,12 +4,9 @@ import { Button } from "@/components/button";
 import {
   AlertDialog,
   AlertDialogAction,
+  AlertDialogActions,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
 } from "@/components/alert-dialog";
 import { Card } from "@/components/card";
 import { DishForm } from "@/components/dish-form";
@@ -89,27 +86,27 @@ function DishDetail() {
       </Card>
 
       <AlertDialog open={confirming} onOpenChange={setConfirming}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Supprimer {dish.name} ?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Le plat sort du catalogue et des suggestions.
-              {plannedCount > 0 &&
-                ` Il occupe ${plannedCount} créneau${plannedCount > 1 ? "x" : ""} du plan courant, qui se videront.`}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Annuler</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                remove(dish.id);
-                navigate({ to: "/repas/plats" });
-              }}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Supprimer
-            </AlertDialogAction>
-          </AlertDialogFooter>
+        <AlertDialogContent
+          tone="destructive"
+          title={`Supprimer ${dish.name} ?`}
+          footer={
+            <AlertDialogActions>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  remove(dish.id);
+                  navigate({ to: "/repas/plats" });
+                }}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Supprimer
+              </AlertDialogAction>
+            </AlertDialogActions>
+          }
+        >
+          Le plat sort du catalogue et des suggestions.
+          {plannedCount > 0 &&
+            ` Il occupe ${plannedCount} créneau${plannedCount > 1 ? "x" : ""} du plan courant, qui se videront.`}
         </AlertDialogContent>
       </AlertDialog>
     </div>
