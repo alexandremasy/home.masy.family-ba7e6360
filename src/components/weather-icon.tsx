@@ -1,5 +1,6 @@
 import { Sun, Cloud, CloudSun, CloudRain, CloudLightning, CloudSnow, CloudFog } from "lucide-react";
 import type { WeatherCond } from "@/lib/mock-data";
+import { cn } from "@/lib/utils";
 
 const iconMap: Record<WeatherCond, typeof Sun> = {
   sun: Sun,
@@ -31,6 +32,5 @@ export function WeatherIcon({
   animated?: boolean;
 }) {
   const Icon = iconMap[cond];
-  const anim = animated ? " " + animMap[cond] : "";
-  return <Icon className={(className ?? "") + anim} />;
+  return <Icon className={cn("text-foreground", className, animated && animMap[cond])} />;
 }

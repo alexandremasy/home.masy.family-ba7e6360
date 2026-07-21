@@ -9,7 +9,7 @@ const meta = {
   component: WeatherIcon,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
-  args: { className: "h-8 w-8 text-primary", animated: true, cond: "sun" },
+  args: { className: "h-8 w-8", animated: true, cond: "sun" },
 } satisfies Meta<typeof WeatherIcon>;
 
 export default meta;
@@ -21,7 +21,7 @@ export const AllConditions: Story = {
     <div className="flex flex-wrap gap-6">
       {conds.map((cond) => (
         <div key={cond} className="flex flex-col items-center gap-1">
-          <WeatherIcon cond={cond} className="h-8 w-8 text-primary" />
+          <WeatherIcon cond={cond} className="h-8 w-8" />
           <span className="text-2xs text-muted-foreground">{cond}</span>
         </div>
       ))}

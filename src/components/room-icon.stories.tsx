@@ -16,7 +16,7 @@ const meta = {
   component: RoomIcon,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
-  args: { className: "h-6 w-6 text-primary", icon: "sofa" },
+  args: { className: "h-6 w-6", icon: "sofa" },
 } satisfies Meta<typeof RoomIcon>;
 
 export default meta;
@@ -28,7 +28,7 @@ export const AllIcons: Story = {
     <div className="flex flex-wrap gap-6">
       {icons.map((icon) => (
         <div key={icon} className="flex flex-col items-center gap-1">
-          <RoomIcon icon={icon} className="h-6 w-6 text-primary" />
+          <RoomIcon icon={icon} className="h-6 w-6" />
           <span className="text-2xs text-muted-foreground">{icon}</span>
         </div>
       ))}
