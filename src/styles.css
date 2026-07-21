@@ -234,8 +234,9 @@
   /* ═══ SEMANTICS — light theme ══════════════════════════════════════════════
      Figma ships no semantics: which rung plays "alert" and which plays "hover"
      is this app's decision, and it is the part worth arguing about. Every value
-     below points at a rung above — never at a hex. */
-  --background: var(--light-00);
+     below points at a rung above — never at a hex. One deliberate exception:
+     the app ground is a warm cream that no Figma ramp carries. */
+  --background: #fcfaf4;
   --foreground: var(--light-90);
 
   --card: var(--white);
@@ -326,7 +327,9 @@
   --destructive-foreground: oklch(0.99 0.005 95);
 
   --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 12%);
+  /* Control outlines, not dividers: 12% white all but vanished on --background,
+     so an empty checkbox / outline button read as nothing in dark. */
+  --input: oklch(1 0 0 / 24%);
   --ring: oklch(0.72 0.12 195);
 
   --sidebar: oklch(0.235 0.02 230); /* = card */
