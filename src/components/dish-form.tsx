@@ -80,9 +80,11 @@ function FieldGroup({ label, children }: { label: string; children: React.ReactN
  *
  * It used to be a row of plain <button>s: no role, no keyboard nav, and wrapped
  * in a <label> that associated nothing. Radix brings the arrow keys and the
- * roving tabindex; the look stays the app's (bg-background + shadow on the
- * active segment), because toggleVariants' data-[state=on]:bg-accent is now the
- * neutral hover surface, not a selected state.
+ * roving tabindex.
+ *
+ * The look is ToggleGroup's own: flush items under one border, the selection sliding
+ * between segments. It used to be a hand-rolled pill track here, which made a second
+ * language for one control.
  */
 function Segmented<T extends string | number | boolean>({
   value,
@@ -105,14 +107,10 @@ function Segmented<T extends string | number | boolean>({
         if (hit) onChange(hit.value);
       }}
       aria-label={label}
-      className="inline-flex justify-start gap-0 rounded-lg bg-secondary/70 p-1"
+      className="inline-flex justify-start"
     >
       {options.map((o) => (
-        <ToggleGroupItem
-          key={String(o.value)}
-          value={String(o.value)}
-          className="h-auto rounded-md px-3 py-1 text-sm font-normal text-muted-foreground hover:bg-transparent hover:text-foreground data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow"
-        >
+        <ToggleGroupItem key={String(o.value)} value={String(o.value)} className="px-3">
           {o.label}
         </ToggleGroupItem>
       ))}

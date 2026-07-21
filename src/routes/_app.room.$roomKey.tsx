@@ -226,7 +226,6 @@ function RoomPage() {
                   return (
                     <Toggle
                       key={z.name}
-                      variant="outline"
                       size="sm"
                       pressed={z.on}
                       onPressedChange={() =>
@@ -491,7 +490,6 @@ function RoomPage() {
             )}
           </div>
           <Toggle
-            variant="outline"
             size="sm"
             pressed={roomOn}
             onPressedChange={setRoomOn}
@@ -533,7 +531,6 @@ function MediaSection({ media }: { media: NonNullable<(typeof roomDetails)["salo
       {/* Musiq3 + volume — one button group, above the player. */}
       <div className="flex">
         <Toggle
-          variant="outline"
           pressed={source === "musiq3"}
           onPressedChange={(on) => {
             setSource(on ? "musiq3" : "off");
@@ -595,7 +592,6 @@ function MediaSection({ media }: { media: NonNullable<(typeof roomDetails)["salo
               </div>
             </div>
             <Toggle
-              variant="outline"
               pressed={playing}
               onPressedChange={setPlaying}
               aria-label={playing ? "Pause" : "Lecture"}
@@ -701,19 +697,18 @@ function ClimateControl({ climate }: { climate: ClimateData }) {
         onValueChange={(v) => {
           if (v) setSystem(v as DualSystem);
         }}
-        variant="outline"
-        className="w-full gap-0"
+        className="w-full"
       >
         <ToggleGroupItem
           value="heat"
-          className="flex-1 gap-1.5 rounded-r-none data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
+          className="flex-1 gap-1.5 data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
         >
           <Flame className="h-4 w-4" />
           Chaud
         </ToggleGroupItem>
         <ToggleGroupItem
           value="cool"
-          className="-ml-px flex-1 gap-1.5 rounded-l-none data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
+          className="flex-1 gap-1.5 data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
         >
           <Snowflake className="h-4 w-4" />
           Froid
