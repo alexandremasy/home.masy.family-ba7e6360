@@ -37,12 +37,23 @@ colocated with each component (`*.stories.tsx`); token pages + specs live under 
 
 > The old in-app `/design-system` route is **retired** — Storybook supersedes it.
 
+**The docs have to be trustworthy, not just present.** Props are parsed with
+`react-docgen-typescript` (`.storybook/main.ts`) — the default JS parser cannot resolve
+`ComponentPropsWithoutRef<typeof Primitive.Root> & VariantProps<...>`, which is how every
+Radix-based control here is typed, and silently documents nothing. `bun run docs:audit`
+runs that same parser offline and fails on a prop of ours left undescribed or a component
+whose type did not resolve. Every prop we add carries a JSDoc line; Radix's own props are
+shown but not ours to describe. It is part of `bun run check`, not a commit hook — it takes
+~25 s.
+
 ## Run
 
 ```bash
 bun install
 bun run dev             # vite dev (SPA)
+bun run check           # lint + typecheck + docs audit — run before calling work done
 bun run lint            # eslint (prettier-clean required)
+bun run docs:audit      # what Storybook's props table will really show
 bun run format          # prettier --write
 bun run storybook       # storybook dev :6006
 bun run build-storybook # static build
