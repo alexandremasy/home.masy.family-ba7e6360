@@ -129,7 +129,7 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
         )}
 
         {hasBounds && (
-          <div className="mt-1 flex justify-between text-2xs uppercase tracking-eyebrow text-muted-foreground">
+          <div className="mt-1 flex justify-between text-2xs text-muted-foreground">
             <span>{minLabel}</span>
             <span>{maxLabel}</span>
           </div>
