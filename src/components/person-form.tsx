@@ -47,15 +47,14 @@ export const EMPTY_PERSON: PersonDraft = {
 
 /** The person profile form. Shared by the edit fiche and "nouvelle personne", same as DishForm. */
 export function PersonForm({
+  id,
   initial,
-  submitLabel,
   onSubmit,
-  onCancel,
 }: {
+  /** Ties the sheet footer's submit button to this form — the actions live out there. */
+  id: string;
   initial: PersonDraft;
-  submitLabel: string;
   onSubmit: (d: PersonDraft) => void;
-  onCancel: () => void;
 }) {
   const [d, setD] = useState<PersonDraft>(initial);
   const [touched, setTouched] = useState(false);
@@ -86,7 +85,7 @@ export function PersonForm({
   };
 
   return (
-    <form onSubmit={submit} className="space-y-5">
+    <form id={id} onSubmit={submit} className="space-y-5">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Nom">
           <Input
@@ -177,7 +176,9 @@ export function PersonForm({
           ))}
         </div>
 
-        <div className="mt-4 grid gap-5 sm:grid-cols-2">
+        {/* One per row: five named steps need the full width — in two columns the labels
+            collide ("Chaleureux" over "Affectueux"). */}
+        <div className="mt-4 space-y-5">
           {STYLE_AXES.map((axis) => (
             <SliderRow
               key={axis.key}
@@ -188,13 +189,6 @@ export function PersonForm({
             />
           ))}
         </div>
-      </div>
-
-      <div className="flex items-center justify-end gap-2 border-t border-border/60 pt-4">
-        <Button type="button" variant="ghost" onClick={onCancel}>
-          Annuler
-        </Button>
-        <Button type="submit">{submitLabel}</Button>
       </div>
     </form>
   );

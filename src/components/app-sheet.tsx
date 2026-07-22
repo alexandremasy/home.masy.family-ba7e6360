@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { MobileDrawerPanel } from "@/components/mobile-drawer-panel";
-import { PageHeader } from "@/components/page-header";
+import { Card } from "@/components/card";
+import { modalCard } from "@/components/modal-surface";
 import { cn } from "@/lib/utils";
 
 const WIDTH = { md: "md:max-w-2xl", lg: "md:max-w-5xl" } as const;
@@ -12,6 +13,11 @@ const WIDTH = { md: "md:max-w-2xl", lg: "md:max-w-5xl" } as const;
  * surface, drag-to-dismiss); at md and up a top-anchored panel. Route overlays and
  * in-page modals both render through this, so there is a single look, a single
  * drag handle, and one exit animation everywhere.
+ *
+ * Same anatomy as the card and the dialog — icon · title · subline · trailing, a body
+ * that is a pure slot, and a footer the shell pins itself. Content passed as children
+ * should never draw its own header or its own row of actions: that is what made the
+ * person modal look hand-built next to every other surface.
  *
  * State (open/closing) is owned by the caller via useSheetClose — this component is
  * presentational so the route can still coordinate its dashboard blur off `closing`.
@@ -24,7 +30,10 @@ export function AppSheet({
   onRequestClose,
   size = "md",
   title,
-  headerAction,
+  subline,
+  icon,
+  trailing,
+  footer,
   children,
 }: {
   open: boolean;
@@ -34,7 +43,14 @@ export function AppSheet({
   /** Modal title — rendered as a PageHeader (with the drag grabber). Omit for routes,
       which bring their own PageHeader / custom header inside the children. */
   title?: string;
-  headerAction?: ReactNode;
+  /** Secondary line under the title. */
+  subline?: string;
+  /** Leading badge icon, left of the title. */
+  icon?: ReactNode;
+  /** Right end of the header row: a badge, a status — or a real control. */
+  trailing?: ReactNode;
+  /** The way out. Rendered under a rule, actions right-aligned, stacked on a phone. */
+  footer?: ReactNode;
   children: ReactNode;
 }) {
   return (
@@ -68,26 +84,54 @@ export function AppSheet({
               WIDTH[size],
             )}
           >
-            <MobileDrawerPanel onClose={onRequestClose} showHandle={false}>
-              {/* Radix needs a title to announce; the visible one is the PageHeader for
-                  modals, or the route's own header for routes. */}
-              <DialogPrimitive.Title className="sr-only">{title ?? "Détail"}</DialogPrimitive.Title>
-              <div className="px-5 pb-8 pt-4 md:px-8 md:py-10">
-                {title && <PageHeader title={title} trailing={headerAction} />}
-                {children}
-              </div>
+            {/* Desktop close affordance (mobile dismisses via drag / backdrop). It hangs
+                above the panel and scrolls WITH it: anchored to the viewport it would
+                slide down into the sticky header the moment the content scrolled. */}
+            <button
+              type="button"
+              aria-label="Fermer"
+              onClick={onRequestClose}
+              className="absolute -top-12 left-1/2 z-30 hidden h-9 w-9 -translate-x-1/2 place-items-center rounded-full bg-secondary text-foreground/70 shadow-soft transition-colors hover:bg-secondary/80 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring md:grid"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            <MobileDrawerPanel onClose={onRequestClose} showHandle={false} bare={!!title}>
+              {title ? (
+                // A modal IS a dialog: same Card, same `modalCard` surface — the muted
+                // box, the raised sheet under header + body, the footer showing the
+                // muted through. Anything else here would be a second grammar.
+                <Card
+                  variant="soft"
+                  padding="md"
+                  icon={icon}
+                  title={
+                    <DialogPrimitive.Title asChild>
+                      <span>{title}</span>
+                    </DialogPrimitive.Title>
+                  }
+                  subline={
+                    subline ? (
+                      <DialogPrimitive.Description asChild>
+                        <span>{subline}</span>
+                      </DialogPrimitive.Description>
+                    ) : undefined
+                  }
+                  trailing={trailing}
+                  footer={footer}
+                  className={modalCard}
+                >
+                  {children}
+                </Card>
+              ) : (
+                <>
+                  {/* Routes bring their own header; Radix still needs something to announce. */}
+                  <DialogPrimitive.Title className="sr-only">Détail</DialogPrimitive.Title>
+                  <div className="px-5 pb-8 pt-4 md:px-8 md:py-10">{children}</div>
+                </>
+              )}
             </MobileDrawerPanel>
           </div>
-
-          {/* Desktop close affordance (mobile dismisses via drag / backdrop). */}
-          <button
-            type="button"
-            aria-label="Fermer"
-            onClick={onRequestClose}
-            className="fixed left-1/2 top-4 z-30 hidden h-9 w-9 -translate-x-1/2 place-items-center rounded-full bg-secondary text-foreground/70 shadow-soft transition-colors hover:bg-secondary/80 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:top-6 md:grid"
-          >
-            <X className="h-4 w-4" />
-          </button>
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>

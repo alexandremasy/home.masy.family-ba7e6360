@@ -5,9 +5,7 @@ import { Textarea } from "@/components/textarea";
 import { Label } from "@/components/label";
 import {
   generateMessage,
-  matchingPreset,
   STYLE_AXES,
-  STYLE_PRESETS,
   type Person,
   type SliderStep,
   type Sliders,
@@ -46,7 +44,6 @@ export function MessageStudio({
     }
   };
 
-  const current = matchingPreset(sliders);
   const set = <K extends keyof Sliders>(k: K, v: SliderStep) =>
     setSliders((s) => ({ ...s, [k]: v }));
 
@@ -85,22 +82,6 @@ export function MessageStudio({
 
       <Card variant="solid">
         <div className="flex-1 space-y-5">
-          {/* Same shortcuts as the profile: they set the four scales, nothing is locked. */}
-          <div className="flex flex-wrap gap-1.5">
-            {STYLE_PRESETS.map((preset) => (
-              <Button
-                key={preset.id}
-                type="button"
-                size="sm"
-                variant={current === preset.id ? "inverted" : "outline"}
-                title={preset.description}
-                onClick={() => setSliders({ ...preset.sliders })}
-              >
-                {preset.label}
-              </Button>
-            ))}
-          </div>
-
           {STYLE_AXES.map((axis) => (
             <SliderRow
               key={axis.key}

@@ -51,12 +51,14 @@ export function PersonDialog({
     </Button>
   );
 
+  // The form lives in the body, its actions in the sheet's footer — hence the shared
+  // id: a submit button outside a form needs `form` to reach it.
+  const formId = "person-form";
   const form = (
     <PersonForm
       key={editing?.id ?? "new"}
+      id={formId}
       initial={initial}
-      submitLabel={isNew ? "Ajouter" : "Enregistrer"}
-      onCancel={() => onOpenChange(false)}
       onSubmit={(d) => {
         if (isNew) create(d);
         else if (editing) update(editing.id, d);
@@ -95,7 +97,17 @@ export function PersonDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      headerAction={removeButton}
+      trailing={removeButton}
+      footer={
+        <>
+          <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+            Annuler
+          </Button>
+          <Button type="submit" form={formId}>
+            {isNew ? "Ajouter" : "Enregistrer"}
+          </Button>
+        </>
+      }
     >
       {form}
       {confirm}

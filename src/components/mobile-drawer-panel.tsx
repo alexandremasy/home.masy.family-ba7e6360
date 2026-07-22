@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useRef } from "react";
 import { useIsMobile } from "@/lib/use-media";
+import { cn } from "@/lib/utils";
 
 // Below sm the overlay is a bottom drawer — this wraps its surface and owns the
 // drag-to-dismiss gesture (Stripe-style). Dragging past a threshold closes;
@@ -28,6 +29,7 @@ export function useDrawerDrag() {
 }
 
 export function MobileDrawerPanel({
+  bare = false,
   children,
   onClose,
   showHandle = true,
@@ -36,6 +38,8 @@ export function MobileDrawerPanel({
   onClose: () => void;
   /** Hide the panel's own grabber when the route provides its own (in a sticky header). */
   showHandle?: boolean;
+  /** Drop the panel's own surface — whatever it wraps brings its own. */
+  bare?: boolean;
 }) {
   const isMobile = useIsMobile();
   const surfaceRef = useRef<HTMLDivElement>(null);
@@ -104,7 +108,13 @@ export function MobileDrawerPanel({
     <DrawerDragContext.Provider value={{ handlers }}>
       <div
         ref={surfaceRef}
-        className="relative flex max-h-[85dvh] flex-col overflow-y-auto overscroll-contain rounded-t-3xl border border-border/60 bg-background/80 shadow-lift backdrop-blur-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:max-h-none md:overflow-clip md:rounded-3xl"
+        className={cn(
+          "relative flex max-h-[85dvh] flex-col overflow-y-auto overscroll-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:max-h-none md:overflow-clip",
+          // A bare panel still drags — it just brings no surface, so whatever it wraps
+          // (the modal Card) is the one thing drawing the box.
+          !bare &&
+            "rounded-t-3xl border border-border/60 bg-background/80 shadow-lift backdrop-blur-md md:rounded-3xl",
+        )}
       >
         {/* Grabber — the affordance; the header below is draggable too. Hidden when
             the route carries its own handle inside a sticky header. */}
