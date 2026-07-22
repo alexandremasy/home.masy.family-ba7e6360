@@ -5,7 +5,8 @@ import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/compo
 import { Card } from "@/components/card";
 import { DishCard } from "@/components/dish-card";
 import { type Base, type Dish } from "@/lib/maison-data";
-import { Search, Plus, Loader2 } from "lucide-react";
+import { DataState } from "@/components/data-state";
+import { Search, Plus } from "lucide-react";
 
 /**
  * The dish catalogue, as a page.
@@ -21,11 +22,20 @@ import { Search, Plus, Loader2 } from "lucide-react";
 export interface PlatsTemplateProps {
   /** The catalogue. Already fetched — sorting and filtering happen in here. */
   dishes: Dish[];
-  /** Show the spinner instead of the grid. The mock store is synchronous, the api is not. */
+  /** Still on its way. The mock store is synchronous, the api is not. */
   loading?: boolean;
+  /** The fetch failed — say so instead of showing an empty catalogue. */
+  error?: boolean;
+  /** Retry handler, offered on `error`. */
+  onRetry?: () => void;
 }
 
-export function PlatsTemplate({ dishes, loading = false }: PlatsTemplateProps) {
+export function PlatsTemplate({
+  dishes,
+  loading = false,
+  error = false,
+  onRetry,
+}: PlatsTemplateProps) {
   const [filter, setFilter] = useState<DishFilter>(EMPTY_FILTER);
   const [query, setQuery] = useState("");
 
@@ -56,11 +66,10 @@ export function PlatsTemplate({ dishes, loading = false }: PlatsTemplateProps) {
 
       <DishFilters value={filter} onChange={setFilter} bases={allBases} />
 
-      {loading ? (
-        <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Chargement des plats…
-        </div>
+      {/* The catalogue is never "empty": the add-a-dish card is always there, so a
+          zero-result search still shows the grid. Only loading and failure replace it. */}
+      {loading || error ? (
+        <DataState status={error ? "error" : "loading"} label="les plats" onRetry={onRetry} />
       ) : (
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {/* Adding a dish is the first card of the catalogue, not a header button. */}
