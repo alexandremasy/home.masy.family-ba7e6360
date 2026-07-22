@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Slider } from "./slider";
+import { Label } from "./label";
 
 const meta = {
   title: "Forms/Slider",
@@ -89,4 +90,34 @@ export const Full: Story = {
     showValue: "interaction",
     formatValue: (v: number) => `${v} %`,
   },
+};
+
+/**
+ * Named positions instead of a number. This is what makes a preset a *place on the
+ * scale* rather than a control of its own: the steps are named here, and "tendre" or
+ * "taquin" is simply the combination of steps it selects across several sliders.
+ */
+export const NamedStops: Story = {
+  render: () => (
+    <div className="max-w-md space-y-8">
+      <div className="space-y-2">
+        <Label>Registre</Label>
+        <Slider
+          defaultValue={[2]}
+          max={4}
+          step={1}
+          stops={["Pudique", "Retenu", "Nuancé", "Chaleureux", "Complice"]}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label>Longueur</Label>
+        <Slider
+          defaultValue={[1]}
+          max={3}
+          step={1}
+          stops={["Bref", "Court", "Développé", "Long"]}
+        />
+      </div>
+    </div>
+  ),
 };
