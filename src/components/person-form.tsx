@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Input } from "@/components/input";
 import { Textarea } from "@/components/textarea";
 import { Slider } from "@/components/slider";
+import { ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/select";
 import { Button } from "@/components/button";
 import { Eyebrow } from "@/components/eyebrow";
@@ -9,10 +11,10 @@ import {
   NO_BIRTH_YEAR,
   STYLE_AXES,
   STYLE_PRESETS,
-  matchingPreset,
   type Person,
   type SliderStep,
   type Sliders,
+  type StyleId,
 } from "@/lib/maison-data";
 
 const MONTHS = [
@@ -33,7 +35,7 @@ const MONTHS = [
 /** The editable fields of a person — id and history are the store's business. */
 export type PersonDraft = Pick<
   Person,
-  "name" | "relation" | "dob" | "langue" | "matiereLibre" | "defaultSliders"
+  "name" | "relation" | "dob" | "langue" | "matiereLibre" | "defaultSliders" | "styles"
 >;
 
 export const EMPTY_PERSON: PersonDraft = {
@@ -43,6 +45,7 @@ export const EMPTY_PERSON: PersonDraft = {
   langue: "fr",
   matiereLibre: "",
   defaultSliders: { registre: 2, chaleur: 2, humour: 2, longueur: 2 },
+  styles: ["tendre", "complice", "bref"],
 };
 
 /** The person profile form. Shared by the edit fiche and "nouvelle personne", same as DishForm. */
@@ -58,10 +61,9 @@ export function PersonForm({
 }) {
   const [d, setD] = useState<PersonDraft>(initial);
   const [touched, setTouched] = useState(false);
+  const [advanced, setAdvanced] = useState(false);
   const set = <K extends keyof PersonDraft>(k: K, v: PersonDraft[K]) =>
     setD((p) => ({ ...p, [k]: v }));
-  // Highlights the preset when the sliders happen to sit exactly on it.
-  const current = matchingPreset(d.defaultSliders);
 
   const setSlider = <K extends keyof Sliders>(k: K, v: SliderStep) =>
     setD((p) => ({ ...p, defaultSliders: { ...p.defaultSliders, [k]: v } }));
@@ -160,35 +162,51 @@ export function PersonForm({
         <Eyebrow size="xs" as="span">
           Style par défaut
         </Eyebrow>
-        {/* Presets are shortcuts: they move the sliders, they do not lock them. */}
+        {/* Three tones per person — the drafts offered on the day. Picking a fourth
+            drops the oldest, so the choice is always exactly three. */}
         <div className="mt-2 flex flex-wrap gap-1.5">
-          {STYLE_PRESETS.map((preset) => (
-            <Button
-              key={preset.id}
-              type="button"
-              size="sm"
-              variant={current === preset.id ? "inverted" : "outline"}
-              title={preset.description}
-              onClick={() => setD((prev) => ({ ...prev, defaultSliders: { ...preset.sliders } }))}
-            >
-              {preset.label}
-            </Button>
-          ))}
+          {STYLE_PRESETS.map((preset) => {
+            const picked = d.styles.includes(preset.id);
+            return (
+              <Button
+                key={preset.id}
+                type="button"
+                size="sm"
+                variant={picked ? "inverted" : "outline"}
+                title={preset.description}
+                onClick={() => set("styles", nextStyles(d.styles, preset.id))}
+              >
+                {preset.label}
+              </Button>
+            );
+          })}
         </div>
 
-        {/* One per row: five named steps need the full width — in two columns the labels
-            collide ("Chaleureux" over "Affectueux"). */}
-        <div className="mt-4 space-y-5">
-          {STYLE_AXES.map((axis) => (
-            <SliderRow
-              key={axis.key}
-              label={axis.label}
-              stops={axis.stops}
-              value={d.defaultSliders[axis.key]}
-              onChange={(v) => setSlider(axis.key, v)}
-            />
-          ))}
-        </div>
+        {/* The scales are the fine print: most people never open this. */}
+        <button
+          type="button"
+          onClick={() => setAdvanced((v) => !v)}
+          className="mt-4 inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ChevronRight
+            className={cn("h-3.5 w-3.5 transition-transform", advanced && "rotate-90")}
+          />
+          Réglage fin
+        </button>
+
+        {advanced && (
+          <div className="mt-4 space-y-5">
+            {STYLE_AXES.map((axis) => (
+              <SliderRow
+                key={axis.key}
+                label={axis.label}
+                stops={axis.stops}
+                value={d.defaultSliders[axis.key]}
+                onChange={(v) => setSlider(axis.key, v)}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </form>
   );
@@ -233,4 +251,10 @@ function SliderRow({
       />
     </div>
   );
+}
+
+/** Keep exactly three: picking a new one drops the oldest, unpicking a chosen one frees a slot. */
+function nextStyles(current: StyleId[], id: StyleId): StyleId[] {
+  if (current.includes(id)) return current.filter((s) => s !== id);
+  return [...current, id].slice(-3);
 }

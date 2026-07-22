@@ -12,7 +12,7 @@ import {
 } from "@/lib/maison-data";
 import { usePeople } from "@/lib/people-store";
 import { cap } from "@/lib/utils";
-import { Cake, Copy, Check, Pencil, Plus, MoreVertical } from "lucide-react";
+import { Cake, Copy, Check, Pencil, PenLine, Plus, MoreVertical } from "lucide-react";
 import { Button } from "@/components/button";
 import { Card } from "@/components/card";
 import {
@@ -91,12 +91,11 @@ type Variant = { label: string; sliders: Sliders; seed: number };
 
 /** The day's birthday — the main event. Three ready drafts + a style editor. */
 function TodayHero({ person, onEditProfile }: { person: Person; onEditProfile: () => void }) {
-  // The three drafts are three presets — the shortcuts, not a hand-tuned copy of them.
-  const variants: Variant[] = STYLE_PRESETS.slice(0, 3).map((preset, i) => ({
-    label: preset.label,
-    sliders: { ...preset.sliders },
-    seed: i,
-  }));
+  // The drafts are the three styles chosen for this person, in order.
+  const variants: Variant[] = person.styles
+    .map((id) => STYLE_PRESETS.find((p) => p.id === id))
+    .filter((p) => p !== undefined)
+    .map((preset, i) => ({ label: preset.label, sliders: { ...preset.sliders }, seed: i }));
   const [edit, setEdit] = useState<Variant | null>(null);
   const studio = edit && (
     <MessageStudio
@@ -152,6 +151,7 @@ function TodayHero({ person, onEditProfile }: { person: Person; onEditProfile: (
         open={edit !== null}
         onOpenChange={(o) => !o && setEdit(null)}
         title={`Message pour ${person.name}`}
+        icon={<PenLine className="h-4 w-4" />}
       >
         {studio}
       </ResponsiveModal>

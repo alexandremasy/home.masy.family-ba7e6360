@@ -5,7 +5,7 @@ import { ResponsiveModal } from "@/components/responsive-modal";
 import { Button } from "@/components/button";
 import { Alert, AlertConfirm, AlertActions, AlertCancel, AlertContent } from "@/components/alert";
 import type { Person } from "@/lib/maison-data";
-import { Trash2 } from "lucide-react";
+import { Trash2, UserRound } from "lucide-react";
 
 export type PersonTarget = Person | "new" | null;
 
@@ -36,6 +36,7 @@ export function PersonDialog({
         langue: editing.langue,
         matiereLibre: editing.matiereLibre,
         defaultSliders: editing.defaultSliders,
+        styles: editing.styles,
       }
     : EMPTY_PERSON;
 
@@ -97,6 +98,7 @@ export function PersonDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
+      icon={<UserRound className="h-4 w-4" />}
       trailing={removeButton}
       footer={
         <>

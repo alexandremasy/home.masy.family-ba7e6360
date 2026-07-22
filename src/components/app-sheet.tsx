@@ -3,7 +3,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { MobileDrawerPanel } from "@/components/mobile-drawer-panel";
 import { Card } from "@/components/card";
-import { modalCard } from "@/components/modal-surface";
+import { modalActions, modalCard } from "@/components/modal-surface";
 import { cn } from "@/lib/utils";
 
 const WIDTH = { md: "md:max-w-2xl", lg: "md:max-w-5xl" } as const;
@@ -118,7 +118,9 @@ export function AppSheet({
                     ) : undefined
                   }
                   trailing={trailing}
-                  footer={footer}
+                  // Actions are right-aligned, stacked on a phone — the caller passes
+                  // buttons, never a layout.
+                  footer={footer ? <div className={modalActions}>{footer}</div> : undefined}
                   className={modalCard}
                 >
                   {children}

@@ -993,6 +993,8 @@ export interface Person {
   langue: "fr" | "en";
   relation: string; // free label ("maman", "beau-frère", "amie d'enfance"…)
   defaultSliders: Sliders;
+  /** The three tones this person's drafts are written in — ids from STYLE_PRESETS. */
+  styles: StyleId[];
   matiereLibre: string; // free-form notes — the personalisation source
   history: HistoryEntry[];
 }
@@ -1021,6 +1023,7 @@ export const people: Person[] = [
     langue: "fr",
     relation: "frère",
     defaultSliders: { registre: 3, chaleur: 2, humour: 3, longueur: 2 },
+    styles: ["tendre", "complice", "taquin"],
     matiereLibre:
       "Vient de déménager à Amsterdam pour un nouveau job (design d'interaction). On s'appelle presque tous les dimanches. En ce moment il apprend la guitare et il râle contre son voisin qui met du techno. Notre blague récurrente : le pain aux graines de sa mère qu'on planque quand il vient. On était partis rouler en Ardennes en septembre — souvenir des crêpes à minuit dans son van.",
     history: [
@@ -1041,6 +1044,7 @@ export const people: Person[] = [
     langue: "fr",
     relation: "maman",
     defaultSliders: { registre: 1, chaleur: 4, humour: 1, longueur: 2 },
+    styles: ["tendre", "sincere", "complice"],
     matiereLibre:
       "Retraitée depuis deux ans, s'est mise au jardinage sérieusement — a réussi ses tomates cœur de boeuf cette année. Adore quand on lui envoie des photos des enfants sans qu'elle demande. Petit passage difficile en début d'année avec papa mais ça va mieux. Notre rituel : tarte aux pommes du dimanche.",
     history: [
@@ -1058,6 +1062,7 @@ export const people: Person[] = [
     langue: "fr",
     relation: "amie d'enfance",
     defaultSliders: { registre: 4, chaleur: 2, humour: 4, longueur: 1 },
+    styles: ["tendre", "complice", "taquin"],
     matiereLibre:
       "20 ans qu'on se connaît. Bosse dans l'édition à Bruxelles. On a un running gag sur ses ex qui s'appellent tous Julien (elle en est à trois). Vient de finir son premier semi-marathon. Adore quand on lui envoie des memes de chats absurdes.",
     history: [
@@ -1075,6 +1080,7 @@ export const people: Person[] = [
     langue: "fr",
     relation: "grand-père",
     defaultSliders: { registre: 1, chaleur: 3, humour: 1, longueur: 2 },
+    styles: ["tendre", "sincere", "complice"],
     matiereLibre:
       "82 ans, encore autonome. Ancien menuisier, il a fabriqué le berceau des enfants. On l'appelle chaque semaine — il aime raconter la guerre et le jardin. Reçoit rarement des messages écrits, un vrai plaisir pour lui.",
     history: [],
@@ -1086,6 +1092,7 @@ export const people: Person[] = [
     langue: "fr",
     relation: "filleule",
     defaultSliders: { registre: 2, chaleur: 4, humour: 3, longueur: 1 },
+    styles: ["tendre", "sincere", "taquin"],
     matiereLibre:
       "8 ans, en pleine phase 'je veux être vétérinaire ET astronaute'. On lui a offert des jumelles pour Noël, elle observe les oiseaux du balcon. Rire contagieux. On se voit peu (ses parents à Toulouse) mais on lit ensemble par visio le mardi soir.",
     history: [
@@ -1103,6 +1110,7 @@ export const people: Person[] = [
     langue: "fr",
     relation: "beau-frère",
     defaultSliders: { registre: 2, chaleur: 2, humour: 2, longueur: 1 },
+    styles: ["tendre", "sincere", "bref"],
     matiereLibre:
       "Beau-frère depuis 10 ans. On boit un scotch ensemble aux fêtes. Toujours un peu réservé mais fidèle en amitié. Vient de racheter une vieille moto qu'il retape dans son garage — projet du moment.",
     history: [],

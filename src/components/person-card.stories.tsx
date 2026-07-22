@@ -12,6 +12,7 @@ const noYear: Person = {
   langue: "fr",
   relation: "voisin",
   defaultSliders: { registre: 2, chaleur: 2, humour: 2, longueur: 1 },
+  styles: ["tendre", "complice", "bref"],
   matiereLibre: "",
   history: [],
 };
