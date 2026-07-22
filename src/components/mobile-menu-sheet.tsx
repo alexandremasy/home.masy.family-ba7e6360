@@ -145,12 +145,6 @@ export function MobileMenuSheet({
             )}
 
             <GroupLabel>Outils</GroupLabel>
-            <NavRow
-              to="/design-system"
-              icon={Palette}
-              label="Design system"
-              active={isActive("/design-system")}
-            />
             {externals.map((item) => {
               const I = item.icon;
               return (
