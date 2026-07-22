@@ -20,8 +20,8 @@ export interface BernardTileProps {
   pluggedIn: boolean;
   /** Home, on the move, or stopped somewhere. */
   state: BernardState;
-  /** Where the car is. */
-  location: string;
+  /** Where the car is, in words. Absent — no place is known — the line drops. */
+  location?: string;
   /** What charging is doing, when it is plugged in — "En charge", "Terminée". */
   chargingLabel?: string;
   /** Cabin temperature, °C. */
@@ -110,10 +110,12 @@ export function BernardTile({
               Bernard
             </Eyebrow>
             <p className="mt-1 text-lg">{stateLabel[state]}</p>
-            <p className="mt-0.5 inline-flex items-center gap-1 text-xs opacity-60">
-              <MapPin className="h-3 w-3" />
-              {location}
-            </p>
+            {location && (
+              <p className="mt-0.5 inline-flex items-center gap-1 text-xs opacity-60">
+                <MapPin className="h-3 w-3" />
+                {location}
+              </p>
+            )}
             {pluggedIn && chargingLabel && (
               <p className="mt-0.5 inline-flex items-center gap-1 text-xs opacity-60">
                 <Plug className="h-3 w-3" />
