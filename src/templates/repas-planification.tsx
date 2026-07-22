@@ -15,7 +15,7 @@ import {
 } from "@/components/dish-filters";
 import { DishCard, StatusPill } from "@/components/dish-card";
 import { cap } from "@/lib/utils";
-import { frLongDay, type Dish, type Base, type Slot } from "@/lib/maison-data";
+import { frLongDay, fromIso, type Dish, type Base, type Slot } from "@/lib/maison-data";
 import type { WeatherCond } from "@/lib/mock-data";
 import {
   Sparkles,
@@ -214,7 +214,7 @@ function SlotTitle({
 }) {
   return (
     <>
-      {cap(frLongDay(new Date(date)))} · {slot === "midi" ? "Midi" : "Soir"}
+      {cap(frLongDay(fromIso(date)))} · {slot === "midi" ? "Midi" : "Soir"}
       {weather && (
         <span className="inline-flex items-center gap-1 rounded-full border border-border/60 px-2 py-0.5 text-xs font-normal text-muted-foreground">
           <WeatherIcon cond={weather.cond} className="h-3 w-3" animated={false} />
@@ -228,8 +228,8 @@ function SlotTitle({
 /** "13 → 26 juillet", collapsing the month when both ends share it. */
 function rangeLabel(days: PlanDayView[]): string {
   if (days.length === 0) return "";
-  const first = new Date(days[0].date);
-  const last = new Date(days[days.length - 1].date);
+  const first = fromIso(days[0].date);
+  const last = fromIso(days[days.length - 1].date);
   const sameMonth = first.getMonth() === last.getMonth();
   const fmt = (d: Date, withMonth: boolean) =>
     d.toLocaleDateString(
@@ -458,7 +458,7 @@ function DayCell({
   onSelect: (s: SlotRef) => void;
   onMove: (from: SlotRef, to: SlotRef) => void;
 }) {
-  const date = new Date(day.date);
+  const date = fromIso(day.date);
   const isToday = day.date === today;
   // Today and everything ahead is the live planning surface — white. Past days
   // are done, so they sit back on the page colour.

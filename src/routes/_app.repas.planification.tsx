@@ -13,6 +13,7 @@ import {
   initialPlan,
   calWeeks,
   iso,
+  fromIso,
   addDays,
   dayWeather,
   weatherHintFor,
@@ -69,7 +70,7 @@ function RepasPage() {
   // block above the list, so offering it again is noise until it's been removed.
   const suggestions = useMemo<PlanSuggestionView[]>(() => {
     if (!selected) return [];
-    const date = new Date(selected.date);
+    const date = fromIso(selected.date);
     const placed = plan.find((e) => e.date === selected.date && e.slot === selected.slot)?.dishId;
     return suggestFor(date, selected.slot, plan, weatherHintFor(date), 200)
       .filter((s) => s.dish.id !== placed)
@@ -98,7 +99,7 @@ function RepasPage() {
         upsert({ date: selected.date, slot: selected.slot, dishId });
         if (batch) {
           upsert({
-            date: iso(addDays(new Date(selected.date), 1)),
+            date: iso(addDays(fromIso(selected.date), 1)),
             slot: selected.slot,
             dishId,
             batchOfDate: selected.date,

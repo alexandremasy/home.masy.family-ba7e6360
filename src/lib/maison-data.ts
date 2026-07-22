@@ -404,8 +404,20 @@ export function dishById(id: string): Dish | undefined {
 // ------------------------------------------------------------
 // Planning window — a sliding 10-day plan starting "tomorrow"
 // ------------------------------------------------------------
+/** The calendar day this date falls on, LOCALLY. `toISOString()` converts to UTC
+    first, so midnight local east of Greenwich lands on the previous day: the
+    Monday-anchored grid started on a Sunday and "today" was marked yesterday. */
 export function iso(d: Date): string {
-  return d.toISOString().slice(0, 10);
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${m}-${day}`;
+}
+
+/** The reverse: an ISO day read as local midnight. `new Date("2026-07-22")` is
+    UTC midnight, which reads as the day before west of Greenwich. */
+export function fromIso(day: string): Date {
+  const [y, m, d] = day.split("-").map(Number);
+  return new Date(y, m - 1, d);
 }
 export function addDays(d: Date, n: number): Date {
   const x = new Date(d);
