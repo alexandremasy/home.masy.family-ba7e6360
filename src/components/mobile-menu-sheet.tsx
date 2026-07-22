@@ -1,7 +1,7 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Link, useLocation } from "@tanstack/react-router";
 import type { LucideIcon } from "lucide-react";
-import { X, Palette, ExternalLink, LayoutGrid } from "lucide-react";
+import { X, ExternalLink, LayoutGrid } from "lucide-react";
 import { RoomIcon } from "@/components/room-icon";
 import { ThemeToggle } from "@/components/theme-toggle";
 import type { Room } from "@/lib/mock-data";
