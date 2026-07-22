@@ -3,7 +3,14 @@ import * as SliderPrimitive from "@radix-ui/react-slider";
 
 import { cn } from "@/lib/utils";
 
-export interface SliderProps extends React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> {
+export interface SliderProps
+  // Radix offers a vertical track, an inverted scale and an RTL direction. None is used
+  // here — and `stops` lays its labels out horizontally, so a vertical slider would break
+  // it. Dropping them keeps the documented surface to what this system actually supports.
+  extends Omit<
+    React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>,
+    "orientation" | "inverted" | "dir"
+  > {
   /** Text under the left end of the track — what the low end means, not the number. */
   minLabel?: React.ReactNode;
   /** Text under the right end of the track. */
@@ -99,7 +106,7 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
             so the first and last never hang off the component. The current step is the
             only one at full strength — the scale reads at a glance. */}
         {stops && stops.length > 1 && (
-          <div className="relative mt-1.5 h-4 text-2xs uppercase tracking-eyebrow text-muted-foreground">
+          <div className="relative mt-1.5 h-4 text-2xs text-muted-foreground">
             {stops.map((label, i) => {
               const selected = values.includes(i);
               return (
