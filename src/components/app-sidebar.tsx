@@ -101,22 +101,11 @@ export function AppSidebar() {
           </SidebarGroup>
         )}
 
-        {/* Outils — reference + external tools, directly visible. */}
+        {/* Outils — external tools only. The design system used to be a route here;
+            Storybook replaced it, and each repo names its own host in `nav`. */}
         <SidebarGroup>
           <SidebarGroupLabel>Outils</SidebarGroupLabel>
           <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname.startsWith("/design-system")}
-                tooltip="Design system"
-              >
-                <Link to="/design-system">
-                  <Palette />
-                  <span>Design system</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
             {externals.map((item) => {
               const Icon = item.icon;
               return (

@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   DoorClosed,
   Activity,
+  Palette,
   Settings,
   Wrench,
   Newspaper,
@@ -62,6 +63,7 @@ export const upcoming: { key: string; label: string; icon: LucideIcon }[] = [
 ];
 
 export const externals: { href: string; label: string; icon: LucideIcon }[] = [
+  { href: "https://design.masy.family", label: "Design system", icon: Palette },
   { href: "https://example.com/settings", label: "Settings", icon: Settings },
   { href: "https://example.com/dev-tools", label: "Dev tools", icon: Wrench },
 ];
