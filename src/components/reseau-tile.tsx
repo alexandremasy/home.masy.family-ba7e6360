@@ -19,10 +19,10 @@ export interface ReseauTileProps {
   testedWhen: string;
   /** Devices on the wifi, all networks together. */
   clients: number;
-  /** Homelab CPU load, in percent. */
-  cpuPct: number;
+  /** Homelab CPU load, in percent. Absent when the box is not reporting. */
+  cpuPct?: number;
   /** How long the homelab has been up, in days. */
-  uptimeDays: number;
+  uptimeDays?: number;
   /** The line's ceiling — the dial reads the share of it. */
   maxMbps?: number;
   /** The line is holding. False turns the badge into a warning. */
@@ -105,10 +105,16 @@ export function ReseauTile({
             {clients}
           </span>
         </Tip>
-        <Tip label={`Charge CPU du homelab · en ligne depuis ${uptimeDays} jours.`}>
+        <Tip
+          label={
+            "Charge CPU du homelab" +
+            (uptimeDays != null ? ` · en ligne depuis ${uptimeDays} jours` : "") +
+            "."
+          }
+        >
           <span className="inline-flex items-center gap-1 tabular-nums">
             <Server className="h-3.5 w-3.5 text-muted-foreground" />
-            {cpuPct}%
+            {cpuPct != null ? `${cpuPct}%` : "—"}
           </span>
         </Tip>
       </div>
