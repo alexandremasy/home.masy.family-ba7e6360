@@ -29,3 +29,8 @@ export const Today: Story = {
 export const Tomorrow: Story = {
   args: { days: 1 },
 };
+
+/** No birth year on file: the tile names the occasion rather than an age. */
+export const UnknownAge: Story = {
+  args: { age: undefined, name: "Jean-Michel" },
+};

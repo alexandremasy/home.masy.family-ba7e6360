@@ -6,8 +6,11 @@ export interface BirthdayTileProps {
   to: string;
   /** Whose birthday it is. What the tile is really about, so it comes first. */
   name: string;
-  /** The age they are turning. */
-  age: number;
+  /**
+   * The age they are turning. Absent when the birth year is unknown — the tile
+   * then names the occasion instead of inventing a number.
+   */
+  age?: number;
   /** Days until it. 0 is today, and today the cake steps forward. */
   days: number;
 }
@@ -32,7 +35,7 @@ export function BirthdayTile({ to, name, age, days }: BirthdayTileProps) {
       />
       <div className="relative min-w-0">
         <p className="break-words text-base font-semibold leading-tight">
-          {name} a {age} ans
+          {age != null ? `${name} a ${age} ans` : `L'anniversaire de ${name}`}
         </p>
         <p className={"text-2xs " + (today ? "opacity-80" : "text-muted-foreground")}>{when}</p>
       </div>
