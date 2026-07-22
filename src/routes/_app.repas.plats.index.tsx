@@ -1,83 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Input } from "@/components/input";
-import { DishFilters, applyFilter, EMPTY_FILTER, type DishFilter } from "@/components/dish-filters";
-import { Card } from "@/components/card";
-import { DishCard } from "@/components/dish-card";
+import { createFileRoute } from "@tanstack/react-router";
+import { PlatsTemplate } from "@/templates/repas-plats";
 import { useDishes } from "@/lib/dishes-store";
-import { type Base, type Dish } from "@/lib/maison-data";
-import { Search, Plus } from "lucide-react";
 
 export const Route = createFileRoute("/_app/repas/plats/")({
   component: PlatsPage,
   head: () => ({ meta: [{ title: "Plats — Repas" }] }),
 });
 
+// The page is the template; this file only says where the dishes come from.
+// Here that is the in-memory mock store; in the cockpit it is the api.
 function PlatsPage() {
   const { dishes } = useDishes();
-  const [filter, setFilter] = useState<DishFilter>(EMPTY_FILTER);
-  const [query, setQuery] = useState("");
-
-  const allBases = useMemo(
-    () => [...new Set(dishes.map((d) => d.base))].sort() as Base[],
-    [dishes],
-  );
-  const results = useMemo(() => applyFilter(dishes, filter, query), [dishes, filter, query]);
-
-  return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative w-full sm:max-w-xs">
-          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Chercher un plat ou un composant…"
-            className="pl-8"
-          />
-        </div>
-        <div className="flex shrink-0 items-center gap-3">
-          <p className="text-xs text-muted-foreground">
-            {results.length} plat{results.length > 1 ? "s" : ""} sur {dishes.length}
-          </p>
-        </div>
-      </div>
-
-      <DishFilters value={filter} onChange={setFilter} bases={allBases} />
-
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Adding a dish is the first card of the catalogue, not a header button. */}
-        <AddDishCard />
-        {results.map((d) => (
-          <CatalogueCard key={d.id} dish={d} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/** Add-a-dish affordance — an empty, dashed card at the head of the catalogue
- *  grid (the "+ new dish" lives here, not in a header button). */
-function AddDishCard() {
-  return (
-    <Link
-      to="/repas/plats/nouveau"
-      className="flex min-h-[7rem] flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-border/70 p-3.5 text-muted-foreground transition-all hover:border-primary hover:bg-secondary/40 hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-    >
-      <Plus className="h-5 w-5" />
-      <span className="text-sm font-medium">Nouveau plat</span>
-    </Link>
-  );
-}
-
-/**
- * The catalogue shell around the shared DishCard body. No status pill: the
- * catalogue says what a dish IS, the plan is another view's business.
- */
-function CatalogueCard({ dish }: { dish: Dish }) {
-  return (
-    <Card variant="solid" to={`/repas/plats/${dish.id}`}>
-      <DishCard dish={dish} />
-    </Card>
-  );
+  return <PlatsTemplate dishes={dishes} />;
 }
