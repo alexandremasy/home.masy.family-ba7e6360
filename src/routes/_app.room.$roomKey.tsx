@@ -1,16 +1,13 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState, type ReactNode } from "react";
-import { BentoGrid, BentoItem } from "@/blocks/bento";
-import { Card } from "@/components/card";
-import { useDrawerDrag } from "@/components/mobile-drawer-panel";
-import { Toggle } from "@/components/toggle";
-import { Button } from "@/components/button";
-import { ToggleGroup, ToggleGroupItem } from "@/components/toggle-group";
-import { SlidingTabs } from "@/components/sliding-tabs";
-import { CameraFeed } from "@/components/camera-feed";
-import { MediaSweep } from "@/components/effects";
-import { DishwasherPanel } from "@/components/dishwasher-panel";
-import { VacuumPanel } from "@/components/vacuum-panel";
+import { useState } from "react";
+import { RoomIcon } from "@/components/room-icon";
+import {
+  RoomDetailTemplate,
+  type RoomApplianceView,
+  type RoomClimateMode,
+  type RoomClimatePreset,
+  type RoomZoneView,
+} from "@/templates/room-detail";
 import {
   rooms,
   roomDetails,
@@ -20,109 +17,6 @@ import {
   dishwasher,
   type RoomKey,
 } from "@/lib/mock-data";
-import {
-  Camera,
-  Lightbulb,
-  Thermometer,
-  Volume2,
-  Volume1,
-  Play,
-  Battery,
-  BatteryFull,
-  BatteryMedium,
-  BatteryLow,
-  BatteryWarning,
-  Droplet,
-  Sparkles,
-  Pause,
-  Power,
-  Radio,
-  Moon,
-  Flame,
-  SunDim,
-  SunMedium,
-  Sun,
-  BookOpen,
-  Sunrise,
-  UtensilsCrossed,
-  ChefHat,
-  Briefcase,
-  Armchair,
-  Footprints,
-  LampCeiling,
-  Speaker,
-  Bed,
-  Cat,
-  Printer,
-  Projector,
-  Lamp,
-  Disc3,
-  Flower2,
-  Snowflake,
-  ExternalLink,
-  Home as HomeIcon,
-  ArrowRight,
-  type LucideIcon,
-} from "lucide-react";
-
-function batteryFor(level: number): { Icon: LucideIcon; tone: string } {
-  if (level < 20) return { Icon: BatteryWarning, tone: "text-destructive" };
-  if (level < 40) return { Icon: BatteryLow, tone: "text-warm" };
-  if (level < 75) return { Icon: BatteryMedium, tone: "text-muted-foreground" };
-  return { Icon: BatteryFull, tone: "text-success" };
-}
-
-function applianceIcon(name: string): LucideIcon {
-  const n = name.toLowerCase();
-  if (n.includes("sel") || n.includes("lampe")) return Lamp;
-  if (n.includes("chat")) return Cat;
-  if (n.includes("playbar") || n.includes("speaker") || n.includes("enceinte")) return Speaker;
-  if (n.includes("imprim")) return Printer;
-  if (n.includes("project")) return Projector;
-  if (n.includes("bouboule") || n.includes("boule")) return Disc3;
-  if (n.includes("coin")) return Lightbulb;
-  return Power;
-}
-
-function sceneIcon(name: string): LucideIcon {
-  const n = name.toLowerCase();
-  if (n.includes("medit")) return Flower2;
-  if (n.includes("cosy") || n.includes("cozy")) return Flame;
-  if (n.includes("moyen")) return SunDim;
-  if (n.includes("lumineux")) return Sun;
-  if (n.includes("nuit")) return Moon;
-  if (n.includes("réveil") || n.includes("reveil")) return Sunrise;
-  if (n.includes("lecture")) return BookOpen;
-  if (n.includes("travail")) return SunMedium;
-  if (n.includes("dîner") || n.includes("diner")) return UtensilsCrossed;
-  if (n.includes("cuisine")) return ChefHat;
-  if (n === "off") return Power;
-  const pct = parseInt(n, 10);
-  if (!Number.isNaN(pct)) {
-    if (pct <= 10) return Moon;
-    if (pct <= 25) return Flame;
-    if (pct <= 50) return SunDim;
-    if (pct <= 75) return SunMedium;
-    return Sun;
-  }
-  return Sparkles;
-}
-
-function zoneIcon(name: string): LucideIcon {
-  const n = name.toLowerCase();
-  if (n.includes("bureau")) return Briefcase;
-  if (n.includes("divan") || n.includes("canapé") || n.includes("canape")) return Armchair;
-  if (n.includes("escalier")) return Footprints;
-  if (n.includes("plafond")) return LampCeiling;
-  if (n.includes("playbar") || n.includes("speaker")) return Speaker;
-  if (n.includes("chevet") || n.includes("lit")) return Bed;
-  if (n.includes("îlot") || n.includes("ilot") || n.includes("plan")) return ChefHat;
-  if (n.includes("étagère") || n.includes("etagere")) return BookOpen;
-  if (n.includes("table")) return UtensilsCrossed;
-  return Lightbulb;
-}
-import { RoomIcon } from "@/components/room-icon";
-import { Eyebrow } from "@/components/eyebrow";
 
 export const Route = createFileRoute("/_app/room/$roomKey")({
   component: RoomPage,
@@ -145,585 +39,132 @@ export const Route = createFileRoute("/_app/room/$roomKey")({
   },
 });
 
-type ClimateMode = "auto" | 20 | 21 | 22;
-type DualSystem = "heat" | "cool";
-type DualPreset = "off" | number;
+const MUSIQ3_TINT = "oklch(0.72 0.17 150)";
 
-const HEAT_PRESETS: number[] = [19, 20, 21, 22];
-const COOL_PRESETS: number[] = [22, 24, 26];
-
+/** The page is the template; this file only pretends to be a house. */
 function RoomPage() {
-  const data = Route.useLoaderData() as { room: (typeof rooms)[number] };
-  const room = data.room;
+  const { room } = Route.useLoaderData() as { room: (typeof rooms)[number] };
   const detail = roomDetails[room.key];
-  const [zones, setZones] = useState(detail.lights?.zones ?? []);
+
+  // Everything a tap changes lives here, because over in the cockpit it lives in
+  // Home Assistant: the template only ever draws what it is handed.
+  const [zones, setZones] = useState<RoomZoneView[]>(
+    (detail.lights?.zones ?? []).map((z) => ({ key: z.name, name: z.name, on: z.on })),
+  );
   const [scene, setScene] = useState(detail.lights?.scene ?? "Off");
   const [brightness, setBrightness] = useState(detail.lights?.brightness ?? 0);
   const [roomOn, setRoomOn] = useState(true);
-  const drag = useDrawerDrag();
+  const [mode, setMode] = useState<RoomClimateMode>(
+    detail.climate && !("dual" in detail.climate) ? detail.climate.mode : "auto",
+  );
+  const [system, setSystem] = useState<"heat" | "cool">(
+    detail.climate && "dual" in detail.climate && detail.climate.mode === "cool" ? "cool" : "heat",
+  );
+  const [heatPreset, setHeatPreset] = useState<RoomClimatePreset>(
+    detail.climate && "dual" in detail.climate ? detail.climate.heatSetpoint : "off",
+  );
+  const [coolPreset, setCoolPreset] = useState<RoomClimatePreset>(
+    detail.climate && "dual" in detail.climate ? detail.climate.coolSetpoint : "off",
+  );
+  const [appliances, setAppliances] = useState<RoomApplianceView[]>(
+    (detail.devices?.appliances ?? []).map((a) => ({ key: a.name, name: a.name, on: a.on })),
+  );
+  const [radioOn, setRadioOn] = useState((detail.media?.source ?? "off") !== "off");
+  const [playing, setPlaying] = useState((detail.media?.source ?? "off") !== "off");
 
-  // Bento modules are collected first so the grid can always be complete: two per
-  // row (span 3), and the last one takes the full width (span 6) when the count is
-  // odd — no holes, whatever modules a room happens to have.
-  const modules: { key: string; node: ReactNode }[] = [];
+  const roomCams = cameras.filter(
+    (c) =>
+      c.installed &&
+      ((room.key === "salon" && c.id === "salon") ||
+        (room.key === "buanderie" && c.id === "buanderie")),
+  );
+  const events = motionEvents
+    .filter((e) => roomCams.some((c) => c.id === e.cameraId))
+    .slice(0, 3)
+    .map((e) => ({ id: String(e.id), label: e.label, time: e.time }));
 
-  if (detail.lights) {
-    modules.push({
-      key: "lights",
-      node: (
-        <Card
-          variant="solid"
-          icon={<Lightbulb className="h-4 w-4" />}
-          title="Luminosité"
-          trailing={
-            zones.length > 0 ? (
-              <span className="text-sm text-muted-foreground">
-                {(() => {
-                  const on = zones.filter((z) => z.on).length;
-                  if (on === 0) return "Tout éteint";
-                  if (on === zones.length) return "Tout allumé";
-                  return `${on} / ${zones.length} allumées`;
-                })()}
-              </span>
-            ) : undefined
-          }
-        >
-          {detail.lights.scenes.length > 0 && (
-            <SlidingTabs
-              value={scene}
-              onValueChange={setScene}
-              options={detail.lights.scenes.map((s) => ({
-                value: s,
-                label: s,
-                icon: sceneIcon(s),
-              }))}
-            />
-          )}
+  const media = detail.media && room.key === "salon" ? detail.media : null;
 
-          {scene !== "Off" && !detail.lights.hideBrightness && detail.lights.scenes.length > 0 && (
-            <div className="mt-6">
-              <div className="mb-2 flex justify-between text-xs uppercase tracking-eyebrow text-muted-foreground">
-                <span>Luminosité</span>
-                <span>{brightness}%</span>
-              </div>
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={brightness}
-                onChange={(e) => setBrightness(Number(e.target.value))}
-                className="h-2 w-full appearance-none rounded-full bg-muted accent-primary"
-              />
-            </div>
-          )}
-
-          {zones.length > 0 && (
-            <div className={detail.lights.scenes.length > 0 ? "mt-6" : ""}>
-              {detail.lights.scenes.length > 0 && <Eyebrow className="mb-3">Zones</Eyebrow>}
-              <div className="flex flex-wrap gap-1.5">
-                {zones.map((z, i) => {
-                  const Icon = zoneIcon(z.name);
-                  return (
-                    <Toggle
-                      key={z.name}
-                      size="sm"
-                      pressed={z.on}
-                      onPressedChange={() =>
-                        setZones(zones.map((zz, idx) => (idx === i ? { ...zz, on: !zz.on } : zz)))
-                      }
-                      aria-label={`Zone ${z.name}`}
-                      className="gap-1.5 rounded-full text-xs data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
-                    >
-                      <Icon className={z.on ? "anim-breathe" : "opacity-50"} />
-                      {z.name}
-                    </Toggle>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </Card>
-      ),
-    });
-  }
-
-  if (detail.climate) {
-    modules.push({
-      key: "climate",
-      node: (
-        <Card
-          variant="solid"
-          icon={<Thermometer className="h-4 w-4" />}
-          title="Climatisation"
-          // A reading, not an action — and in a 2-column cell the action slot
-          // squeezed the title down to "Climati…".
-          subline={`${detail.climate.current}° actuellement`}
-        >
-          <ClimateControl climate={detail.climate} />
-        </Card>
-      ),
-    });
-  }
-
-  if (detail.media && room.key === "salon") {
-    modules.push({ key: "media", node: <MediaSection media={detail.media} /> });
-  }
-
-  if (room.key === "cuisine") {
-    modules.push({
-      key: "dishwasher",
-      node: (
-        <Card
-          variant="solid"
-          icon={<Droplet className="h-4 w-4" />}
-          title="Lave-vaisselle"
-          subline={
-            dishwasher.state === "running" || dishwasher.state === "paused"
-              ? `${dishwasher.program} · fin prévue ${dishwasher.endsAt}`
-              : dishwasher.program
-          }
-        >
-          <DishwasherPanel />
-        </Card>
-      ),
-    });
-  }
-
-  if (room.key === "buanderie") {
-    modules.push({
-      key: "vacuum",
-      node: (
-        <Card
-          variant="solid"
-          icon={<Sparkles className="h-4 w-4" />}
-          title="Aspirateur robot"
-          trailing={
-            <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
-              <HomeIcon className="h-4 w-4" />
-              Base ici
-            </span>
-          }
-        >
-          <VacuumPanel />
-          {vacuum.state === "docked" && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Button
-                onClick={() => {}}
-                className="rounded-full bg-foreground text-background hover:bg-foreground/90"
-              >
-                Lancer un cycle
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" onClick={() => {}} className="rounded-full">
-                Vider le bac
-              </Button>
-            </div>
-          )}
-        </Card>
-      ),
-    });
-  }
-
-  {
-    const roomCams = cameras.filter(
-      (c) =>
-        c.installed &&
-        ((room.key === "salon" && c.id === "salon") ||
-          (room.key === "buanderie" && c.id === "buanderie")),
-    );
-    if (roomCams.length > 0) {
-      const recentEvents = motionEvents
-        .filter((e) => roomCams.some((c) => c.id === e.cameraId))
-        .slice(0, 3);
-      modules.push({
-        key: "camera",
-        node: (
-          <Card
-            variant="solid"
-            icon={<Camera className="h-4 w-4" />}
-            title="Caméra"
-            trailing={
-              <a
-                href="https://unifi.ui.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-              >
-                UI Protect
-                <ExternalLink className="h-3.5 w-3.5" />
-              </a>
+  return (
+    <RoomDetailTemplate
+      name={room.name}
+      icon={<RoomIcon icon={room.icon} className="h-5 w-5 anim-float" />}
+      temperature={typeof room.temperature === "number" ? room.temperature : undefined}
+      roomOn={roomOn}
+      onToggleRoom={() => setRoomOn((on) => !on)}
+      lights={
+        detail.lights
+          ? {
+              scenes: detail.lights.scenes.map((s) => ({ value: s })),
+              activeScene: scene,
+              zones,
+              brightness: detail.lights.hideBrightness ? null : brightness,
             }
-          >
-            <div className="space-y-3">
-              {roomCams.map((c) => (
-                <CameraFeed key={c.id} camera={c} size="lg" />
-              ))}
-              {recentEvents.length > 0 && (
-                <ul className="space-y-1.5">
-                  {recentEvents.map((e) => (
-                    <li
-                      key={e.id}
-                      className="flex items-center gap-2 rounded-lg bg-secondary/60 px-3 py-2 text-xs"
-                    >
-                      <Sparkles className="h-3 w-3 text-primary" />
-                      <span className="flex-1 truncate">{e.label}</span>
-                      <span className="tabular-nums text-muted-foreground">{e.time}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </Card>
-        ),
-      });
-    }
-  }
-
-  if (detail.devices) {
-    modules.push({
-      key: "devices",
-      node: (
-        <Card variant="solid" icon={<Printer className="h-4 w-4" />} title="Périphériques">
-          {detail.devices.ink && (
-            <div className="mb-6">
-              <Eyebrow className="mb-3">Imprimante · niveaux d'encre</Eyebrow>
-              <div className="grid grid-cols-2 gap-3 stagger sm:grid-cols-4">
-                {(
-                  [
-                    ["Cyan", detail.devices.ink.c, "oklch(0.78 0.13 200)"],
-                    ["Magenta", detail.devices.ink.m, "oklch(0.65 0.22 350)"],
-                    ["Jaune", detail.devices.ink.y, "oklch(0.86 0.16 95)"],
-                    ["Noir", detail.devices.ink.k, "oklch(0.30 0.02 230)"],
-                  ] as const
-                ).map(([name, val, color]) => (
-                  <Card key={name} variant="inset" padding="sm" as="div">
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Droplet className="h-3 w-3" />
-                      {name}
-                    </div>
-                    <p className="mt-1.5 text-base">{val}%</p>
-                    <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-muted">
-                      <div
-                        className="h-full rounded-full transition-all duration-700"
-                        style={{ width: `${val}%`, background: color }}
-                      />
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )}
-          {detail.devices.appliances && detail.devices.appliances.length > 0 && (
-            <div className="mb-6">
-              <Eyebrow className="mb-3">Appareils</Eyebrow>
-              <AppliancesGrid items={detail.devices.appliances} />
-            </div>
-          )}
-          <Eyebrow className="mb-3">Batteries</Eyebrow>
-          <div className="grid gap-2 sm:grid-cols-2">
-            {detail.devices.batteries.map((b) => {
-              const { Icon, tone } = batteryFor(b.level);
-              return (
-                <Card key={b.name} variant="inset" padding="sm" as="div">
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-2">
-                      <Icon className={"h-4 w-4 " + tone} />
-                      {b.name}
-                    </span>
-                    <span
-                      className={
-                        "text-xs font-semibold " + (b.level < 20 ? "text-destructive" : "")
-                      }
-                    >
-                      {b.level}%
-                    </span>
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
-        </Card>
-      ),
-    });
-  }
-
-  if (!detail.lights && !detail.climate && !detail.media && !detail.devices) {
-    modules.push({
-      key: "empty",
-      node: (
-        <Card variant="solid" title="Aucun appareil">
-          <p className="text-muted-foreground">
-            Cette pièce n'a pas encore de capteurs ou d'appareils connectés.
-          </p>
-        </Card>
-      ),
-    });
-  }
-
-  return (
-    <div className="space-y-6">
-      <div
-        {...(drag.handlers ?? {})}
-        className={
-          "page-header sticky top-0 z-20 -mx-5 -mt-4 px-5 pt-2 pb-2 md:-mx-8 md:-mt-10 md:px-8 md:pb-4 md:pt-10 " +
-          (drag.handlers ? "cursor-grab touch-none select-none active:cursor-grabbing" : "")
-        }
-      >
-        <div className="page-header__bg pointer-events-none absolute inset-0 bg-background/95 md:bg-background/85 md:backdrop-blur-xl" />
-        <div className="page-header__fade pointer-events-none absolute inset-x-0 top-full h-8 bg-gradient-to-b from-background to-transparent" />
-        {/* Drag handle — lives in the sticky header so it stays put while scrolling. */}
-        {drag.handlers && (
-          <div className="relative mx-auto mb-2 h-1.5 w-11 rounded-full bg-muted-foreground/30 md:hidden" />
-        )}
-        <div className="relative flex items-center gap-3">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/12 text-primary">
-            <RoomIcon icon={room.icon} className="h-5 w-5 anim-float" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <h1 className="truncate text-xl font-semibold tracking-tight sm:text-2xl">
-              {room.name}
-            </h1>
-            {typeof room.temperature === "number" && (
-              <p className="text-xs text-muted-foreground">
-                Actuellement {room.temperature.toFixed(1)}°C
-              </p>
-            )}
-          </div>
-          <Toggle
-            size="sm"
-            pressed={roomOn}
-            onPressedChange={setRoomOn}
-            aria-label={roomOn ? "Tout éteindre" : "Tout allumer"}
-            className="ml-auto shrink-0 rounded-full px-3 data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
-          >
-            <Power className={roomOn ? "anim-breathe" : ""} />
-            {roomOn ? "On" : "Off"}
-          </Toggle>
-        </div>
-      </div>
-
-      <BentoGrid rows="auto">
-        {modules.map((m, i) => (
-          <BentoItem
-            key={m.key}
-            span={i === modules.length - 1 && modules.length % 2 === 1 ? 6 : 3}
-          >
-            {m.node}
-          </BentoItem>
-        ))}
-      </BentoGrid>
-    </div>
-  );
-}
-
-function MediaSection({ media }: { media: NonNullable<(typeof roomDetails)["salon"]["media"]> }) {
-  const [source, setSource] = useState(media.source);
-  const [playing, setPlaying] = useState(source !== "off");
-
-  const sources = [
-    { key: "musiq3" as const, label: "Musiq3", Icon: Radio, tint: "oklch(0.72 0.17 150)" },
-    { key: "off" as const, label: "Éteint", Icon: Power, tint: "oklch(0.55 0 0)" },
-  ];
-  const active = sources.find((s) => s.key === source)!;
-
-  return (
-    <Card variant="solid" icon={<Speaker className="h-4 w-4" />} title="Média">
-      {/* Musiq3 + volume — one button group, above the player. */}
-      <div className="flex">
-        <Toggle
-          pressed={source === "musiq3"}
-          onPressedChange={(on) => {
-            setSource(on ? "musiq3" : "off");
-            setPlaying(on);
-          }}
-          aria-label="Radio Musiq3"
-          className="flex-1 gap-1.5 rounded-r-none data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
-        >
-          <Radio className="h-4 w-4" />
-          Musiq3
-        </Toggle>
-        <Button
-          variant="outline"
-          aria-label="Baisser le volume"
-          className="-ml-px flex-1 rounded-none"
-        >
-          <Volume1 className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          aria-label="Monter le volume"
-          className="-ml-px flex-1 rounded-l-none"
-        >
-          <Volume2 className="h-4 w-4" />
-        </Button>
-      </div>
-
-      <MediaSweep
-        tint={source === "off" ? null : active.tint}
-        className="relative mt-3 overflow-hidden rounded-xl border border-border/60 p-5"
-      >
-        {source === "musiq3" && (
-          <div className="flex items-center gap-4">
-            <div
-              className={
-                "grid h-16 w-16 shrink-0 place-items-center rounded-lg shadow-lift " +
-                (playing ? "animate-spin [animation-duration:10s]" : "")
-              }
-              style={{
-                background: `radial-gradient(circle at 30% 30%, ${active.tint}, oklch(0.25 0.04 160))`,
-              }}
-            >
-              <span className="h-2.5 w-2.5 rounded-full bg-background" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <Eyebrow size="xs">Musiq3</Eyebrow>
-              <p className="mt-0.5 truncate text-lg">{media.nowPlaying ?? "—"}</p>
-              {media.artist && (
-                <p className="truncate text-sm text-muted-foreground">{media.artist}</p>
-              )}
-              <div className="mt-2 flex h-3 items-end gap-0.5">
-                {[0.6, 0.9, 0.4, 1, 0.7, 0.5, 0.85].map((h, i) => (
-                  <span
-                    key={i}
-                    className={"w-1 rounded-sm bg-foreground/70 " + (playing ? "eq-bar" : "")}
-                    style={{ height: `${h * 100}%`, animationDelay: `${i * 0.1}s` }}
-                  />
-                ))}
-              </div>
-            </div>
-            <Toggle
-              pressed={playing}
-              onPressedChange={setPlaying}
-              aria-label={playing ? "Pause" : "Lecture"}
-              className="h-11 w-11 rounded-full data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
-            >
-              {playing ? <Pause /> : <Play />}
-            </Toggle>
-          </div>
-        )}
-        {source === "off" && (
-          <div className="flex items-center gap-4 py-2">
-            <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg bg-muted">
-              <Power className="h-6 w-6 text-muted-foreground" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <Eyebrow size="xs">Aucun média</Eyebrow>
-              <p className="mt-0.5 text-lg">Tout est silencieux</p>
-              <p className="text-sm text-muted-foreground">Choisis une source pour démarrer.</p>
-            </div>
-          </div>
-        )}
-      </MediaSweep>
-    </Card>
-  );
-}
-
-function AppliancesGrid({ items }: { items: { name: string; on: boolean }[] }) {
-  const [state, setState] = useState(items);
-  return (
-    <div className="grid gap-2 sm:grid-cols-2">
-      {state.map((a, i) => {
-        const Icon = applianceIcon(a.name);
-        return (
-          <button
-            key={a.name}
-            type="button"
-            onClick={() => setState(state.map((s, idx) => (idx === i ? { ...s, on: !s.on } : s)))}
-            className={
-              "flex items-center justify-between gap-2 rounded-xl border px-3 py-2.5 text-sm transition-all " +
-              (a.on
-                ? "border-foreground bg-foreground text-background"
-                : "border-border/60 bg-card hover:border-border")
+          : undefined
+      }
+      onSelectScene={setScene}
+      onToggleZone={(key) =>
+        setZones((zs) => zs.map((z) => (z.key === key ? { ...z, on: !z.on } : z)))
+      }
+      onSetBrightness={setBrightness}
+      climate={
+        detail.climate
+          ? {
+              dual: "dual" in detail.climate,
+              mode,
+              system,
+              heatPreset,
+              coolPreset,
             }
-          >
-            <span className="flex min-w-0 items-center gap-2">
-              <Icon className={"h-4 w-4 shrink-0 " + (a.on ? "anim-breathe" : "opacity-50")} />
-              <span className="truncate">{a.name}</span>
-            </span>
-            <span className={a.on ? "text-background/70" : "text-muted-foreground"}>
-              {a.on ? "On" : "Off"}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-type ClimateData = NonNullable<(typeof roomDetails)[RoomKey]["climate"]>;
-
-/**
- * Shared climate control, used by every room. Simple (single-setpoint) rooms get
- * the temperature tabs alone; dual (heat/cool) rooms get a heat/cool toggle above
- * the same tabs. Same building blocks as the light scenes (SlidingTabs) and the
- * On/Off (ToggleGroup), so climate reads like the rest of the room.
- */
-function ClimateControl({ climate }: { climate: ClimateData }) {
-  const [mode, setMode] = useState<ClimateMode>("dual" in climate ? "auto" : climate.mode);
-  const [system, setSystem] = useState<DualSystem>(
-    "dual" in climate && climate.mode === "cool" ? "cool" : "heat",
-  );
-  const [heatPreset, setHeatPreset] = useState<DualPreset>(
-    "dual" in climate ? climate.heatSetpoint : "off",
-  );
-  const [coolPreset, setCoolPreset] = useState<DualPreset>(
-    "dual" in climate ? climate.coolSetpoint : "off",
-  );
-
-  // Simple climate — just the temperature tabs.
-  if (!("dual" in climate)) {
-    const modes: ClimateMode[] = ["auto", 20, 21, 22];
-    return (
-      <SlidingTabs
-        value={String(mode)}
-        onValueChange={(v) => setMode(v === "auto" ? "auto" : (Number(v) as ClimateMode))}
-        options={modes.map((m) => ({ value: String(m), label: m === "auto" ? "Auto" : `${m}°` }))}
-      />
-    );
-  }
-
-  // Dual (heat/cool) — toggle + temperature tabs.
-  const presets = system === "heat" ? HEAT_PRESETS : COOL_PRESETS;
-  const activePreset = system === "heat" ? heatPreset : coolPreset;
-  const setPreset = system === "heat" ? setHeatPreset : setCoolPreset;
-  const choices: DualPreset[] = ["off", ...presets];
-
-  return (
-    <div className="space-y-4">
-      {/* Chaud / Froid — toggle group, like the room On/Off. */}
-      <ToggleGroup
-        type="single"
-        value={system}
-        onValueChange={(v) => {
-          if (v) setSystem(v as DualSystem);
-        }}
-        className="w-full"
-      >
-        <ToggleGroupItem
-          value="heat"
-          className="flex-1 gap-1.5 data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
-        >
-          <Flame className="h-4 w-4" />
-          Chaud
-        </ToggleGroupItem>
-        <ToggleGroupItem
-          value="cool"
-          className="flex-1 gap-1.5 data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:hover:bg-foreground/90 data-[state=on]:hover:text-background"
-        >
-          <Snowflake className="h-4 w-4" />
-          Froid
-        </ToggleGroupItem>
-      </ToggleGroup>
-
-      {/* Températures — sliding tabs, like the light scenes. */}
-      <SlidingTabs
-        value={String(activePreset)}
-        onValueChange={(v) => setPreset(v === "off" ? "off" : Number(v))}
-        options={choices.map((p) => ({
-          value: String(p),
-          label: p === "off" ? (system === "heat" ? "Auto" : "Off") : `${p}°`,
-        }))}
-      />
-    </div>
+          : undefined
+      }
+      onSelectMode={setMode}
+      onSelectSystem={setSystem}
+      onSelectHeatPreset={setHeatPreset}
+      onSelectCoolPreset={setCoolPreset}
+      media={
+        media
+          ? {
+              radioOn,
+              playing,
+              label: radioOn ? "Musiq3" : "Aucun média",
+              title: media.nowPlaying ?? "—",
+              artist: media.artist ?? undefined,
+              tint: radioOn ? MUSIQ3_TINT : null,
+            }
+          : undefined
+      }
+      onToggleRadio={() => {
+        setRadioOn((on) => {
+          setPlaying(!on);
+          return !on;
+        });
+      }}
+      onTogglePlay={() => setPlaying((p) => !p)}
+      onVolumeDown={() => {}}
+      onVolumeUp={() => {}}
+      dishwasher={room.key === "cuisine" ? dishwasher : undefined}
+      vacuum={room.key === "buanderie" ? vacuum : undefined}
+      onStartVacuum={() => {}}
+      onEmptyBin={() => {}}
+      cameras={roomCams}
+      cameraEvents={events}
+      devices={
+        detail.devices
+          ? {
+              ink: detail.devices.ink,
+              appliances,
+              batteries: detail.devices.batteries.map((b) => ({
+                key: b.name,
+                name: b.name,
+                level: b.level,
+              })),
+            }
+          : undefined
+      }
+      onToggleAppliance={(key) =>
+        setAppliances((as) => as.map((a) => (a.key === key ? { ...a, on: !a.on } : a)))
+      }
+    />
   );
 }

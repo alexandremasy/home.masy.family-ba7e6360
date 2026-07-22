@@ -1,4 +1,3 @@
-import { vacuum } from "@/lib/mock-data";
 import {
   Bot,
   BatteryCharging,
@@ -12,8 +11,45 @@ import {
 import { Eyebrow } from "@/components/eyebrow";
 import { Card } from "@/components/card";
 
-export function VacuumPanel({ compact = false }: { compact?: boolean }) {
-  const v = vacuum;
+/** What the robot is doing. */
+export type VacuumState = "docked" | "charging" | "cleaning" | "returning" | "paused" | "error";
+
+/** What a robot vacuum reports. The panel's own shape. */
+export interface VacuumData {
+  /** The robot's name — "Roomba j7". */
+  name: string;
+  state: VacuumState;
+  /** Battery level, 0-100. */
+  batteryPct: number;
+  /** On the dock and taking a charge. */
+  charging: boolean;
+  /** Room being cleaned right now, when the robot reports one. */
+  currentRoom?: string | null;
+  /** Where the dock lives — "Buanderie". */
+  dockLocation: string;
+  /** Square metres cleaned in the current run. */
+  areaCleanedM2: number;
+  /** Square metres the run targets. Never 0 — it divides the progress. */
+  areaTargetM2: number;
+  /** Minutes elapsed in the current run. */
+  elapsedMin: number;
+  /** Minutes left in the current run. */
+  etaMin: number;
+  /** How full the bin is, 0-100. */
+  binFullPct: number;
+  /** Shown instead of the status when the robot faults. */
+  errorMsg?: string | null;
+}
+
+export interface VacuumPanelProps {
+  /** The robot's state, as the caller reads it (HA over there, a mock here). */
+  data: VacuumData;
+  /** The one-line form, for a tile. */
+  compact?: boolean;
+}
+
+export function VacuumPanel({ data, compact = false }: VacuumPanelProps) {
+  const v = data;
   const cleaning = v.state === "cleaning";
   const returning = v.state === "returning";
   const charging = v.state === "charging" || (v.state === "docked" && v.charging);

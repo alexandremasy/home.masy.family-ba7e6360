@@ -1,4 +1,3 @@
-import { dishwasher } from "@/lib/mock-data";
 import {
   Droplet,
   Zap,
@@ -11,6 +10,45 @@ import {
 } from "lucide-react";
 import { Eyebrow } from "@/components/eyebrow";
 import { Card } from "@/components/card";
+
+/** Where the machine is in its cycle. */
+export type DishwasherState = "running" | "paused" | "finished" | "idle" | "error" | "door_open";
+
+/** What a dishwasher reports. The panel's own shape: no source models it this way. */
+export interface DishwasherData {
+  state: DishwasherState;
+  /** Selected program — "Eco 50°". */
+  program: string;
+  /** Clock time the cycle ends — "20:30". */
+  endsAt: string;
+  /** Minutes left in the running cycle. */
+  remainingMin: number;
+  /** How far through the cycle, 0-100. */
+  progressPct: number;
+  /** Current phase — "Rinçage". */
+  phase: string;
+  /** Energy the cycle used, kWh. */
+  energyKWh: number;
+  /** Water the cycle used, litres. */
+  waterL: number;
+  /** Cycles run this month. */
+  cyclesThisMonth: number;
+  /** Salt reservoir is low. */
+  saltLow: boolean;
+  /** Rinse-aid reservoir is low. */
+  rinseAidLow: boolean;
+  /** Shown instead of the status when the machine faults. */
+  errorMsg?: string | null;
+  /** When the last cycle ran — shown while idle. */
+  lastRun: string;
+}
+
+export interface DishwasherPanelProps {
+  /** The machine's state, as the caller reads it (HA over there, a mock here). */
+  data: DishwasherData;
+  /** The one-line form, for a tile: a progress ring and the essentials. */
+  compact?: boolean;
+}
 
 function ProgressRing({ pct, children }: { pct: number; children: React.ReactNode }) {
   const r = 42;
@@ -38,8 +76,8 @@ function ProgressRing({ pct, children }: { pct: number; children: React.ReactNod
   );
 }
 
-export function DishwasherPanel({ compact = false }: { compact?: boolean }) {
-  const d = dishwasher;
+export function DishwasherPanel({ data, compact = false }: DishwasherPanelProps) {
+  const d = data;
   const running = d.state === "running";
   const finished = d.state === "finished";
   const idle = d.state === "idle";
