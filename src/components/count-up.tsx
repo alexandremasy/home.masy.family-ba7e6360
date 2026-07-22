@@ -30,6 +30,20 @@ export function CountUp({
   const [value, setValue] = useState(0);
   const ref = useRef<HTMLSpanElement | null>(null);
   const started = useRef(false);
+  // What is on screen right now. A second count starts from there rather than
+  // from zero, so a figure that changes eases across instead of collapsing.
+  const shown = useRef(0);
+
+  // Re-arm on a NEW TARGET only — not on any render, or scrolling in and out of
+  // view would replay the count. `started` used to latch true for the component's
+  // whole life, so a figure that changed (a switch from the month to the rolling
+  // year, a filter) kept displaying the first number it was ever given while
+  // everything around it updated. The four headline KPIs were quietly stale.
+  const target = useRef(to);
+  if (target.current !== to) {
+    target.current = to;
+    started.current = false;
+  }
 
   useEffect(() => {
     const el = ref.current;
@@ -38,12 +52,13 @@ export function CountUp({
       if (started.current) return;
       started.current = true;
       const t0 = performance.now();
-      const from = 0;
+      const from = shown.current;
       const tick = (now: number) => {
         const p = Math.min(1, (now - t0) / duration);
         // easeOutCubic
         const eased = 1 - Math.pow(1 - p, 3);
-        setValue(from + (to - from) * eased);
+        shown.current = from + (to - from) * eased;
+        setValue(shown.current);
         if (p < 1) requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);
