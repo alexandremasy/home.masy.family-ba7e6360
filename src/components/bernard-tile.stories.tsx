@@ -12,8 +12,9 @@ const meta = {
     rangeKm: 310,
     chargeLimit: 80,
     pluggedIn: true,
-    inGarage: true,
+    state: "garage",
     location: "Maison",
+    chargingLabel: "En charge",
     interior: 21,
     exterior: 14,
   },
@@ -33,10 +34,24 @@ export const Charging: Story = {};
 
 /** Out and unplugged — the headline changes, the place carries the rest. */
 export const Away: Story = {
-  args: { pluggedIn: false, inGarage: false, location: "Bruxelles · Place Flagey", charge: 46 },
+  args: { pluggedIn: false, state: "driving", location: "Bruxelles · Place Flagey", charge: 46 },
 };
 
 /** Nearly empty: nothing shouts, the gauge just tells the truth. */
 export const LowBattery: Story = {
-  args: { charge: 12, rangeKm: 48, pluggedIn: false },
+  args: { charge: 12, rangeKm: 48, pluggedIn: false, state: "parked" },
+};
+
+/** The car has not reported: every figure reads "—" rather than a plausible zero. */
+export const Unreachable: Story = {
+  args: {
+    charge: undefined,
+    rangeKm: undefined,
+    chargeLimit: undefined,
+    interior: undefined,
+    exterior: undefined,
+    pluggedIn: false,
+    state: "parked",
+    location: "Position inconnue",
+  },
 };

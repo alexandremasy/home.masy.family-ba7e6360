@@ -18,8 +18,10 @@ export interface RoomTileProps {
   /**
    * The room's climate, when it has one. `setpoint` is what it is aiming for;
    * `on` false — or no setpoint at all — reads as "Auto": the schedule has it.
+   * `heating` is the valve actually working right now, which is what colours the
+   * glyph: a climate that is on but idle has nothing to signal.
    */
-  climate?: { on: boolean; setpoint?: number };
+  climate?: { on: boolean; setpoint?: number; heating?: boolean };
 }
 
 /**
@@ -59,7 +61,9 @@ export function RoomTile({ to, name, icon, temperature, lightsOn, climate }: Roo
         </span>
         {climate && (
           <span className="inline-flex items-center gap-1.5">
-            <Wind className={"h-3.5 w-3.5 " + (climate.on ? "text-primary" : "")} />
+            <Wind
+              className={"h-3.5 w-3.5 " + ((climate.heating ?? climate.on) ? "text-primary" : "")}
+            />
             {climate.on && climate.setpoint != null ? `${climate.setpoint}°` : "Auto"}
           </span>
         )}

@@ -1,10 +1,13 @@
-import { Lightbulb } from "lucide-react";
+import { Cast, Lightbulb } from "lucide-react";
 import { Card } from "@/components/card";
 import { RoomIcon } from "@/components/room-icon";
 import type { Room } from "@/lib/mock-data";
 
-/** What the room is playing from. `none` falls back to the room's own icon. */
-export type SalonMediaSource = "spotify" | "netflix" | "none";
+/**
+ * What the room is playing from. `cast` is anything playing we have no glyph for;
+ * `none` falls back to the room's own icon.
+ */
+export type SalonMediaSource = "spotify" | "netflix" | "cast" | "none";
 
 export interface SalonTileProps {
   /** Where the tile leads — the room's page. */
@@ -26,6 +29,7 @@ export interface SalonTileProps {
 const tint: Record<SalonMediaSource, string> = {
   spotify: "bg-[oklch(0.72_0.18_150)]/15 text-[oklch(0.55_0.18_150)]",
   netflix: "bg-[oklch(0.32_0.18_25)] text-white",
+  cast: "bg-white text-primary",
   none: "bg-white text-primary",
 };
 
@@ -61,6 +65,8 @@ export function SalonTile({
               <SpotifyGlyph className="h-4.5 w-4.5" />
             ) : source === "netflix" ? (
               <span className="text-sm font-semibold leading-none">N</span>
+            ) : source === "cast" ? (
+              <Cast className="h-4.5 w-4.5" />
             ) : (
               <RoomIcon icon={icon} className="h-4.5 w-4.5 icon-hover" />
             )}

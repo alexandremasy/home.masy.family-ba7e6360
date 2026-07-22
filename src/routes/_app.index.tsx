@@ -144,7 +144,7 @@ export function Dashboard() {
         rangeKm: tesla.rangeKm,
         chargeLimit: tesla.chargeLimit,
         pluggedIn: tesla.pluggedIn,
-        inGarage: tesla.inGarage,
+        state: tesla.inGarage ? "garage" : "driving",
         location: tesla.location,
         interior: tesla.interior,
         exterior: tesla.exterior,

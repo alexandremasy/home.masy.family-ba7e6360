@@ -42,10 +42,10 @@ export interface WeatherForecastDay {
 }
 
 export interface WeatherTileProps {
-  /** Today, and what the dialog opens onto. */
-  today: WeatherTodayView;
-  /** The next days, in order. */
-  forecast: WeatherForecastDay[];
+  /** Today, and what the dialog opens onto. Absent, the tile reads "Hors ligne". */
+  today?: WeatherTodayView | null;
+  /** The next days, in order. Empty, the dialog drops that section. */
+  forecast?: WeatherForecastDay[];
 }
 
 /**
@@ -55,7 +55,28 @@ export interface WeatherTileProps {
  * like the others, and giving it a surface made it compete with the rooms. It
  * still takes a full cell, so it floats into whatever hole the bento leaves.
  */
-export function WeatherTile({ today, forecast }: WeatherTileProps) {
+export function WeatherTile({ today, forecast = [] }: WeatherTileProps) {
+  // No reading at all: the tile keeps its place rather than leaving a hole in the
+  // mosaic, and says plainly that it has nothing — a stale temperature would lie.
+  if (!today) {
+    return (
+      <div
+        className="relative h-full w-full overflow-hidden rounded-2xl p-4 text-left"
+        aria-label="Météo hors ligne"
+      >
+        <div className="flex items-start justify-between gap-2">
+          <Eyebrow>Météo</Eyebrow>
+          <WeatherIcon cond="cloud" className="h-6 w-6 text-foreground/30" animated={false} />
+        </div>
+        <div className="mt-2 flex items-baseline gap-1">
+          <span className="text-3xl tracking-tight text-foreground opacity-40">—</span>
+          <span className="text-sm text-muted-foreground">°</span>
+        </div>
+        <p className="mt-0.5 text-xs text-muted-foreground">Hors ligne</p>
+      </div>
+    );
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -82,7 +103,13 @@ export function WeatherTile({ today, forecast }: WeatherTileProps) {
   );
 }
 
-function WeatherDialog({ today: m, forecast }: WeatherTileProps) {
+function WeatherDialog({
+  today: m,
+  forecast,
+}: {
+  today: WeatherTodayView;
+  forecast: WeatherForecastDay[];
+}) {
   return (
     <DialogContent
       title={`Météo · ${m.location}`}
@@ -129,28 +156,30 @@ function WeatherDialog({ today: m, forecast }: WeatherTileProps) {
         </div>
       </div>
 
-      <div>
-        <Eyebrow className="mb-2">Prochains jours</Eyebrow>
-        <div className="grid grid-cols-5 gap-1.5">
-          {forecast.map((d) => (
-            <div
-              key={d.day}
-              className="flex flex-col items-center rounded-xl bg-secondary/60 p-2 text-center"
-            >
-              <Eyebrow size="xs" as="span">
-                {d.day}
-              </Eyebrow>
-              <WeatherIcon cond={d.cond} className="my-1.5 h-5 w-5" />
-              <span className="text-sm leading-tight">{d.maxC}°</span>
-              <span className="text-2xs tabular-nums text-muted-foreground">{d.minC}°</span>
-              <span className="mt-1 inline-flex items-center gap-0.5 text-2xs text-muted-foreground">
-                <Droplet className="h-2.5 w-2.5" />
-                {d.rainProb}%
-              </span>
-            </div>
-          ))}
+      {forecast.length > 0 && (
+        <div>
+          <Eyebrow className="mb-2">Prochains jours</Eyebrow>
+          <div className="grid grid-cols-5 gap-1.5">
+            {forecast.map((d) => (
+              <div
+                key={d.day}
+                className="flex flex-col items-center rounded-xl bg-secondary/60 p-2 text-center"
+              >
+                <Eyebrow size="xs" as="span">
+                  {d.day}
+                </Eyebrow>
+                <WeatherIcon cond={d.cond} className="my-1.5 h-5 w-5" />
+                <span className="text-sm leading-tight">{d.maxC}°</span>
+                <span className="text-2xs tabular-nums text-muted-foreground">{d.minC}°</span>
+                <span className="mt-1 inline-flex items-center gap-0.5 text-2xs text-muted-foreground">
+                  <Droplet className="h-2.5 w-2.5" />
+                  {d.rainProb}%
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </DialogContent>
   );
 }

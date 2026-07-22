@@ -36,7 +36,7 @@ export function IdleRoomsTile({ rooms }: IdleRoomsTileProps) {
             <span className="min-w-0 flex-1 truncate text-sm">{r.name}</span>
             {typeof r.temperature === "number" && (
               <span className="shrink-0 text-sm tabular-nums text-muted-foreground">
-                {r.temperature}°
+                {r.temperature.toLocaleString("fr-BE", { maximumFractionDigits: 1 })}°
               </span>
             )}
           </div>

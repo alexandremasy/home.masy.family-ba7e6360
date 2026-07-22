@@ -4,8 +4,11 @@ import { PMCBag } from "@/components/pmc-bag";
 export interface PoubelleTileProps {
   /** What goes out — "PMC", "Papier-carton", "Déchets ménagers". */
   type: string;
-  /** The deadline, as a clock time — the bag has to be out before it. */
-  time: string;
+  /**
+   * The deadline, as a clock time — the bag has to be out before it. All-day
+   * collections have none, and "avant 00:00" is worse than no hour at all.
+   */
+  time?: string;
   /** Which day it is for. "Auj." unless the caller looks further ahead. */
   when?: string;
 }
@@ -24,9 +27,7 @@ export function PoubelleTile({ type, time, when = "Auj." }: PoubelleTileProps) {
       <PMCBag className="pointer-events-none absolute -right-2 -top-1 h-[150%] w-auto opacity-90" />
       <div className="relative min-w-0">
         <p className="truncate text-base font-semibold leading-tight">{type}</p>
-        <p className="text-2xs opacity-80">
-          {when} · avant {time}
-        </p>
+        <p className="text-2xs opacity-80">{time ? `${when} · avant ${time}` : when}</p>
       </div>
     </Card>
   );

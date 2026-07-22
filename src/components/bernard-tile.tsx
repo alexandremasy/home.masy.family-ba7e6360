@@ -4,26 +4,40 @@ import { CountUp } from "@/components/count-up";
 import { Eyebrow } from "@/components/eyebrow";
 import { MapPinBg } from "@/components/map-pin-bg";
 
+/** Where the car is, as the headline reads it. */
+export type BernardState = "garage" | "driving" | "parked";
+
 export interface BernardTileProps {
   /** Where the tile leads — the car's own page. */
   to: string;
-  /** Battery, 0–100. */
-  charge: number;
+  /** Battery, 0–100. Absent when the car has not reported — the figure reads "—". */
+  charge?: number;
   /** Estimated range, km. */
-  rangeKm: number;
+  rangeKm?: number;
   /** Where charging stops, 0–100 — the tick on the bar. */
-  chargeLimit: number;
+  chargeLimit?: number;
   /** Cable in. */
   pluggedIn: boolean;
-  /** Home rather than out — the headline reads "Au garage". */
-  inGarage: boolean;
+  /** Home, on the move, or stopped somewhere. */
+  state: BernardState;
   /** Where the car is. */
   location: string;
+  /** What charging is doing, when it is plugged in — "En charge", "Terminée". */
+  chargingLabel?: string;
   /** Cabin temperature, °C. */
-  interior: number;
+  interior?: number;
   /** Outside temperature, °C. */
-  exterior: number;
+  exterior?: number;
 }
+
+const stateLabel: Record<BernardState, string> = {
+  garage: "Au garage",
+  driving: "En déplacement",
+  parked: "En stationnement",
+};
+
+/** A figure the car has not reported. Never a zero — an empty battery is a fact. */
+const Dash = () => <span className="opacity-40">—</span>;
 
 /**
  * The car on the dashboard — the dark feature tile, with the map behind it.
@@ -39,8 +53,9 @@ export function BernardTile({
   rangeKm,
   chargeLimit,
   pluggedIn,
-  inGarage,
+  state,
   location,
+  chargingLabel,
   interior,
   exterior,
 }: BernardTileProps) {
@@ -66,21 +81,21 @@ export function BernardTile({
         <div className="mt-3 flex items-baseline justify-between gap-1">
           <span className="flex items-baseline gap-1">
             <span className="text-2xl tracking-tight">
-              <CountUp to={charge} />
+              {charge != null ? <CountUp to={charge} /> : <Dash />}
             </span>
             <span className="text-base opacity-60">%</span>
           </span>
-          <span className="text-xs opacity-60">{rangeKm} km</span>
+          {rangeKm != null && <span className="text-xs opacity-60">{rangeKm} km</span>}
         </div>
         <div className="relative mt-2 h-1 w-full overflow-hidden rounded-full bg-background/15">
           <div
             className="h-full rounded-full bg-primary transition-all"
-            style={{ width: `${charge}%` }}
+            style={{ width: `${charge ?? 0}%` }}
           />
         </div>
         <p className="mt-3 inline-flex items-start gap-1 text-xs opacity-70">
           <MapPin className="mt-0.5 h-3 w-3 shrink-0" />
-          {location}
+          {stateLabel[state]}
         </p>
       </div>
 
@@ -94,11 +109,17 @@ export function BernardTile({
             <Eyebrow tone="current" className="opacity-60">
               Bernard
             </Eyebrow>
-            <p className="mt-1 text-lg">{inGarage ? "Au garage" : "En déplacement"}</p>
+            <p className="mt-1 text-lg">{stateLabel[state]}</p>
             <p className="mt-0.5 inline-flex items-center gap-1 text-xs opacity-60">
               <MapPin className="h-3 w-3" />
               {location}
             </p>
+            {pluggedIn && chargingLabel && (
+              <p className="mt-0.5 inline-flex items-center gap-1 text-xs opacity-60">
+                <Plug className="h-3 w-3" />
+                {chargingLabel}
+              </p>
+            )}
           </div>
         </div>
 
@@ -106,23 +127,24 @@ export function BernardTile({
           <div>
             <div className="flex items-baseline gap-1">
               <span className="text-2xl tracking-tight">
-                <CountUp to={charge} />
+                {charge != null ? <CountUp to={charge} /> : <Dash />}
               </span>
               <span className="text-lg opacity-60">%</span>
             </div>
             <p className="text-xs opacity-60">
-              {rangeKm} km · limite {chargeLimit}%
+              {rangeKm != null ? `${rangeKm} km · ` : ""}limite{" "}
+              {chargeLimit != null ? `${chargeLimit}%` : "—"}
             </p>
           </div>
           <div className="flex-1 pb-1">
             <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-background/15">
               <div
                 className="h-full rounded-full bg-primary transition-all"
-                style={{ width: `${charge}%` }}
+                style={{ width: `${charge ?? 0}%` }}
               />
               <div
                 className="absolute top-0 h-full w-px bg-background/40"
-                style={{ left: `${chargeLimit}%` }}
+                style={{ left: `${chargeLimit ?? 0}%` }}
               />
             </div>
             <div className="mt-3 flex items-center gap-3 text-xs opacity-70">
@@ -131,7 +153,8 @@ export function BernardTile({
                 {pluggedIn ? "Branchée" : "Débranchée"}
               </span>
               <span>
-                · {interior}° int / {exterior}° ext
+                · {interior != null ? `${interior}°` : "—"} int /{" "}
+                {exterior != null ? `${exterior}°` : "—"} ext
               </span>
             </div>
           </div>
