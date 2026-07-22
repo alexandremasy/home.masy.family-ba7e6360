@@ -220,7 +220,7 @@ export function Dashboard() {
               padding="sm"
               icon={<Zap className="h-4.5 w-4.5" />}
               title="Énergie"
-              action={(() => {
+              trailing={(() => {
                 const alerts: string[] = [];
                 if (energie.oil.status === "alert") alerts.push("Mazout faible");
                 if (energie.electricity.status === "alert") alerts.push("Élec. élevée");
@@ -586,7 +586,7 @@ function ReseauTile() {
         padding="sm"
         icon={<Wifi className="h-4.5 w-4.5" />}
         title="Réseau"
-        action={
+        trailing={
           <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
             <Wifi className="h-3 w-3" />
             <span className="text-xs font-semibold">Stable</span>

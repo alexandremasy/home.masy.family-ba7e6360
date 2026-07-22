@@ -806,7 +806,7 @@ function CategoryMiniCard({ cat }: { cat: (typeof categories)[number] }) {
       icon={<Icon className="h-4 w-4" />}
       title={cat.label}
       subline={`Budget ${eur(cat.budget)}/mois`}
-      action={
+      trailing={
         <div className="flex shrink-0 flex-col items-end gap-1">
           <span
             className={
@@ -1059,7 +1059,7 @@ function EnCoursView({ monthIdx }: { monthIdx: number }) {
         variant="solid"
         title="Réel à date + projection"
         subline="La barre marque la frontière entre les deux."
-        action={
+        trailing={
           <Eyebrow size="xs">
             Jour {day}/{total}
           </Eyebrow>
@@ -1146,7 +1146,7 @@ function FuturView({ monthIdx }: { monthIdx: number }) {
         className="border-dashed"
         title="Postes prévus"
         subline="Projection issue de la Planification — aucune réelle dépense."
-        action={
+        trailing={
           <Link
             to="/budget/planification"
             className="text-xs text-primary underline-offset-4 hover:underline"

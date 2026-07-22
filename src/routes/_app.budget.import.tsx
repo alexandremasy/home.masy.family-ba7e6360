@@ -70,7 +70,7 @@ function ImportPage() {
             icon={<FileSpreadsheet className="h-4 w-4" />}
             title={filename}
             subline="Couvre : Juin 2025"
-            action={
+            trailing={
               <button
                 onClick={reset}
                 className="rounded-full px-3 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground"

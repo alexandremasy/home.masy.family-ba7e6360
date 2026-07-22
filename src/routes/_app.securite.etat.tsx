@@ -41,7 +41,7 @@ function EtatTab() {
       <Card
         variant="solid"
         title="Présence"
-        action={
+        trailing={
           <span className="text-sm text-muted-foreground">
             {presence.filter((p) => p.home).length}/{presence.length} à la maison
           </span>

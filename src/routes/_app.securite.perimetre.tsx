@@ -33,7 +33,7 @@ function PerimetreTab() {
       <Card
         variant="solid"
         title="Périmètre"
-        action={
+        trailing={
           <span
             className={`inline-flex items-center gap-1.5 text-sm ${perimeterSecure ? "text-success" : "text-warm"}`}
           >
@@ -88,7 +88,7 @@ function PerimetreTab() {
       <Card
         variant="solid"
         title="Caméras"
-        action={
+        trailing={
           <span className="text-sm text-muted-foreground">{installedCams.length} en ligne</span>
         }
       >

@@ -122,7 +122,7 @@ const DialogContent = React.forwardRef<
               </DialogPrimitive.Description>
             ) : undefined
           }
-          action={trailing}
+          trailing={trailing}
           footer={footer}
           className={modalCard}
         >

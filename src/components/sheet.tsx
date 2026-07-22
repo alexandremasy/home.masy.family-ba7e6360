@@ -137,7 +137,7 @@ export interface SheetContentProps
   /** Secondary line under the title. Wired as the sheet's accessible description. */
   subline?: React.ReactNode;
   /** Right end of the header row: a badge, a filter, a count — or a real control. */
-  action?: React.ReactNode;
+  trailing?: React.ReactNode;
   /** Sits off the sheet, on the muted. Where the actions go. */
   footer?: React.ReactNode;
   /** Colours the header ICON, not the panel. */
@@ -155,7 +155,7 @@ function SheetContent({
   title,
   icon,
   subline,
-  action,
+  trailing,
   footer,
   tone = "primary",
   padding = "md",
@@ -184,7 +184,7 @@ function SheetContent({
             </SheetPrimitive.Description>
           ) : undefined
         }
-        action={action}
+        trailing={trailing}
         footer={footer}
         className={cn(
           modalCard,

@@ -113,7 +113,7 @@ const DrawerContent = React.forwardRef<
               </DrawerPrimitive.Description>
             ) : undefined
           }
-          action={trailing}
+          trailing={trailing}
           footer={footer}
           className={cn(
             modalCard,

@@ -56,7 +56,7 @@ function ReseauPage() {
       <Card
         variant="solid"
         title="Connectivité"
-        action={
+        trailing={
           <span className="inline-flex items-center gap-1.5 text-sm text-success">
             <Wifi className="h-4 w-4 anim-glow" />
             Tout en ligne
@@ -115,7 +115,7 @@ function ReseauPage() {
       <Card
         variant="solid"
         title="DNS"
-        action={<span className="text-xs text-muted-foreground">Pi-hole</span>}
+        trailing={<span className="text-xs text-muted-foreground">Pi-hole</span>}
       >
         <div className="grid gap-3 sm:grid-cols-3">
           <Stat
@@ -154,7 +154,7 @@ function ReseauPage() {
       <Card
         variant="solid"
         title="Homelab"
-        action={
+        trailing={
           <span className="text-xs text-muted-foreground">
             Uptime {reseau.homelab.uptimeDays} j ·{" "}
             {reseau.serviceGroups.reduce((n, g) => n + g.services.length, 0)} services

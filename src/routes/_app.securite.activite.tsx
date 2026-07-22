@@ -54,7 +54,7 @@ function ActiviteTab() {
       <Card
         variant="solid"
         title="Activité"
-        action={<span className="text-sm text-muted-foreground">Aujourd'hui</span>}
+        trailing={<span className="text-sm text-muted-foreground">Aujourd'hui</span>}
       >
         <ul className="space-y-2">
           {activity.map((e) => {
@@ -91,7 +91,7 @@ function ActiviteTab() {
       <Card
         variant="solid"
         title="Système"
-        action={
+        trailing={
           <span className="text-sm text-muted-foreground">
             Dernier test · {securityHealth.lastTest}
           </span>

@@ -27,7 +27,7 @@ export function PersonCard({ person, onEdit }: { person: Person; onEdit?: () => 
       title={person.name}
       subline={meta}
       // The card is not a link here, so it carries the caret itself.
-      action={<ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />}
+      trailing={<ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />}
       // The button wraps the card, so the hover tint has to reach the filled sheet.
       className={
         onEdit

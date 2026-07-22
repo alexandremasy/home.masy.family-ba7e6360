@@ -22,6 +22,9 @@ No SSR, no Cloudflare.
 - **Cockpit orchestrates**: it *uses* these components + templates and adds the data-logic layer
   (TanStack Query vs `api`, cache/invalidation, HA real-time, derived state). A cockpit page = a
   template from here + its data wiring. **Never author a component in `cockpit`** — author it here.
+- **Not everything here is meant to ship.** `routes/_app.securite.*` (état, périmètre, activité,
+  réseau, caméras) is design exploration: there is no api domain behind it and the cockpit has a
+  small `réseau` page instead. It stays here until it is decided — do not port it.
 - End-state: extract the shared foundation (tokens + `ui/` + components + templates) into a
   **package** the cockpit imports (deferred until the first real domain is rebuilt in cockpit).
   Until then, mockup-canonical copy-paste. `/sync-mockup` is the codified migration path.

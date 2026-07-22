@@ -175,7 +175,7 @@ function RoomPage() {
           variant="solid"
           icon={<Lightbulb className="h-4 w-4" />}
           title="Luminosité"
-          action={
+          trailing={
             zones.length > 0 ? (
               <span className="text-sm text-muted-foreground">
                 {(() => {
@@ -297,7 +297,7 @@ function RoomPage() {
           variant="solid"
           icon={<Sparkles className="h-4 w-4" />}
           title="Aspirateur robot"
-          action={
+          trailing={
             <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
               <HomeIcon className="h-4 w-4" />
               Base ici
@@ -342,7 +342,7 @@ function RoomPage() {
             variant="solid"
             icon={<Camera className="h-4 w-4" />}
             title="Caméra"
-            action={
+            trailing={
               <a
                 href="https://unifi.ui.com"
                 target="_blank"

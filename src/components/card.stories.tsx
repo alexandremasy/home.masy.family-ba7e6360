@@ -73,7 +73,7 @@ const meta = {
     },
     title: { control: "text", table: { category: "2 · Header" } },
     subline: { control: "text", table: { category: "2 · Header" } },
-    action: { control: false, table: { category: "2 · Header" } },
+    trailing: { control: false, table: { category: "2 · Header" } },
 
     children: { control: "text", table: { category: "3 · Body" } },
     bleed: { control: "boolean", table: { category: "3 · Body" } },
@@ -110,7 +110,7 @@ export const Default: Story = {
     icon: <Zap className="h-4 w-4" />,
     title: "Électricité",
     subline: "12 derniers mois — vue glissante",
-    action: (
+    trailing: (
       <Badge variant="secondary" shape="pill">
         Stable
       </Badge>
@@ -129,21 +129,21 @@ export const Default: Story = {
  */
 function SurfaceMatrix({ variant }: { variant: CardVariant }) {
   const icon = <Zap className="h-4 w-4" />;
-  const action = (
+  const trailing = (
     <Badge variant="secondary" shape="pill">
-      action
+      trailing
     </Badge>
   );
   const foot = <p className="text-xs opacity-70">footer</p>;
   const body = <p className="text-sm opacity-70">body</p>;
 
   const cases: { label: string; props: Partial<CardProps> }[] = [
-    { label: "header · body · footer", props: { icon, title: "title", action, footer: foot } },
-    { label: "+ subline", props: { icon, title: "title", subline: "subline", action } },
+    { label: "header · body · footer", props: { icon, title: "title", trailing, footer: foot } },
+    { label: "+ subline", props: { icon, title: "title", subline: "subline", trailing } },
     { label: "header · body", props: { icon, title: "title" } },
-    { label: "no icon", props: { title: "title", action } },
+    { label: "no icon", props: { title: "title", trailing } },
     { label: "body only", props: {} },
-    { label: "header only", props: { icon, title: "title", action, children: undefined } },
+    { label: "header only", props: { icon, title: "title", trailing, children: undefined } },
     { label: "body · footer", props: { footer: foot } },
     { label: "pill", props: { radius: "full", padding: "sm", children: "pill" } },
   ];

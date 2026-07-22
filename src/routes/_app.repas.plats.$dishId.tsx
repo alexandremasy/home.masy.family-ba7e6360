@@ -57,7 +57,7 @@ function DishDetail() {
       <Card
         variant="solid"
         title={dish.name}
-        action={
+        trailing={
           <Button
             variant="outline"
             onClick={() => setConfirming(true)}

@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils";
    surfaces and 50 distinct signatures. They agreed on the structure and diverged
    on the surface, which is a consequence rather than the problem.
 
-   The anatomy: a header of four slots (icon · title · subline · action), a body
-   that is a pure slot, and a footer the component pins itself. The `action` slot
+   The anatomy: a header of four slots (icon · title · subline · trailing), a body
+   that is a pure slot, and a footer the component pins itself. The `trailing` slot
    is the one that never existed, which is why every view smuggled its badge,
    filter, tabs or toggle in some other way.
 
@@ -109,7 +109,7 @@ export interface CardProps {
   /** Secondary line under the title. A node, not a string — Bernard composes JSX here. */
   subline?: ReactNode;
   /** Right end of the header row: a badge, a filter, tabs, a legend — or a real control. */
-  action?: ReactNode;
+  trailing?: ReactNode;
   /**
    * Sits inside the card's border but off the filled sheet, so the fill ends with
    * the body. Pinned to the bottom, so footers line up across a grid.
@@ -145,7 +145,7 @@ export interface CardProps {
 }
 
 /**
- * The card. Header slots are props (`icon`, `title`, `subline`, `action`), the
+ * The card. Header slots are props (`icon`, `title`, `subline`, `trailing`), the
  * body is `children`, the footer is `footer` — one component, one props table.
  */
 export function Card({
@@ -153,7 +153,7 @@ export function Card({
   title,
   icon,
   subline,
-  action,
+  trailing,
   footer,
   variant = "soft",
   radius = "xl",
@@ -168,12 +168,12 @@ export function Card({
 
   /*
    * The caret marks a link card, the way PersonCard did — but it earns its place
-   * only when the right end of the header is free. It steps aside for `action`,
+   * only when the right end of the header is free. It steps aside for `trailing`,
    * which carries real information, and it never shows on `glass`: those are the
    * narrow bento tiles, where it cost enough width to truncate "Bureau" to "Bur…".
    * In both cases the whole card lifts on hover, so the affordance survives.
    */
-  const caret = Boolean(to) && !action && variant !== "glass";
+  const caret = Boolean(to) && !trailing && variant !== "glass";
 
   // cn (tailwind-merge) resolves conflicts, so a tone or a className override wins
   // WITHOUT `!important` — that is what killed the per-site override surgery.
@@ -240,9 +240,9 @@ export function Card({
           </div>
           {/* Only when something goes in it: an empty container still claims the
               header's `gap-4`, which was enough to truncate "Bureau" to "Bur…". */}
-          {(action || caret) && (
+          {(trailing || caret) && (
             <div className="flex shrink-0 items-center gap-2">
-              {action && <div data-slot="action">{action}</div>}
+              {trailing && <div data-slot="trailing">{trailing}</div>}
               {caret && (
                 <ChevronRight
                   aria-hidden="true"

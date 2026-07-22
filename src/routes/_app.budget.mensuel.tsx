@@ -167,7 +167,7 @@ function MensuelPage() {
         className="anim-slide-up"
         title="Prévu vs réel"
         subline="Triées par dépense — touchez pour explorer"
-        action={
+        trailing={
           <div className="flex flex-wrap items-center gap-2 text-xs">
             <Toggle on={showPlanned} onChange={setShowPlanned} label="Afficher le prévu" />
             <Toggle on={showOver} onChange={setShowOver} label="Surligner les dépassements" />
@@ -322,7 +322,7 @@ function IncomePanel() {
       as="div"
       title="Entrées"
       subline="Sources du mois"
-      action={<p className="text-lg tabular-nums">{eur(total)}</p>}
+      trailing={<p className="text-lg tabular-nums">{eur(total)}</p>}
     >
       <ul className="space-y-3 stagger">
         {incomeSources.map((s) => {
@@ -393,7 +393,7 @@ function DonutPanel({
       as="div"
       title="Dépenses"
       subline="Top 5 + Autres — touchez une part pour filtrer"
-      action={<p className="text-lg tabular-nums">{eur(total)}</p>}
+      trailing={<p className="text-lg tabular-nums">{eur(total)}</p>}
     >
       <div className="grid gap-5 sm:grid-cols-[auto_1fr] sm:items-center">
         <div className="relative mx-auto" style={{ width: size, height: size }}>

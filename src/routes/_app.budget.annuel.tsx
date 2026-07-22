@@ -321,7 +321,7 @@ function AnnuelPage() {
         className="anim-slide-up"
         title="Zoom sur une catégorie"
         subline={`Tendance 12 mois — moyenne ${eur(zoomAvg)}/mois`}
-        action={
+        trailing={
           <div className="flex flex-wrap gap-1">
             {categories.map((c) => (
               <button

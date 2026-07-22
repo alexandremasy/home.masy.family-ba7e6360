@@ -302,7 +302,7 @@ function TeslaPage() {
         icon={<BarChart3 className="h-4 w-4" />}
         title="Historique mensuel"
         subline={`Groupé par trimestre — médiane ${medianMonth} kWh/mois`}
-        action={
+        trailing={
           <span
             className={
               "inline-flex items-center gap-1 text-xs " + (qBetter ? "text-success" : "text-warm")

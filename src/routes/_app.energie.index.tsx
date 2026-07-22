@@ -387,7 +387,7 @@ function EnergiePage() {
               </span>
             </span>
           }
-          action={
+          trailing={
             <Button asChild variant="inverted" size="sm" className="group gap-1.5 rounded-full">
               <Link to="/energie/saisie">
                 Nouveau relevé{" "}
@@ -546,7 +546,7 @@ function EnergiePage() {
             icon={<DomainIcon className="h-4 w-4" />}
             title={`Historique ${cfg.label.toLowerCase()}`}
             subline="12 derniers mois — vue glissante"
-            action={
+            trailing={
               <div className="flex flex-wrap items-center justify-end gap-3">
                 {/* Domain switcher */}
                 <Tabs value={domain} onValueChange={(v) => setDomain(v as Domain)}>
@@ -787,7 +787,7 @@ function ReleveList() {
       bleed
       title="Historique des relevés"
       subline={`${rows.length} entrées — modifiables`}
-      action={
+      trailing={
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground">Type</span>
           <Select value={filter} onValueChange={(v) => setFilter(v as ReleveType)}>
