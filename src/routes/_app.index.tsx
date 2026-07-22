@@ -5,6 +5,9 @@ import { CountUp } from "@/components/count-up";
 import { MapPinBg } from "@/components/map-pin-bg";
 import { PMCBag } from "@/components/pmc-bag";
 import { RoomIcon } from "@/components/room-icon";
+import { RoomTile } from "@/components/room-tile";
+import { EnergieTile } from "@/components/energie-tile";
+import { BernardTile } from "@/components/bernard-tile";
 import { WeatherIcon } from "@/components/weather-icon";
 
 import {
@@ -135,44 +138,14 @@ export function Dashboard() {
           const bureauCls = room.key === "bureau" ? "sm:col-span-2" : "";
           return [
             <BentoItem key={room.key} span={1} className={bureauCls}>
-              <Card
+              <RoomTile
                 to={`/room/${room.key}`}
-                variant="glass"
-                padding="sm"
-                icon={<RoomIcon icon={room.icon} className="h-4.5 w-4.5 icon-hover" />}
-                title={room.name}
-              >
-                {typeof room.temperature === "number" ? (
-                  <p className="text-2xl tracking-tight">
-                    <CountUp to={room.temperature} decimals={1} />
-                    <span className="text-base text-muted-foreground">°C</span>
-                  </p>
-                ) : (
-                  <div className="h-[2.75rem]" aria-hidden />
-                )}
-
-                <div className="mt-auto pt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                  <span
-                    className={
-                      "inline-flex items-center gap-1.5 transition-colors " +
-                      (room.lightsOn ? "text-mustard" : "")
-                    }
-                  >
-                    <Lightbulb
-                      className={
-                        "h-3.5 w-3.5 " + (room.lightsOn ? "anim-breathe text-mustard" : "")
-                      }
-                    />
-                    {room.lightsOn ? "Allumé" : "Éteint"}
-                  </span>
-                  {room.climate && (
-                    <span className="inline-flex items-center gap-1.5">
-                      <Wind className={"h-3.5 w-3.5 " + (room.climate.on ? "text-primary" : "")} />
-                      {room.climate.on ? `${room.climate.setpoint}°` : "Auto"}
-                    </span>
-                  )}
-                </div>
-              </Card>
+                name={room.name}
+                icon={room.icon}
+                temperature={typeof room.temperature === "number" ? room.temperature : undefined}
+                lightsOn={!!room.lightsOn}
+                climate={room.climate ?? undefined}
+              />
             </BentoItem>,
           ];
         })}
@@ -184,200 +157,45 @@ export function Dashboard() {
         {idleRooms.length > 0 && <IdleRoomsTile rooms={idleRooms} />}
 
         {/* Énergie */}
-        {energie.monthlyDue ? (
-          <BentoItem span={2}>
-            <Card variant="soft" padding="sm" as="div">
-              <div className="flex items-start justify-between">
-                <div>
-                  <Eyebrow tone="current" className="opacity-70">
-                    Énergie · à faire
-                  </Eyebrow>
-                  <p className="mt-1 text-lg">Relevé mensuel à saisir</p>
-                  <p className="mt-1 text-sm opacity-80">
-                    3 compteurs en attente — eau, électricité, mazout.
-                  </p>
-                </div>
-                <span className="relative grid h-9 w-9 place-items-center rounded-full bg-foreground/10">
-                  <Sparkles className="h-4 w-4 anim-breathe" />
-                </span>
-              </div>
-              <Button
-                asChild
-                variant="inverted"
-                className="mt-5 gap-1.5 rounded-full transition-transform hover:translate-x-0.5"
-              >
-                <Link to="/energie/saisie">
-                  Saisir <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-            </Card>
-          </BentoItem>
-        ) : (
-          <BentoItem span={2}>
-            <Card
-              to="/energie"
-              variant="glass"
-              padding="sm"
-              icon={<Zap className="h-4.5 w-4.5" />}
-              title="Énergie"
-              trailing={(() => {
-                const alerts: string[] = [];
-                if (energie.oil.status === "alert") alerts.push("Mazout faible");
-                if (energie.electricity.status === "alert") alerts.push("Élec. élevée");
-                if (energie.water.status === "alert") alerts.push("Eau élevée");
-                const anyAlert = alerts.length > 0;
-                return anyAlert ? (
-                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-warm/15 px-2 py-0.5 text-warm">
-                    <AlertTriangle className="h-3 w-3" />
-                    <span className="text-xs font-semibold">
-                      {alerts[0]}
-                      {alerts.length > 1 ? ` +${alerts.length - 1}` : ""}
-                    </span>
-                  </span>
-                ) : (
-                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-success">
-                    <Sparkles className="h-3 w-3" />
-                    <span className="text-xs font-semibold">OK</span>
-                  </span>
-                );
-              })()}
-            >
-              <div className="flex flex-1 flex-col gap-2">
-                <EnergieRow
-                  icon={<Zap className="h-4 w-4 anim-glow" />}
-                  label="Élec."
-                  value={`${energie.electricity.dailyKWh} kWh/j`}
-                  trend={energie.electricity.trend}
-                  trendPct={energie.electricity.trendPct}
-                  status={energie.electricity.status}
-                />
-                <EnergieRow
-                  icon={<Droplet className="h-4 w-4 anim-float" />}
-                  label="Eau"
-                  value={`${energie.water.dailyM3} m³/j`}
-                  trend={energie.water.trend}
-                  trendPct={energie.water.trendPct}
-                  status={energie.water.status}
-                />
-                <EnergieRow
-                  icon={
-                    <Flame
-                      className={
-                        "h-4 w-4 " +
-                        (energie.oil.tankPct < 25 ? "anim-wiggle text-warm" : "anim-breathe")
-                      }
-                    />
-                  }
-                  label="Mazout"
-                  value={`${energie.oil.tankPct}%`}
-                  sub={`~${energie.oil.autonomyDays} j`}
-                  status={energie.oil.status}
-                />
-              </div>
-            </Card>
-          </BentoItem>
-        )}
+        <BentoItem span={2}>
+          <EnergieTile
+            due={energie.monthlyDue}
+            to="/energie"
+            saisieTo="/energie/saisie"
+            electricity={{
+              value: `${energie.electricity.dailyKWh} kWh/j`,
+              trend: energie.electricity.trend,
+              trendPct: energie.electricity.trendPct,
+              status: energie.electricity.status,
+            }}
+            water={{
+              value: `${energie.water.dailyM3} m³/j`,
+              trend: energie.water.trend,
+              trendPct: energie.water.trendPct,
+              status: energie.water.status,
+            }}
+            oil={{
+              value: `${energie.oil.tankPct}%`,
+              sub: `~${energie.oil.autonomyDays} j`,
+              status: energie.oil.status,
+              low: energie.oil.tankPct < 25,
+            }}
+          />
+        </BentoItem>
 
         {/* PRIORITY 3 — Bernard (compact) */}
         <BentoItem span={2}>
-          <Card to="/tesla" variant="inverted" padding="sm" className="isolate">
-            <MapPinBg className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-background opacity-80" />
-            <span className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 rounded-b-[inherit] bg-gradient-to-t from-foreground via-foreground/70 to-transparent" />
-
-            {/* Mobile compact layout */}
-            <div className="sm:hidden">
-              <div className="flex items-center justify-between gap-2">
-                <Eyebrow tone="current" className="opacity-60">
-                  Bernard
-                </Eyebrow>
-                <span
-                  className={
-                    "inline-flex items-center text-xs " +
-                    (tesla.pluggedIn ? "text-primary" : "opacity-60")
-                  }
-                >
-                  <Plug className={"h-3.5 w-3.5 " + (tesla.pluggedIn ? "anim-breathe" : "")} />
-                </span>
-              </div>
-              <div className="mt-3 flex items-baseline justify-between gap-1">
-                <span className="flex items-baseline gap-1">
-                  <span className="text-2xl tracking-tight">
-                    <CountUp to={tesla.charge} />
-                  </span>
-                  <span className="text-base opacity-60">%</span>
-                </span>
-                <span className="text-xs opacity-60">{tesla.rangeKm} km</span>
-              </div>
-              <div className="relative mt-2 h-1 w-full overflow-hidden rounded-full bg-background/15">
-                <div
-                  className="h-full rounded-full bg-primary transition-all"
-                  style={{ width: `${tesla.charge}%` }}
-                />
-              </div>
-              <p className="mt-3 inline-flex items-start gap-1 text-xs opacity-70">
-                <MapPin className="mt-0.5 h-3 w-3 shrink-0" />
-                {tesla.location}
-              </p>
-            </div>
-
-            {/* sm+ original layout */}
-            <div className="hidden h-full sm:flex sm:flex-col sm:justify-between">
-              <div className="flex items-start gap-3">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-background/10 text-background">
-                  <Car className="h-4.5 w-4.5 icon-hover anim-drift" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <Eyebrow tone="current" className="opacity-60">
-                    Bernard
-                  </Eyebrow>
-                  <p className="mt-1 text-lg">{tesla.inGarage ? "Au garage" : "En déplacement"}</p>
-                  <p className="mt-0.5 inline-flex items-center gap-1 text-xs opacity-60">
-                    <MapPin className="h-3 w-3" />
-                    {tesla.location}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-4 flex items-end gap-6">
-                <div>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-2xl tracking-tight">
-                      <CountUp to={tesla.charge} />
-                    </span>
-                    <span className="text-lg opacity-60">%</span>
-                  </div>
-                  <p className="text-xs opacity-60">
-                    {tesla.rangeKm} km · limite {tesla.chargeLimit}%
-                  </p>
-                </div>
-                <div className="flex-1 pb-1">
-                  <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-background/15">
-                    <div
-                      className="h-full rounded-full bg-primary transition-all"
-                      style={{ width: `${tesla.charge}%` }}
-                    />
-                    <div
-                      className="absolute top-0 h-full w-px bg-background/40"
-                      style={{ left: `${tesla.chargeLimit}%` }}
-                    />
-                  </div>
-                  <div className="mt-3 flex items-center gap-3 text-xs opacity-70">
-                    <span className="inline-flex items-center gap-1">
-                      <Plug
-                        className={
-                          "h-3 w-3 " + (tesla.pluggedIn ? "text-primary anim-breathe" : "")
-                        }
-                      />
-                      {tesla.pluggedIn ? "Branchée" : "Débranchée"}
-                    </span>
-                    <span>
-                      · {tesla.interior}° int / {tesla.exterior}° ext
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Card>
+          <BernardTile
+            to="/tesla"
+            charge={tesla.charge}
+            rangeKm={tesla.rangeKm}
+            chargeLimit={tesla.chargeLimit}
+            pluggedIn={tesla.pluggedIn}
+            inGarage={tesla.inGarage}
+            location={tesla.location}
+            interior={tesla.interior}
+            exterior={tesla.exterior}
+          />
         </BentoItem>
 
         {/* PRIORITY 3 — Réseau: the speed as a dial, everything else quiet */}
