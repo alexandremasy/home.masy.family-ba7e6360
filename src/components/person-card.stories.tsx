@@ -11,7 +11,7 @@ const noYear: Person = {
   dob: `${NO_BIRTH_YEAR}-06-21`,
   langue: "fr",
   relation: "voisin",
-  defaultSliders: { registre: 40, chaleur: 45, humour: 40, longueur: 30 },
+  defaultSliders: { registre: 2, chaleur: 2, humour: 2, longueur: 1 },
   matiereLibre: "",
   history: [],
 };

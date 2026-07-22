@@ -1,8 +1,17 @@
 import { useState } from "react";
 import { Slider } from "@/components/slider";
+import { Button } from "@/components/button";
 import { Textarea } from "@/components/textarea";
 import { Label } from "@/components/label";
-import { generateMessage, type Person, type Sliders } from "@/lib/maison-data";
+import {
+  generateMessage,
+  matchingPreset,
+  STYLE_AXES,
+  STYLE_PRESETS,
+  type Person,
+  type SliderStep,
+  type Sliders,
+} from "@/lib/maison-data";
 import { Copy, RefreshCw, Sparkles, Check } from "lucide-react";
 import { Card } from "@/components/card";
 
@@ -37,7 +46,9 @@ export function MessageStudio({
     }
   };
 
-  const set = <K extends keyof Sliders>(k: K, v: number) => setSliders((s) => ({ ...s, [k]: v }));
+  const current = matchingPreset(sliders);
+  const set = <K extends keyof Sliders>(k: K, v: SliderStep) =>
+    setSliders((s) => ({ ...s, [k]: v }));
 
   return (
     <div className="space-y-5">
@@ -74,34 +85,31 @@ export function MessageStudio({
 
       <Card variant="solid">
         <div className="flex-1 space-y-5">
-          <SliderRow
-            label="Registre"
-            left="pudique"
-            right="complice"
-            value={sliders.registre}
-            onChange={(v) => set("registre", v)}
-          />
-          <SliderRow
-            label="Chaleur"
-            left="sobre"
-            right="tendre"
-            value={sliders.chaleur}
-            onChange={(v) => set("chaleur", v)}
-          />
-          <SliderRow
-            label="Humour"
-            left="sincère"
-            right="taquin"
-            value={sliders.humour}
-            onChange={(v) => set("humour", v)}
-          />
-          <SliderRow
-            label="Longueur"
-            left="bref"
-            right="développé"
-            value={sliders.longueur}
-            onChange={(v) => set("longueur", v)}
-          />
+          {/* Same shortcuts as the profile: they set the four scales, nothing is locked. */}
+          <div className="flex flex-wrap gap-1.5">
+            {STYLE_PRESETS.map((preset) => (
+              <Button
+                key={preset.id}
+                type="button"
+                size="sm"
+                variant={current === preset.id ? "inverted" : "outline"}
+                title={preset.description}
+                onClick={() => setSliders({ ...preset.sliders })}
+              >
+                {preset.label}
+              </Button>
+            ))}
+          </div>
+
+          {STYLE_AXES.map((axis) => (
+            <SliderRow
+              key={axis.key}
+              label={axis.label}
+              stops={axis.stops}
+              value={sliders[axis.key]}
+              onChange={(v) => set(axis.key, v)}
+            />
+          ))}
 
           <div className="border-t border-border/60 pt-4">
             <Label
@@ -127,27 +135,28 @@ export function MessageStudio({
 
 function SliderRow({
   label,
-  left,
-  right,
+  stops,
   value,
   onChange,
 }: {
   label: string;
-  left: string;
-  right: string;
-  value: number;
-  onChange: (v: number) => void;
+  stops: readonly string[];
+  value: SliderStep;
+  onChange: (v: SliderStep) => void;
 }) {
   return (
     <div>
       <div className="mb-1.5 text-xs">
         <span className="font-semibold">{label}</span>
       </div>
-      <Slider min={0} max={100} step={1} value={[value]} onValueChange={([v]) => onChange(v)} />
-      <div className="mt-1 flex justify-between text-2xs uppercase tracking-eyebrow text-muted-foreground">
-        <span>{left}</span>
-        <span>{right}</span>
-      </div>
+      <Slider
+        min={0}
+        max={stops.length - 1}
+        step={1}
+        stops={[...stops]}
+        value={[value]}
+        onValueChange={([v]) => onChange(v as SliderStep)}
+      />
     </div>
   );
 }

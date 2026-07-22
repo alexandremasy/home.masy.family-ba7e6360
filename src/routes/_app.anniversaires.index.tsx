@@ -6,6 +6,7 @@ import {
   daysUntil,
   upcomingAge,
   hasBirthYear,
+  STYLE_PRESETS,
   type Person,
   type Sliders,
 } from "@/lib/maison-data";
@@ -90,12 +91,12 @@ type Variant = { label: string; sliders: Sliders; seed: number };
 
 /** The day's birthday — the main event. Three ready drafts + a style editor. */
 function TodayHero({ person, onEditProfile }: { person: Person; onEditProfile: () => void }) {
-  const d = person.defaultSliders;
-  const variants: Variant[] = [
-    { label: "Tendre", sliders: { ...d, chaleur: 88, humour: 25 }, seed: 0 },
-    { label: "Complice", sliders: { ...d, registre: 88, humour: 82 }, seed: 1 },
-    { label: "Bref", sliders: { ...d, longueur: 18 }, seed: 2 },
-  ];
+  // The three drafts are three presets — the shortcuts, not a hand-tuned copy of them.
+  const variants: Variant[] = STYLE_PRESETS.slice(0, 3).map((preset, i) => ({
+    label: preset.label,
+    sliders: { ...preset.sliders },
+    seed: i,
+  }));
   const [edit, setEdit] = useState<Variant | null>(null);
   const studio = edit && (
     <MessageStudio

@@ -5,7 +5,15 @@ import { Slider } from "@/components/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/select";
 import { Button } from "@/components/button";
 import { Eyebrow } from "@/components/eyebrow";
-import { NO_BIRTH_YEAR, type Person, type Sliders } from "@/lib/maison-data";
+import {
+  NO_BIRTH_YEAR,
+  STYLE_AXES,
+  STYLE_PRESETS,
+  matchingPreset,
+  type Person,
+  type SliderStep,
+  type Sliders,
+} from "@/lib/maison-data";
 
 const MONTHS = [
   "Janv.",
@@ -34,7 +42,7 @@ export const EMPTY_PERSON: PersonDraft = {
   dob: "",
   langue: "fr",
   matiereLibre: "",
-  defaultSliders: { registre: 50, chaleur: 50, humour: 50, longueur: 50 },
+  defaultSliders: { registre: 2, chaleur: 2, humour: 2, longueur: 2 },
 };
 
 /** The person profile form. Shared by the edit fiche and "nouvelle personne", same as DishForm. */
@@ -53,7 +61,10 @@ export function PersonForm({
   const [touched, setTouched] = useState(false);
   const set = <K extends keyof PersonDraft>(k: K, v: PersonDraft[K]) =>
     setD((p) => ({ ...p, [k]: v }));
-  const setSlider = <K extends keyof Sliders>(k: K, v: number) =>
+  // Highlights the preset when the sliders happen to sit exactly on it.
+  const current = matchingPreset(d.defaultSliders);
+
+  const setSlider = <K extends keyof Sliders>(k: K, v: SliderStep) =>
     setD((p) => ({ ...p, defaultSliders: { ...p.defaultSliders, [k]: v } }));
 
   // Birthday is day + month (required) with an optional year — kept apart from the
@@ -150,35 +161,32 @@ export function PersonForm({
         <Eyebrow size="xs" as="span">
           Style par défaut
         </Eyebrow>
-        <div className="mt-2 grid gap-5 sm:grid-cols-2">
-          <SliderRow
-            label="Registre"
-            left="pudique"
-            right="complice"
-            value={d.defaultSliders.registre}
-            onChange={(v) => setSlider("registre", v)}
-          />
-          <SliderRow
-            label="Chaleur"
-            left="sobre"
-            right="tendre"
-            value={d.defaultSliders.chaleur}
-            onChange={(v) => setSlider("chaleur", v)}
-          />
-          <SliderRow
-            label="Humour"
-            left="sincère"
-            right="taquin"
-            value={d.defaultSliders.humour}
-            onChange={(v) => setSlider("humour", v)}
-          />
-          <SliderRow
-            label="Longueur"
-            left="bref"
-            right="développé"
-            value={d.defaultSliders.longueur}
-            onChange={(v) => setSlider("longueur", v)}
-          />
+        {/* Presets are shortcuts: they move the sliders, they do not lock them. */}
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {STYLE_PRESETS.map((preset) => (
+            <Button
+              key={preset.id}
+              type="button"
+              size="sm"
+              variant={current === preset.id ? "inverted" : "outline"}
+              title={preset.description}
+              onClick={() => setD((prev) => ({ ...prev, defaultSliders: { ...preset.sliders } }))}
+            >
+              {preset.label}
+            </Button>
+          ))}
+        </div>
+
+        <div className="mt-4 grid gap-5 sm:grid-cols-2">
+          {STYLE_AXES.map((axis) => (
+            <SliderRow
+              key={axis.key}
+              label={axis.label}
+              stops={axis.stops}
+              value={d.defaultSliders[axis.key]}
+              onChange={(v) => setSlider(axis.key, v)}
+            />
+          ))}
         </div>
       </div>
 
@@ -204,29 +212,31 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
+/** One axis of the tone, as a scale of named steps. */
 function SliderRow({
   label,
-  left,
-  right,
+  stops,
   value,
   onChange,
 }: {
   label: string;
-  left: string;
-  right: string;
-  value: number;
-  onChange: (v: number) => void;
+  stops: readonly string[];
+  value: SliderStep;
+  onChange: (v: SliderStep) => void;
 }) {
   return (
     <div>
       <div className="mb-1.5 text-xs">
         <span className="font-semibold">{label}</span>
       </div>
-      <Slider min={0} max={100} step={1} value={[value]} onValueChange={([v]) => onChange(v)} />
-      <div className="mt-1 flex justify-between text-2xs uppercase tracking-eyebrow text-muted-foreground">
-        <span>{left}</span>
-        <span>{right}</span>
-      </div>
+      <Slider
+        min={0}
+        max={stops.length - 1}
+        step={1}
+        stops={[...stops]}
+        value={[value]}
+        onValueChange={([v]) => onChange(v as SliderStep)}
+      />
     </div>
   );
 }

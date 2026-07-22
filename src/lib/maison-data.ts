@@ -883,16 +883,102 @@ export function upcomingMeals(plan: PlanEntry[], from: Date = TODAY, days = 10):
 // ------------------------------------------------------------
 // Anniversaires
 // ------------------------------------------------------------
-export type SliderRegistre = number; // 0 pudique — 100 complice
-export type SliderChaleur = number; // 0 sobre — 100 tendre
-export type SliderHumour = number; // 0 sincère — 100 taquin
-export type SliderLongueur = number; // 0 bref — 100 développé
+/**
+ * The tone of a birthday message, on four scales.
+ *
+ * Each value is an INDEX into that axis' stops, not a percentage: a tone is a named
+ * step ("chaleureux"), not a number nobody can read back. Five steps per axis, so the
+ * middle is a real position rather than a rounding.
+ */
+export const STYLE_AXES = [
+  {
+    key: "registre",
+    label: "Registre",
+    stops: ["Pudique", "Réservé", "Nuancé", "Familier", "Complice"],
+  },
+  {
+    key: "chaleur",
+    label: "Chaleur",
+    stops: ["Sobre", "Mesuré", "Chaleureux", "Affectueux", "Tendre"],
+  },
+  { key: "humour", label: "Humour", stops: ["Sincère", "Discret", "Léger", "Joueur", "Taquin"] },
+  { key: "longueur", label: "Longueur", stops: ["Bref", "Court", "Moyen", "Développé", "Long"] },
+] as const;
+
+export type StyleAxis = (typeof STYLE_AXES)[number]["key"];
+
+/** A step on one axis: 0 to 4, indexing that axis' `stops`. */
+export type SliderStep = 0 | 1 | 2 | 3 | 4;
 
 export interface Sliders {
-  registre: SliderRegistre;
-  chaleur: SliderChaleur;
-  humour: SliderHumour;
-  longueur: SliderLongueur;
+  registre: SliderStep;
+  chaleur: SliderStep;
+  humour: SliderStep;
+  longueur: SliderStep;
+}
+
+/** Reads a value back as its step name — "chaleur: 3" is "Affectueux". */
+export function stopLabel(axis: StyleAxis, step: SliderStep): string {
+  return STYLE_AXES.find((a) => a.key === axis)!.stops[step];
+}
+
+/**
+ * The named tones, as positions on those scales.
+ *
+ * They are **shortcuts, not cages**: picking one moves the four sliders, and moving a
+ * slider afterwards is allowed — that is why a person stores the four steps rather than
+ * a preset id. Ids and wording mirror the api's `/styles`, so the two never drift apart.
+ */
+export const STYLE_PRESETS = [
+  {
+    id: "tendre",
+    label: "Tendre",
+    description: "Chaleureux et ouvertement affectueux.",
+    sliders: { registre: 3, chaleur: 4, humour: 1, longueur: 2 },
+  },
+  {
+    id: "complice",
+    label: "Complice",
+    description: "Familier, plein de clins d'œil partagés.",
+    sliders: { registre: 4, chaleur: 3, humour: 3, longueur: 2 },
+  },
+  {
+    id: "bref",
+    label: "Bref",
+    description: "Court et direct, une ou deux lignes.",
+    sliders: { registre: 2, chaleur: 2, humour: 1, longueur: 0 },
+  },
+  {
+    id: "taquin",
+    label: "Taquin",
+    description: "Joueur et taquin, une pointe d'humour.",
+    sliders: { registre: 3, chaleur: 2, humour: 4, longueur: 1 },
+  },
+  {
+    id: "sincere",
+    label: "Sincère",
+    description: "Droit au cœur, posé et sans détour.",
+    sliders: { registre: 1, chaleur: 3, humour: 0, longueur: 2 },
+  },
+] as const satisfies ReadonlyArray<{
+  id: string;
+  label: string;
+  description: string;
+  sliders: Sliders;
+}>;
+
+export type StyleId = (typeof STYLE_PRESETS)[number]["id"];
+
+/** The preset whose position matches exactly, if the sliders are sitting on one. */
+export function matchingPreset(s: Sliders): StyleId | null {
+  const hit = STYLE_PRESETS.find(
+    (p) =>
+      p.sliders.registre === s.registre &&
+      p.sliders.chaleur === s.chaleur &&
+      p.sliders.humour === s.humour &&
+      p.sliders.longueur === s.longueur,
+  );
+  return hit ? hit.id : null;
 }
 
 export interface HistoryEntry {
@@ -934,7 +1020,7 @@ export const people: Person[] = [
     dob: dobInDays(34, 0),
     langue: "fr",
     relation: "frère",
-    defaultSliders: { registre: 78, chaleur: 60, humour: 80, longueur: 45 },
+    defaultSliders: { registre: 3, chaleur: 2, humour: 3, longueur: 2 },
     matiereLibre:
       "Vient de déménager à Amsterdam pour un nouveau job (design d'interaction). On s'appelle presque tous les dimanches. En ce moment il apprend la guitare et il râle contre son voisin qui met du techno. Notre blague récurrente : le pain aux graines de sa mère qu'on planque quand il vient. On était partis rouler en Ardennes en septembre — souvenir des crêpes à minuit dans son van.",
     history: [
@@ -954,7 +1040,7 @@ export const people: Person[] = [
     dob: `${REF_YEAR - 68}-11-03`,
     langue: "fr",
     relation: "maman",
-    defaultSliders: { registre: 35, chaleur: 90, humour: 20, longueur: 55 },
+    defaultSliders: { registre: 1, chaleur: 4, humour: 1, longueur: 2 },
     matiereLibre:
       "Retraitée depuis deux ans, s'est mise au jardinage sérieusement — a réussi ses tomates cœur de boeuf cette année. Adore quand on lui envoie des photos des enfants sans qu'elle demande. Petit passage difficile en début d'année avec papa mais ça va mieux. Notre rituel : tarte aux pommes du dimanche.",
     history: [
@@ -971,7 +1057,7 @@ export const people: Person[] = [
     dob: dobInDays(39, 8),
     langue: "fr",
     relation: "amie d'enfance",
-    defaultSliders: { registre: 90, chaleur: 55, humour: 95, longueur: 35 },
+    defaultSliders: { registre: 4, chaleur: 2, humour: 4, longueur: 1 },
     matiereLibre:
       "20 ans qu'on se connaît. Bosse dans l'édition à Bruxelles. On a un running gag sur ses ex qui s'appellent tous Julien (elle en est à trois). Vient de finir son premier semi-marathon. Adore quand on lui envoie des memes de chats absurdes.",
     history: [
@@ -988,7 +1074,7 @@ export const people: Person[] = [
     dob: `${REF_YEAR - 82}-02-14`,
     langue: "fr",
     relation: "grand-père",
-    defaultSliders: { registre: 25, chaleur: 85, humour: 30, longueur: 40 },
+    defaultSliders: { registre: 1, chaleur: 3, humour: 1, longueur: 2 },
     matiereLibre:
       "82 ans, encore autonome. Ancien menuisier, il a fabriqué le berceau des enfants. On l'appelle chaque semaine — il aime raconter la guerre et le jardin. Reçoit rarement des messages écrits, un vrai plaisir pour lui.",
     history: [],
@@ -999,7 +1085,7 @@ export const people: Person[] = [
     dob: dobInDays(8, 17),
     langue: "fr",
     relation: "filleule",
-    defaultSliders: { registre: 60, chaleur: 95, humour: 70, longueur: 25 },
+    defaultSliders: { registre: 2, chaleur: 4, humour: 3, longueur: 1 },
     matiereLibre:
       "8 ans, en pleine phase 'je veux être vétérinaire ET astronaute'. On lui a offert des jumelles pour Noël, elle observe les oiseaux du balcon. Rire contagieux. On se voit peu (ses parents à Toulouse) mais on lit ensemble par visio le mardi soir.",
     history: [
@@ -1016,7 +1102,7 @@ export const people: Person[] = [
     dob: dobInDays(42, 26),
     langue: "fr",
     relation: "beau-frère",
-    defaultSliders: { registre: 55, chaleur: 50, humour: 60, longueur: 30 },
+    defaultSliders: { registre: 2, chaleur: 2, humour: 2, longueur: 1 },
     matiereLibre:
       "Beau-frère depuis 10 ans. On boit un scotch ensemble aux fêtes. Toujours un peu réservé mais fidèle en amitié. Vient de racheter une vieille moto qu'il retape dans son garage — projet du moment.",
     history: [],
@@ -1063,31 +1149,31 @@ export function generateMessage(p: Person, s: Sliders, comment: string, seed = 0
   const detailB = sentences[(seed + 2) % Math.max(1, sentences.length)] ?? "";
 
   const opening =
-    s.registre < 40
+    s.registre <= 1
       ? `Bon anniversaire ${p.name}.`
-      : s.registre < 75
+      : s.registre <= 3
         ? `Hey ${p.name} —`
         : `${p.name} !!`;
 
   const warmth =
-    s.chaleur > 75
+    s.chaleur >= 4
       ? " Je pense à toi très fort aujourd'hui."
-      : s.chaleur > 45
+      : s.chaleur >= 2
         ? " On pense à toi aujourd'hui."
         : "";
 
   const humour =
-    s.humour > 75
+    s.humour >= 4
       ? ` ${age} ans — c'est officiel, tu es vieux/vieille (mais dans le bon sens).`
-      : s.humour > 45
+      : s.humour >= 2
         ? ` ${age} ans, et toujours aussi toi.`
         : "";
 
   const personal =
-    s.longueur > 60 ? ` ${detailA} ${detailB}` : s.longueur > 30 ? ` ${detailA}` : "";
+    s.longueur >= 3 ? ` ${detailA} ${detailB}` : s.longueur >= 2 ? ` ${detailA}` : "";
 
   const closing =
-    s.chaleur > 70 ? " Je t'embrasse." : s.registre < 40 ? " À très vite." : " Bisou.";
+    s.chaleur >= 4 ? " Je t'embrasse." : s.registre <= 1 ? " À très vite." : " Bisou.";
 
   let base = `${opening}${warmth}${humour}${personal}${closing}`.replace(/\s+/g, " ").trim();
 
