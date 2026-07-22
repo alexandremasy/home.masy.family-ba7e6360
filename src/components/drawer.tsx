@@ -52,7 +52,7 @@ export interface DrawerContentProps
   /** Secondary line under the title. Wired as the drawer's accessible description. */
   subline?: React.ReactNode;
   /** Right end of the header row: a count, a badge, a filter — or a real control. */
-  action?: React.ReactNode;
+  trailing?: React.ReactNode;
   /** Sits off the sheet, on the muted. Where the actions go. */
   footer?: React.ReactNode;
   /** Colours the header ICON, not the drawer. */
@@ -74,7 +74,7 @@ const DrawerContent = React.forwardRef<
       title,
       icon,
       subline,
-      action,
+      trailing,
       footer,
       tone = "primary",
       padding = "md",
@@ -113,7 +113,7 @@ const DrawerContent = React.forwardRef<
               </DrawerPrimitive.Description>
             ) : undefined
           }
-          action={action}
+          action={trailing}
           footer={footer}
           className={cn(
             modalCard,

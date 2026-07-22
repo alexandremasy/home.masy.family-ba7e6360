@@ -243,7 +243,7 @@ function CoursesPage() {
           <DrawerContent
             className="max-h-[85dvh]"
             title="Liste de courses"
-            action={
+            trailing={
               <span className="text-xs text-muted-foreground">
                 {totalItems} article{totalItems > 1 ? "s" : ""}
               </span>

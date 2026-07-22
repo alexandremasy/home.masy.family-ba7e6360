@@ -62,7 +62,7 @@ export interface DialogContentProps
   /** Secondary line under the title. Wired as the dialog's accessible description. */
   subline?: React.ReactNode;
   /** Right end of the header row: a badge, a filter, tabs — or a real control. */
-  action?: React.ReactNode;
+  trailing?: React.ReactNode;
   /** Sits inside the border but off the filled sheet. Where the actions go. */
   footer?: React.ReactNode;
   /** Colours the header ICON, not the dialog. */
@@ -84,7 +84,7 @@ const DialogContent = React.forwardRef<
       title,
       icon,
       subline,
-      action,
+      trailing,
       footer,
       tone = "primary",
       padding = "md",
@@ -122,7 +122,7 @@ const DialogContent = React.forwardRef<
               </DialogPrimitive.Description>
             ) : undefined
           }
-          action={action}
+          action={trailing}
           footer={footer}
           className={modalCard}
         >

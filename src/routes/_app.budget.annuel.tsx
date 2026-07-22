@@ -147,7 +147,7 @@ function AnnuelPage() {
                   fontSize: 12,
                   color: "var(--popover-foreground)",
                 }}
-                formatter={(v: number) => eur(v)}
+                formatter={(v) => eur(Number(v))}
                 cursor={{ fill: "var(--secondary)", opacity: 0.4 }}
               />
               <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
@@ -201,7 +201,7 @@ function AnnuelPage() {
                   fontSize: 12,
                   color: "var(--popover-foreground)",
                 }}
-                formatter={(v: number) => eur(v)}
+                formatter={(v) => eur(Number(v))}
               />
               <ReferenceLine y={avgSpend} stroke="var(--muted-foreground)" strokeDasharray="4 4" />
               <ReferenceLine
@@ -372,7 +372,7 @@ function AnnuelPage() {
                   fontSize: 12,
                   color: "var(--popover-foreground)",
                 }}
-                formatter={(v: number) => eur(v)}
+                formatter={(v) => eur(Number(v))}
               />
               <ReferenceLine y={zoomAvg} stroke="var(--muted-foreground)" strokeDasharray="4 4" />
               <Area

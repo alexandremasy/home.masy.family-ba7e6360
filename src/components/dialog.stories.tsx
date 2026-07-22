@@ -16,7 +16,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Every slot at once — icon, title, subline, action, body, footer. */
+/** Every slot at once — icon, title, subline, trailing, body, footer. */
 export const Default: Story = {
   render: () => (
     <Dialog>
@@ -27,7 +27,7 @@ export const Default: Story = {
         icon={<CalendarPlus className="h-4 w-4" />}
         title="Ajouter un repas"
         subline="Mardi 21 juillet · dîner"
-        action={<Badge variant="secondary">Brouillon</Badge>}
+        trailing={<Badge variant="secondary">Brouillon</Badge>}
         footer={
           <DialogActions>
             <DialogClose asChild>
@@ -46,7 +46,7 @@ export const Default: Story = {
   ),
 };
 
-/** The floor: a title and a body. No icon, no action, no footer. */
+/** The floor: a title and a body. No icon, no trailing, no footer. */
 export const TitleOnly: Story = {
   render: () => (
     <Dialog>
